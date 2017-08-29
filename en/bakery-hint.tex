@@ -1,0 +1,18 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{Hint}
+\begin{popup}
+\subsection*{Hint}
+
+You can find the required inductive invariant by suitably modifying
+the invariant $Inv$ of the atomic bakery algorithm.  First run TLC on
+the algorithm to see why $Inv$ is not an invariant, and make the
+necessary modifications to make it an invariant.  (This will be easier
+if you split the second conjunction of $Inv$ into the conjunction of 7
+separate formulas and have TLC check that each of them is an
+invariant.)  After you have obtained an invariant, use TLC to check if
+it's an inductive invariant and modify it until it is.  You should try to
+do this on a very small model, with $N<-2$ and $Nat <- 0\dd2$.
+
+\end{popup}
+\makepopup

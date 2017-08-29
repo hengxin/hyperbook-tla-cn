@@ -1,0 +1,13 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{ASCII Text}
+\fixverbatim
+\begin{popup}
+\begin{verbatim*}
+ASSUME /\ Votes \in Seq(Seq(Cand))
+       /\ \A j \in 1..Len(Votes) : 
+             /\ Len(Votes[j]) = Cardinality(Cand)
+             /\ {Votes[j][i] : i \in 1..Len(Votes[j])} = Cand
+\end{verbatim*}
+\end{popup}
+\makeasciipopup

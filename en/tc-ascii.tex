@@ -1,0 +1,18 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{ASCII Text}
+\fixverbatim
+\addtolength{\textwidth}{60pt}
+\begin{popup}
+\begin{verbatim*}
+NodesOf(R) == {r[1] : r \in R} \cup {r[2] : r \in R}
+
+PathsOfLen(R, j) == { p \in [1..j -> NodesOf(R)] : 
+                       \A i \in 1..(j-1) : <<p[i], p[i+1]>> \in R }
+
+ShortPaths(R) == UNION {PathsOfLen(R, j) : j \in 2..Cardinality(NodesOf(R))}
+
+TC(R) == { <<p[1], p[Len(p)]>> : p \in ShortPaths(R) }
+\end{verbatim*}
+\end{popup}
+\makeasciipopup

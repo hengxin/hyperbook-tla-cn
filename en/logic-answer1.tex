@@ -1,0 +1,22 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{Answer}
+\setpopup{17.5}
+\begin{document}
+\subsection*{Answer}
+
+The simple answer is no.  If two initial predicates are not
+equivalent, then there is a state that is allowed by one but not the
+other.  Starting from that state, one can construct a behavior that is
+allowed by one spec but not the other.
+
+This answer is correct, as long as the specification consists of only
+the initial predicate and next-state action.  However, later you will
+see that we may add \popref{safe-live-intro}{liveness} conditions
+to our specifications.  It's possible to add a liveness condition that
+rules out behaviors that start in some particular states.  With such a
+condition, we can write two specs that have different initial
+predicates but allow the same behaviors.  You shouldn't write such
+specs because they're hard to understand, and there's an easy way to
+avoid writing them.
+\end{document}

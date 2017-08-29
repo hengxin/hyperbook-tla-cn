@@ -1,0 +1,36 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{ASCII Text}
+\fixverbatim
+\begin{popup}
+\begin{verbatim*}
+EXTENDS Integers, Sequences
+
+Put(s) == Append(s, "widget")
+Get(s) == Tail(s)
+
+(*****************************************************************
+--algorithm Alternate {
+
+    variable b = 0 , box = << >> ;
+
+    process (Producer = 0) 
+      { p1: while (TRUE)
+              { await b = 0 ;
+                box := Put(box) ;
+                b := 1
+              }
+      }
+      
+    process (Consumer = 1)
+      { c1: while (TRUE)
+              { await b = 1 ;
+                box := Get(box) ;
+                b := 0
+              }
+      }
+}
+ *****************************************************************)
+\end{verbatim*}
+\end{popup}
+\makeasciipopup

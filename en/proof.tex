@@ -1,0 +1,3490 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+%\pdffalse
+\makeindex
+
+%%% Hack for showing index elements.  
+%%
+% \let\mmath=\ensuremath
+% \def\icmd#1{\csname#1\endcsname}
+% \renewcommand{\tindex}[2]{\marginpar{\red #2 (#1)}}
+% \renewcommand{\ctindex}[3]{\marginpar{\red #2 (#1)}}
+
+% Definitions of proof state components
+\newcommand{\G}{\textbf{G}}
+\newcommand{\Sym}{\ensuremath{\mathcal{S}}}
+\newcommand{\FK}{\ensuremath{\mathcal{F}_{K}}}
+\newcommand{\FU}{\ensuremath{\mathcal{F}_{U}}}
+\newcommand{\DK}{\ensuremath{\mathcal{D}_{K}}}
+\newcommand{\DU}{\ensuremath{\mathcal{D}_{U}}}
+\newcommand{\BB}{\ensuremath{\mathcal{B}}}
+
+
+
+\pdftitle{Proofs}  % This didn't work with \tlaplus
+\title{\bf The \tlaplus\ Tutorial}
+\author{Leslie Lamport}
+\date{\today}
+\file{proof}
+
+
+
+\setcounter{section}{\prooftrack}
+\addtocounter{section}{-1}
+
+%\small
+\begin{document}
+\renewcommand{\contentsname}{The \protect\tlaplus\ Proof Track\protect\target{top}}
+\showversions
+\tableofcontents
+\hideversions
+
+\newpage
+
+  \tindex{2}{TLAPS}%
+   \vspace{-\baselineskip}%
+\btarget{tlaps}
+\section{About Proofs and Proving}
+
+\subsection{About Proofs}
+
+When writing proofs of properties of systems or algorithms, we should
+not look at mathematicians' 
+ \ctindex{1}{proof!mathematicians'}{proof-math}%
+%
+proofs for models.  There are three
+reasons why the way (almost all) mathematicians write proofs do
+not work for our proofs:
+\begin{itemize}
+\item The theorems mathematicians prove are very different from what
+we are proving.  Mathematical theorems are usually deep, being based
+on knowledge that has been developed over centuries.  Our theorems are
+shallow but wide.  They generally use only simple mathematics, but
+require checking many details.
+
+\item Mathematicians don't care if their theorems are not quite
+correct.  Omitting a simple hypothesis such as that a certain set is
+nonempty would not even be considered an error.  For the proof of an
+algorithm, such an omission means a bug in a ``corner case''.
+
+\item The proofs mathematicians write are unreliable.  Anecdotal
+evidence suggests that a significant fraction of published, refereed
+mathematical papers contain incorrect theorems---not ones ignoring
+corner cases, but results that mathematicians would consider wrong.
+Based on a tiny amount of data, I would guess that fraction to be more
+than a tenth.  (This includes results that have a correct proof but
+are wrong because the proof relies on theorems that are wrong.)
+
+Mathematicians depend on the social process to weed out incorrect
+results.  Most theorems are ignored and soon forgotten.  The few
+important results are scrutinized by many mathematicians, and errors
+in them are eventually discovered.  Two false 19\tth\ century proofs
+of the four-color theorem were believed for 11 years.  However, the
+greater number of mathematicians and improved communications make it
+very likely that an incorrect proof of such a major result would today
+be quickly discovered.
+\end{itemize}
+When a mathematician's style of proof is used to prove properties of
+systems, the result is often disastrous.  There is no social process
+to find errors an engineer makes in a proof of a system she is
+designing.  Even for published algorithms, the social process doesn't
+work very well.  One dramatic example is provided by:%
+ \tindex{1}{Zave, Pamela}%
+\begin{display}
+ Pamela Zave.  \emph{Lightweight verification of network protocols: 
+ The case of Chord}. AT\&T Technical Report, January 2010.
+\end{display}
+The 
+  \tindex{1}{Chord}%
+Chord algorithm was first published in:
+\begin{display}
+I. Stoica, R. Morris, D. Karger, M. F. Kaashoek, and
+H. Balakrishnan. \emph{Chord: A scalable peer-to-peer lookup
+service for Internet applications}. Proceedings of
+SIGCOMM. ACM, August 2001.
+\end{display}
+This paper states:
+\begin{display}
+Three features that distinguish Chord from many other
+peer-to-peer lookup protocols are its simplicity, provable
+correctness, and provable performance.
+\end{display}
+However, Zave reports:
+\begin{display}
+[T]he Chord routing protocol is neither proven nor
+correct. The only published proof of correctness excludes
+failures from consideration. Even within its
+scope the proof does not compel belief, due to ill-defined
+terms and missing or unjustified steps. The full protocol
+is clearly incorrect, even after bugs with straightforward
+fixes have been eliminated. Not one of the six
+properties claimed invariant for the full protocol \ldots\
+is invariantly true.
+\end{display}
+Chord is quite well known.  A web search on its title yields many
+thousands of references.  The paper won a SIGCOMM Test of Time Award in
+2011.  Yet, the errors in the algorithm went unnoticed for almost 10
+years.  Zave found them by writing a formal specification of the
+algorithm (in the 
+  \tindex{1}{Alloy}%
+Alloy language) and applying a form of model
+checking.  What distinguishes Chord from most published
+algorithms is that someone applied formal methods to check if it
+really was correct.
+
+One way to make hand proofs more reliable is to structure them
+hierarchically.  The \emph{Principles} track of this hyperbook uses
+such structured proofs.  Structuring is equally important in handling
+the complexity of a formal proof, and formal proofs written in
+\tlaplus\ are hierarchically structured.
+
+
+
+\subsection{About TLAPS} \xlabel{about-tlaps}
+
+This track is about writing formal \tlaplus\ proofs that can be
+checked by TLAPS, the \tlaplus\ Proof System.  TLAPS is a separate
+system that is called by the \tlaplus\ Toolbox.  It is not 
+distributed with the Toolbox; you can download it 
+\hyperref{http://tla.msr-inria.inria.fr/tlaps/}{}{}{from here}.
+
+\tlaplus\ 
+  \ctindex{1}{proof!TLA+@\icmd{tlaplus}}{proof-tlaplus}%
+proofs are written in a declarative style that has the goal of making
+proofs independent of the proof engines used to check them.  A proof
+specifies what facts are needed to justify a proof step; it does not
+say what to do with those facts.  The writer of a \tlaplus\ proof
+should not have to know how the actual proof checking works.  TLAPS
+has been designed to come as close as we
+could to achieving this goal.
+
+In TLAPS, a proof 
+  \tindex{1}{proof manager}%
+  \ctindex{1}{proof!manager}{proof-manager}%
+manager translates the proof into a set of separate
+proof 
+  \tindex{1}{proof obligation}%
+  \ctindex{1}{obligation!proof}{obligation-proof}%
+obligations, checks the ones that are trivially true, and sends
+the others to one or more 
+  \tindex{1}{backend prover}%
+  \ctindex{1}{prover!backend}{prover-backend}%
+\popref{backends}{backend provers}.  Its default 
+  \tindex{1}{default backend provers}%
+behavior is to try these three backend provers: \emph{SMT},
+\popref{zenon-isabelle}{\emph{Zenon}, and \emph{Isabelle}}---in that order.
+
+%
+
+
+% Currently, TLAPS uses two
+% primary backend provers: 
+%    \tindex{2}{Zenon}%
+%   \tindex{2}{Isabelle}%
+% \popref{zenon - isabelle}{Zenon and Isabelle}.
+% The default is to send an obligation first to Zenon.  If Zenon fails
+% to prove it, the obligation is sent to Isabelle.  Zenon can fail by
+% either deciding that it can't prove the obligation, or by taking too
+% long and being stopped by the proof manager.  (The length of time
+% Zenon is given can be adjusted.)
+% 
+% TLAPS can use other backend provers.  A proof can specify the use of
+% certain pseudo-facts that cause the proof manager to send an
+% obligation to a particular backend prover.  
+% % 
+% % As much as possible, such pseudo-facts describe the general nature of
+% % the reasoning that is required rather than what prover must be used.
+% % 
+% One such fact that is very useful is
+%   \ctindex{1}{SMT@\mmath{SMT}}{SMT}%
+% $SMT$\@.  It invokes a type of backend prover called an \emph{SMT
+% Solver}.  TLAPS can use several different SMT solver backends; $SMT$
+% invokes the default one.  For most proof obligations, it makes no
+% difference which one you use.  An SMT solver is what you will usually
+% use for obligations that require only simple arithmetical reasoning.
+% Sometimes, it can prove in one step an obligation that other back ends
+% require to be broken into many smaller steps.
+
+The TLAPS distribution includes a library of TLA modules that contain
+useful theorems that assert properties of mathematical objects like
+sets, functions, and sequences, as well as theorems that assert proof
+rules such as ones for mathematical induction.  How to access library
+modules in your specifications is explained on the
+  \helppage{gettingstarted/tla-preferences}{help page} 
+for the \tlaplus\
+  \helppage{gettingstarted/preferences}{preferences page}.
+
+
+The proof manager remembers if it has already proved an obligation.
+Its default behavior is not to try to prove an obligation that has
+already been proved.  TLAPS stores a record of what obligations have
+been proved in a 
+  \tindex{1}{fingerprint file}%
+  \ctindex{1}{file!fingerprint}{file-fingerprint}%
+\emph{fingerprint} file.  For a module named $M$, the fingerprint file
+is the file named $fingerprints$ inside the folder (directory) $M.tlaps$.
+TLAPS may try to prove an obligation that it has already proved for
+any of the following reasons: you chose to override the default (using
+the 
+  \ctindex{1}{Launch Prover (Toolbox command)@\icmd{textsf}{Launch Prover} (Toolbox command)}{launch-prover}%
+\textsf{Launch Prover} command), the fingerprint file is not
+present (for example, if you are using a different computer), or some
+change to TLAPS has made the information in the fingerprint file
+obsolete.
+
+Because the correctness of a proof obligation can depend on many
+things, some not at all obvious, fingerprinting is subtle.  There have
+been bugs that cause the Toolbox to report that an obligation has been
+proved despite a change to the specification making the obligation no
+longer provable.  If any part of the specification has changed since
+you proved something, you should reprove it without using fingerprints
+to be sure that it is still proved.  In particular, it's a good idea
+to do this after you have finished your complete proof.
+
+Even if nothing has changed, a proof that succeeded may fail if tried
+again, or vice-versa.  There are two possible reasons for this.
+\begin{itemize}
+\item Whether or not a backend prover succeeds before it times out can
+depend on what computer you are using and on what other programs are
+running.
+
+\item If you are using a different version of TLAPS, then a TLAPS
+library file or a backend prover may have changed.  We keep trying to
+make the libraries and the backend provers better.  However,
+automatic proving involves tradeoffs, and making a library or a prover
+work better on some proofs may make it worse on others.  We hope that any
+change we make helps more often than it hurts, but we cannot guarantee
+that it won't make one of your proofs fail.
+\end{itemize}
+
+
+
+
+
+\newpage
+
+  \ctindex{1}{Euclid's Algorithm!TLAPLUS proof}{euclids-algorithm-proof-of}%
+\btarget{theorems}%
+\section{Correctness of Euclid's Algorithm} \xlabel{proof:euclid}
+
+We introduce the prover using Euclid's algorithm of
+\rref{main}{\xlink{sec:euclid}}{Section~\xref{sec:euclid}} as an
+example.  If you have not already done so, you should read the
+informal proof of Euclid's algorithm's correctness in
+ \rref{main}{\xlink{why-euclid-correct}}{Section~\xref{why-euclid-correct}}.
+You should also read about stuttering in 
+  \rref{main}{\xlink{fairness-revisited}}{Section~\xref{fairness-revisited}}.
+
+
+Here is 
+\popref{pcaleuclid}{the specification we wrote} in Section~\xref{sec:euclid},
+including the definitions of the invariants used in the proof,
+and here is 
+  \popref{pcaleuclid-ascii}{the \textsc{ascii} version}.
+It calls \popref{gcd}{module $GCD$}; here is 
+\popref{gcd-ascii}{the \textsc{ascii} version} of that module.
+Open the spec in the Toolbox.  You will have to run the PlusCal translator
+to make the parsing errors go away.
+
+\subsection{Proving Safety}
+The correctness property we will prove is that $PartialCorrectness$ is
+an invariant of the algorithm.  This is expressed by the formula
+  $Spec => []Correctness$.
+As we saw in Section~\xref{sec:euclid}, to do this we have to
+prove conditions $I1$, $I2$, and $I3$---except in light of
+stuttering we must replace $I2$ by
+  \[Inv /\ [Next]_{vars} \,=>\, Inv'\]
+Conditions $I1$--$I3$ are the first three steps of the following proof,
+which you should add to the end of module $Euclid$.
+\begin{display}
+\begin{notla}
+THEOREM Spec => []PartialCorrectness
+<1>1. Init => Inv
+<1>2. Inv /\ [Next]_vars => Inv'
+<1>3. Inv => PartialCorrectness
+<1>4. QED
+\end{notla}
+\begin{tlatex}
+\@x{ {\THEOREM} Spec \.{\implies} {\Box} PartialCorrectness\vs{.2}}%
+\ascii{ep-ascii1}%
+\@x{\@pfstepnum{1}{1.}\  Init \.{\implies} Inv\vs{.2}}%
+ \@x{\@pfstepnum{1}{2.}\  Inv \.{\land} [ Next ]_{ vars} \.{\implies} Inv
+ \.{'}\vs{.2}}%
+\@x{\@pfstepnum{1}{3.}\  Inv \.{\implies} PartialCorrectness\vs{.2}}%
+\@x{\@pfstepnum{1}{4.}\  {\QED}}%
+\end{tlatex}
+\end{display}
+The proof of a theorem is a sequence of steps, the last step being a
+  \ctindex{1}{QED@{\icmd{sc}qed}}{QED}%
+\textsc{qed} step.  Each step may be followed by its proof.
+Of course, the theorem hasn't been proved until all of these four steps
+have been proved.  We can prove the steps in any order, or work on several
+of them at once.  However, it's usually a good idea to prove the \textsc{qed}
+step first.
+
+\textsc{qed} means \emph{that which was to be proved}, which in this
+proof is $Spec => []PartialCorrectness$.  The proof of the
+\textsc{qed} step must show that the truth of this formula follows
+from the truth of what is already known, which are the laws of
+mathematics and steps $<<1>>1$--$<<1>>3$.  If we think that the proof
+of a statement should be obvious, we can use the proof
+   \ctindex{1}{BY@\icmd{textsc}{by}}{by}%
+\textsc{obvious}.  So, write the word \texttt{OBVIOUS} after 
+\texttt{QED}.  I like to write a step's proof indented, beginning
+on the line after the step; so I would type this as
+\begin{display}
+\begin{verbatim}
+<1>4. QED
+  OBVIOUS
+\end{verbatim}
+\end{display}
+Indentation and line breaks are ignored in a proof---except as they
+affect the meaning of a list of conjuncts or disjuncts within an
+individual expression.  However, you should begin each step on a new
+line, otherwise some Toolbox commands may not behave properly.
+
+Any proof can begin with the optional word \texttt{PROOF}, so we can
+also write
+\begin{display}
+\begin{verbatim}
+<1>4. QED
+  PROOF OBVIOUS
+\end{verbatim}
+\end{display}
+and 
+\begin{display}
+\begin{verbatim}
+PROOF
+<1>1. Init => Inv
+  ...
+\end{verbatim}
+\end{display}
+Have TLAPS check the proof of the \textsc{qed} step by
+putting the \popref{cursor}{cursor} in the step or its proof and 
+executing the 
+\ctindex{1}{Prove Step or Module (Toolbox command)@\icmd{textsf}{Prove Step or Module} (Toolbox command)}{prove-step}%
+\textsf{Prove Step or Module} command either by
+right-clicking and choosing it on the menu, or by typing
+\textsf{control+g control+g}.  
+
+The proof fails, shading the step (approximately) red and raising
+a window showing the obligation that the backend provers failed
+to prove---which in this case is
+\begin{display}
+\begin{verbatim}
+ASSUME NEW CONSTANT M,
+       NEW CONSTANT N,
+       NEW VARIABLE x,
+       NEW VARIABLE y,
+       NEW VARIABLE pc
+PROVE  Spec  =>  []PartialCorrectness
+\end{verbatim}
+\end{display}
+This obligation is exactly what the backend provers are trying to
+prove.  They are trying to show that the goal, which is the formula in
+the \verb|PROVE| section, follows from the list of assumptions in the
+\verb|ASSUME| section together with the ordinary laws of mathematics.
+That's all the backend provers know.  They know nothing about the
+spec or about anything else in the proof.
+
+Imagine printing out this obligation, giving it to some mathematician
+you have never seen before, and expecting her to verify that the goal
+follows from the assumptions.  Obviously, she couldn't.  How could she
+possibly determine the truth of a formula containing the symbols
+$Spec$ and $PartialCorrectness$ knowing only that $M$ and $N$ are
+constants and $x$, $y$, and $pc$ are variables?
+
+The truth of the goal follows from the truth of $<<1>>1$--$<<1>>3$.
+So, we have to tell the provers to use those facts.  To do that,
+we replace the proof \textsc{obvious} with%
+  \ctindex{1}{BY@\icmd{textsc}{by}}{by}%
+\begin{display}
+\begin{verbatim}
+BY <1>1, <1>2, <1>3
+\end{verbatim}
+\end{display}
+The proof again fails because the backend provers can't prove
+the obligation:
+\begin{display}
+\begin{verbatim}
+ASSUME NEW CONSTANT M,
+        ...
+       NEW VARIABLE pc,
+       Init  =>  Inv,
+       Inv  /\  [Next]_vars  =>  Inv',
+       Inv  =>  PartialCorrectness
+PROVE  Spec  =>  []PartialCorrectness
+\end{verbatim}
+\end{display}
+Can you see what the mathematician would say if you gave here this
+obligation?  She'd say, ``How can I prove a formula containing the
+symbol $Spec$ if none of the assumptions even mention that symbol?''
+To prove the goal, we have to replace the symbol $Spec$ with its
+definition.  We tell TLAPS to do that by adding a 
+      \ctindex{1}{DEF@\icmd{textsc}{def}}{def}%
+\textsc{def} clause
+to the proof:%
+\begin{display}
+\begin{verbatim}
+BY <1>1, <1>2, <1>3 DEF Spec
+\end{verbatim}
+\end{display}
+The proof still fails, this time with the obligation:
+\begin{display}
+\begin{verbatim}
+ASSUME NEW CONSTANT M,
+        ...
+       NEW VARIABLE pc,
+       Init  =>  Inv,
+       Inv  /\  [Next]_vars  =>  Inv',
+       Inv  =>  PartialCorrectness
+PROVE  Init  /\  [][Next]_vars  =>  []PartialCorrectness
+\end{verbatim}
+\end{display}
+From everything you've read so far, it should be clear that the goal
+follows from the three formulas in the \texttt{ASSUME} list.  Why did
+the proof fail?  Suppose we asked the mathematician if the goal
+follows from the assumptions?  If she were a randomly chosen
+mathematician, she would probably know nothing about temporal logic or
+\tlaplus, and she would say, ``I don't know if that's true because I
+don't know what $[]$ or $[Next]_{vars}$ mean.'' Sometimes the backend
+provers also try to tell you why they can't prove it in the window
+showing the obligation, on the line that begins \emph{Obligation 1}.
+But this time, they say nothing.  Most of the time, the only reason
+reported by a backend that makes any sense to you or me is
+\emph{timeout}, indicating that it timed out.  In that case, the
+prover might be able to prove the obligation if given more time, but
+it seldom can.
+
+The default provers handle action reasoning---ordinary formulas that
+may contain primed and unprimed variables.  They know what
+$[Next]_{vars}$ means because that's an action formula, but not what
+$[]$ means.  To prove our \textsc{qed} step, we use the 
+$PTL$ 
+  \ctindex{1}{PTL@\mmath{PTL} (backend prover)}{PTL}%
+backend.
+($PTL$ stands for Propositional Temporal Logic.)  To do this, we add
+the ``fact'' $PTL$.  The symbol $PTL$ is defined in the $TLAPS$
+library module.  The actual definition in that module is 
+\tlabox{PTL \,\deq\, \TRUE}, but a bit of magic that has nothing to do with \tlaplus\ makes
+putting $PTL$ in a \textsc{by} clause cause TLAPS to send the
+obligation to $PTL$ rather than the default backends.
+The proof
+\begin{display}
+\begin{verbatim}
+BY <1>1, <1>2, <1>3, PTL DEF Spec
+\end{verbatim}
+\end{display}
+works, and TLAPS colors the \textsc{qed} step green.
+
+\medskip
+
+Let's now prove the first step.  We will have to tell the TLAPS to expand
+the definitions of $Init$ and $Inv$, and expanding the definition
+of $Inv$ requires expanding the definition of $TypeOK$ as well.  So,
+we can try the proof
+\begin{display}
+\texttt{BY DEF Init, Inv, TypeOK}%
+  \marginpar{We can write \texttt{DEFS} instead of \texttt{DEF}.}
+
+\end{display}
+(The order of items in a \textsc{def} clause makes no difference.)
+TLAPS fails, reporting this obligation.
+\begin{display}
+\begin{verbatim}
+ASSUME NEW CONSTANT M,
+        ...
+       NEW VARIABLE pc
+PROVE  (/\ x  =  M
+        /\ y  =  N
+        /\ pc  =  "Lbl_1")
+        => 
+       (/\ /\ x  \in  Nat  \  {0}
+           /\ y  \in  Nat  \  {0}
+        /\ GCD(x, y)  =  GCD(M, N)
+        /\ pc  =  "Done"  =>  x  =  y)
+\end{verbatim}
+\end{display}
+%try
+If TLAPS fails to prove an obligation this simple, it's almost always
+because you've forgotten to tell it to use some fact or definition
+that it needs.  We haven't told it to expand the definition of $GCD$,
+but this isn't necessary because $GCD(x,y)=GCD(M,N)$ follows from
+$x=M$ and $y=N$.  Can you see what the problem is?  
+
+If you can't see the problem quickly, the quickest way to find it is
+usually to break the proof into steps.  The logical structure of what
+we're trying to prove tells us how to do that.  We're trying to prove
+that $Init$ implies a conjunction, and this is done by proving
+separately that $Init$ implies each of the conjuncts.  The Toolbox's
+      \ctindex{1}{Decompose Proof (Toolbox command)@\icmd{textsf}{Decompose Proof} (Toolbox command)}{decompose-command}%
+\textsf{Decompose Proof (control+g control+r)} command allows you to
+do that with a few mouse clicks.  Put the cursor anywhere in that step
+or its proof and execute the command.  The Toolbox raises a window
+like this:
+\begin{display}
+\pict(250,90){.75}{euclid1.png}
+\end{display}
+%\pictdim{.75}{euclid1.png}
+The only thing you can do next is click on the button labeled \verb|=>|,
+so do it.  The window changes to:
+\begin{display}
+\pict(250,113){.75}{euclid2.png}
+\end{display}
+%\pictdim{.75}{euclid2.png}
+This tells you that the decomposition so far is to change what is
+to be proved from $Init=>Inv$ to%
+  \ctindex{1}{assume (proof construct)@\icmd{textsc}{assume} (proof construct)}{assume}%
+  \ctindex{1}{prove@\icmd{textsc}{prove}}{prove}%
+  \ctindex{1}{assume/prove}{assume-prove}%
+%
+\begin{display}
+%  \ctindex{1}{assume (proof construct)@\icmd{textsc}{assume} (proof construct)}{assume}%
+%  \ctindex{1}{prove@\icmd{textsc}{prove}}{prove}%
+\begin{notla}
+ASSUME Init
+PROVE  Inv
+\end{notla}
+\begin{tlatex}
+\@x{ {\ASSUME} Init}%
+\@x{ {\PROVE}\@s{4.1} Inv}%
+\end{tlatex}
+\end{display}
+By itself, this accomplishes nothing.  The implication and the
+\textsc{assume/prove} are logically equivalent.  However, the button
+labeled \verb|/\| next to $Inv$ tells you that $Inv$ is a conjunction
+and you can use that to decompose the proof.  The \textsf{P} next
+to the button means that clicking on it generates the decomposition.
+Uncheck the \textsf{Use SUFFICES} and \textsf{Use CASE} options first
+and then click on that button.  This replaces the proof with:
+\begin{display}
+\small
+\begin{notla}
+<2>1. ASSUME Init
+      PROVE  TypeOK
+  BY <2>1 DEF Init, Inv, TypeOK
+<2>2. ASSUME Init
+      PROVE  GCD(x, y) = GCD(M, N)
+  BY <2>2 DEF Init, Inv, TypeOK
+<2>3. ASSUME Init
+      PROVE  (pc = "Done") => (x = y)
+  BY <2>3 DEF Init, Inv, TypeOK
+<2>4. QED
+  BY <2>1, <2>2, <2>3 DEF Inv
+\end{notla}
+\begin{tlatex}
+\@x{\@pfstepnum{2}{1.}\  {\ASSUME} Init}%
+\@x{\@s{23.88} {\PROVE}\@s{4.1} TypeOK}%
+\@x{\@s{8.2} {\BY}\@pfstepnum{2}{1}\  {\DEF} Init ,\, Inv ,\, TypeOK}%
+\@x{\@pfstepnum{2}{2.}\  {\ASSUME} Init}%
+\@x{\@s{23.88} {\PROVE}\@s{4.1} GCD ( x ,\, y ) \.{=} GCD ( M ,\, N )}%
+\@x{\@s{8.2} {\BY}\@pfstepnum{2}{2}\  {\DEF} Init ,\, Inv ,\, TypeOK}%
+\@x{\@pfstepnum{2}{3.}\  {\ASSUME} Init}%
+ \@x{\@s{23.88} {\PROVE}\@s{4.1} ( pc \.{=}\@w{Done} ) \.{\implies} ( x \.{=}
+ y )}%
+\@x{\@s{8.2} {\BY}\@pfstepnum{2}{3}\  {\DEF} Init ,\, Inv ,\, TypeOK}%
+\@x{\@pfstepnum{2}{4.}\  {\QED}}%
+ \@x{\@s{8.2} {\BY}\@pfstepnum{2}{1} ,\,\@pfstepnum{2}{2}
+ ,\,\@pfstepnum{2}{3}\  {\DEF} Inv}%
+\end{tlatex}
+\end{display}
+Note that the original proof has been put into the proofs of steps
+$<<2>>1$--$<<2>>3$.  Rather surprisingly, each of those steps seems to
+be using itself in its own proof.  The $<<2>>1$ in the proof of step
+$<<2>>1$ actually refers to the assumption $Init$ of the \textsc{assume}
+clause.  Like any other fact, we must explicitly tell TLAPS when to
+use the assumptions in an \textsc{assume} clause.  Within the proof of
+an \textsc{assume}/\textsc{prove} step, the name of the step refers to
+the \textsc{assume} clause's assumptions.
+
+Save the module and run TLAPS on this proof by putting the cursor in
+step $<<1>>1$ and executing \textsf{Prove Step or Module (control+g
+control+g)}.  Everything succeeds except the proof of $TypeOK$, which
+fails to prove the obligation:
+\begin{display}
+\begin{verbatim}
+ASSUME NEW CONSTANT M,
+       NEW CONSTANT N,
+       ...
+       /\ x  =  M
+       /\ y  =  N
+       /\ pc  =  "Lbl_1" (now)
+PROVE  /\ x  \in  Nat  \  {0}
+       /\ y  \in  Nat  \  {0}
+\end{verbatim}
+\end{display} 
+The problem should now be clear.  This obligation is true only because
+the module asserts the assumptions that $M$ and $N$ are in 
+ $Nat :\: \{0\}$, 
+but this assumption doesn't appear in the obligation.  We have to tell
+TLAPS to use it.
+
+In a \textsc{by} clause, instead of referring to a fact by its name,
+you can give the fact itself.  For example, you can replace $<<2>>2$
+in the proof of $<<2>>2$ with $Init$.  However, the fact has to 
+be stated in the syntactically identical form as its assertion in
+the module.  TLAPS proves step $<<2>>1$ with the proof
+\begin{display}
+\begin{notla}
+BY <2>1,  /\ M \in Nat \ {0}
+          /\ N \in Nat \ {0}   
+ DEF Init, Inv, TypeOK
+\end{notla}
+\begin{tlatex}
+ \@x{ {\BY}\@pfstepnum{2}{1} ,\,\@s{4.1} \.{\land} M \.{\in} Nat
+ \.{\,\backslash\,} \{ 0 \}}%
+\@x{\@s{43.69} \.{\land} N\@s{1.53} \.{\in} Nat \.{\,\backslash\,} \{ 0 \}}%
+\@x{\@s{4.1} {\DEF} Init ,\, Inv ,\, TypeOK}%
+\end{tlatex}
+\end{display}
+but not with the proof
+\begin{display}
+\begin{notla}
+BY <2>1, M \in Nat \ {0}  /\  N \in Nat \ {0} DEF Init, Inv, TypeOK
+\end{notla}
+\begin{tlatex}
+ \@x{ {\BY}\@pfstepnum{2}{1} ,\, M \.{\in} Nat \.{\,\backslash\,} \{ 0 \}
+ \,\.{\land}\, N \.{\in} Nat \.{\,\backslash\,} \{ 0 \} {\DEF} Init ,\, Inv ,\,
+ TypeOK}%
+\end{tlatex}
+\end{display}
+%try
+Rather than doing that, let's give the assumption a name.  But first,
+there's no need to decompose the proof; the provers should have no
+problem proving $<<1>>1$ with this additional fact.  So, let's undo
+the decomposition of step $<<1>>1$'s proof with the Toolbox's
+\textsf{Undo (control+z)} command.  Now let's give the assumption the
+name $MNPosInt$ by changing it to:
+\begin{display}
+\begin{notla}
+ASSUME MNPosInt == /\ M \in Nat \ {0}
+                   /\ N \in Nat \ {0}
+\end{notla}
+\begin{tlatex}
+ \@x{ {\ASSUME} MNPosInt \.{\defeq} \.{\land} M \.{\in} Nat \.{\,\backslash\,}
+ \{ 0 \}}%
+\@x{\@s{103.26} \.{\land} N\@s{1.53} \.{\in} Nat \.{\,\backslash\,} \{ 0 \}}%
+\end{tlatex}
+\end{display}
+TLAPS will now verify this proof of step $<<1>>1$: \[ \BY MNPosInt
+\DEF Init, Inv, TypeOK \] 
+\medskip 
+%
+Let's now prove step $<<1>>2$, the step that proves that $Inv$ is an
+inductive invariant.  This spec is simple enough that this step can be
+proved with a \textsc{by} proof.  But in most real-life examples,
+you're going to have to decompose this step, so let's start right away
+by executing the \textsf{Decompose Proof} command on the step.  This
+provides the only option of a \,\verb|=>|\, decomposition, so click on
+it, producing this window.
+\begin{display}
+\pict(249,111){.75}{euclid3.png}
+\end{display}
+%\pictdim{.75}{euclid3.png}
+There are two basic ways to decompose this proof.
+\begin{itemize}
+\item We can prove each conjunction of $Inv'$ separately.
+
+\item The next-state action $Next$ is a disjunction, and we can prove
+ \tlabox{A_{1} \/ \ldots \/ A_{n} => B}
+by proving $A_{i}=>B$ for each~$i$.  
+\end{itemize}
+I usually find the second approach easier, though I'm not sure if it really
+is or if it's just what I'm used to doing.  Anyway, let's do it that way.
+Click on the top \,\verb|/\|\, button to turn the assumption
+  \tlabox{Inv /\ [Next]_{vars}} into the part of it that can
+be further decomposed:
+\begin{display}
+\pict(249,125){.75}{euclid4.png}
+\end{display}
+%\pictdim{.75}{euclid4.png}
+Click on the \,\verb|\/|\, button to get
+\begin{display}
+\pict(249,158){.75}{euclid5.png}
+\end{display}
+%\pictdim{.75}{euclid5.png}
+This tells us that the assumption $[Next]_{vars}$ equals
+  \tlabox{Next \/ (\UNCHANGED vars)}
+and we can split the proof of $Inv'$ into the two cases of assuming
+$Next$ and of assuming \tlabox{\UNCHANGED vars}.  The \,\verb|\/|\, button next
+to $Next$ tells us that formula $Next$ is also a disjunction on which
+we can do a case split.  Click on it to produce:
+\begin{display}
+\pict(251,198){.75}{euclid6.png}
+\end{display}
+%\pictdim{.75}{euclid6.png}
+Look at the definition of $Next$ in the algorithm's translation to see
+that $Next$ is indeed the disjunction of the formulas in the two
+subcases.  
+
+Make sure that the \textsf{Use SUFFICES} and \textsf{Use CASE} options
+are unchecked and click on the \,{\sf P}\, button, which generates
+the proof.  The generated steps $<<2>>1$--$<<2>>3$ have no proofs, since
+there was originally no proof for step $<<1>>2$.  We're going to need to
+expand the definition of $Inv$ and $TypeOK$ in all those proofs.  So we
+should have saved ourselves some typing by having a
+\begin{display}
+\textsc{by def} $Inv$, $TypeOK$ 
+\end{display} 
+proof on step $<<1>>1$.  Undo the decomposition, add that proof
+to $<<1>>1$ and redo the decomposition.  Read the proof this produced
+and make sure you understand why $<<1>>2$ follows from $<<2>>1$--$<<2>>3$
+and the definition of $Next$, as the proof of the \textsc{qed} step
+asserts.  Run the prover on this \textsc{qed} step to see that the
+backend provers can verify this simple deduction.
+
+Before we prove this, let's use the \textsf{Decompose Proof} command
+to learn a little more about writing proofs.  Undo the decomposition
+   and rerun the decomposition, except this time checking the \textsf{Use
+SUFFICES} options.  This has changed the resulting proof by adding
+the first step%
+     \ctindex{1}{suffices@\icmd{textsc}{suffices}}{suffices}%
+\begin{display}
+\begin{notla}
+<2> SUFFICES ASSUME Inv,
+                    [Next]_vars
+             PROVE  Inv'
+  OBVIOUS
+\end{notla}
+\begin{tlatex}
+\@x{\@pfstepnum{2}{}\  {\SUFFICES} {\ASSUME} Inv ,\,}%
+\@x{\@s{98.64} [ Next ]_{ vars}}%
+\@x{\@s{60.39} {\PROVE}\@s{4.1} Inv \.{'}}%
+\@x{\@s{8.2} {\OBVIOUS}}%
+\end{tlatex}
+\end{display}
+{\sloppy
+and removing the assumptions $Inv$ and $ [Next]_{vars}$ from steps
+$<<2>>1$--$<<2>>3$.  The \textsc{suffices} step asserts that to
+prove the goal of $<<1>>2$, which is 
+  \tlabox{Inv /\ [Next]_{vars} => Inv'},
+it suffices to assume $Inv$ and $ [Next]_{vars}$ and prove $Inv'$.  It
+also allows the use of the assumptions $Inv$ and $ [Next]_{vars}$ in
+the remaining steps of this proof (the proof of $<<1>>2$).\par}
+
+Note that the \textsc{suffices} step has a level number, but not a name.
+Facts asserted by an unnamed step are used by the backend provers
+without having to be mentioned in a \textsc{by}~step.  Run the prover
+on step $<<2>>1$.  The proof fails because the definition of 
+$Lbl\_1$ isn't being used, but examine the obligation.  Note that the
+assumption following the declaration of $pc$---an assumption that is
+ended by a comma---is $Inv$ with its definition and the definition of
+$TypeOK$ expanded.  The next assumption is $[Next]_{vars}$.
+Now give the \textsc{suffices} step a name---say $<<2>>x$.
+  \marginpar{\popref{step-names}{About step names.}}%
+Run the prover once again on step $<<2>>1$.  You'll see that the
+two assumptions no longer appear in the obligation.  You can
+add those assumptions to the obligation by adding $<<2>>x$ to
+the \textsc{by} proof.
+
+Unnecessary assumptions make it harder for the backend provers to
+prove an obligation, so unnamed steps should be used with care.  An
+unnecessary assumption like $Inv$ has little effect if the definition
+of $Inv$ is not expanded.  Similarly, the assumption $[Next]_{vars}$
+is pretty harmless if the definitions of $Next$ and $vars$ are not
+expanded.  So not numbering this \textsc{suffices} step is not a
+problem.
+
+Now undo the decomposition of the proof of $<<1>>2$ and redo it, this
+time with both the \textsf{Use SUFFICES} and \textsf{Use CASE} options
+checked.  Steps $<<2>>1$--$<<2>>3$ have been changed from
+\textsc{assume}/\textsc{prove} steps to \textsc{case} steps.  For
+example, 
+\begin{display}
+\begin{notla}
+<2>1. ASSUME Lbl_1
+      PROVE  Inv'
+\end{notla}
+\begin{tlatex}
+\@x{\@pfstepnum{2}{1.}\  {\ASSUME} Lbl\_1}%
+\@x{\@s{23.88} {\PROVE}\@s{4.1} Inv \.{'}}%
+\end{tlatex}
+\end{display}
+has been changed to
+\begin{display}
+\begin{notla}
+<2>1.  CASE Lbl_1
+\end{notla}
+\begin{tlatex}
+\@x{\@pfstepnum{2}{1.}\@s{4.1} {\CASE} Lbl\_1}%
+\end{tlatex}
+\end{display}
+In general, the step $\CASE A$ is equivalent to the step
+ \tlabox{\ASSUME A \ \PROVE G}, 
+where $G$ is the current goal.  In this case, the current goal for
+steps $<<2>>1$--$<<2>>3$ is set to $Inv'$ by the \textsc{suffices}
+step.  
+
+Undo the proof decomposition and run the \textsf{Decompose Proof}
+command again, now with \textsf{Use CASE} checked and \textsf{Use
+SUFFICES} unchecked.  This time, the proof has no \textsc{case} steps.
+The \textsc{assume}/\textsc{prove} steps all have two assumptions, so
+they can't be turned into \textsc{case} steps.  I think the version of
+the proof with \textsc{suffices} and \textsc{case} is the nicest one.
+
+% However, currently the \textsf{Decompose Proof} command will not
+% decompose a \textsc{case} step or a \textsc{suffices} step.  For a
+% complicated proof in which we might want to decompose the steps
+% further, you might not want to use these two options.
+
+Using whichever decomposition you prefer, let's now check the proof.
+We obviously need to add $Lbl\_1$ to the \textsc{def} clause in the
+proof of $<<2>>1$ and $vars$ to the \textsc{def} clauses in the proofs
+of $<<2>>2$ and $<<2>>3$.  Do that and run the prover on the proof.
+You can either run the \textsf{Prove Step or Module} command on step
+$<<1>>2$ (by putting the cursor in that step) or on the entire theorem
+(by putting the cursor on the statement of the theorem)
+or on the entire module (by putting the cursor outside any theorem or
+proof).  Because of its use of fingerprints, TLAPS doesn't spend any
+significant amount of time rechecking proofs it has already checked.
+(It does take time to compute the obligations, so you don't want to
+run TLAPS unnecessarily on more than a few dozen steps.)  It will
+not check any steps that have no proof, coloring those steps yellow.
+
+TLAPS proves everything except step $<<2>>1$, which is the only
+non-trivial one.  Examining the obligation, we see two problems.
+First, we've forgotten our assumption $MNPosInt$ telling us that $M$
+and $N$ are positive integers.  Second, the obligation can't be proved
+without knowing something about $GCD$.  We can try adding $MNPosInt$
+to the \textsc{by} clause and expanding the definition of $GCD$, which
+requires also expanding the definitions of $SetMax$, $DivisorsOf$, and
+$Divides$.  Do that and try the proof again.  It fails.  The
+obligation is complicated enough that we'd have a hard time trying to
+understand it.  However, the backend provers can handle obligations
+that large---especially the SMT solvers.  The SMT solvers are
+especially good at dealing with arithmetic formulas that involves
+inequalities, addition, and subtraction.  However, this obligation
+also involves multiplication.  (The other backends are pretty bad at
+any kind of arithmetic.)  Furthermore, the obligation contains a
+number of \textsc{choose} expressions and existential quantifiers,
+both of which can trip up the provers.
+
+We could further decompose the proof of $<<2>>1$ by trying to prove
+each of the conjuncts of $Inv'$ separately.  We would find that the
+conjunct whose proof fails is \tlabox{(GCD(x, y) = GCD(M, N))'}, which
+is equivalent to \tlabox{(GCD(x', y') = GCD(M, N))}.  We have reached
+the point where we can't get any further by blindly decomposing the
+proof.  We have to think about why $GCD(x',y')$ equals $GCD(M,N)$.
+Going back to the informal proof, we remember that correctness of
+Euclid's algorithm rests on properties $GCD1$---$GCD3$, which are
+defined in the module $GCD$.  In fact, the invariance of $Inv$ is
+proved using $GCD2$ and $GCD3$.  The proof of $<<2>>1$ succeeds
+if we add $GCD2$ and $GCD3$ to the \textsc{by} proof.  In fact,
+there's no need to decompose step $<<1>>2$.
+TLAPS verifies it with the proof
+ \[ \BY MNPosInt, \ GCD2, \ GCD3 \DEF Inv, \ TypeOK, \ Next, \ Lbl\_1, \ vars\]
+You should be able to prove step $<<1>>3$, using 
+$GCD1$.
+
+\subsection{Proving Properties of the GCD}
+
+Checking the correctness of algorithms and systems is hard enough.
+You should not have to check the correctness of mathematical theorems.
+That should be the job of mathematicians.  So, normally you would not
+bother to get TLAPS to check the correctness of theorems
+$GCD1$--$GCD3$ of the $GCD$ module.  If a mathematical result is not
+very simple, then you should be able to find it in a math book.  You
+just have to translate the result from the informal math used by
+mathematicians to a \tlaplus\ theorem.  To avoid errors in formalizing
+the result, you should check the theorem with TLC.
+
+However, our topic here is how to write proofs, and the proofs of
+$GCD1$--$GCD3$ are instructive.  So, let's write them.  Open module
+$GCD$ in the Toolbox.  You don't need to make it a separate
+specification; you can open it within the $Euclid$ spec with the
+\textsf{Open Module} command in the Toolbox's \textsf{File} menu.
+(Another way to go to the $GCD$ module is to
+apply  the 
+  \ctindex{1}{Goto Declaration (Toolbox command)@\icmd{textsf}{Goto Declaration} (Toolbox command)}{goto-declaration}
+\textsf{Goto Declaration (F3)} command to the identifier
+$GCD$, which will go to its definition within that module.
+%
+The
+\textsf{Return from Goto Declaration (F4)}%
+    \ctindex{2}{Return from Goto Declaration (Toolbox command)@\icmd{textsf}{Return from Goto Declaration} (Toolbox command)}{return-from-goto-declaration}
+command returns to the original cursor position.)
+
+Let's start trying to prove each of the theorems $GCD1$--$GCD3$ with a
+\textsc{by} proof.  We expand the definition of $GCD$ down to its
+\tlaplus\ primitive operators, which is done by the following proof:
+\begin{display}
+\textsc{by def} $GCD$, $SetMax$, $DivisorsOf$, $Divides$
+\end{display}
+Add that proof after each of the three theorems and run the prover on
+all of them (by executing the \textsf{Prove Step or Module} command
+with the cursor outside any theorem or proof).  This succeeds in
+proving only $GCD2$.  In fact, $GCD2$ follows from the top-level
+definition of $GCD$ and commutativity of set union; there is no need
+to expand the definitions of $SetMax$ or $DivisorsOf$.  Remove the
+unnecessary definition expansions from the proof of $GCD2$ and check
+that TLAPS still proves it.
+
+\medskip 
+
+Let's prove $GCD1$ next.  To decompose the proof, let's use the
+\textsf{Decompose Proof} command.  It raises this
+window
+\begin{display}
+\pict(247,89){.75}{euclid7.png}
+\end{display}
+%\pictdim{.75}{euclid7.png}
+which gives us only one option: clicking on the \,\verb|\A|\, button.
+This changes the dialog to
+\begin{display}
+\pict(248,102){.75}{euclid8.png}
+\end{display}
+%\pictdim{.75}{euclid8.png}
+%
+which tells us that we can prove the goal by assuming that $m$ is
+an element of \tlabox{Nat :\: \{0\}} and proving \tlabox{GCD(m,m)=m}.
+Check the \textsf{Use SUFFICES} option and click on the \textsf{P}
+button to produce this proof.
+\begin{display}
+\begin{notla}
+<1> SUFFICES ASSUME NEW m \in Nat \ {0}
+             PROVE  GCD(m, m) = m
+  OBVIOUS
+<1> QED
+    BY DEF GCD, SetMax, DivisorsOf, Divides
+\end{notla}
+\begin{tlatex}
+ \@x{\@pfstepnum{1}{}\  {\SUFFICES} {\ASSUME} {\NEW} m \.{\in} Nat
+ \.{\,\backslash\,} \{ 0 \}}%
+\@x{\@s{60.39} {\PROVE}\@s{4.1} GCD ( m ,\, m ) \.{=} m}%
+\@x{\@s{8.2} {\OBVIOUS}}%
+\@x{\@pfstepnum{1}{}\  {\QED}}%
+\@x{\@s{16.11} {\BY} {\DEF} GCD ,\, SetMax ,\, DivisorsOf ,\, Divides}%
+\end{tlatex}
+\end{display}
+Run the \textsf{Prove Step or Module} command on the theorem.  It
+proves the \textsc{suffices} step, but not the \textsc{qed} step.
+Proving the \textsc{suffices} step means proving that assuming its
+assumptions and proving its \textsc{prove} formula proves the current
+goal, which is the statement of the theorem.  This is trivial because
+the \textsc{assume}/\textsc{prove} is equivalent to the theorem.
+Naturally, transforming the theorem's goal to something obviously
+equivalent isn't going to enable the backend provers to prove it, so
+the proof of the \textsc{qed} step fails.  What the \textsc{suffices}
+step accomplishes is to remove the quantifier, allowing us to prove 
+  $GCD(m, n) = m$
+for a particular choice of $m$.
+
+The \textsf{Decompose Proof} command can take us no further; we have
+to start thinking.  To show that $m$ is the GCD of $m$ and $m$, we
+have to show that (1)~$m$ divides $m$ and (2)~$m$ is the largest
+number that divides $m$.  This suggests that we add the following two
+steps after the \textsc{suffices} step
+\begin{display}
+\begin{notla}
+<1>1. Divides(m, m)
+<1>2. \A i \in Nat : Divides(i, m) => (i =< m)
+\end{notla}
+\begin{tlatex}
+\@x{\@pfstepnum{1}{1.}\  Divides ( m ,\, m )\vs{.2}}%
+ \@x{\@pfstepnum{1}{2.}\  \A\, i \.{\in} Nat \.{:} Divides ( i ,\, m )
+ \.{\implies} ( i \.{\leq} m )}%
+\end{tlatex}
+\end{display}
+Before trying to prove them, it's best to check that they are all we
+need.  So, add the facts 
+  \marginpar{\popref{why-number-steps}{Why number these steps?}}
+$<<1>>1$ and $<<1>>2$ to the \textsc{by}
+clause of the \textsc{qed} step's proof and see if TLAPS will prove
+that step.
+
+TLAPS does prove the \textsc{qed} step.  If it hadn't, we would have
+had to do some more thinking to see why not.  Our thinking about 
+the proof should have led us to realize that proving the theorem from
+$<<1>>1$ and $<<1>>2$ doesn't require expanding the definition of
+$Divides$.  Expanding the definition made the formula that had to be
+proved more complicated than necessary.  An unnecessary definition
+expansion can make the difference between a proof succeeding and
+failing.  So, remove $Divides$ from the \textsc{def} clause and check
+that TLAPS still proves the \textsc{qed} step.
+
+Now we have to prove steps $<<1>>1$ and $<<1>>2$.  We have no useful
+facts at our disposal; all we can do is tell the TLAPS to expand the
+definition of $Divides$.  So, add the proof
+ \[\BY \DEF Divides \]
+to both of them and try proving them both by telling TLAPS to prove
+the entire theorem.  TLAPS proves $<<1>>1$ and $<<1>>2$, thus proving
+the theorem.
+
+\medskip
+
+Finally, we must prove theorem $GCD3$.  Run the \textsf{Decompose Proof}
+command, clicking on the \,\verb|\A|\, button, then the \,\verb|=>| button,
+and then the \,\textsf{P}\, button to produce this proof.
+\begin{display}
+\begin{notla}
+<1> SUFFICES ASSUME NEW m \in Nat \ {0}, NEW n \in Nat \ {0},
+                    n > m
+             PROVE  GCD(m, n) = GCD(m, n-m)
+  OBVIOUS
+<1> QED
+    BY DEF GCD , DivisorsOf, SetMax, Divides
+\end{notla}
+\begin{tlatex}
+ \@x{\@pfstepnum{1}{}\  {\SUFFICES} {\ASSUME} {\NEW} m \.{\in} Nat
+ \.{\,\backslash\,} \{ 0 \} ,\, {\NEW} n \.{\in} Nat \.{\,\backslash\,} \{ 0
+ \} ,\,}%
+\@x{\@s{98.64} n \.{>} m}%
+ \@x{\@s{60.39} {\PROVE}\@s{4.1} GCD ( m ,\, n ) \.{=} GCD ( m ,\, n \.{-} m
+ )}%
+\@x{\@s{8.2} {\OBVIOUS}}%
+\@x{\@pfstepnum{1}{}\  {\QED}}%
+\@x{\@s{16.11} {\BY} {\DEF} GCD ,\, DivisorsOf ,\, SetMax ,\, Divides}%
+\end{tlatex}
+\end{display}
+We should have TLAPS check the proof of the \textsc{suffices} step to
+make sure that the \textsf{Decompose Proof} command didn't make an
+error.  There's no point wasting time having TLAPS check the
+\textsc{qed} step because the decomposition so far has been logically
+trivial.  We have to do some thinking to decompose the proof into
+simpler steps.
+
+That result of that thinking appears in \popref{gcd-proof-1}{our
+informal proof of $GCD3$}.  The first step of that proof states that,
+to prove the goal
+  $GCD(m, n) = GCD(m, n - m)$
+it suffices to prove
+\begin{display}
+\begin{notla}
+\A i \in Int : Divides(i, m) /\ Divides (i, n) 
+                 <=>  Divides(i, m) /\ Divides(i, n-m)
+\end{notla}
+\begin{tlatex}
+ \@x{ \A\, i \.{\in} Int \.{:} Divides ( i ,\, m ) \.{\land} Divides ( i ,\, n
+ )}%
+ \@x{\@s{54.92} \.{\equiv}\@s{5.37} Divides ( i ,\, m ) \.{\land} Divides ( i
+ ,\, n \.{-} m )}%
+\end{tlatex}
+\end{display}
+%
+Let's see if TLAPS believes that is enough to prove our goal.  Insert
+that as an unnumbered step (labeled by $<<1>>$) before the
+\textsc{qed} step and now run the TLAPS on the \textsc{qed} step.
+It succeeds.  (In fact, it's not necessary to expand the definition
+of $Divides$.)  
+
+All we have left to do is to prove the newly added step.  You will find
+that TLAPS successfully checks the proof 
+ \[\BY \!\!\DEF Divides\]
+Run the \textsf{Prove Step or Module} command on the entire module to
+verify that we have indeed proved all three theorems.
+
+%try
+\newpage 
+\section{The Proof Language}
+
+Now that you've seen the basics of using TLAPS, it's time to examine
+proofs and the proof language more closely.  Before we do that,
+let's examine the theorems that we are trying to prove.
+
+\subsection{What a Theorem Asserts}
+
+A \emph{theorem} consists of one of the equivalent keywords
+\begin{display}
+\textsc{theorem}\s{2} \textsc{lemma}\s{2} \textsc{corollary}\s{2}
+\textsc{proposition}%
+ \ctindex{1}{theorem@\icmd{textsc}{theorem}}{theorem}%
+ \ctindex{1}{lemma@\icmd{textsc}{lemma}}{lemma}%
+ \ctindex{1}{corollary@\icmd{textsc}{corollary}}{corollary}%
+ \ctindex{1}{proposition@\icmd{textsc}{proposition}}{proposition}%
+\end{display}
+followed optionally by an identifier and the symbol $\deq$\,,
+followed
+by an assertion.  A theorem of the form
+ \[ \THEOREM id == A
+ \]
+defines $id$ to equal assertion $A$.  Naming theorems (and
+assumptions) is a good idea, because it makes them easier to use in a
+proof.
+
+An 
+  \tindex{1}{assertion}%
+\emph{assertion} is either a formula or an 
+  \ctindex{2}{assume/prove}{assume-prove}%
+assume/prove.  An assume/prove has the form
+ \[ \begin{noj2}
+    \ASSUME & A_{1}\,, \ldots, A_{n} \\
+    \PROVE & B
+    \end{noj2}
+ \]
+where $B$ is a formula and each of the assumptions $A_{i}$ is either a
+formula or a declaration.  A declaration is something like 
+ \ctindex{1}{new@\icmd{textsc}{new}}{new}%
+$\NEW v$ 
+ \marginpar{\tlaplus\ allows other kinds of
+      declarations, but you'll never write them.} 
+or $\NEW v \in S$ where $v$ is a variable and $S$ is an expression.
+The keyword \textsc{new} can be replaced by \textsc{constant} or
+\textsc{new constant}.  The declaration $\NEW v \in S$ is almost equivalent
+to the declaration
+  \tlabox{\NEW v} followed by the
+assumption $v \in S$.  The only difference is that when it appears
+in $\NEW v \in S$, the formula $v \in S$ is called a
+ \ctindex{1}{domain assumption}{domain-assumption}% 
+ \ctindex{1}{assumption, domain}{assumption-domain}% 
+\emph{domain assumption}.  However, the formula $v \in S$ is not
+a domain assumption when it appears by itself in a separate
+\textsc{assume} clause.  The significance of domain assumptions
+is explained below.  It's usually best to write $\NEW v \in S$
+instead of splitting the assumption in two.
+
+% To simplify the exposition, we assume that a declaration $\NEW v \in
+% S$ is replaced by its declaration $\NEW v$ and its domain assumption
+% $v \in S$.  However, we distinguish the domain assumptions obtained
+% from such declarations from all other assumptions because they are
+% handled a bit differently.  In other words, even though $\NEW v \in S$
+% has the same meaning as \tlabox{\NEW v}, $v \in S$, the two are
+% handled differently by the prover.
+
+To simplify the exposition, we consider an assertion that is a
+formula $F$ to be an assume/prove with no assumptions, as if it were
+written ${\red\ASSUME \PROVE} F$.  (\tlaplus\ does not allow you to write
+such an assume/prove, so I color it red.)
+
+An assertion asserts (the truth of) a formula.  
+The assertion 
+ \[  \ASSUME \PROVE \ F
+ \]
+asserts the formula $F$.  The assertion
+ \[ \begin{noj2}
+    \ASSUME & \NEW x \in S, \ P(x) \\
+    \PROVE  & Q \/ R(x)
+    \end{noj2}
+ \]
+asserts the formula \,\tlabox{\A\, x \in S : P(x) => (Q \/ R(x))}\,.
+The assertion
+ \[ \begin{noj2}
+    \ASSUME & \NEW P(\_), \ \NEW x,\ \NEW y, \, x=y \\
+    \PROVE  & P(x) = P(y)
+    \end{noj2}
+ \]
+asserts the formula
+  \[ {\red\A\, P(\_) :}\, \A\, x : \A\, y : (x=y) => (P(x)=P(y))
+ \]
+This isn't a legal \tlaplus\ formula, since \tlaplus\ doesn't allow
+quantifying over an operator that takes an argument.  I will
+use such formulas for the purpose of explaining proofs, coloring the illegal
+parts red.
+
+
+
+
+\subsection{The Hierarchical Structure 
+of a Proof}
+    \ctindex{2}{proof!structured}{proofs-structured}%
+\vspace{-2\baselineskip}
+
+\subsubsection{Writing 
+Structured Proofs}
+A theorem may have a proof.  A proof consists of the optional keyword
+\textsc{proof} followed by either:
+\begin{itemize}
+\item A 
+     \ctindex{1}{proof!non-leaf}{proof-nonleaf}%
+     \ctindex{1}{non-leaf proof}{nonleaf-proof}%
+\emph{non-leaf proof} that is a sequence of steps, ending with a
+\textsc{qed} step, each of which may (but need not) have a proof.
+
+\item A 
+       \ctindex{1}{proof!nonleaf}{proof-leaf}%
+      \ctindex{1}{leaf proof}{leaf-proof}%
+\emph{leaf proof}, which is either the keyword \textsc{obvious}, the
+keyword 
+ \ctindex{1}{omitted@\icmd{textsc}{omitted}}{omitted}%
+\textsc{omitted}, or a 
+ \ctindex{1}{by proof@\icmd{textsc}{by} proof}{by-proof}%
+ \ctindex{1}{proof!by@\icmd{textsc}{by}}{proof-by}%
+\textsc{by} proof.
+\end{itemize}
+The leaf proof \textsc{omitted} is equivalent to having no proof; use
+it to indicate that you are deliberately assuming something and have
+not simply forgotten to prove it.
+
+A step (of a non-leaf proof) begins with a preface token consisting 
+of the following three parts, with no spaces between them:
+\begin{itemize}
+\item A 
+  \ctindex{1}{level specifier}{level-specifier}%
+\emph{level specifier} of the form $<<i>>$, where $i$ is a
+non-negative integer called the \emph{level number}.  (It is typed
+\verb|<|\,$i$\,\verb|>|.)  All steps in a single non-leaf proof must
+have the same level number.  If the step has a non-leaf proof, 
+the steps of that proof must have a level number greater than $i$.
+
+
+\item A string of digits, letters, and/or \verb|_| characters 
+that may be empty.  If it is non-empty, the step is said to be
+\emph{named}, and its \emph{name} is the level specifier followed
+by this string.
+
+\item An optional period (\verb|.|).
+\end{itemize}
+%
+For example, \,\,\tlabox{<<3>>2a.\ 1+1=3}\,\, is a named level-3 step
+with name $<<3>>2a$ and assertion 
+  ${\red\ASSUME \PROVE} 1+1=3$.  If, like me, you prefer to
+name most of the steps in a non-leaf proof $<<i>>1$, $<<i>>2$, \ldots\,, see
+the help page of the Toolbox's 
+  \ctindex{2}{Renumber Proof (Toolbox command)@\icmd{textsf}{Renumber Proof} (Toolbox command)}{renumber-proof}%
+\textsf{Renumber Proof} command.
+
+We describe the hierarchical structure of a proof in the usual way as
+an upside-down tree (with the root on top), where steps at a lower
+level (deeper) in the proof structure (the tree) have larger level
+numbers.
+
+\subsubsection{Reading 
+Structured Proofs}
+
+  \ctindex{1}{proof!reading}{proof-reading}%
+You may have noticed a little $\ominus$ next to theorems and
+proof steps.  (For brevity, I will write \emph{step} to mean
+either a proof step or the statement of a theorem.)  Clicking on the
+$\ominus$ hides the step's proof, replacing the $\ominus$ with
+$\oplus$.  Clicking on the $\oplus$ undoes the effect of clicking on
+the $\ominus$.
+
+There are a number of commands for viewing the proof as hypertext that
+provide finer control of what is shown than you can get by just
+clicking on $\ominus$ and $\oplus$.  The following commands
+are executed on a step by putting the cursor on the step
+and either right-clicking and selecting the command or typing
+the indicated keystrokes.
+\begin{description}
+
+\item[\sf Show Current Subtree]   
+  \marginpar{Clicking on $\ominus$ or $\oplus$ sometimes doesn't work 
+      properly.  These other commands should always do what they're
+      supposed to.}%
+    \ctindex{1}{Show Current Subtree(Toolbox command)@\icmd{textsf}{Show Current Subtree} (Toolbox command)}{show-current-subtree}% 
+(\textsf{control+g control+s}) \\
+ Reveals the complete proof of the step.
+ 
+
+\item[\sf Hide Current Subtree]  
+    \ctindex{1}{Hide Current Subtree(Toolbox command)@\icmd{textsf}{Hide Current Subtree} (Toolbox command)}{hide-current-subtree}% 
+ (\textsf{control+g control+h}) \\
+ Hides the proof of the step.
+ 
+
+\item[\sf Show Children Only]  
+    \ctindex{1}{Show Children Only(Toolbox command)@\icmd{textsf}{Show Children Only} (Toolbox command)}{show-children-only}% 
+ (\textsf{control+g control+c}) \\
+ Reveals the top level of the step's proof.
+ 
+
+\item[\sf Focus on Step]   
+    \ctindex{1}{Focus On Step(Toolbox command)@\icmd{textsf}{Focus On Step} (Toolbox command)}{focus-on-step}% 
+(\textsf{control+g control+f}) \\
+Hides everything except the top level of the step's proof and the
+siblings of (steps at the same level as) the step and of every
+ancestor of that step in the proof.  
+
+This is useful when writing the
+proof because, after executing this command on a step, the steps
+before it that are shown are precisely the ones that can be referred
+to in the proof of the step.
+
+\end{description}
+The following two commands are performed with the cursor anywhere
+in the module.
+\begin{description}
+\item[\sf Show All Proofs]   
+    \ctindex{1}{Show All Proofs(Toolbox command)@\icmd{textsf}{Show All Proofs} (Toolbox command)}{show-all-proofs}% 
+(\textsf{control+g control+a}) \\
+ Reveals the complete proof of every theorem in the module.
+ 
+
+\item[\sf Hide All Proofs]   
+    \ctindex{1}{Hide All Proofs(Toolbox command)@\icmd{textsf}{Hide All Proofs} (Toolbox command)}{hide-all-proofs}% 
+(\textsf{control+g control+n}) \\
+ Hides the proof of every theorem in the module.
+%
+(The \textsf{Focus on Step} command performed outside a proof
+is equivalent to \textsf{Hide All Proofs}.)
+\end{description}
+%
+As you have undoubtedly noticed, the Toolbox editor commands having to
+do with proofs are executed from the keyboard by typing \textsf{control+g}
+plus another control character.  If you just type \textsf{control+g} and
+wait a second, you will see a list of all the commands you can execute
+with an additional keystroke.
+
+\subsection{The State of a Proof}
+  \ctindex{1}{state!of a proof}{state-of-proof}%
+  \ctindex{1}{proof!state}{proof-state}%
+\vspace{-\baselineskip}
+
+
+\noindent At each step in a proof, and at each leaf proof, there is a
+state that consists of the following components:
+
+\begin{describe}{\FK}
+\item[\G] A formula that is the 
+  \ctindex{1}{goal, of proof}{goal-proof}%
+  \ctindex{1}{proof!goal}{proof-goal}%
+current goal of the proof.
+
+
+\item[\Sym] The sequence of current symbol declarations.  Here are
+  examples of symbol declarations:
+  \begin{display}
+  $ \begin{noj}
+    \VARIABLE x \s{2} \CONSTANT C \s{2} \CONSTANT Op(\_,\,\_,\, \_) \V{.4}
+         \CONSTANT \_\oplus\_ 
+    \end{noj}$ 
+  \end{display}
+ There is one additional kind of symbol declaration:
+  $\CONSTANT id \in S$, where $id$ is an identifier and $S$ is an 
+  arbitrary expression.  We call 
+  the formula $id \in S$ the declaration's \emph{domain assumption}.
+
+\item[\FK] The known 
+  \ctindex{1}{facts!known}{facts-known}%
+facts, which is the set of formulas currently
+asserted by the user to be true, and which can be used to prove new
+facts.
+
+\item[\FU] The 
+  \ctindex{1}{facts!usable}{facts-usable}%
+usable facts, which is the subset of \FK\
+consisting of those facts that are used by default in proofs.
+
+\item[\DK] The set of all user-defined symbols.
+
+\item[\DU] The subset of \DK\ containing all user-defined symbols
+whose definitions are by default expanded in proofs.
+
+\item[\BB] A sequence of \popref{backends}{backend provers}.
+\end{describe}
+The proof state determines the proof obligations that are sent to the
+backend provers, and what backend provers they are sent to, as
+described below in
+\sref{proof}{\xlink{pf-obligations}}{Section~\xref{pf-obligations}}.
+
+
+The proof-state components other than \G\ are also defined at all
+high-level statements in a module.  They are all empty at the
+beginning of the module, except that \BB\ equals the default sequence
+$<<SMT,\,Zenon,\,Isa>>$ of backend provers.
+These components are changed by ordinary module
+statements in the following ways:
+\begin{description}
+\item 
+     $\CONSTANTS C,\ F(\_)$ \mbox{}\\
+Appends the sequence $<<\CONSTANT C,\ \CONSTANT F(\_)>>$ of declarations 
+to \Sym.  In other words, if
+\Sym\ equals $<<\VARIABLE x,\ \CONSTANT AB>>$ before the declaration, then it 
+equals
+ \[ <<\VARIABLE x,\ \CONSTANT AB,\ \CONSTANT C,\ \CONSTANT F(\_)>>\]
+immediately after the declaration.  The
+\textsc{constants} statement leaves the other components of the proof state
+unchanged.  A \textsc{variables} statement has a similar effect.
+
+\item[$ f(a) \ \deq  \ \{x, a\}$] \mbox{}\\
+adds the symbol $f$ to \DK, but leaves the other components, including
+\DU, unchanged.  Thus, a module's definitions are not usable by
+default.  A function definition has essentially the same effect.
+
+
+\item [\rm $\textsc{theorem}\ thm \,\deq\, \begin{noj2}
+                               \textsc{assume} & \NEW i \in S, \ P(i)\\
+                               \textsc{prove}  & Q(i)
+                               \end{noj2}$] \mbox{}\\
+Adds the formula \tlabox{\A\, i \in S : P(i)=> Q(i)} to \FK, 
+adds $thm$ to both \DK\ and \DU, and leaves \FU, \Sym, and \BB\ unchanged.
+Thus, the definition of the theorem name, but not the formula
+asserted by the theorem, is usable by default.  
+The statement has the same effect without the
+``\,$thm$~$\deq$\,'' except that \DK\ and \DU\ are left
+unchanged.  An \textsc{assume} statement (which can also include a
+definition) has the same effect.
+
+\item[\rm \textsc{extends} M1, M2] \mbox{}\\
+Has the same effect as if the statements of modules $M1$ and $M2$ were
+inserted at the beginning of the current module.  
+
+\item[\rm An \textsc{instance} statement] \mbox{}\\ 
+%
+The definitions imported by the statement are added to \DK, and the
+instantiated theorems from the module are added to \FK\ as described
+\sref{proof}{instantiated-theorems}{below}.  The components \Sym, \DU,
+\FU, and \BB\ are unchanged.
+
+\item[\rm \textsc{recursive} $op(\,\_\,)$] \mbox{}\\
+%
+Has no effect on the proof state. 
+\end{description}
+%
+To specify the proof state at each step and each leaf proof of a
+theorem's proof, we do two things:
+\begin{itemize}
+\item For a proof step $\Sigma$ that is not a \textsc{qed} step, we specify
+the proof state at the next proof step at the same level as $\Sigma$.
+(A \textsc{qed} step ends its level of the proof.)
+
+\item For a proof step or theorem that has a proof, we specify
+the proof state at the beginning of its proof---which is either
+its leaf proof or the first step of its non-leaf proof .
+\end{itemize}
+How every different kind of proof step affects the proof state is
+described below.  Some of the descriptions are given for particular examples
+of the steps; the generalizations to arbitrary instances of the steps
+should be obvious.
+
+Remember that a step that has a preface token like $<<3>>14.$ is said
+to be named, and $<<3>>14$ is its name.  A step with a prefix token
+like $<<3>>$ is unnamed.  Similarly, a theorem that begins
+\tlabox{\THEOREM thm\,\deq\,} is said to be named and have the name
+$thm$.  Other theorems are said to be unnamed.  In the following lists
+of proof-step statements, the preface tokens are omitted.
+
+\subsubsection{Steps That Can Have a Proof}
+\begin{description}
+\item[\rm $\begin{noj2} 
+              \textsc{assume} & \NEW i \in S, \ j \in T\\
+              \textsc{prove}  & Q(i)
+           \end{noj2}$] \mbox{}\\
+This can be either a step or the statement of a \textsc{theorem}.  If it
+is a step, then the proof context of the next step at the same
+level is obtained from the context at the step as follows:
+  \begin{itemize}
+    \item The formula  \,\tlabox{\A\, i \in S: (j \in T) => Q(i)}\, asserted by
+          the assume/prove is added to \FK.  If the step is unnamed, 
+          this formula is also added to \FU; otherwise \FU\ is unchanged.
+    \item If the step is named, then its name is added to \DK\ and
+          \DU; otherwise \DK\ and \DU\ are unchanged.
+    \item \G, \Sym, and \BB\ are left unchanged.       
+  \end{itemize}
+If the step or theorem has a proof, the proof context at the beginning
+of the proof is obtained from the context at the step or theorem as
+follows:
+  \begin{itemize}
+    \item The current goal \G\ becomes $Q(i)$.
+
+    \item The declaration $\CONSTANT i \in S$ is appended to \Sym.
+
+    \item The formula $j\in T$ is added to \FK.
+          If this is a theorem or an unnamed step,
+          then this formula is 
+          also added to \FU; otherwise \FU\ is unchanged.  
+    \item If the step or theorem is named, then its name is added to
+          \DK\ and \DU; otherwise \DK\ and \DU\ are unchanged.
+    \item \BB\ is unchanged.
+  \end{itemize}
+If the step is named $<<3>>14$, then:
+  \begin{itemize}
+  \item Within the step's proof, $<<3>>14$ names the formula
+        $j\in T$.  The name can be used only as
+        a fact---for example, in a \textsc{by} proof.  
+        A formula that contains the name, such as $(j>i)=> <<3>>14$, 
+        is illegal.
+        
+  \item Starting from the next step at the current level until the
+        end of the current-level proof, $<<3>>14$ names the
+        formula \tlabox{\A\, i \in S: (j \in T) => Q(i)}\, asserted by
+        the assume/prove.  
+  \end{itemize}
+Observe that facts that would be added to the set \FU\ of usable facts
+if the step were unnamed are not added if those facts can be named.
+The philosophy behind this is that the user should state explicitly
+(usually by name) what facts are needed to prove each step.  This
+makes the proof easier for humans to understand and for backend
+provers to check.
+
+Unlike unnamed steps, unnamed theorems are not usable by default.
+This means that adding a new theorem, whether named or not, will not
+affect the proofs of later theorems.  (Adding a new usable fact can't
+invalidate a proof, but it can make it harder for a prover to check
+it, causing TLAPS to fail to check the proof.)  Since unnamed theorems
+can't be referred to by name, using them in a proof is inconvenient.
+
+\item[\rm\ \QED] \mbox{}\\ 
+%
+The context at the start of a \textsc{qed} step's proof is the same as
+for the step that simply asserted \G, the step's current goal.  No
+step follows a \textsc{qed} step at the same level.
+
+\item[\rm \textsc{suffices} $\begin{noj2} 
+              \textsc{assume} & \NEW i \in S, \ j \in T\\
+              \textsc{prove}  & Q(i)
+           \end{noj2}$] \mbox{}\\
+The proof context of the next step at the same
+level is obtained from the context at the step as follows:
+  \begin{itemize}
+    \item The current goal \G\ becomes $Q(i)$.
+
+    \item The declaration $\CONSTANT i\in S$ is appended to \Sym.
+
+    \item The formula $j\in T$ is added to \FK.
+          If this is an unnamed step,
+          then the formula is
+          also added to \FU; otherwise \FU\ is unchanged.
+    \item If the step is named, then its name is added to
+          \DK\ and \DU; otherwise \DK\ and \DU\ are unchanged.
+    \item \BB\ is unchanged.
+  \end{itemize}
+If the step has a proof, the proof context at the beginning
+of the proof is obtained from the context at the step as
+follows:
+  \begin{itemize}
+    \item The current goal \G\ is unchanged.
+
+    \item The formula \,\tlabox{\A\, i \in S: (j \in T) => Q(i)}\, asserted by
+          the assume/prove is added to \FK\ and \FU.
+    \item If the step is named, then its name is added to \DK\ and
+          \DU; otherwise \DK\ and \DU\ are unchanged.
+    \item \G, \Sym, and \BB\ are left unchanged.       
+  \end{itemize}
+If the step is named $<<3>>14$, then:
+  \begin{itemize}
+  \item Starting from the next step at the same level until the
+        end of the current-level proof, $<<3>>14$ names the formula
+        $j\in T$.  
+%        The name can be used only as
+%        a fact---for example, in a \textsc{by} proof---not in
+%        a formula such as $(j>i)=> <<3>>14$.
+        
+  \item Within the step's proof, $<<3>>14$ names 
+      \tlabox{\A\, i \in S: (j \in T) => Q(i)}\,, the formula asserted 
+       by the assume/prove.
+  \end{itemize}
+Observe that there is a duality between an assume/prove step and a
+\textsc{suffices} assume/prove step.  The proof state at the beginning
+of the proof of an assume/prove step is the state after the
+\textsc{suffices} assume/prove step and its proof, and vice-versa.
+This reflects the fact that by renumbering steps, we can convert a proof 
+\begin{display}
+$<<3>>14.\ \begin{noj2} 
+              \textsc{assume} & \NEW i \in S, \ j \in T\\
+              \textsc{prove}  & Q(i)
+           \end{noj2}$ \\
+\s{2}\fbox{Level-4 proof of $Q(i)$ using assumptions $i\in S$
+       and $j \in T$.}\V{.5}
+\fbox{Rest of level-3 proof that proves \G\ using 
+        \tlabox{\A\, i \in S: (j \in T) \Rightarrow Q(i).}}\s{-5}
+\end{display}
+to the equivalent proof
+\begin{display}
+$<<3>>14.\ \SUFFICES \begin{noj2} 
+              \textsc{assume} & \NEW i \in S, \ j \in T\\
+              \textsc{prove}  & Q(i)
+           \end{noj2}$ \\
+\s{2}\fbox{Level-4 proof of \G, using 
+           \tlabox{\A\, i \in S: (j \in T) \Rightarrow Q(i)}.}\V{.5}
+\fbox{Rest of level-3 proof that proves $Q(i)$ using assumptions 
+             $i\in S$ and $j \in T$.}\s{-5}
+\end{display}
+The proof that \tlabox{\A\, i \in S: (j \in T) \Rightarrow Q(i)}
+implies \G\ is usually a simple leaf proof; the proof of $Q(i)$ is often
+complicated, requiring multiple levels.  Therefore, the
+\textsc{suffices} proof usually has one fewer level.  The main
+function of the \textsc{suffices} construct is to reduce the depth of
+proofs.
+
+
+\item[\rm\textsc{case} $F$] 
+ \ctindex{1}{case (proof step)@\icmd{textsc}{case} (proof step)}{case-pf-step}%
+\mbox{}\\
+This step is equivalent to the step 
+ \[ \ASSUME F \ \PROVE \G  \]
+where \G\ is the current goal at the step.
+
+\item[\rm$\textsc{pick} \ i \in S, \ j \in T : P(i, j)$] 
+ \ctindex{1}{pick (proof step)@\icmd{textsc}{pick} proof step}{pick-pf-step}%
+\mbox{}\\
+%
+This step produces the same proof state at the next statement at the
+same level as the step
+ \[ \SUFFICES \begin{noj2} 
+              \textsc{assume} & \NEW i \in S, \ \NEW j \in T\\
+                              & P(i, j) \\ 
+              \textsc{prove}  & \G
+           \end{noj2}
+ \]
+having the same prefix token as the \textsc{pick}
+step, and where \G\ is the current goal at the step.  It produces the same
+state at the beginning of the step's proof as the step
+ \[ \E\, i \in S, \, j \in T : P(i, j)
+ \]
+Thus, to prove the step, you have to prove the existence of $i\in S$
+and $j\in T$ satisfying $P(i,j)$.  After the step, $i$ and $j$ are
+declared to be constants, with domain assumptions $i\in S$ and $j\in
+T$, formula $P(i,j)$ is added to the known facts, and the current goal
+remains the same.  (As with the corresponding assume/prove step, whether
+$P(i,j)$ is usable depends on whether the step is named.)
+
+In general, a \textsc{pick} statement can be anything that is a
+legal expression if the \textsc{pick} is replaced by \,$\E$\,---for example:
+ \[ \begin{noj} 
+    \PICK i,\,j \in S,\; k \in T : P(i,j,k) \V{.3}
+    \PICK i, \ j, \ k : (i \notin j) /\ Q(j,k)
+    \end{noj}
+ \]
+The meaning of these statements and their effect on the proof state
+should be clear.
+
+\end{description}
+
+\subsubsection{Steps That Cannot Have a Proof}
+
+For a step that cannot have a proof, we need describe only how
+it changes the proof state at the step to obtain the proof state
+at the following step (which must be at the same level).
+
+\paragraph{The {\rm\textsc{use}} and {\rm\textsc{hide}} Steps}
+  \ctindex{1}{use@\icmd{textsc}{use}}{use}%
+  \ctindex{1}{hide@\icmd{textsc}{hide}}{hide}%
+\mbox{}\V{.2}
+%
+These two steps modify the sets \FU\ and \DU\ of usable facts and
+definitions; a \textsc{use} step can also modify \BB. They can appear
+either as a proof step with a preface token, or as a top-level module
+statement with no preface token.  When they appear as a step, it makes
+no difference whether they are named or not.  A \textsc{use} or
+\textsc{hide} step can have a name, but that name can't be used
+anywhere.
+\begin{description}
+\item[\rm \textsc{use} $\langle 2\rangle 2$, $Isa$, $i>1$, $thm$,
+                       $SMT$
+                          \  \textsc{def} $F$, $\oplus$] 
+\marginpar[-1]{The keywords {\rm\textsc{def}}
+ and \textsc{defs} are equivalent.} 
+      \ctindex{2}{DEF@\icmd{textsc}{def}}{def}%
+\mbox{}\\
+where $thm$ is a theorem name.  The step adds to \FU\ the formula
+$i>1$ and the facts named by the step name $<<2>>2$ and the theorem
+name $thm$. It adds to \DU\ the symbols $F$ and $\oplus$, which must
+be in $\DK$.  It leaves \G, \Sym, \FK, and \DK\ unchanged, and it
+makes \BB\ 
+  \marginpar{Remember that the ``facts'' $Isa$ and $SMT$ 
+             specify backend provers.}
+equal $<<Isa,\,SMT>>$.  (A \textsc{use} step that specifies no backend
+provers leaves \BB\ unchanged.)  This step produces the same proof
+obligations as the step
+ \[ \begin{noj2}
+    <<3>>14. & \TRUE \\
+             & \s{-2}\BY \langle 2\rangle 2,\ Isa,\ i>1,\  thm,\ SMT
+                          \  \DEF F,\ \oplus
+    \end{noj2}
+ \]
+
+
+\item[\rm \textsc{hide} $\langle 2\rangle 2$, $thm$
+                          \  \textsc{def} $F$, $\oplus$] \mbox{}\\
+Removes from \FU\ the facts named by the step name $<<2>>2$ and the theorem
+name $thm$.  It removes from $\DU$ the symbols $F$ and $\oplus$.
+It leaves \G, \Sym, \FK, and \DK\ unchanged.  
+\end{description}
+Observe that while a \textsc{use} step can add arbitrary formulas to
+\FU, a \textsc{hide} step can remove only named facts from \FU.
+
+\paragraph{The {\rm\textsc{define}} Step} 
+      \ctindex{1}{DEFINE@\icmd{textsc}{define}}{define}%
+\mbox{}\V{.2}
+%
+This step makes definitions that are local to the current level of the
+proof and its subproofs.
+\begin{description}
+\item[\rm \textsc{define} $\begin{noj}
+                           f(a) \;\deq\; a + 1 \\
+                           g \;\deq\; f(42) * b\vs{.4}
+                           \end{noj}$] \mbox{}\\
+%
+adds to \DK\ and \DU\ the symbols $f$ and $g$, which have the
+specified definitions everywhere within the scope of the
+\textsc{define}---which is the rest of the current proof (and its
+subproofs).  The other proof-state components are unchanged.  The
+ \marginpar{We may change TLAPS to make the step name refer to
+  both definitions when used in 
+  the \textsc{def} clause of a \textsc{use} or \textsc{hide} step.}
+step may be
+named, but its name should not be used.
+\end{description}
+Observe that, unlike ordinary definitions in the module, definitions
+made in a \textsc{define} step are usable by default.  They can
+be hidden (removed from \DU) with a \textsc{hide} step.
+
+\paragraph{Other Steps That Cannot Have a Proof} 
+
+\begin{description}
+\item[\rm\textsc{witness} $n-2\in Nat$,\, $2*m \in 1\dd n$] 
+ \ctindex{1}{witness (proof step)@\icmd{textsc}{witness} proof step}{witness-pf-step}%
+\mbox{} \\
+For this step to be legal, the current goal \G\ must be 
+obviously equivalent to 
+\begin{display}
+G0. \ $\E\, a \in S, \; b\in T : P(a, b)$
+\end{display}
+for some identifiers $a$ and $b$, expressions $S$ and $T$, and
+operator $P$.  For example, \G\ might be the formula
+\begin{display}
+G1. \ $\E\, i, j \in Int : i + j \leq 3*(n+1)$
+\end{display}
+To prove G0, it suffices to prove $P(v, w)$ for particular values $v$
+in $S$ and $w$ in $T$.  In our example, $v$ is $n-2$, $w$ is $2*m$,
+and $S$ and $T$ both equal $Int$.  The \textsc{witness} step we
+would generally use to prove G1 is
+  \[ \textsc{witness}\  n-2\in Int,\  2*m \in Int
+  \]
+I have chosen a different, rather silly example to explain how a 
+\textsc{witness} step works in general.  Our example \textsc{witness}
+step is equivalent to the step
+ \[ \SUFFICES \begin{noj2}
+             \ASSUME & n-2\in Nat, \ 2*m \in 1\dd n \\
+              \PROVE & (n-2) + (2*m) \leq 3*(n+1)
+             \end{noj2}
+ \]
+with the proof 
+ \[ \BY 1\dd n \subseteq Int, \ 2*m \in 1\dd n, \ 
+        Nat \subseteq Int, \ n-2 \in Nat 
+ \]
+Thus, the step changes \G\ to \tlabox{(n-2) + (2*m) \leq 3*(n+1)}.
+If the step is named, it adds formulas $n-2\in Nat$ and $2*m \in 1\dd n$
+to \FK; if it is unnamed, it adds these formulas to \FK\ and \FU.
+
+There is also an unbounded form (without the $\in$) of the
+\textsc{witness} statement:
+\begin{display}
+\textsc{witness} $n-2$,\, $2*m$
+\end{display}
+that can be used if the goal is of the form $\E\, a, b : P(a, b)$.
+It changes \G\ the same way as the corresponding bounded
+\textsc{witness}, but leaves the other state components unchanged.  It
+generates no proof obligations.
+
+A \textsc{witness} statement helps the backend provers by explicitly
+telling them how to prove an existentially quantified formula.  They
+seldom need this help.  The provers will usually deduce G0 by
+themselves from the facts $v \in S$, $w\in T$, and $P(v,w)$.  
+
+% With goal G1, the example \textsc{witness} statement can usually be
+% replaced by the step
+
+
+\end{description}
+%
+The \textsc{have} and \textsc{take} steps that are described next were
+added to the language to save some typing.  I never use them,
+preferring the equivalent \textsc{suffices} steps.  Readers
+encountering \tlaplus\ proofs for the first time can find them
+forbidding.  For such readers, it's a good idea to use as few
+different kinds of steps as you can.  If you use \textsc{have} and
+\textsc{take} steps, it's best to do so only in the lowest-levels
+of the proof.
+\begin{description}
+\item[\rm\textsc{have} $F$] 
+ \ctindex{1}{have@\icmd{textsc}{have}}{have}%
+\mbox{} \\
+where $F$ is an arbitrary formula.  The current goal \G\ must be
+of the form $P => Q$, in which case the step is equivalent to
+ \[ \SUFFICES \begin{noj2}
+              \ASSUME & F \\ \PROVE & Q
+              \end{noj2}
+ \]
+with a leaf proof \textsc{obvious}.  To check this leaf proof, TLAPS
+has to prove $P => F$.  This statement is most often used with
+$F$ equal to $P$.
+
+
+\item[\rm\textsc{take} $i, j \in U$, $k\in V$] 
+ \ctindex{1}{take@\icmd{textsc}{take}}{take}%
+\mbox{} \\
+For this statement to be legal, the current goal \G\ must be equivalent
+to
+ \[ \A\, a, b \in S, \ c \in T : P(a, b, c) \]
+In this case, the step is equivalent to the step
+ \[ \SUFFICES \begin{noj2} \ASSUME & \NEW i \in U, \ \NEW j \in U, \ 
+                                   \NEW k \in V \\
+                           \PROVE & P(i, j, k)
+              \end{noj2}
+ \]
+with the leaf proof 
+ \[ \BY T \subseteq V,\ S \subseteq U
+ \] 
+The \textsc{take} step is almost always used with $U=S$ and $V=T$.
+In this case, the \textsc{suffices} step can be generated with the
+Toolbox's \textsf{Decompose proof} command by selecting the
+\textsf{Use suffices} option.  
+
+There is also an analogous unbounded version:
+\begin{display}
+\textsc{take} $i$, $j$, $k$
+\end{display}
+It is equivalent to 
+ \[ \SUFFICES \begin{noj2} \ASSUME & \NEW i, \ \NEW j, \ 
+                                   \NEW k \\
+                           \PROVE & P(i, j, k)
+              \end{noj2}
+ \]
+with proof \textsc{obvious}.
+
+
+
+
+\item[An {\rm\textsc{instance}} Statement] 
+ \ctindex{1}{instance (proof step)@\icmd{textsc}{instance} (proof step)}{instance-pfstep}%
+\mbox{} \\ The
+\textsc{instance} step has the same syntax as a module level
+\textsc{instance} step (not preceded by $\,\deq\,$).  It leaves the
+current goal \G\ unchanged and changes the other components of the
+proof state the same way that an ordinary \textsc{instance} statement
+in the module does.  TLAPS does not (yet) handle \textsc{instance}
+steps.
+
+\end{description}
+
+
+\subsection{Proof 
+Obligations} \xlabel{pf-obligations}
+
+   \tindex{2}{proof obligation}%
+  \ctindex{2}{obligation!proof}{obligation-proof}%
+  \vspace{-\baselineskip}
+
+\noindent
+ Proof obligations are generated by leaf proofs and by the following
+kinds of steps that do not take proofs: \textsc{use},
+\textsc{witness}, \textsc{take}, and \textsc{have}.  These four kinds
+of steps are explained above in terms of equivalent steps with
+\textsc{obvious} or \textsc{by} leaf proofs.  The proof obligations
+generated by the steps are the ones generated by those leaf proofs.
+We therefore need to consider only the proof obligations generated by
+an \textsc{obvious} or \textsc{by} leaf proof.  
+
+An \textsc{obvious} proof generates a single proof obligation.  
+Suppose the proof context at the proof has these components:
+\begin{display}
+\begin{describe}{\FU:}
+\item[\Sym:] $<<\VARIABLE x, \ \CONSTANT i \in S>>$
+
+\item[\FU:] $\{ v < 0,\ 2*y = 14   \}$
+
+\item[\DU:] $\{ S % = Nat
+               , \ w % = i + 2
+               , \ y
+\}$
+
+\item[\G:] $i + 3 > v + w$
+\item[\BB:] $<<Zenon,\ SMT>>$
+\end{describe}
+\end{display}
+where $S$, $y$, and $w$ are defined by:
+ \[ \begin{noj3}
+    S & \deq & Nat \\
+    y & \deq & i-1 \\
+    w & \deq & y + 2
+    \end{noj3}
+ \]
+The proof \textsc{obvious} then generates this proof obligation:
+ \[ \begin{noj2}
+    \ASSUME & \VARIABLE x, \\ & \CONSTANT i \in Nat \\
+            & v < 0,\\ & 2*(i-1) = 14  \\
+    \PROVE  & i + 3 > v + ((i-1)+2)
+    \end{noj2}
+\] Note how all occurrences of $S$, $y$, and $w$ have been replaced by
+their definitions.  The obligation is sent to $Zenon$ and, if $Zenon$
+fails to prove it, it is sent to $SMT$.
+
+To describe the obligations generated by a \textsc{by} proof, we
+consider this proof step:
+\begin{display}
+\begin{tabbing}
+$<<3>>8$. \  $\begin{noj2}
+              \ASSUME \NEW i \in Nat, \ P(i) \\
+              \PROVE  Q(i)
+              \end{noj2}$ \\
+\s{1}$\BY <<2>>5,\  F > 1,\  Isa,\  2 \oplus 3 = 5,\  <<3>>8,\  SMT,\  G(42),\  Zenon
+    \ \DEF F,\  \oplus,\  Q $ 
+\end{tabbing}
+\end{display}
+where step $<<2>>5$ is
+\begin{display}
+$<<2>>5$. \  $Step2\_5$ 
+\end{display} 
+for some formula $Step2\_5$.  Step $<<3>>8$ and its proof are then
+equivalent to the following steps.  Note how each \textsc{by} fact
+that isn't a name of a previously asserted fact must be proved using
+the preceding \textsc{by} facts; and the definitions of symbols in the
+\textsc{def} clause are expanded in all these proofs.
+\begin{display}
+\begin{tabbing}
+$<<2>>5$. \  \= $"<3>7"$ \kill 
+\pushtabs
+$<<3>>8$. \  \> $\begin{noj2}
+              \ASSUME & \NEW i \in Nat, \ P(i) \\
+              \PROVE &  Q(i) \\
+              \end{noj2}$ \\
+\s{1}\= $<<4>>1.$ \ \= \kill
+\> $<<4>>$ \> \textsc{use def} $F,\  \oplus,\  Q$\V{.4}
+\> $<<4>>1.$  \> $\begin{noj2}
+\ASSUME & \NEW \CONSTANT i \in Nat,\ 
+       Step2\_5 \\
+\PROVE &  F  >  1 
+                       \end{noj2}$ \\
+\>\s{1}\textsc{obvious} \V{.4}
+\>$<<4>>$ \> $\USE Isa$\V{.4}
+\> $<<4>>2.$ \ \> $\begin{noj2}
+\ASSUME & \NEW \CONSTANT i \in Nat,\  
+       Step2\_5 ,\ 
+       F  >  1 \\
+\PROVE &  2\oplus 3  =  5                      
+                       \end{noj2}$ \\
+\>\s{1}\textsc{obvious} \V{.4}
+%
+\>$<<4>>$ \> $\USE Isa,\ SMT$\V{.4}
+%
+\> $<<4>>3.$ \ \> $\begin{noj2}
+\ASSUME & \NEW \CONSTANT i \in Nat,\ 
+       Step2\_5 ,\ 
+       F  >  1 ,\ 
+       2\oplus 3  =  5 ,\ 
+       P(i) \\
+\PROVE &  G(42)                       
+                       \end{noj2}$ \\
+\>\s{1}\textsc{obvious} \V{.4}
+%
+\>$<<4>>$ \> $\USE Isa,\ SMT,\ Zenon$\V{.4}
+%
+\> $<<4>>4.$ \ \> $\begin{noj2}
+\ASSUME & \NEW \CONSTANT i \in Nat,\ 
+       Step2\_5 ,\ 
+       F  >  1 ,\ 
+       2\oplus 3  =  5 ,\ 
+       P(i), \ 
+       G(42) \\
+\PROVE &  Q(i)                       
+                       \end{noj2}$ \\
+\>\s{1}\textsc{obvious} \V{.4}
+\> $<<4>>4.$ \ \> \QED \V{.4}
+\poptabs
+$<<3>>$ \> $\USE Isa,\ SMT,\  Zenon$
+\end{tabbing}
+\end{display}
+The \textsc{use def} step is omitted if the \textsc{by} proof has no
+\textsc{def} clause.  The other \textsc{use} steps are omitted if
+the \textsc{by} facts do not specify any backend prover.  In that
+case, the value of \BB\ at step $<<3>>8$ determines the backend
+provers used to check the proofs.
+
+
+\subsection{Further Details}
+
+Here are some miscellaneous facts about proofs and the proof language.
+
+\subsubsection{Additional Language Features}
+
+\paragraph{@ Expressions} 
+ \ctindex{1}{+6ea@\mmath{"@} (in proof step)}{+6ea}% "
+\mbox{}\\*[.2em]
+%
+Suppose you want to prove an equality $a > d$ by proving $a\geq b$, $b= c$,
+and $c>d$, where $a$, $b$, $c$, and $d$ may be large expressions.
+To save some typing, you can write:
+ \[ \begin{noj2}
+    <<3>>6. \ & a \geq b \\
+    <<3>>7. & @ = c \\
+    <<3>>8. & @  > d
+    \end{noj2}
+ \]
+In this case, the $@$ in step $<<3>>7$ is an abbreviation for $b$, and
+the $@$ in step $<<3>>8$ is an abbreviation for $c$.  The symbol $@$
+does not mean $b$ in a proof of $<<3>>7$, nor does it mean $c$ in
+a proof of $<<3>>8$.  The symbol $@$ can be used in the same way in
+subproofs of those steps' proofs. 
+
+\paragraph{Using Unnamed Facts} \mbox{}\V{.2}
+%
+The description of TLAPS given thus far makes it seem impossible to
+use an unnamed fact such as
+ \[ \ASSUME N + 1 > M \]
+in a proof.  There is one additional feature of TLAPS that makes it
+possible to use such a fact: TLAPS will accept as proved a formula $F$
+appearing in a \textsc{by} clause or \textsc{use} statement if $F$ is
+identical to a fact in \FK. This allows the use of unnamed facts in a
+proof.  For example, the statement adds to \FK\ the fact $N+1>M$.
+Thus the assumption above can be used in a proof as follows: \[
+\begin{noj}
+   <<3>>7a. \ \  2*N + 2 > 2*M \\ 
+      \s{1}\BY N + 1 > M
+   \end{noj}
+ \] 
+The proof $\BY 1 + N > M$ will fail, with TLAPS complaining that it
+can't prove $1 + N > M$ (assuming that this formula is not implied by
+facts in \FU).  To use a formula $F$ this way, $F$ must have the same
+parse tree as a formula in \FK.
+
+
+\paragraph{Implicit Level Specifiers} 
+  \ctindex{1}{+4os@\mmath{\icmd{langle}*\icmd{rangle}} (in proofs)}{+4os}%
+  \ctindex{1}{+4op@\mmath{\icmd{langle}\!+\!\icmd{rangle}} (in proofs)}{+4op}%
+\mbox{}\V{.2}
+%
+%%%
+% The following rewritten 19 Feb 2014 because we decided to
+% remove named <*> steps, like <*>42.
+% 
+% You can avoid writing explicit level numbers in a level
+% specifier by using the level specifiers $<<*>>$ and $<<+>>$, whose
+% meanings are defined as follows.  
+% 
+% In a proof with level number $i$, the level specifier $<<*>>$ is
+% euivalent to $<<i>>$.  A proof has level number~$i$ if either (i)~it
+% begins with a step having the level specifier $<<i>>$; or (ii)~it
+% begins with \textsc{proof}~$<<*>>$ and is the proof of a level $i-1$
+% step; or (iii) $i=0$, it is the top-level proof of a theorem, and it
+% begins with either $<<*>>$ or \textsc{proof}~$<<*>>$.  A proof
+% beginning with either $<<+>>$ or \textsc{proof}~$<<+>>$ has the same
+% level as if it began with \textsc{proof}~$<<*>>$.
+% 
+% As an example, here are two equivalent ways to number proof
+% steps.
+% \begin{display}
+% \begin{minipage}[t]{.4\textwidth}
+% \begin{tlatex}
+% \@x{ {\THEOREM} \.{\dots}}%
+% \@x{\@s{12.29} \@pfstepnum{*}{1} .\@s{4.1} \.{\dots}}%
+% \@x{\@s{20.07}\@pfstepnum{3}{2} . \@s{4.1} \.{\dots}}%
+% \@x{\@s{20.07} \@pfstepnum{*}{3} . \@s{4.1}{\QED}}%
+% \@x{\@s{12.29} \@pfstepnum{*}{4} . \@s{4.1}\.{\dots}}%
+% \@x{\@s{20.07} \@pfstepnum{+}{5} . \@s{4.1}\.{\dots}}%
+% \@x{\@s{20.07} \@pfstepnum{*}{\,6} . \,\@s{4.1}{\QED}}%
+% \@x{\@s{28.63} {\PROOF}}%
+% \@x{\@s{32.63} \@pfstepnum{*}{7} . \@s{4.1}\.{\dots}}%
+% \@x{\@s{32.63} \@pfstepnum{*}{8} . \@s{4.1}{\QED}}%
+% \@x{\@s{20.07} \@pfstepnum{*}{9} . \@s{4.1}{\QED}}%
+% \@x{\@s{12.29} \@pfstepnum{*}{10} . \@s{2.1}{\QED}}%
+% \end{tlatex}
+% \end{minipage}
+% %
+% \begin{minipage}[t]{.3\textwidth}
+% \begin{tlatex}
+% \@x{ {\THEOREM} \.{\dots}}%
+% \@x{\@s{12.29} \@pfstepnum{0}{1} .\@s{4.1} \.{\dots}}%
+% \@x{\@s{20.07}\@pfstepnum{3}{2} . \@s{4.1} \.{\dots}}%
+% \@x{\@s{20.07} \@pfstepnum{3}{3} . \@s{4.1}{\QED}}%
+% \@x{\@s{12.29} \@pfstepnum{0}{4} . \@s{4.1}\.{\dots}}%
+% \@x{\@s{20.07} \@pfstepnum{1}{5} . \@s{4.1}\.{\dots}}%
+% \@x{\@s{20.07} \@pfstepnum{1}{6} . \,\@s{4.1}{\QED}}%
+% \@x{\@s{28.63} {\PROOF}}%
+% \@x{\@s{32.63} \@pfstepnum{2}{7} . \@s{4.1}\.{\dots}}%
+% \@x{\@s{32.63} \@pfstepnum{2}{8} . \@s{4.1}{\QED}}%
+% \@x{\@s{20.07} \@pfstepnum{1}{9} . \@s{4.1}{\QED}}%
+% \@x{\@s{12.29} \@pfstepnum{0}{10} . \@s{2.1}{\QED}}%
+% \end{tlatex}
+% \end{minipage}
+% \end{display}
+% You can use $<<*>>$ and $<<+>>$ in exactly the same way in preface
+% tokens of unnamed proof steps.  You can also use a step name like
+% $<<*>>7$ as a fact in a \textsc{by} proof; it 
+%   \marginpar{TLAPS currently does not accept step names like
+%    $\langle*\rangle7$ in a \textsc{by} proof.}
+% is then equivalent to
+% $<<i>>7$ where $i$ is the level number of the step being proved by the
+% \textsc{by} proof.
+% 
+% The only reason to use $<<*>>$ and $<<*>>$ is because it makes it
+% easier to reorganize a proof, since you can move a step with preface
+% token $<<*>>3$ from one proof to another one without having to rename
+% it because the proofs are at a different level.  You can
+%
+You can write a proof consisting entirely of unnamed steps without
+writing explicit level numbers.  Just write $<<\!+\!>>$ (typed
+\verb|<+>|) as the level specifier of the first step and $<<*>>$
+(typed \verb|<*>|) as the level specifiers of subsequent steps.  For
+example, here is a possible subproof structure.
+\begin{display}
+\begin{tlatex}
+\@x{\@pfstepnum{4}{2.}\@s{4.1} \.{\dots}}%
+\@x{\@s{8.2} {\langle} \.{\!+\!} {\rangle}\@s{4.1} \.{\dots}}%
+\@x{\@s{8.2} {\langle} \.{*} {\rangle}\@s{4.1} \.{\dots}}%
+\@x{\@s{8.2} {\langle} \.{*} {\rangle}\@s{4.1} \.{\dots}}%
+\@x{\@s{21.53} {\langle} \.{\!+\!} {\rangle}\@s{4.1} \.{\dots}}%
+\@x{\@s{21.53} {\langle} \.{*} {\rangle}\@s{4.1} \.{\dots}}%
+\@x{\@s{21.53} {\langle} \.{*} {\rangle}\@s{4.1} {\QED}}%
+\@x{\@s{8.2} {\langle} \.{*} {\rangle}\@s{4.1} \.{\dots}}%
+\@x{\@s{8.2} {\langle} \.{*} {\rangle}\@s{4.1} {\QED}}%
+\end{tlatex}
+\end{display}
+You can write \,\textsc{proof}~$<<*>>$\, or \,\textsc{proof}~$<<\!+\!>>$\,
+instead of $<<\!+\!>>$.
+
+Each $<<\!+\!>>$ or $<<*>>$ is equivalent to $<<i>>$ for a suitable
+level number~$i$.  You can even mix steps labeled $<<*>>$ and steps
+labeled $<<i>>$ or $<<i>>j$ in the same proof.  (A little
+experimentation will reveal what the appropriate level $i$ is.)
+However, this is a bad idea.  You should use $<<\!+\!>>$ and $<<*>>$
+only in short, low-level subproofs that need no step names.
+
+\paragraph{Subexpression Names} 
+  \ctindex{1}{subexpression names}{subexpression-names}%
+\mbox{}\V{.2}
+%
+When writing proofs, it is often necessary to refer to subexpressions
+of a formula.  In theory, one could use definitions to name all these
+subexpressions.  For example, if
+ \[ Foo(y) == (x + y) + z
+ \]
+and we need to mention the subexpression $(x+13)$ of $Foo(13)$, we could
+write
+ \begin{display}
+  $Newname(y) == (x + y)$\\
+  $Foo(y) == NewName(y) + z$
+ \end{display}
+This doesn't work in practice because it results in a mass of
+non-locally defined names, and because we may not know when we define
+the formula which subformulas will need to be mentioned later.
+
+\tlaplus\ provides a method of naming subexpressions of a definition.
+If $F$ is defined by $\,F(a, b) \,\deq\, \ldots\,$, then any
+subexpression of the formula obtained by substituting expressions $A$
+for $a$ and $B$ for $b$ in the right-hand side of this definition has
+a name beginning ``$F(A, B)\,!$''.  (Although this is a new use of the
+symbol ``!'', it is a natural extension of its use with module
+instantiation.)  \popref{subexpressions}{Here is a complete
+explanation of subexpression names.}
+
+You can use subexpression names in any expression.  When writing a
+specification, you can define operators in terms of subexpressions of
+the definitions of other operators.  Don't! Subexpression names should
+be used only in proofs.  In a specification, you should use
+definitions to give names to the subexpressions that you want to
+re-use in this way.
+
+
+\subsubsection{Importing}
+
+\paragraph{Instantiated Theorems} \target{instantiated-theorems} 
+ \ctindex{1}{instance@\icmd{textsc}{instance}!theorems imported by}{instance-thms}%
+\mbox{}\V{.2}
+%
+The statement 
+ \[ I == \INSTANCE M \ \WITH \ldots \]
+imports definitions and theorems into the current module.  If module
+$M$ defines
+ \[ D == \psi \]
+for some expression $\psi$, then the \textsc{instance} statement
+defines $I!D$ in the current module to equal $\overline{\psi}$, which is
+the formula obtained from $\psi$ by performing the substitutions for
+the \textsc{constant} and \textsc{variable} parameters of $M$
+specified by the \textsc{with} clause.  Suppose module $M$ contains
+the theorem
+  \[ \THEOREM \ Thm == \begin{noj2}
+              \ASSUME & A \\
+             \PROVE  & \Gamma
+              \end{noj2}\]
+and that this theorem is preceded in module $M$ by the two assumptions
+  \[ \ASSUME B \s{2}\mbox{and} \s{2} \ASSUME C
+ \]
+The \textsc{instance} statement then imports the theorem $I!Thm$, which
+asserts
+ \[  \begin{noj2}
+              \ASSUME & \overline{B}, \ \overline{C}, \ \overline{A} \\
+             \PROVE  & \overline{\Gamma}
+              \end{noj2}
+  \]
+This is the case even if there are additional assumptions following
+theorem $Thm$ in module $M$.
+
+Everything works the same if the ``$\,I\deq\,$'' is removed from the
+\textsc{instance} statement, except that definitions and theorem names
+are imported from $M$ without renaming.
+
+\paragraph{Special Modules} 
+  \ctindex{1}{module, special}{module-special}%
+\mbox{}\V{.2}
+%
+There are certain special modules whose defined operators are
+treated as if they were built-in operators.  That is,
+knowledge about the meanings of those operators are built into the
+backend provers.  Putting those operators in the \textsc{def} clause
+of a \textsc{use} or \textsc{hide} statement has no effect.
+Those special modules are
+ \[ Naturals\s{2} Integers\s{2} Sequences\s{2} TLAPS\s{2} TLC \]
+Although all the operators defined in the TLC module are treated
+by TLAPS like built-in operators, the backend provers have useful
+knowledge only about $:>$ and $@@$.
+
+
+\paragraph{Local Definitions} 
+\ctindex{1}{definition!local}{def-local}%
+\mbox{}\V{.2}
+%
+You probably did not realize that \tlaplus\ has \textsc{local}
+definitions, and it's unlikely that you will ever have any
+reason to use them.  But if you do, here's what you need to know
+if your proofs use facts or definitions imported from modules
+containing local definitions.  Suppose module $M$ contains
+ \[  \begin{noj}
+     \LOCAL\ L == 22*i \\
+     G == L + 14
+     \end{noj}
+ \]
+In a module that imports $M$, the definition of $G$ can be expanded
+in a proof by 
+ \[ \USE \DEF G
+ \]
+(If the module is instantiated with renaming, $G$ is replaced with
+something like $I!G$.)  However, the definition of $L$ can't be
+expanded because $L$ cannot be referenced in the importing module.
+Currently, the definition of $L$ is automatically expanded if module
+$M$ is imported with the \textsc{extends} statement.  It is left
+unexpanded if $M$ is imported with instantiation.  This may change.
+
+\subsubsection{Recursively Defined Functions and Operators}
+
+A recursive 
+  \ctindex{1}{function!recursive definition of!use in proof}{fcn-recursive-def-of-pf}%
+  \ctindex{1}{recursive!function definition!use in proof}{recursive-fcn-def-pf}%
+function definition is treated as if it were the
+equivalent non-recursive definition in terms of \textsc{choose}.  For
+example
+ \[ fact[n \in Nat] == \IF{n=0} \THEN 1 \LSE n*fact[n-1] 
+ \]
+is treated as if it were
+ \[ fact == \CHOOSE f : 
+              f = [n \in Nat |-> \IF{n=0} \THEN 1 \LSE n*f[n-1]]\s{-5}
+\]
+The library modules $NaturalsInduction$ and $WellFoundedInduction$
+provide useful theorems for reasoning about recursively defined
+functions.
+
+Recursive operator 
+    \ctindex{1}{operator!recursive definition of!use in proof}{op-recursive-def-of-pf}%
+    \ctindex{1}{recursive!operator definition!in proof}{recursive-op-def-pf}%
+definitions are more problematic.  The statements
+ \[ \begin{noj}
+    \RECURSIVE Fact(\_) \\
+    Fact(n) == \IF{n=0} \THEN 1 \LSE n*Fact(n-1)
+    \end{noj}
+ \]
+are equivalent to a definition
+  \[ Fact(n) == \ldots
+ \]
+whose right-hand side is very complicated and approximately
+incomprehensible.  We hope eventually to provide library modules that
+make it possible to prove things about recursively defined operators.
+For now, operators that are declared in a \textsc{recursive} statement
+are treated by TLAPS like declared operators rather than defined
+operators.  Their definitions cannot be expanded, and there is no way
+to prove anything about them from their definitions.  If you must
+use a recursively defined operator like $Fact$ now, you should assume
+without proof a theorem like:
+ \[ \LEMMA FactDef == \A\, n \in Nat :  
+             Fact(n) = (\IF{n=0} \THEN 1 \LSE n*Fact(n-1))\s{-5}
+ \]
+You should use TLC to check the theorem.  When TLAPS handles
+recursively defined operators, you should be able to prove it.
+
+
+\subsubsection{The Fine Print}
+
+Some of the explanations of proofs and the proof language given above
+were not completely accurate.  Here is what was omitted.
+\begin{itemize}
+\item \FK\ and \FU\ are not really sets of formulas; they are actually
+sets of formulas and names of steps and theorems.  For example,
+the sequence of steps:
+  \[ \begin{noj2}
+     <<2>> & x = 2 \\
+     <<2>>1.\s{-.3}& x = 2 \\
+     <<2>> & \USE <<2>>1
+     \end{noj2}
+ \] 
+adds the formula $x=2$ and the name $<<2>>1$ to \FU.  The step
+  \[  <<2>> \HIDE <<2>>1
+  \]
+removes the name $<<2>>1$ from \FU, but not the formula $x=2$.
+
+The step 
+ $\HIDE <<2>>1$ removes that step name from \FU.  It does not remove
+the name of a step that names the same formula as $<<2>>1$, nor 
+the fact named by $<<2>>1$ if that formula is also in \FU.
+
+\item Examining TLAPS's console output reveals that, in addition to
+the proof obligations described above, there are some trivial
+obligations that TLAPS proves easily.
+
+\end{itemize}
+
+%try
+
+% The following stuff removed on 19 Feb 2014
+% \section{\puce Some Topics about Proofs}
+% 
+%   \tindex{2}{hypertext proofs}%
+%   \vspace{-\baselineskip}%
+% \subsection{Reading the Proof as Hypertext}
+% 
+% 
+% 
+% 
+% 
+% \subsection{Writing the Proof with Fewer  Keystrokes}
+% 
+% Examining \popref{euclid-proof-5}{our proof}, we see that every
+% \textsc{by} proof in the proof of $<<1>>2$ uses the fact $<<2>>1$, and
+% they all use most of the same definitions.  It is a nuisance
+% to keep typing the same facts and \textsc{def} terms.
+% 
+% The easiest way to avoid having to type the step name $<<2>>1$ is not
+% to give that step a name.  If we write only the level number $<<2>>$
+% instead of the name $<<2>>1$, then the facts represented by that name
+% (formulas $Inv$ and $Next$) are automatically used wherever those
+% facts are taken to be true---that is, for the rest of the proof of
+% $<<1>>2$.  Try it.  Change $<<2>>1$ to $<<2>>$ (in both cases, the
+% following period (``.'') is optional) and remove all uses of $<<2>>1$
+% from the \textsc{by} proofs.  The proof will still work.  Try doing
+% the same thing with step $<<3>>1$ in the proof of $<<2>>2$, labeling
+% the step only with the level number and removing its explicit use in
+% the proof of $<<3>>2$.
+% 
+% 
+% Another way to accomplish the same thing is with a \textsc{use}
+% statement.  Put back the step name $<<2>>1$, but not any of its uses.
+% Immediately after step $<<2>>1$, add the statement%
+%   \ctindex{1}{use@\icmd{textsc}{use}}{use}%
+%  \[<<2>> \ \USE <<2>>1\]
+% This has the effect of automatically using step $<<2>>1$ in the rest
+% of the proof of $<<1>>2$.  We could give the \textsc{use} step a name
+% instead of just a level.  However, that would change nothing and the
+% step name could not be used, so there is no reason to give a
+% \textsc{use} step a name.
+% 
+% A \textsc{use} step can also make definitions usable (that is,
+% expanding them) in all the proof obligations generated by the rest of
+% the proof of $<<1>>2$.  Change the \textsc{use} statement to
+%  \[ <<2>> \  \USE <<2>>1 \ \DEF Inv,\; Next,\; TypeOK,\; GCDInv
+%  \]
+% delete all the \textsc{def} clauses from the proof of $<<1>>2$
+% and check that proof.  It still works.
+% 
+% Notice that the \textsc{use} step is now colored green, indicating
+% that it was proved.  Like a \textsc{by} fact, a \textsc{use} step's
+% fact can be any expression, and TLAPS must check that the fact follows
+% from the facts that are considered at that point to be true.  However,
+% a \textsc{use} step takes no proof, so any fact it asserts must be
+% either trivially true (for example, the name of a fact like $<<2>>1$
+% or $GCD3$ that is considered true) or else must follow from currently
+% usable facts.  The facts in a \textsc{use} statement are usually the
+% names of steps or theorems.
+% 
+% There is also a 
+%     \ctindex{1}{hide@\icmd{textsc}{hide}}{hide}%
+% \textsc{hide} statement that makes facts and
+% definitions unusable.  Its facts can only be the names of steps or
+% theorems.  Try proving things after adding and removing step names,
+% \textsc{use} statements, and \textsc{hide} statements to make sure you
+% understand how these statements work.
+% 
+% Remember that there are benefits to explicitly stating what facts and
+% definitions a proof uses.  It tells a human reader exactly what the
+% proof needs, making the proof easier to understand.  It also makes
+% mechanical checking of the proof easier, because the prover can search
+% for the proof using only what it needs, without getting confused by
+% irrelevant facts and formulas made unnecessarily complicated by
+% expanding definitions.  For example, TLAPS easily checks the proof of
+% the \textsc{qed} step in the proof of $<<2>>2$.  Now add the
+% unnecessary facts $GCD1$ and $GDC2$ to the \textsc{by} proof and run
+% \textsf{Prove}.  With the computer on which I am writing this, Zenon
+% fails and I don't know whether or not Isabelle would eventually
+% succeed.
+% 
+% Expanding definitions has the added cost of making it harder for you
+% to read an obligation if its proof fails.  Indeed, if a proof fails,
+% it is sometimes helpful to rerun the proof with some definitions
+% hidden (by adding a \textsc{hide} statement) just so you can more
+% easily see what is being proved.
+% 
+% You should avoid excessive reliance on implicitly used facts and
+% definition.  It is best to restrict them to the lowest-level proofs,
+% where the same facts or definitions are likely to be used in most or
+% all of the steps.  For example, it would be reasonable to eliminate
+% the step names in the two level-3 proofs in the Euclid module.  It
+% might also be reasonable to make certain facts, such as a
+% type-correctness invariant (and its definition), implicitly usable for
+% larger portions of a proof.  This is best done with a \textsc{use}
+% statement, so the fact can be hidden if necessary.
+% 
+% There is one case in which using a fact or definition makes no
+% difference to the provers and little difference to a human reader.
+% This is the case when a fact is useless without a corresponding
+% definition.  For example, in the $Euclid$ proof, using $<<2>>1$ in a
+% \textsc{by} or \textsc{use} makes the facts $Inv$ and $Next$ usable.
+% However, those facts are useless unless the definitions of $Inv$ and
+% $Next$ are usable.  Writing both $<<2>>1$ and ``\textsc{def} $Inv$,
+% $Next$'' is essentially redundant.  Expanding the definitions of
+% $Inv$ and $Next$ makes no difference if neither $Inv$ nor $Next$
+% occurs in the obligation.  Conversely, making $<<2>>1$ implicitly
+% usable has only a negligible effect if the definitions of $Inv$ and
+% $Next$ are not usable.  (It adds two hypotheses that the provers will
+% essentially ignore.)  Therefore, removing the step number $<<2>>1$
+% makes it unnecessary to refer to that step explicitly, but does not
+% otherwise affect the proof.  Alternatively, you could leave that step
+% numbered but add the step
+%   \[<<2>>\ \USE \DEF Inv, TypeOK, GCDInv, Next\]
+% and eliminate all the \textsc{def} clauses in the proof of $<<1>>2$.
+% A human reader will understand what you're doing---especially if you
+% add an explanatory comment.
+% 
+% \medskip
+% 
+% \tlaplus\ also provides some abbreviations for common idioms that can
+% save typing.  
+% % 
+% % First, we could have written step $<<2>>1$ with just a
+% % single assumption as follows, using the same proof as before:
+% %  \[ \begin{noj}
+% %     <<2>>1.\ \SUFFICES \begin{noj2}
+% %             \ASSUME & Inv /\ Next \\
+% %             \PROVE  & Inv' 
+% %             \end{noj2} \\
+% %         \s{1}\OBVIOUS
+% %     \end{noj}
+% %  \]
+% % 
+% Proving an implication by a \textsc{suffices}
+% assume/prove like step $<<2>>1$
+% is very common.  \tlaplus\
+% allows us to replace that step and its \textsc{obvious} proof with%
+%       \ctindex{1}{have@\icmd{textsc}{have}}{have}%
+%  \[ <<2>>1.\ \HAVE Inv /\ Next
+%  \]
+% In general, if a level-$i$ goal has the form $F => G$, then the
+% step 
+%  \[ <<i>>j.\ \HAVE F\]
+% changes the 
+% \marginpar{\popref{proof -note-1}{The fine print.}}
+% level-$i$ proof's goal to $G$ and makes $<<i>>j$ refer to
+% the fact $F$.  If the step has just a level number, but no name, then
+% the fact $F$ is usable by default for the rest of the level-$i$ proof.
+% 
+% The \textsc{have} statement changes the current goal without
+% explicitly stating what the new goal is.  This makes the proof a
+% little harder to read.  If the \textsc{have} step starts the proof,
+% then the goal is generally easy to see, so this is not a problem.
+% However, \textsc{have} is an additional construct that a human reader
+% must understand.  You should consider this before using a
+% \textsc{have} instead of a \textsc{suffices}
+% \textsc{assume}/\textsc{prove} when you are writing a proof for other
+% people to read.
+% 
+% \medskip
+% 
+% I have already mentioned that the period following a step name (or
+% level number) is optional.  You can save a few more keystrokes by not
+% using step names for \textsc{qed} steps.  There is no reason to name a
+% \textsc{qed} step because that name can never be used.  The use of
+% periods after names and of names for \textsc{qed} steps is a matter of
+% personal taste.  (Remember that, even if a step is not named, it still
+% needs a level number.)
+% 
+% 
+% \subsection*{\puce Using an SMT Solver Back End} \xlabel{euclid-smt}
+
+
+
+\newpage
+\definecolor{rose}{rgb}{1,.95,.95}
+\pagecolor{rose}
+
+
+\section{\puce The Bounded Buffer Proof}
+
+In 
+  \rref{main}{\xlink{main:bbuf-impl-bchan}}{Section~\xref{main:bbuf-impl-bchan}},
+we showed informally that the bounded buffer algorithm of module
+$PCalBoundedBuffer$ implements the bounded channel specification of
+module $PCalBoundedChannel$ under a refinement mapping.  We now examine
+the \tlaplus\ proof of that result.  
+
+First, download%
+ \marginpar{\popref{downloading-bbuf-spec}{Click here if you have trouble downloading these files.}}
+\hyperref{http://research.microsoft.com/en-us/um/people/lamport/tla/hyper-tla/PCalBoundedBuffer.tla}{}{}{the file \texttt{PCalBoundedBuffer.tla}} 
+that contains the specification's root module with the proof,
+as well as 
+  \hyperref{http://research.microsoft.com/en-us/um/people/lamport/tla/hyper-tla/PCalBoundedChannel.tla}{}{}{the file \texttt{PCalBoundedChannel.tla}}
+%
+that contains an instantiated module.  I suggest that you put these
+files in a different folder (directory) than the files by that name
+that you have already created, but you can overwrite the existing
+files if you wish.  (If you want to overwrite the existing files, make
+sure that the Toolbox does not have a specification open that contains
+either of those files.)  Open the specification in the Toolbox.
+
+\subsection*{Definitions and Assumptions}
+This version of module $PCalBoundedBuffer$ is the same, up through the
+statement of the algorithm, as the one you saw in
+  \rref{main}{\xlink{main:bbuf-alg}}{Section~\xref{main:bbuf-alg}}.
+However, I have given the assumption on line 15 the name $NAssump$ so
+it can be used in the proof.
+
+The definitions of $PCInv$, $TypeOK$, and $Inv$ (lines 79--85) 
+ \marginpar{\popref{goto-line}{How to go to line~79.}}%
+are the same as before, except that I defined $TypeOK$ in terms of the
+new state function $BufCtr$ that is defined on line~77.  When defining
+formulas to be used in a TLAPS proof, we use auxiliary definitions to
+break them into smaller pieces than we would for use in a
+specification or a hand proof.  We do this are two reasons:
+\begin{itemize}
+\item TLAPS proofs are generally pretty long, and using auxiliary
+definitions to abbreviate subexpressions can save a fair amount of
+typing.
+
+\item Replacing the subexpression $0\dd(2*N-1)$ by the name $BufCtr$
+helps the theorem provers, since they then don't have to consider facts
+about multiplication, subtraction, 0, 1, 2, or the operator ``$\dd$''
+when searching for a proof.
+\end{itemize}
+The algorithm uses the modulus operator \tlabox{\%}.  To prove
+properties of the algorithm, we need to reason about this operator.
+The backend provers do not yet know anything about \tlabox{\%}, so we
+need to assert some facts about it.  The most elegant way to do this
+would be to assert the defining properties of \tlabox{\%} and
+\tlabox{\div}, explained in
+ \rref{math}{\xlink{math:arithmetic}}{Section~\xref{math:arithmetic}}.
+This would lead us to the following axiom:
+ \[ \A n \in Int, d \in Nat :\: \{0\} :
+     \begin{conj}
+       n \,\%\, d \in 0\dd (d-1) \V{.2}
+       n \div d \in Int \V{.2}
+       n = d * (n \div d) + (n \,\%\,d)
+     \end{conj}
+ \]
+However, I decided that it would be easier to assume Lemma $ModDef$
+(line 93).  This lemma should be strong enough to prove the axiom
+above from properties of integers if \tlabox{n\div d} were defined to
+equal
+ \[ \CHOOSE q \in Int : n - (n \,\%\,d) = d * q \]
+so it should be the only assumption about \tlabox{\%} that we need.
+However, I found that I also needed Lemma $ModMod$ (line 100).
+Although $ModMod$ can be proved from $ModDef$ using only the
+properties of integers, the proof would be rather tiresome.
+Therefore, I decided to assume $ModMod$ as well.  
+
+As I explained \lref{proof:gcd1-3}{when we introduced $GCD1$--$GCD3$}
+in the proof of Euclid's algorithm, we should use TLC to check
+anything that we assume without proof.  We can check Lemmas $ModDef$
+and $ModMod$ the same way we checked $GCD1$--$GCD3$: by substituting 
+finite sets of numbers for \tlabox{Int} and \tlabox{Nat :\: \{\}}.
+
+Lemmas $ModDef$ and $ModMod$ should be the only facts that we need to
+assume to prove that $Inv$ is an invariant of the algorithm.  However,
+a bug in an earlier backend prover that was used for reasoning about
+arithmetic prevented it from proving that $2*N$ is an integer.  I got
+around that bug by assuming that $2*N$ equals $N+N$.  Because that
+prover had trouble handling $2*N$, it seemed best to hide $2*N$ from
+it by defining $K$ to equal $2*N$ and to use the definition of $K$
+only to prove some simple properties of it.  The expression $2*N$
+therefore appears in almost no proof obligations.  The definition of
+$K$ is on line 113, and the assertion that it equals $N+N$ appears as
+the lemma $KDef$ on line 114, which the $SMT$ prover checks easily.
+
+\subsection*{\puce Navigating the Module}
+
+Before getting into the actual proofs, let's examine the commands
+provided by the Toolbox for navigating through specifications and
+proofs.  None of the following navigation commands work if the Toolbox
+reports a parsing error in the specification.
+
+\subsubsection*{Finding a Definition or Declaration}
+
+The \textsf{Goto Declaration}%
+    \ctindex{3}{Goto Declaration (Toolbox command)@\icmd{textsf}{Goto Declaration} (Toolbox command)}{goto-declaration}
+command jumps to the definition or
+declaration of a symbol.  You select the symbol by putting the
+\popref{cursor}{cursor} anywhere in or just to the left of an
+occurrence of it or by selecting any portion of the occurrence.  
+
+Select the symbol $Msg$ on \popref{goto-line}{line 81} and execute the
+\textsf{Goto Declaration} command---either by right-clicking anywhere
+and choosing it from the menu or by hitting the \textsf{F3} key.  This
+will jump to and highlight the symbol $Msg$ in the \textsc{constant}
+declaration.  Jump back to the $Msg$ on line 81 by executing the
+\textsf{Return from Goto Declaration}%
+    \ctindex{1}{Return from Goto Declaration (Toolbox command)@\icmd{textsf}{Return from Goto Declaration} (Toolbox command)}{return-from-goto-declaration}
+ command---either from the menu
+raised by right-clicking or by hitting the \textsf{F4} key.
+
+Another way to jump to a symbol's definition or declaration is to hold
+down the \textsf{control} key and move the mouse pointer over the
+symbol.  The symbol should become marked as a link---perhaps by
+changing color and being underlined.  Clicking on the symbol then
+jumps to its declaration or definition.
+
+The \textsf{Show Declarations}%
+    \ctindex{1}{Show Declarations (Toolbox command)@\icmd{textsf}{Show Declarations} (Toolbox command)}{show-declarations} 
+command produces a pop-up menu with a
+list of all symbols that have a meaning in the module, including ones
+imported from other modules.  However, the list does not include any
+symbols defined in a standard module or any bound identifiers.  The
+command can be executed either from the menu raised by right-clicking
+or by hitting the \textsf{F5} key.  You can jump to a symbol's
+definition or declaration by clicking on its name in the list.  You
+can also select the symbol by moving up and down the list with the
+arrow keys; hitting the \textsf{Enter} key jumps to the definition or
+declaration of the highlighted symbol.  You can also pare the list of
+symbols displayed by typing into the menu.  Only symbols that begin
+with the letters you have typed (ignoring case) will be shown.  
+
+The \textsf{Return from Goto Declaration} command returns the cursor
+to where it was when you last executed a \textsf{Goto Declaration}
+or \textsf{Show Declarations} command.
+
+
+The \textsf{Show Uses}%
+    \ctindex{1}{Show Uses (Toolbox command)@\icmd{textsf}{Show Uses} (Toolbox command)}{show-uses}  
+command highlights all uses of a symbol and
+jumps to the first use.  To execute it, select an occurrence of the
+symbol and execute the command either by right-clicking and selecting
+it from the menu or by pressing the \textsf{F6} key.  The 
+\textsf{Goto Next Use}%
+    \ctindex{1}{Goto Next Use (Toolbox command)@\icmd{textsf}{Goto Next Use} (Toolbox command)}{goto-next-use} 
+(\textsf{F8}) and \textsf{Goto Prev Use}%
+    \ctindex{1}{Goto Prev Use (Toolbox command)@\icmd{textsf}{Goto Prev Use} (Toolbox command)}{goto-prev-use}  
+(\textsf{F7})
+commands let you cycle through all the uses of the symbol.  Remember
+that you can return to the symbol's definition or declaration with the
+\textsf{Goto Declaration} command.
+
+
+Experiment with these commands.  Execute the \textsf{Show
+Declarations} command and choose $C!Init$.  This will take you to the
+definition of $Init$ in the instantiated module $PCalBoundedChannel$.
+See what happens when you execute \textsf{Show Uses} for $Init$.
+
+Return to module $PCalBoundedBuffer$.  Observe that the \textsf{Show
+Uses} command also works for bound identifiers such as the symbols $i$
+and $j$ in Lemma $ModDef$.  (If you've forgotten where that lemma is,
+use the \textsf{Show Declarations} command to find it.)  
+
+Find the uses of Lemma $ModDef$.  Cycle up (\textsf{F7}) to the
+next to last use, which is on line~1003.
+
+Observe that a step name such as $<<2>>1$
+is considered to be a (non-global) defined symbol, so the \textsf{Goto
+Declaration} and \textsf{Show Uses} commands work for it.  
+
+Go to the comment that begins on line~468 and observe that you can
+jump to the definition of a symbol even from an occurrence inside a
+comment.
+
+Check that you can't go to the definition of any symbol defined in 
+a standard module.  However, you can show the uses of such a symbol.
+You can show neither definitions nor uses of built-in \tlaplus\
+operators like~\tlabox{=>}.
+
+\bigskip \noindent These navigation commands may do strange things if
+the module has been modified since it was last saved and parsed.  They
+usually act as if a symbol's occurrences are at the location in the
+file where they were when the module was last parsed.  Most of the
+commands do nothing if the Toolbox reports a parsing error in the
+specification.
+
+\subsubsection*{The Proofs}
+
+\bigskip
+
+\bf
+The rest of the description of the bounded buffer proof has not
+yet been written.  However, comments in the \tlaplus\ files explain
+the proof.  You should try reading those files.
+
+
+
+
+\end{document}
+
+%% Stuff from old Euclid proof
+
+
+We begin our study of \tlaplus\ proofs by proving that the formula
+  \[ Safe == (x=y) => (x = GCD(M,N)) \]
+is an invariant of
+\rref{main}{main:euclid}{Euclid's algorithm}.
+%
+Recall that Euclid's algorithm is specified in the
+  \popref{module-euclid1}{$Euclid$ module}, 
+which you should review now.  Here is
+  \popref{module-euclid1-ascii}{the \textsc{ascii} version
+           of the module}.
+Open the specification in the Toolbox.
+
+In discussing 
+  \rref{main}{\xlink{main-why-euclid-works}}{why Euclid's algorithm works}, 
+we explained that Euclid's algorithm works because it
+preserves the invariance of the formula $Inv$.  Since $Inv$ implies
+$Safe$, the invariance of $Inv$ implies that $Safe$ is an invariant.
+
+As we observed in our \rref{main}{main:rigorous-inv-proof}{rigorous
+invariance proof}, we prove the invariance of $Inv$ by proving
+these two formulas:
+\begin{enumerate}
+\item $Init => Inv$\target{proof:1-3}
+\item $Inv /\ Next => Inv'$
+\end{enumerate}
+To prove the invariance of $Safe$, we then have to prove
+\begin{enumerate}
+\item[3.] $Inv => Safe$.
+\end{enumerate}
+
+\vspace{-1.2\baselineskip}%
+
+\pause\noindent
+%
+We saw in our informal proofs that, to prove 1--3, we need 
+the simple facts \rref{main}{main:gcd1}{GCD1--3} about the gcd.
+Here's how we assert them in \tlaplus\ as theorems:%
+ \target{proof:gcd1-3}
+\begin{display}
+ $\THEOREM GCD1 == \A m \in Nat :\: \{0\} : GCD(m, m) = m$\ascii{gcd1-3}\V{.5}
+%
+ $\THEOREM  GCD2 == \A m, n \in Nat :\: \{0\} : GCD(m, n) = GCD(n, m)$\V{.5}
+%
+ $\THEOREM  
+    GCD3 == \begin{noj}
+            \A m, n \in Nat :\: \{0\} : \V{.2} \s{1}
+                     (n > m) => (GCD(m, n) = GCD(m, n-m))
+            \end{noj}$
+\end{display}
+Add them to module $Euclid$.
+
+We could prove these facts from simpler facts about numbers.  However,
+we are interested in verifying Euclid's algorithm, not facts about
+gcd.  We will therefore omit their proofs.  To indicate that we
+have not forgotten to write the proofs but are deliberately omitting
+them, I like to add the following ``proof'' after each of
+these theorems:%
+  \ctindex{1}{OMITTED@\icmd{textsc}{omitted}}{omitted}%
+  \ctindex{1}{PROOF@\icmd{textsc}{proof}}{proof}%
+ \[\PROOF \OMITTED \]
+The keyword \textsc{proof} is always optional; wherever it is
+permitted, it can be omitted.
+
+It's dangerous to assume facts like $GCD1$--$GCD3$.  Even if the
+facts are obvious, it's easy to make a mistake in writing the precise
+formulas that express them.  If we make a false assumption, it is in
+principle possible to prove anything---including $\FALSE$.
+Fortunately, we can let TLC check these formulas as follows.
+
+In the Toolbox, \popref{create-new-model}{create} or
+\popref{clone-model}{clone} a new model.  You will have to assign
+values to the constants $M$ and $N$ even though we don't care about
+them.  Have TLC evaluate the (constant) expression 
+  \marginpar{\popref{evaluate-constant-expression}{How to evaluate a constant
+     expression with TLC.}}
+$GCD1$.  This produces the error%
+  \ctindex{1}{is not enumerable TLC error@\icmd{texttt}{is not enumerable} TLC error}{non-enumerable-error}%
+\begin{display}
+\begin{verbatim}
+The `Evaluate Constant Expression’ section’s evaluation failed.
+Attempted to enumerate S \ T when S:
+Nat
+is not enumerable.
+\end{verbatim}
+\end{display}
+To evaluate $GCD1$, TLC must evaluate $GCD(m, m)=m$ for all $m$ in the
+set $Nat :\: \{0\}$, something it obviously can't do because the set
+$Nat$ of natural numbers is infinite.  To check the formula, you have
+to tell TLC to override the definition of $Nat$ 
+   \marginpar{\popref{definition-override}{How to override a definition
+   in TLC.}}
+with some finite set of numbers in place of $Nat$.  Have TLC define
+$Nat$ to equal $0\dd 50$, and run TLC again.  This time, it will report
+that the value of $GCD1$ is $\TRUE$.
+
+You can check $GCD2$ and $GCD3$ in the same way.  However, it's easier
+to check all three at once by having TLC check the value of
+the following triple:%
+ \marginpar{\rref{math}{tuples}{The meaning of a tuple.}}
+\begin{twocols}
+$<<GCD1, GCD2, GCD3>>$ 
+ \midcol 
+\verb|<<GCD1, GCD2, GCD3>>|
+\end{twocols}
+TLC reports the value of this triple to be
+ \[<<\TRUE, \TRUE, \TRUE>>\]
+so all three formulas are true when $Nat$ is replaced by $0\dd50$.
+Thus, TLC has verified that these facts about gcd are true for all
+numbers from 0 through 50.  This shows that it's highly unlikely that
+we made an error in writing the theorems $GCD1$--3.
+
+
+\subsection*{The Proof}
+
+This example is very simple--- so simple that it becomes trivial if we
+use the full power of the SMT solver back end prover.  We will
+therefore write the proof using $SMT$ only when necessary.
+  \lref{\xlink{euclid-smt}}{Section~\xref{euclid-smt}}
+shows a much simpler proof using an SMT solver back end.
+
+\subsubsection*{The First Try}
+
+Let us now prove \lref{proof:1-3}{formulas 1--3}.  We first assert
+their truth by adding the following theorem to the $Euclid$ module.
+\begin{twocols}
+$\THEOREM \begin{conj}
+          Init => Inv \\
+          Inv /\ Next => Inv' \\
+          Inv => Safe
+          \end{conj}$
+\midcol
+\begin{verbatim*}
+THEOREM /\ Init => Inv
+        /\ Inv /\ Next => Inv'
+        /\ Inv => Safe
+\end{verbatim*}
+\end{twocols}
+The proof (which is not required) comes immediately after the
+statement of the theorem.  We know that a proof must use
+$GCD1$--$GCD3$.  Let's be optimistic and hope that TLAPS will be able
+to prove the theorem by itself from those facts, without having to
+decompose the problem.  So, let's try this leaf proof:%
+\marginpar[1]{We can write \textsc{proof by}
+instead of \textsc{by}.}%
+  \ctindex{1}{BY@\icmd{textsc}{by}}{by}%
+%  \ctindex{2}{PROOF@\icmd{textsc}{proof}}{proof}%
+\begin{twocols}
+ $\BY GCD1,\; GCD2,\; GCD3$
+ \midcol
+\verb|BY GCD1, GCD2, GCD3|
+\end{twocols}
+Save the module and execute the 
+\textsf{Prove} command 
+  \marginpar{\popref{prove-command}{How to execute the Prove command.}}
+to have TLAPS check this proof.
+This raises a window labeled \emph{Interesting Obligations for Euclid.tla}.
+It contains a single obligation, with a label that first says
+\begin{display} \sf
+Obligation 1 - status: zenon : failed
+\end{display}
+then changes to 
+\begin{display} \sf
+Obligation 1 - status: isabelle : being proved, zenon : failed
+\end{display}
+and finally to
+\begin{display} \sf
+Obligation 1 - status: isabelle : failed, zenon : failed
+\end{display}
+The Toolbox also colors the theorem approximately pink to indicate
+that its proof failed.
+
+Before reading the obligation, click on it.  (Click on the part of the
+window containing the formulas.)  Notice that this highlights the word
+\textsc{by} in the proof and jumps to it.  If TLAPS were checking a
+proof containing more than one leaf proof, this would show you which
+one generated the obligation on which TLAPS failed.  Now, we are
+checking just a single leaf proof, and there is just a single proof
+obligation for TLAPS to check.
+
+TLAPS first sent this obligation to the \emph{Zenon} prover, which
+quickly decided it couldn't prove the obligation and failed.  It then
+sent the obligation to \emph{Isabelle}, which tried for a while to
+prove it and finally decided that it couldn't and failed.  The window
+shows the exact obligation that \emph{Zenon} and \emph{Isabelle} were
+trying to prove, which is:
+\begin{display}
+\begin{verbatim}
+ASSUME NEW CONSTANT M,
+       NEW CONSTANT N,
+       NEW VARIABLE x,
+       NEW VARIABLE y,
+       \A m \in Nat \ {0} : GCD(m, m) = m,
+       \A m, n \in Nat \ {0} : GCD(m, n) = GCD(n, m),
+       \A m, n \in Nat \ {0} : n > m => GCD(m, n) = GCD(m, n - m)
+PROVE  /\ Init => Inv
+       /\ Inv /\ Next => Inv'
+       /\ Inv => Safe
+\end{verbatim}
+\end{display}
+The provers do not see the specification; this obligation is all
+that they see.  In particular, they do not see the definitions
+of $Init$, $Inv$, $Next$, and $Safe$.  Those four identifiers
+are just meaningless symbols to them.  Thus, there's no way they
+could possibly check this obligation.
+
+Definitions are not automatically expanded in obligations.  If you
+want the prover to use a definition, you have to explicitly direct it
+to do so.  This applies only to ordinary definitions, not named facts.
+As you can see, TLAPS automatically expanded the definitions of
+$GCD1$--$GCD3$, which are the last three items in the \texttt{ASSUME}.
+
+We tell TLAPS to use the definitions of $Init$, \ldots, $Safe$
+by changing the leaf proof to%
+%    \ctindex{1}{DEF@\icmd{textsc}{def}}{def}%
+ \begin{display}
+ $\BY GCD1,\; GCD2,\; GCD3 \ \ \DEF Init,\; Inv,\; Next,\; Safe$
+ \end{display}
+(Remember that \textsc{by} and \textsc{def} are typed in uppercase
+letters.)  Make the change and run the \textsf{Prove} command again.
+
+Expanding those definitions makes the \texttt{PROVE} part of the
+obligation 10 lines long, but all this accomplishes is to make the
+provers take longer to fail.  You can tell a prover to stop trying to
+prove an obligation by clicking on the \textsf{Stop Proving} bar on
+the window displaying the obligation.  You can stop an entire proof by
+clicking on the \textsf{Cancel} button of the \textsf{Prover Launch}
+popup window.  (Sometimes, you will also have to stop one or more
+proofs that are in progress with their \textsf{Stop Proving} bars.)
+
+If you look closely at the \texttt{PROVE} part of the obligation, you
+will see that it contains the identifiers $TypeOK$ and $GCDInv$.  You
+can add $TypeOK$ and $GCDInv$ to the \textsc{def} clause of the leaf
+proof and try again.  However, \emph{Zenon} will still fail quickly and
+\emph{Isabelle} will spend a very long time trying to prove it.  If a prover
+spends more than 30 seconds trying to prove something, giving it more
+time usually does not help.
+
+When a prover fails to prove an obligation in a reasonable amount of
+time, it may mean that the proof is too hard and you need to break it
+into steps.  This is the case now.  
+% 
+% You might think that it's too hard because the formula to be proved is
+% too long.  However, expanding the definition of $TypeOK$ makes the
+% \textsc{prove} formula 12 lines long, which is not very long for the
+% provers.  We will see exactly why TLAPS needs the proof broken into
+% steps.
+% 
+As you use TLAPS and learn by experience what the provers can and
+can't do, you will get pretty good at knowing when you need to break a
+proof into steps.  You will then find that when a prover can't find a
+proof quickly, it is usually because the obligation cannot be proved.
+The most common reason is that you have forgotten to tell TLAPS to use
+some fact or definition that it needs.  However, it can be
+surprisingly difficult to see what additional fact or definition is
+needed.  The quickest way to discover the problem is often to break
+the proof into simpler steps.
+
+\subsubsection*{The Level-1 Proof}
+
+We now start decomposing the proof.  The obvious way to do that is to
+prove each of the three conjuncts as separate 
+%  \ctindex{1}{proof step@proof step\icmd{target}{pfsteptarget}}{proof-step}%
+  \ctindex{1}{step!proof|see{proof step}}{step-proof}%
+steps.  The structure of
+a formal \tlaplus\ proof is the one introduced in the
+\popref{euclid-inv-1}{structured invariance proof of formula~2} that
+was developed in
+   \rref{main}{\xlink{proving-invariance}}{Section~\xref{proving-invariance}}.
+Delete the
+\textsc{by} proof that failed and replace it with this proof:
+\begin{twocols}
+\begin{notla}
+<1>1. Init => Inv
+<1>2. Inv /\ Next => Inv'
+<1>3. Inv => Safe  
+<1>4. QED
+\end{notla}
+\begin{tlatex}
+\@x{\@pfstepnum{1}{1.}\  Init \.{\implies} Inv}%
+\@x{\@pfstepnum{1}{2.}\  Inv \.{\land} Next \.{\implies} Inv \.{'}}%
+\@x{\@pfstepnum{1}{3.}\  Inv \.{\implies} Safe}%
+\@x{\@pfstepnum{1}{4.}\  {\QED}}%
+\end{tlatex}
+\midcol
+\begin{verbatim}
+<1>1. Init => Inv
+<1>2. Inv /\ Next => Inv'
+<1>3. Inv => Safe  
+<1>4. QED
+\end{verbatim}
+\end{twocols}
+Note that, even though they are printed with angle brackets like the
+ones used for tuples, step
+  \ctindex{1}{proof step!name}{proof-step-name}%
+names like $<<1>>1$ are typed with \verb|<| and \verb|>| rather than
+\verb|<<| and \verb|>>|.
+
+When you decompose a proof into a sequence of steps, the first step
+you should prove is the \textsc{qed} step.  This is almost always the
+easiest step, and there is no point proving the other steps until
+you're sure that they're the ones you need.  The proof of this
+\textsc{qed} step is quite simple, since the theorem follows immediately
+from the first three steps.
+\begin{twocols}
+\begin{notla}
+BY <1>1, <1>2, <1>3
+\end{notla}
+\begin{tlatex}
+ \@x{\@s{12.29} {\BY}\@pfstepnum{1}{1} ,\,\@pfstepnum{1}{2}
+ ,\,\@pfstepnum{1}{3}\ }%
+\end{tlatex}
+ \midcol
+\verb|BY <1>1, <1>2, <1>3|
+\end{twocols}
+Add this proof right after step $<<1>>4$ and run the \textsf{Prove}
+command just on it (with the cursor in the step or its proof).  The
+proof will finish quickly and the Toolbox will color
+  \ctindex{1}{proof step!green}{pf-step-green}%
+step $<<1>>4$ green, indicating that its proof has been
+successfully checked.%
+\marginpar{\popref{green-meaning}{What does green really mean?}}
+
+Note that the theorem itself is still approximately pink, indicating a
+failed proof, even though the proof that failed has been deleted.  The
+color 
+  \ctindex{1}{proof step!when color changed}{pf-step-color-changed}%
+of a step indicates its last proof status reported by TLAPS\@.
+If you edit a step or its proof, the color of the step will not
+change.  You will have to rerun TLAPS on that step to determine its
+current status.
+
+Run the \textsf{Prove} command 
+  \popref{prove-command}{on the entire theorem}.  
+The theorem and the other three steps will be colored 
+  \ctindex{1}{proof step!yellow}{pf-step-yellow}%
+yellow,
+indicating that there are proofs missing for those steps and for
+substeps of the theorem.  Now execute \textsf{Prove} on the entire
+module.  This causes theorems $GCD1$--$GCD3$ to be shown in a
+different color that indicates that their proofs have been
+intentionally omitted.  You can find out what the colors mean, and you
+can 
+    \ctindex{1}{proof step!colors}{pf-step-change-colors}%
+change those colors and their meanings, with the TLAPS
+preferences page.  This page is reached by
+\textsf{File/Preferences/TLA+ Preferences/TLAPS}\@.  See the Toolbox's
+TLAPS help pages for instructions.
+
+TLAPS remembers what obligations it has proved. It never reproves an
+obligation it has already proved, unless you tell it to by using the
+special 
+%    \ctindex{1}{Launch Prover (Toolbox command)@\icmd{textsf}{Launch Prover} (Toolbox command)}{launch-prover}%
+\textsf{Launch Prover} command.  You should feel free to run
+\textsf{Prove} on a step or an entire theorem even though some of its
+substeps have already been proved.  It takes TLAPS very little time to
+discover that a step has already been proved.
+
+The 
+    \ctindex{1}{Check Status (Toolbox command)@\icmd{textsf}{Check Status} (Toolbox command)}{check-status}%
+\textsf{Check Status} command (\textsf{control+g}~\textsf{control+t}) is
+like the \textsf{Prove} command, except TLAPS does no proving.  If an
+obligation has not changed since TLAPS last tried to prove it, then
+TLAPS reports its proof status.  With the default coloring, if a 
+  \ctindex{1}{proof step!uncolored}{pf-step-uncolored}%
+step
+is uncolored after its proof status has been checked, then some leaf
+proof in that step's proof has not been checked.
+
+\subsubsection*{The Easy Level-1 Steps}
+
+We now must prove steps $<<1>>1$--$<<1>>3$.  Step $<<1>>1$ is the
+easiest, so let's try it first.  It looks like it should follow
+immediately from the definitions of $Init$, $Inv$, $TypeOK$, and
+$GCDInv$.  So, put this proof immediately after the step:
+\begin{display}
+\verb|BY DEF Init, Inv, TypeOK, GCDInv|
+\end{display}
+and run the \textsf{Prove} command on that step.  The proof fails
+on the following obligation.
+\begin{widedisplay}
+\begin{verbatim}
+ASSUME NEW CONSTANT M,
+       NEW CONSTANT N,
+       NEW VARIABLE x,
+       NEW VARIABLE y
+PROVE  x = M /\ y = N
+       => x \in Nat \ {0} /\ y \in Nat \ {0} /\ GCD(x, y) = GCD(M, N)
+\end{verbatim}
+\end{widedisplay}
+Can you see why it failed?  TLAPS has been told to prove that $x=M$
+and $y=N$ imply $x$ and $y$ are positive integers.  But it can't
+because it knows nothing about $M$ and $N$.  The proof requires our
+assumption $MNPosInt$, which asserts that $M$ and $N$ are positive
+integers.  
+Change the proof of $<<1>>1$ to
+\begin{display}
+\verb|BY MNPosInt DEF Init, Inv, TypeOK, GCDInv|
+\end{display}
+TLAPS now proves the step.
+
+Step $<<1>>3$ is the simplest of the remaining two steps, so let's
+prove it next.  TLAPS will obviously need to expand the definitions of
+$Inv$ and $Safe$.  To fully expand the definition of $Inv$, it needs
+also to expand the definition of $TypeOK$ and $GCDInv$.  Try having
+TLAPS prove it just by expanding those definitions.  It will fail.
+\begin{aproblem}{problem-euclid-step1-1-proof}
+Prove step $<<1>>3$ by examining the obligation whose proof failed and
+figuring out what else TLAPS needs to use.
+\end{aproblem}
+
+\subsubsection*{The Proof of \protect\ensuremath{\langle1\rangle2}}
+
+We now prove $<<1>>2$.  So far, we have been able to get TLAPS to
+prove steps by simply telling it what facts and definitions it needs
+to use.  That won't work for $<<1>>2$.  When we don't know what
+else to do, we decompose the proof into simpler steps.  Step $<<1>>2$
+asserts
+ $ Inv /\ Next => Inv' $.
+The standard way to prove this formula is to assume that $Inv$
+and $Next$ are true and to use those assumptions to prove $Inv'$.
+Such a proof can be written in \tlaplus\ as:
+%   \ctindex{1}{assume (proof construct)@\icmd{textsc}{assume} (proof construct)}{assume}%
+%   \ctindex{1}{prove@\icmd{textsc}{prove}}{prove}%
+\begin{twocols}
+$\begin{noj}
+ \begin{noj3}
+ <<2>>1. & \ASSUME\!\!& Inv, \; Next \\
+          & \PROVE  & Inv' \\
+  \mbox{}\\
+ <<2>>2. & \QED 
+ \end{noj3} \\
+ \s{1}\BY <<2>>1
+ \end{noj}$
+ \midcol \fixverbatim
+\begin{verbatim*}
+<2>1. ASSUME Inv, Next
+      PROVE  Inv'
+
+<2>2. QED
+  BY <2>1
+\end{verbatim*}
+\end{twocols}
+Step $<<2>>1$ asserts that, by assuming $Inv$ and $Next$, we can
+prove step $<<1>>2$.  This is obvious, so TLAPS easily checks the
+\textsc{qed} step's proof.  Inside the proof of $<<2>>1$, we are allowed
+to use the assumptions $Inv$ and $Next$.  To use them, we must name them.
+Within that proof, $<<2>>1$ names both of these assumptions.
+
+This decomposition is quite simple, but it adds a level to the proof
+while accomplishing very little.  The provers know very well that they
+can prove
+  $ Inv /\ Next => Inv' $
+by assuming $Inv$ and $Next$ and proving $Inv'$.  Proving $<<2>>1$
+needs yet another level of decomposition.  Complicated proofs
+can require quite a few levels of proof; we want to avoid
+decompositions that don't do much.
+
+The provers treat the assume/prove of $<<2>>1$
+pretty much the same way they treat the implication of $<<1>>2$.  We
+could simply rewrite $<<1>>2$ as this assume/prove
+and eliminate one level of proof.  However, this would make the
+level-1 proof a tiny bit harder to understand, since $<<1>>2$ would no
+longer exactly match the second conjunct of the theorem.  
+
+We can avoid the extra level of proof without changing step $<<1>>2$
+by changing $<<2>>1$ to%
+%    \ctindex{2}{suffices@\icmd{textsc}{suffices}}{suffices}%
+\begin{display}
+$\begin{noj3}
+ <<2>>1.\ \SUFFICES & \ASSUME\!\! & Inv, \; Next \\
+                    & \PROVE  & Inv'
+ \end{noj3} $
+\end{display}
+This statement asserts that, to prove the current goal, it suffices to
+assume $Inv$ and $Next$ and to prove $Inv'$.  It changes the goal of
+this level-2 proof to $Inv'$.  The rest of the level-2 proof can use the
+assumptions $Inv$ and $Next$, which together are named $<<2>>1$, just
+as if they were inside the proof of the original
+assume/prove step.
+
+Let's start writing this level-2 proof.  The \textsc{suffices} step
+needs a proof.  It follows immediately from the level-1 goal (the
+statement of $<<1>>2$) that assuming $Inv$ and $Next$ and proving
+$Inv'$ proves that goal; TLAPS needs no further facts.  The leaf
+proof for step $<<2>>1$ is simply 
+  \ctindex{1}{obvious@\icmd{textsc}{obvious}}{obvious}%
+\textsc{obvious}.
+ \marginpar{We can write\\ \s{1}\textsc{proof obvious} \\ instead of
+  \textsc{obvious}.}
+Every non-leaf proof and subproof needs a \textsc{qed} step.  So, we
+start by writing this as the proof of step~$<<1>>2$:
+\begin{twocols}
+\begin{notla}
+<2>1. SUFFICES ASSUME Inv, Next
+               PROVE  Inv'
+  OBVIOUS
+
+<2>x. QED
+\end{notla}
+\begin{tlatex}
+\@x{\@pfstepnum{2}{1.}\  {\SUFFICES} {\ASSUME} Inv ,\, Next}%
+\@x{\@s{68} {\PROVE}\@s{4.1} Inv \.{'}}%
+\@x{\@s{8.2} {\OBVIOUS}}%
+\par\vspace{8.0pt}%
+\@x{\@pfstepnum{2}{x.}\  {\QED}}%
+\end{tlatex}
+\midcol
+\fixverbatim
+\begin{verbatim*}
+  <2>1. SUFFICES ASSUME Inv, Next
+                 PROVE  Inv'
+    OBVIOUS
+
+  <2>x. QED
+\end{verbatim*}
+\end{twocols}
+Note that naming proof 
+  \ctindex{2}{proof step!name}{pf-step-name}%
+steps with consecutive numbers is just a
+convention.  A level-2 step name can consist of $<<2>>$ followed by
+any nonempty string of numbers and letters.  In fact, levels don't
+have to be numbered consecutively; the proof of a level $n$ step can
+have any level number greater than $n$.  We'll give the \textsc{qed}
+step a nicer name later.  Meanwhile, save the module and run the
+\textsf{Prove} command on step $<<2>>1$ (or on the entire module if
+you wish) to check that you didn't make a mistake in copying the text.
+
+Replacing the implication by the assume/prove
+makes it more convenient to write the proof.  Steps that would
+otherwise have the form $Inv /\ Next => F$ become $F$, since
+$Inv$ and $Next$ are being assumed.  However, it doesn't help
+TLAPS\@. Since it can't prove $<<1>>2$ in a single step, assuming
+$Inv$ and $Next$ doesn't enable it to prove $Inv'$ in one step.
+The level-2 steps that follow $<<2>>1$ must decompose the proof
+of $Inv'$.
+
+Since $Inv$ is a conjunction of two formulas, we could decompose its
+proof into two steps, each proving one conjunct.  However, the formula
+is so simple that this shouldn't be necessary.  In fact, decomposing
+the proof of a conjunction in this way is about the first thing the
+provers try.  So we should try something else.  
+
+Examining the assumptions $Inv$ and $Next$, we see that $Next$ is a
+disjunction.  A basic method of proving that a disjunction implies a
+goal is to prove the goal separately for the cases when each single
+disjunct holds.  For the assumption $Next$, this suggests splitting
+the proof into two cases: $y > x$ and $x > y$.  This is a good idea
+because \emph{Zenon} and \emph{Isabelle} often fail to find proofs that require
+a case split.  We express this case split by these two steps, which
+should immediately follow step $<<2>>1$.%
+  \ctindex{2}{case@\icmd{textsc}{case}}{case}%
+  \marginpar{\popref{case-vs-case}{{\rm \textsc{case}} proof steps versus {\rm \textsc{case}}
+            expressions.}}%
+  \target{case-stmt}
+\begin{twocols}
+  $<<2>>2.\ \CASE y > x$\\
+  $<<2>>3.\ \CASE x > y$
+ \midcol
+\begin{verbatim*}
+  <2>2. CASE y > x
+  <2>3. CASE x > y
+\end{verbatim*}
+\end{twocols}
+For any formula $F$, the statement $\CASE F$ is equivalent
+to $\ASSUME F\ \PROVE G$, where $G$ is the current goal.  Thus,
+step $<<2>>2$ is equivalent to 
+ \[\ASSUME y > x\ \PROVE Inv'\]
+By its definition, $Next$ implies that one of these two cases holds.
+So, we expect the proof of the \textsc{qed} step to be
+\begin{twocols}
+$\BY <<2>>2,\; <<2>>3 \ \DEF Next$
+ \midcol
+\begin{verbatim*}
+    BY <2>2, <2>3 DEF Next
+\end{verbatim*}
+\end{twocols}
+Add steps $<<2>>2$ and $<<2>>3$ and the proof of the \textsc{qed}
+step (which we named $<<2>>x$), and run \textsf{Prove} to check
+this proof.  TLAPS fails, reporting the obligation:
+\begin{display}
+\begin{verbatim}
+ASSUME NEW CONSTANT M,
+       NEW CONSTANT N,
+       NEW VARIABLE x,
+       NEW VARIABLE y,
+       ASSUME y > x
+       PROVE  Inv',
+       ASSUME x > y
+       PROVE  Inv'
+PROVE  Inv'
+\end{verbatim}
+\end{display}
+The assumption $Next$ is not being used because we didn't
+say that it should be.  Adding $<<2>>1$ to the facts in the \textsc{qed}
+step's \textsc{by} proof fixes that problem.
+
+\subsubsection*{Proving \protect\ensuremath{\langle2\rangle2}}
+
+Let's now prove $<<2>>2$.  Perhaps we've decomposed the proof enough
+so we can prove $Inv'$ directly.  We need to expand all the
+definitions, and we need all the assumptions we have at this point in
+the proof---namely, $Inv$ and $Next$ (which are named by $<<2>>1$)
+and $y > x$ (named by $<<2>>2$).  A little thought reveals that to
+deduce that $GCD(x', y') = GCD(M, N)$, we will need to use $GCD3$.
+So, let's try this proof:
+ \begin{display}
+   $\BY <<2>>1,\; <<2>>2,\; GCD3 \ \DEF Inv,\; TypeOK,\; GCDInv,\;
+     Next$\ascii{euclid-proof-1}
+\end{display}
+\emph{Zenon} fails quickly, and \emph{Isabelle} spends a long time trying to prove
+this obligation:
+\begin{display}
+\begin{verbatim}
+ASSUME NEW CONSTANT M,
+       NEW CONSTANT N,
+       NEW VARIABLE x,
+       NEW VARIABLE y,
+       /\ x \in Nat \ {0} /\ y \in Nat \ {0}
+       /\ \/ /\ x > y
+             /\ x' = x - y
+             /\ y' = y
+          \/ /\ y > x
+             /\ y' = y - x
+             /\ x' = x,
+       GCD(x, y) = GCD(M, N),
+       y > x,
+       \A m, n \in Nat \ {0} : n > m => GCD(m, n) = GCD(m, n - m)
+PROVE  x' \in Nat \ {0} /\ y' \in Nat \ {0} /\ GCD(x', y') = GCD(M, N)
+\end{verbatim}
+\end{display}
+It won't succeed, so stop the proof.  All the necessary facts are
+there, so the obligation should be provable.  The reason \emph{Zenon} and
+\emph{Isabelle} don't prove it is that they are very bad at arithmetic.  In
+fact, they can make only the most trivial deductions about numbers.
+
+Look at the three conjuncts of the goal.  The first, 
+  $x' \in Nat :\: \{0\}$, 
+follows immediately from the assumptions, which imply 
+  $x \in Nat :\: \{0\}$ and $x'=x$.  
+No knowledge of arithmetic is needed to prove that conjunct.  However,
+to prove the second conjunct, 
+  $y' \in Nat :\: \{0\}$,
+we need to deduce 
+  $y-x \in Nat :\: \{0\}$
+from
+  $x \in Nat :\: \{0\}$, $y \in Nat :\: \{0\}$, and $y > x$
+We also need 
+  $y-x \in Nat :\: \{0\}$
+to deduce the third conjunct from $GCD3$.
+%
+What is less obvious is that we need arithmetic to deduce
+ $y'=y-x$ and $x'=x$ as well.
+To deduce these formulas, we must know that the second disjunct of
+$Next$ has to be true because the assumption $y>x$ implies that $x>y$
+is false.
+
+Proving  $<<2>>2$ therefore requires deducing 
+  $y - x \in Nat :\: \{0\}$ and  $~(x > y)$.
+Let's check that these facts are all that we lack.  Replace the \textsc{by}
+proof of $<<2>>2$ with the following, where the proof of 
+$<<3>>2$ is the \textsc{by} proof we tried before with the added
+fact $<<3>>1$.
+\begin{display}
+$\begin{noj}
+     <<3>>1.\ (y - x \in Nat :\: \{0\}) \; /\ \; ~(x > y) \\
+\mbox{}\\
+    <<3>>2.\ \QED \\
+      \s{1}\BY <<2>>1,\; <<2>>2,\; GCD3,\;  <<3>>1\ \DEF Inv,\; TypeOK,\; 
+                GCDInv,\; Next
+ \end{noj}$\ascii{euclid-proof-2}
+\end{display}
+Run TLAPS and check that it proves this \textsc{qed} step.
+
+\begin{question}
+Check that TLAPS proves the \textsc{qed} step without using the
+\textsc{case} assumption
+$<<2>>2$.  Why doesn't it need this assumption?
+\end{question}
+%
+We now have to prove $<<3>>1$.  The default provers, \emph{Zenon} and
+\emph{Isabelle}, won't do it.  Instead, we have to tell TLAPS to use a
+special prover for arithmetic.  To do this, we first import a
+  \ctindex{1}{TLAPS module@\mmath{tlaps} module}{tlaps-module}%
+standard module
+named $TLAPS$, which we do by changing the $Euclid$ module's \textsc{extends}
+statement to
+\begin{twocols}
+$\EXTENDS Integers,\; TLAPS$
+ \midcol
+\verb|EXTENDS Integers, TLAPS|
+\end{twocols}
+The TLAPS module defines 
+    \ctindex{2}{SMT@\mmath{SMT}}{SMT}%
+$SMT$ to be a ``fact'' that instructs TLAPS to use a backend prover
+that is good for reasoning about arithmetic.  The facts that are
+needed to prove $<<3>>1$ are (i)~$x$ and $y$ are positive integers and
+(ii)~$y>x$.  The first comes from the $TypeOK$ conjunct of $Inv$,
+which is one of the assumptions $<<2>>1$; the second is the $<<2>>2$
+\textsc{case} assumption.  The proof of $<<3>>1$ is therefore
+\begin{display}
+$      \BY <<2>>1,\; <<2>>2,\; SMT \ \ \DEF Inv,\; TypeOK$
+\ascii{euclid-proof-3}
+\end{display}
+The $SMT$ prover easily verifies this step.  
+
+\subsubsection*{Proving \protect\ensuremath{\langle2\rangle3}}
+
+Having proved step $<<2>>2$, we just have to prove $<<2>>3$ to 
+complete our proof of the theorem.  We would expect this to be
+essentially the same as the proof of $<<2>>2$, so let's just copy
+that proof and make the obvious changes, to get the following.
+(Note that we must replace the use of the \textsc{case} assumption
+$<<2>>2$ with $<<2>>3$.)
+\begin{display}
+$\begin{noj}
+     <<3>>1.\ (x - y \in Nat \ \{0\})  \, /\  \, ~(y > x) \\
+      \s{1}\BY <<2>>1,\; <<2>>3,\; SMT \ \ \DEF Inv,\; TypeOK\\
+    <<3>>2.\ \QED\\
+      \s{1}\BY <<2>>1,\; <<3>>1,\; GCD3 \ \ \DEF Inv,\; TypeOK,\; 
+          GCDInv,\; Next
+ \end{noj}$
+\ascii{euclid-proof-4}%%% BAD ASCII
+\end{display}
+TLAPS proves $<<3>>1$, but \emph{Zenon} fails on $<<3>>2$ and
+\emph{Isabelle} spends a long time trying to prove it.  Examine the
+obligation and see if you can figure out what the problem is.
+
+In this case, we are trying to use $GCD3$ to prove 
+ $ GCD(x - y, y) = GCD(x, y) $.
+However, from $GCD3$, we can deduce only
+  $ GCD(y, x - y) = GCD(y, x) $.
+To deduce 
+  $ GCD(x - y, y) = GCD(x, y) $, 
+we also need $GCD2$.  So, let's add $GCD2$ to the facts in the 
+proof of $<<3>>2$ and try it again.
+
+Once again, \emph{Zenon} fails and \emph{Isabelle} keeps thinking about it.  Stop
+the proof; TLAPS needs some help.  Let's tell it to try proving
+  $GCD(x - y, y) = GCD(x, y)$
+first.  Instead of adding this as another step, we can add it to the
+facts in the proof of $<<3>>2$.  A fact in a \textsc{by} proof can be
+any formula, not just a named fact.  TLAPS checks all the facts in the
+\textsc{by} statement from left to right, using the facts it has
+already checked when checking the next one.  (It expands all the
+definitions in the \textsc{def} clause first.)  So, put
+    $GCD(y, x - y) = GCD(y, x)$
+as the last fact.  With this hint, TLAPS proves $<<3>>2$.
+
+Just to see what happens, change the $x-y$ in this formula to $x+y$,
+save the module, and try proving the step again.  As expected, this
+can't be proved; \emph{Isabelle} will try for a long time to prove it.  Click
+on the obligation.  This highlights the formula and jumps to it,
+showing you exactly where this obligation came from.
+
+We could change the $+$ back to a $-$ and keep this as the proof.
+However, I find the proof easier to read if we make the formula a
+separate step.  Put the step right after $<<3>>1$ and give it the name
+$<<3>>1a$.  In the proof of $<<3>>2$, replace the formula with
+$<<3>>1a$.  (The proof of $<<3>>1a$ requires $GCD3$ but not $GCD2$;
+the proof of the \textsc{qed} step requires $GCD2$ but not $GCD3$.)
+Run the \textsf{Prove} command on the entire theorem and, if you
+haven't made an editing error, TLAPS will prove it.
+
+\medskip
+
+Let's make our proof look a little nicer by removing those inelegant
+step names $<<2>>x$ and $<<3>>1a$.  The 
+    \ctindex{1}{Renumber Proof (Toolbox command)@\icmd{textsf}{Renumber Proof} (Toolbox command)}{renumber-proof}%
+\textsf{Renumber Proof} command renumbers the top-level proof of the
+selected step.  (This command can be executed only if the module has
+not been modified since it was last successfully parsed.)  Put the
+  \popref{cursor}{cursor} in step $<<2>>3$ and execute this command---either by
+right-clicking and selecting it or by typing
+\textsf{control+g~control+r}.  This renames the level-3 steps with
+consecutive numbers and changes references to those names
+appropriately.
+
+Since the \textsc{qed} step $<<2>>x$ is not used anywhere, its name is
+mentioned only on the statement of the step.  You could therefore
+simply replace $<<2>>x$ with $<<2>>4$.  But it's good to get into the
+habit of using the \textsf{Renumber Proof} command, so execute it for
+step $<<1>>2$ (after saving and reparsing the module) to renumber step
+$<<2>>x$.
+%
+Check that your proof now looks like \popref{euclid-proof-5}{this}.
+%\popref{euclid-proof-5-ascii}{ascii here}.

@@ -1,0 +1,74 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\makeindex
+\pdftitle{TLA+ Versus Ordinary Math}
+\file{tla-vs-math}
+\setpopup{52}
+\setlength{\textheight}{51em}
+
+\begin{document}
+\subsection*{\protect\tlaplus\ Versus Ordinary Math}
+   \ctindex{1}{ordinary math!\icmd{tlaplus} versus}{ordinary-math-vs-tla}%
+The \tlaplus\ 
+language
+contains the following things that you probably didn't learn in
+school:
+\begin{itemize}
+% developed notation for some simple things, so I had to invent my own.
+% For example, there is no standard mathematical notation for explicitly
+% writing a function.
+
+\item The \textsc{choose} 
+  \ctindex{2}{choose@\icmd{textsc}{choose}}{choose}%
+operator, which is known to mathematicians
+as 
+  \ctindex{1}{Hilbert's epsilon@Hilbert's \mmath{\icmd{varepsilon}}}{hilberts-epsilon}%
+  \ctindex{1}{+8ed@\mmath{\icmd{varepsilon}}, Hilbert's}{+8ed}%
+Hilbert's $\varepsilon$.  Although it was introduced about a century
+ago and is necessary for a practical formalization of mathematics,
+this simple operator is seldom taught in elementary math courses.
+
+\item Notation for long formulas.  For a mathematician, a ten-line
+formula is long.  Fifty-line formulas are common in specifications.
+\tlaplus\ allows you to write conjunctions and
+disjunctions as bulleted lists that makes such formulas easier to
+read.
+
+\item Notation for long specifications.  I stole two simple ideas that
+programming languages use to help cope with long programs:
+(i)~requiring variables to be explicitly declared (which helps catch
+errors) and (ii)~allowing a specification to be split into multiple
+separate modules (which helps handle complexity).
+
+\item Simple temporal logic.  Although it is well-accepted as a branch
+of mathematics, temporal logic is not simple, ordinary math.  
+  \tindex{1}{TLA}%
+TLA
+stands for the Temporal Logic of Action, a temporal logic that
+underlies the semantics of a part of \tlaplus.  Fortunately, you need
+a good understanding of temporal logic only to formally specify
+ \popref{safe-live-intro}{liveness}.  
+For many systems, an informal specification of liveness is good
+enough.  \tlaplus\ specifications that don't describe liveness use
+temporal logic in a trivial, completely ritualized way, with one
+occurrence of one temporal operator appearing at the very end.
+\end{itemize}
+I have used these concepts and notations of \tlaplus\ for quite a few
+years, and I have not felt the need to make any changes to them.  (I
+have omitted from this hyperbook one construct, a way of writing
+quantified formulas, that I feel is not worth the space it takes to
+describe it.)  While some of the decisions I made in the language are
+questionable, I have found no compelling reason to believe that the
+alternatives are better.
+
+\tlaplus\ has recently been extended to allow writing formal proofs.
+Although mathematical notation has changed a great deal in the last
+few hundred years, the way mathematicians write proofs has not.  The
+standard mathematical proof style is not suitable for writing formal
+proofs.  (It's not even well suited for writing the informal proofs of
+ordinary mathematics.)  The \tlaplus\ proof language is based on a way
+of writing informal proofs that I have used for many years.  However,
+I don't have much experience writing formal proofs, so this part of
+the language may very well change.
+
+\end{document}

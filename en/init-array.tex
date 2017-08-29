@@ -1,0 +1,14 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{Answer}
+\file{init-array}
+\setpopup{9}
+\begin{document}
+Open \popref{die-harder}{the module $DieHarder$} we wrote in
+\rref{main}{\xlink{sec:die-harder}}{Section~\xref{sec:die-harder}}.
+Comment out the initialization of variable $injug$.  Create a new model
+with suitable values of $Goal$, $Jug$, and $Capacity$, but don't have
+it check any invariant or property.  The error message produced by
+running TLC on this model should allow you to figure out why the 
+initialization of $injug$ is needed.
+\end{document}

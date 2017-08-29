@@ -1,0 +1,17 @@
+%% BAD ASCII
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{ASCII Text}
+\fixverbatim
+\begin{popup}
+\begin{verbatim*}
+               e2: if (~x[1-self]) { cs: skip }
+                   else { if (self = 0) { goto e2 }
+                          else { e3: x[1] := FALSE ;
+                                 e4: while (x[0]) { skip } ;
+                                     goto e1 
+                               } 
+                         }
+\end{verbatim*}
+\end{popup}
+\makeasciipopup

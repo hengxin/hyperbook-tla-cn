@@ -1,0 +1,17 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{ASCII Text}
+\fixverbatim
+\begin{popup}
+\begin{verbatim*}
+inBar == IF pc["P"] = "p2b" THEN ITail(in)
+                            ELSE in
+
+pcBar == [i \in {"P", "C"} |->
+            CASE i = "P" -> CASE pc["P"] = "p2a" -> "p2"
+                              [] pc["P"] = "p2b" -> "p3"
+                              [] OTHER -> pc["P"]
+              [] i = "C" -> pc["C"]    ]
+\end{verbatim*}
+\end{popup}
+\makeasciipopup

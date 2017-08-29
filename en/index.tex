@@ -1,0 +1,204 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                        INDEXING                              %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%  INDEX COMMANDS FOR SYMBOLS
+%%    See end of file for printout of all indexed symbols in index
+%%    order.
+%%
+%%  '        --- \ctindex{1}{+2a@\mmath{'} (prime)}{+2a}%
+%%  ` ... '  --- \ctindex{1}{+2ad@\verb/`/\,\ldots\verb/'/}{+2ad}%
+%%  `^       ---    \ctindex{1}{+2af@\verb/`^/}{+2af}%
+%%  `^ ... ^' --- \ctindex{1}{+2ag@\verb/`^/\,\ldots\verb/^'/}{+2ag}%
+%%  `~    --- \ctindex{1}{+2ai@\verb/`~/}{+2ai}%
+%%  `~ ... ~'   --- \ctindex{1}{+2aj@\verb/`~/\s{.1}\ldots\verb/~'/}{+2aj}%
+%%  `.    --- 
+%%  `. ... .' --- \ctindex{1}{+2ao@\verb/`/\s{-.2}\verb/./}{+2ao}%
+%%    \ctindex{1}{+2ap@\verb/`/\s{-.2}\verb/./\,\,\ldots\,\verb/./\s{-.2}\verb/'/}{+2ap}%
+%%  "     --- \ctindex{1}{+2as@\verb/""/ (double quote)}{+2as}% "
+%%  "..." --- \ctindex{1}{+2at@\textsf{``}\s{.15}\ldots\textsf{''} (string)}{+2at}%
+%%  ^     --- \ctindex{1}{+2b@\verb/^/ (exponentiation)}{+2b}%
+%%  ^'    --- \ctindex{1}{+2bm@\verb/^'/}{+2bm}%            
+%%  ^^    --- \ctindex{1}{+2c@\verb/^^/}{+2c}%            NOT USED
+%%  ^+    --- \ctindex{1}{+2d@\verb/^+/ (BNF operator)}{+2d}%
+%%  ^*    --- \ctindex{1}{+2e@\verb/^*/ (BNF operator)}{+2e}%
+%%  ^#    --- \ctindex{1}{+2f@\verb/^#/}{+2f}%            NOT USED
+%%  |     --- \ctindex{1}{+2g@\icmd{vbar}}{+2g}%
+%%  ||    --- \ctindex{1}{+2h@\mmath{"|"|} (PlusCal multi-assignment)}{+2h}% 
+%%  |-    --- \ctindex{1}{+2i@\mmath{"|-}}{+2i}%      "         
+%%  |->   --- \ctindex{1}{+2j@\mmath{"|->} (record constructor)}{+2j}% "
+%%  |---| --- \ctindex{1}{+2jj@\intextmidbar\ (separator)}{+2jj}%
+%%  |___| --- \ctindex{1}{+2jk@\intextbottombar\ (end of module)}{+2jk}%
+%%  |=    --- \ctindex{1}{+2k@\mmath{"|=}}{+2k}% "
+%%  \wr   --- \ctindex{1}{+2l@\mmath{\icmd{wr}}}{+2l}%                NOT USED
+%%  /     --- \ctindex{1}{+2m@\mmath{/} (division)}{+2m}%
+%%  //    --- \ctindex{1}{+2n@\mmath{//}}{+2n}%                 NOT USED
+%%  \     --- \ctindex{1}{+2o@\mmath{\icmd{backslash}} (set difference)}{+2o}%
+%%  \*    --- \ctindex{1}{+2oj@\mmath{\icmd{backslash}*} (end-of-line comment)}{+2oj}%
+%%  _     --- \ctindex{1}{+2oq@\mmath{\?} (underscore)}{+2oq}%
+%%  -     --- \ctindex{1}{+2p@\mmath{-} (minus)}{+2p}%
+%%  |--|  --- \ctindex{1}{+2pa@\icmd{s}{.6}\icmd{makebox}[1.5em]{\icmd{midbar}} \ \ (section separator)}{+2pa}%
+%%  --    --- \ctindex{1}{+2q@\mmath{--}}{+2q}%                 NOT USED
+%%  -.    --- \ctindex{1}{+2qb@\verb/-/\s{-.1}\verb/./\,}{+2qb}%
+%%  overbar --- \ctindex{1}{+2qd@$\overline{\s{.5}\rule{0pt}{1.2ex}}$ (overbar)}{+2qd}%
+%%  ~     --- \ctindex{1}{+2qj@\mmath{\icmd{lnot}} (negation)}{+2qj}%
+%%  ->    --- \ctindex{1}{+2r@\mmath{->} (set of functions)}{+2r}%
+%%  ->    --- \ctindex{1}{+2ra@\mmath{->} (step)}{+2ra}%
+%%  -+->  --- \ctindex{1}{+2rj@\mmath{-+->} (temporal operator)}{+2rj}%
+%%  \sim  --- \ctindex{1}{+2rk@\mmath{\sim} (stuttering equivalent)}{+2rk}%
+%%  ~'    --- \ctindex{1}{+2rl@\cmd{verb}/~'/}{+2rl}%
+%%  ~>    --- \ctindex{1}{+2rq@\mmath{~>} (leads to)}{+2rq}%
+%%  -|    --- \ctindex{1}{+2s@\mmath{\icmd{dashv}}}{+2s}%             NOT USED
+%%  \div  --- \ctindex{1}{+2t@\mmath{\icmd{div}} (integer division)}{+2t}%
+%%  +     --- \ctindex{1}{+2u@\mmath{+} (plus)}{+2u}%
+%%  ++    --- \ctindex{1}{+2v@\mmath{++}}{+2v}%                 NOT USED
+%%  ^{+}  --- \ctindex{1}{+2vd@\mmath{^{+}} (BNF operator)}{+2vd}%
+%%  ^{+}  --- \ctindex{1}{+2ve@\mmath{^{+}} (suffix operator)}{+2ve}%
+%%  \X    --- \ctindex{1}{+2vh@\mmath{\X} (Cartesian product)}{+2vh}%
+%%  =     --- \ctindex{1}{+3a@\mmath{=} (equality)}{+3a}%
+%%  #     --- \ctindex{1}{+3ac@\mmath{#} (inequality)}{+3ac}% 
+%%  =>    --- \ctindex{1}{+3ah@\mmath{\icmd{Rightarrow}} (implies)}{+3ah}%
+%%  \equiv   --- \ctindex{1}{+3bj@\mmath{\icmd{equiv}} (equivalence)}{+3bj}%
+%%  \doteq   --- \ctindex{1}{+3c@\mmath{\icmd{doteq}}}{+3c}%          NOT USED
+%%  ==       --- \ctindex{1}{+3d@\mmath{\icmd{deq}} (defined to equal)}{+3d}%
+%%  =m=      --- \ctindex{1}{+3dm@\mmath{\icmd{mdeq}}}{+3dm}%
+%%  \simeq   --- \ctindex{1}{+3e@\mmath{\icmd{simeq}}}{+3e}%          NOT USED
+%%  \approx  --- \ctindex{1}{+3f@\mmath{\icmd{approx}}}{+3f}%         NOT USED
+%%  \cong    --- \ctindex{1}{+3g@\mmath{\icmd{cong}}}{+3g}%           NOT USED
+%%  \asymp   --- \ctindex{1}{+3h@\mmath{\icmd{asymp}}}{+3h}%          NOT USED
+%%  \infty   --- \ctindex{1}{+3hd@\mmath{\icmd{infty}}|see{\mmath{Infinity}}}{+3hd}%          
+%%  .        --- \ctindex{1}{+3hh@\mmath{\icmd{ldotp}} (syntax element)}{+3hh}%
+%%  .        --- \ctindex{1}{+3hi@\mmath{\icmd{ldotp}} (record field)}{+3hi}%
+%%  ..       --- \ctindex{}{+3i@\mmath{\icmd{dd}} (integer interval)}{+3i}%
+%%  ...      --- \ctindex{1}{+3j@\mmath{\icmd{dots}}}{+3j}%           NOT USED
+%%  .'       --- \ctindex{1}{+3jd@\verb/./\s{-.15}\verb/'/}{+3jd}%
+%%  \cdot    --- \ctindex{1}{+3jj@\mmath{\icmd{cdot}} (action composition)}{+3jj}%         
+%%  *        --- \ctindex{1}{+3k@\mmath{*} (multiplication)}{+3k}%
+%%  **       --- \ctindex{1}{+3l@\mmath{**}}{+3l}%              NOT USED
+%%  ^{*}     --- \ctindex{1}{+3ld@\mmath{^{*}} (BNF operator)}{+3ld}%
+%%  \star    --- \ctindex{1}{+3m@\mmath{\icmd{star}}}{+3m}%           NOT USED
+%%  \bullet  --- \ctindex{1}{+3n@\mmath{\icmd{bullet}}}{+3n}%         NOT USED
+%%  \o       --- \ctindex{1}{+3o@\mmath{\icmd{circ}} (sequence concatenation)}{+3o}%
+%%  \oplus   --- \ctindex{1}{+3p@\mmath{\icmd{oplus}} (bag union)}{+3p}%
+%%  \ominus  --- \ctindex{1}{+3q@\mmath{\icmd{ominus}} (bag difference)}{+3q}%
+%%  \otimes  --- \ctindex{1}{+3r@\mmath{\icmd{otimes}}}{+3r}%         NOT USED
+%%  \oslash  --- \ctindex{1}{+3s@\mmath{\icmd{oslash}}}{+3s}%         NOT USED
+%%  \odot    --- \ctindex{1}{+3t@\mmath{\icmd{odot}}}{+3t}%           NOT USED
+%%  \bigcirc --- \ctindex{1}{+3u@\mmath{\icmd{bigcirc}}}{+3u}%        NOT USED
+%%  [] (always) --- \ctindex{1}{+3v@\mmath{\icmd{Box}} (always)}{+3v}%
+%%  [] (case separator)    --- \ctindex{1}{+3w@\mmath{\icmd{Box}} (\textsc{case} separator)}{+3w}%
+%%  <>          --- \ctindex{1}{+3x@\mmath{\icmd{Diamond}} (eventually)}{+3x}%
+%%  \prec       --- \ctindex{1}{+4a@\mmath{\icmd{prec}}}{+4a}%
+%%  \preceq     --- \ctindex{1}{+4b@\mmath{\icmd{preceq}}}{+4b}%      NOT USED
+%%  <           --- \ctindex{1}{+4c@\mmath{<} (less than)}{+4c}%
+%%  \ll         --- \ctindex{1}{+4d@\mmath{\ll}}{+4d}%          NOT USED
+%%  <:          --- \ctindex{1}{+4e@\mmath{<:}}{+4e}%           NOT USED
+%%  <-          --- \ctindex{1}{+4f@\mmath{<-} (substitution)}{+4f}%
+%%  \leq        --- \ctindex{1}{+4g@\mmath{\icmd{leq}} (less than or equal)}{+4g}%
+%%  \subset     --- \ctindex{1}{+4h@\mmath{\icmd{subset}}}{+4h}%      NOT USED
+%%  \subseteq   --- \ctindex{1}{+4i@\mmath{\icmd{subseteq}} (subset)}{+4i}%
+%%  \sqsubset   --- \ctindex{1}{+4j@\mmath{\icmd{sqsubset}}}{+4j}%    NOT USED
+%%  \sqsubseteq --- \ctindex{1}{+4k@\mmath{\icmd{sqsubseteq}} (bag subset)}{+4k}%
+%%  (* ... *)   --- \ctindex{1}{+4kj@\mmath{(*\ldots*)} (comment)}{+4kj}%        
+%%  f[e]        --- \ctindex{1}{+4lm@\mmath{f[e]} (function application)}{+4lm}%        
+%%  [A]_v       --- \ctindex{1}{+4m@\mmath{[A]_{v}} (action operator)}{+4m}%
+%%  [h_1 |-> e_1, ... , h_n |-> e_n] 
+%%    --- \ctindex{1}{+4md@\mmath{[h_{1}"|->e_{1},\,\ldots,\,h_{n}"|->e_{n}]}  (record constructor)}{+4md}%
+%%  [S -> T]    --  \ctindex{1}{+4mf@\mmath{[S->T]} (set of functions)}{+4mf}%
+%%  [x \in S |-> e] -- \ctindex{1}{+4mh@\mmath{[x\in S"|->e]} (function constructor)}{+4mh}% "
+%%  [h_1 : S_1, ... , h_n : S_n] 
+%%  --- \ctindex{1}{+4mm@\tlabox{[h_{1}:S_{1},\,\ldots,\,h_{n}:S_{n}]} (set of rec\-ords)}{+4mm}%
+%%  [[e]]              --- \ctindex{1}{+4mr@\mmath{\icmd{CM{e}}} (meaning)}{+4mr}%
+%%  <<A>>_v            --- \ctindex{1}{+4n@\mmath{<<A>>_{v}} (action operator)}{+4n}%
+%%  <<e_1, ... , e_n>> --- \ctindex{1}{+4o@\mmath{<<e_{1}, \ldots , e_{n}>>} (tuple)}{+4o}%
+%%  <<*>> --- \ctindex{1}{+4os@\mmath{<<*>>} (in proofs)}{+4os}%
+%%  <<+>> --- \ctindex{1}{+4op@\mmath{<<\!+\!>>} (in proofs)}{+4op}%
+%%  { }                --- \ctindex{1}{+4ox@\mmath{\{\,\}} (empty set)}{+4ox}%
+%%  {e_1, ... , e_n}   --- \ctindex{1}{+4p@\mmath{\{e_{1}, \ldots , e_{n}\}} (set)}{+4p}%
+%%  {x \in S : p}      
+%%  --- \ctindex{1}{+4q@\icmd{tlabox}{\{x\in S : p\}} (set constructor)}{+4q}%
+%%  {e : x \in S}      --- \ctindex{1}{+4r@\icmd{tlabox}{\{e:x\in S\}} (set constructor)}{+4r}%
+%%  \succ       --- \ctindex{1}{+5a@\mmath{\succ}}{+5a}%        NOT USED
+%%  \succeq     --- \ctindex{1}{+5b@\mmath{\icmd{succeq}}}{+5b}%      NOT USED
+%%  >           --- \ctindex{1}{+5c@\mmath{>} (greater than)}{+5c}%
+%%  \gg         --- \ctindex{1}{+5d@\mmath{\icmd{gg}}}{+5d}%          NOT USED
+%%  \geq        --- \ctindex{1}{+5e@\mmath{\icmd{geq}} (greater than or equal)}{+5e}%
+%%  \supset     --- \ctindex{1}{+5f@\mmath{\icmd{supset}}}{+5f}%      NOT USED
+%%  \supseteq   --- \ctindex{1}{+5g@\mmath{\icmd{supseteq}}}{+5g}%    NOT USED
+%%  \sqsupset   --- \ctindex{1}{+5h@\mmath{\icmd{sqsupset}}}{+5h}%    NOT USED
+%%  \sqsupseteq --- \ctindex{1}{+5i@\mmath{\icmd{sqsupseteq}}}{+5i}%  NOT USED
+%%  *)          --- \ctindex{1}{+5ij@\mmath{*)} (comment delimiter)}{+5ij}%        NOT USED
+%%  /\      --- \ctindex{1}{+5j@\mmath{\icmd{land}} (conjunction)}{+5j}%
+%%   \cap   --- \ctindex{1}{+5k@\mmath{\icmd{cap}} (set intersection)}{+5k}%
+%%  \sqcap  --- \ctindex{1}{+5l@\mmath{\icmd{sqcap}}}{+5l}%           NOT USED
+%%  \/      --- \ctindex{1}{+5m@\mmath{\icmd{lor}} (disjunction)}{+5m}%
+%%  \cup    --- \ctindex{1}{+5n@\mmath{\icmd{cup}} (set union)}{+5n}%
+%%  \bigcup    --- \ctindex{1}{+5na@\mmath{\icmd{bigcup}}|see{\icmd{textsc}{union}}}{+5na}%
+%%  \uplus  --- \ctindex{1}{+5o@\mmath{\icmd{uplus}}}{+5o}%           NOT USED
+%%  \sqcup  --- \ctindex{1}{+5p@\mmath{\icmd{sqcup}}}{+5p}%           NOT USED
+%%  :       --- \ctindex{1}{+5pj@\mmath{:}}{+5pj}%
+%%  ::      --- \ctindex{1}{+5pjj@\mmath{::} (in subexpression name)}{+5pjj}%
+%%  ;       --- \ctindex{1}{+5pk@\mmath{;} (PlusCal separator)}{+5pj}%
+%%  :>      --- \ctindex{1}{+5q@\mmath{\icmd{colongt}} (function constructor)}{+5q}%
+%%  :=      --- \ctindex{1}{+5r@\mmath{:=}}{+5r}%               NOT USED
+%%  ::=     --- \ctindex{1}{+5s@\mmath{::=} (BNF operator)}{+5s}%
+%%  !       --- \ctindex{1}{+5t@\mmath{"!} (in \textsc{except})}{+5t}% "
+%%  !       --- \ctindex{1}{+5ta@\mmath{"!} (in operator name)}{+5ta}%
+%%  !       --- \ctindex{1}{+5tb@\mmath{"!} (in subexpression name)}{+5tb}%
+%%  !!      --- \ctindex{1}{+5u@\mmath{"!"!}}{+5u}%             NOT USED
+%%  ?       --- \ctindex{1}{+5v@\mmath{?}}{+5v}%
+%%  ??      --- \ctindex{1}{+5vm@\mmath{??}}{+5vm}%               NOT USED
+%%  ##      --- \ctindex{1}{+5vs@\mmath{\icmd{#}\icmd{#}}}{+5vs}%         NOT USED?
+%%  ^{#}    --- \ctindex{1}{+5vu@\mmath{^{\icmd{#}}}}{+5vu}%            NOT USED (YET)
+%%  $       --- \ctindex{1}{+5vx@\mmath{\$}}{+5vx}% $
+%%  %       --- \ctindex{1}{+5w@\mmath{\%} (modulus)}{+5w}%
+%%  %%      --- \ctindex{1}{+6a@\mmath{\%\%}}{+6a}%             NOT USED
+%%  &       --- \ctindex{1}{+6b@\mmath{\&} (BNF operator)}{+6b}%
+%%  &&      --- \ctindex{1}{+6c@\mmath{\&\&}}{+6c}%             NOT USED
+%%  natural --- \ctindex{1}{+6cm@\mmath{\icmd{natural}}}{+6cm}%
+%%  @       --- \ctindex{1}{+6e@\mmath{"@} (in \textsc{except})}{+6e}% "
+%%  @ (in a proof step) --- \ctindex{1}{+6ea@\mmath{"@} (in proof step)}{+6ea}% "
+%%  @@      --- \ctindex{1}{+6f@\mmath{\icmd{atat}} (function constructor)}{+6f}%
+%%  \propto --- \ctindex{1}{+6g@\mmath{\icmd{propto}}}{+6g}%          NOT USED
+%%  \A      --- \ctindex{1}{+7b@\mmath{\icmd{A}} (universal quantification)}{+7b}%
+%%  \AA     --- \ctindex{1}{+7c@\mmath{\icmd{AA}} (temporal universal quantification)}{+7c}%
+%%  \E      --- \ctindex{1}{+7d@\mmath{\icmd{E}} (existential quantification)}{+7d}%
+%%  \E_inf  --- \ctindex{1}{+7dm@\mmath{\icmd{Einf}}}{+7dm}%
+%%  \E_behavior  --- \ctindex{1}{+7dq@\mmath{\icmd{E_{\mathrm{behavior}}}}}{+7dq}%
+%%  \E_state  --- \ctindex{1}{+7ds@\mmath{\icmd{E_{\mathrm{state}}}}}{+7ds}%
+%%  \EE     --- \ctindex{1}{+7e@\mmath{\icmd{EE}} (temporal existential quantification)}{+7e}%
+%%  \alpha  --- \ctindex{1}{+8a@\mmath{\alpha} conversion}{+8a}%
+%%  \beta   --- \ctindex{1}{+8b@\mmath{\beta} reduction}{+8b}%
+%%  \delta  --- \ctindex{1}{+8d@\mmath{\delta}}{+8d}%
+%%  \epsilon  --- \ctindex{1}{+8e@\mmath{\icmd{epsilon}}}{+8e}%
+%%  \varepsilon  --- \ctindex{1}{+8ed@\mmath{\icmd{varepsilon}}, Hilbert's}{+8ed}%
+%%  \in         --- \ctindex{1}{+8eh@\mmath{\icmd{in}} (syntax element)}{+8eh}%        
+%%  \in         --- \ctindex{1}{+8ei@\mmath{\icmd{in}} (set membership)}{+8ei}%        
+%%  \notin      --- \ctindex{1}{+8ej@\mmath{\icmd{notin}} (not element of)}{+8ej}%        
+%%  \lambda --- \ctindex{1}{+8l@\mmath{\icmd{lambda}} expression}{+8l}%
+%%  \lambda --- \ctindex{1}{+8lp@\mmath{\icmd{lambda}} parameter}{+8lp}%
+%%  \rho    --- \ctindex{1}{+8r@\mmath{\icmd{rho}}}{+8r}%
+
+%% Definitions needed for copied index entries
+\newcommand{\atat}{\mathop{@@}}
+%\newcommand{\colongt}{\mathop{:>}}
+
+
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{Index}  % This didn't work with \tlaplus
+\file{index}
+%% The following effectively hides the page number.
+%% Needed because the \pagestyle command seems to be overridden
+%% by the \printindex macro, and redefining \thepage to be empty
+%% causes pdflatex to produce error messages. (If this causes a
+%% problem, remove the \setlength, uncomment the \def\thepage 
+%% and live with the error messages.)
+%%
+%\def\thepage{}
+\setlength{\footskip}{200pt}
+\pagestyle{empty}
+\begin{document}
+\let\mmath=\ensuremath
+\def\icmd#1{\csname#1\endcsname}
+\printindex
+\end{document}

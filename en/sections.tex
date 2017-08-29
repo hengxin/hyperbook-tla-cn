@@ -1,0 +1,38 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{Splitting A Module Into Sections}
+\file{sections}
+\makeindex
+\begin{popup}
+\subsection*{Splitting A Module Into Sections}
+
+We 
+ \tindex{1}{section separator}%
+ \ctindex{1}{+2pa@\icmd{s}{.6}\icmd{makebox}[1.5em]{\icmd{midbar}} \ \ (section separator)}{+2pa}%
+can make a module a little easier to read by splitting it into
+sections, using separators consisting of four or more dashes 
+(\texttt{-} characters).  For example, we can put a line of dashes between
+the definition of $Min$ and the \textsc{constants} declaration.
+This part of the module is then printed as:
+\begin{display}
+\begin{notla}
+Min(m,n) == IF m < n THEN m ELSE n
+--------------------------------------
+CONSTANTS Goal, Jugs, Capacity
+\end{notla}
+\begin{tlatex}
+\@x{ Min ( m ,\, n ) \.{\defeq} {\IF} m \.{<} n \.{\THEN} m \.{\ELSE} n}%
+\@x{}\midbar\@xx{}%
+\@x{ {\CONSTANTS} Goal ,\, Jugs ,\, Capacity}%
+\end{tlatex}
+\end{display}
+%
+Section separators do not in any way alter the meaning of a module.
+However, putting one where no sensible person would think of putting
+it (such as in the middle of a definition) can cause a parsing error.
+
+% \s{.6}\makebox[1.5em][l]{\midbar} \ \ (section separator) \\
+% X
+\end{popup}
+
+\makepopup

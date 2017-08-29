@@ -1,0 +1,26 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{Hint}
+\begin{popup}
+\subsection*{Hint}
+
+The invariant $Inv$ should express type correctness as well as
+conditions HS1 and HS2.  Here is a suitable definition of an inductive
+invariant $Inv$.  The second conjunct expresses HS1 and HS2, with 
+HS1 being the case $i=N$.
+\begin{display}
+\begin{notla}
+Inv == /\ ca \in [0..(N-1) -> {0, 1}]
+       /\ \E i \in 1..N : 
+            \A j \in 1..(N-1) :  (ca[j] = ca[0])  <=>  (j < i)
+\end{notla}
+\begin{tlatex}
+ \@x{ Inv \.{\defeq} \.{\land} ca \.{\in} [ 0 \.{\dotdot} ( N \.{-} 1 )
+ \.{\rightarrow} \{ 0 ,\, 1 \} ]\vs{.2}}%
+\@x{\@s{34.04} \.{\land} \E\, i \.{\in} 1 \.{\dotdot} N \.{:}}%
+ \@x{\@s{53.35} \A\, j \.{\in} 1 \.{\dotdot} ( N \.{-} 1 ) \.{:}\@s{4.1} ( ca
+ [ j ] \.{=} ca [ 0 ] )\@s{4.1} \.{\equiv}\@s{4.1} ( j \.{<} i )}%
+\end{tlatex}
+\end{display}
+\end{popup}
+\makepopup

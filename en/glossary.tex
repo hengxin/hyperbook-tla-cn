@@ -1,0 +1,95 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{Glossary}
+\file{glossary}
+\makeindex
+\newcommand{\gitem}[1]{\item[#1\tindex{G}{#1}]\mbox{}\\}
+\newcommand{\igitem}[2]{\item[#1#2]\mbox{}\\}
+\begin{document}
+\section*{Glossary}
+\begin{description}
+
+\igitem{action \rm{(also called \textbf{action formula})}}%
+       {\tindex{G}{action}%
+        \tindex{G}{action formula}%
+        \ctindex{G}{formula!action}{formula-action}}
+A \emph{formula} containing no temporal operators.  It may (and
+usually does) contain primed variables.  Its meaning is an assignment
+of Boolean values to \emph{steps}.  
+
+\gitem{behavior}
+A sequence of states.
+
+\gitem{behavior specification}
+A temporal formula that describes the possible behaviors of a system.
+An initial predicate $Init$ and next-state action $Next$ are taken 
+to be the behavior specification that is the temporal formula
+  $Init /\ [Next]_{vars}$,
+where $vars$ is a tuple containing all the system's variables.
+
+
+\gitem{expression}
+A syntactic element of a \tlaplus\ specification or PlusCal algorithm
+that can be the right-hand side of a definition.
+
+\gitem{formula}
+A Boolean-valued \emph{expression}.
+
+\gitem{inductive invariant}
+An inductive invariant of an \emph{action} is a \emph{state predicate}
+that cannot be true in the first state and false in the second state
+of any \emph{step} that satisfies the action. 
+
+An inductive invariant of a specification is an inductive invariant of the
+next-state action that is true of every initial state (and hence is an
+\emph{invariant} of the specification).
+
+\gitem{invariant}
+An invariant of a specification is a \emph{state predicate} that
+is true in every \emph{reachable state} of the specification.
+
+\gitem{reachable state} A reachable state of a specification is a
+\emph{state} that occurs in some possible \emph{behavior} of
+the specification.
+
+\gitem{specification}
+Can mean either a \emph{behavior specification} or the 
+collection of modules that define a behavior specification.
+
+
+\gitem{state}
+An assignment of values to variables.  
+
+\igitem{state function \rm{(also called \textbf{state expression})}}%
+       {\tindex{G}{state function}%
+        \ctindex{G}{function!state}{function-state}%
+        \tindex{G}{state expression}%
+        \ctindex{G}{expression!state}{expression-state}} 
+An \emph{expression} containing no action operators or temporal operators.
+Thus, it contains no primes but may (and usually does) contain
+unprimed variables.  Its meaning is an assignment of values to \emph{states}.
+
+\igitem{state predicate}%
+       {\tindex{G}{state predicate}%
+        \ctindex{G}{predicate!state}{predicate-state}} 
+A Boolean-valued \emph{state function}.  Its meaning is an assignment
+of Boolean values to \emph{states}.  Viewed as a temporal formula,
+it is true of a behavior iff it is true of the behavior's first state.
+
+\gitem{step}
+A pair of states.
+
+\gitem{subaction} 
+An \emph{action} that is a disjunct of the next-state action of a
+specification.
+
+\igitem{temporal formula}%
+       {\tindex{G}{temporal formula}%
+        \ctindex{G}{formula!temporal}{formula-temporal}} 
+A formula that is either a state predicate or contains one or more
+temporal operators.  Its meaning is an assignment of Boolean values to
+\emph{behaviors}.  A 
+
+\end{description}
+
+\end{document}

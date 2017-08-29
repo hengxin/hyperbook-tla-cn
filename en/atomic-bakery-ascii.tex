@@ -1,0 +1,43 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{ASCII Text}
+\fixverbatim
+\setwidepopup{40}{4}
+\begin{document}
+%\begin{popup}
+\begin{verbatim*}
+--algorithm AtomicBakery 
+{ variable num = [i \in Procs |-> 0], flag = [i \in Procs |-> FALSE];
+  process (p \in Procs)
+    variables unchecked = {}, max = 0, nxt = 1 ;
+    { ncs: while (TRUE) 
+            { e1:   flag[self] := TRUE;
+                    unchecked := Procs \ {self} ;
+                    max := 0;
+              e2:   while (unchecked # {}) 
+                      { with (i \in unchecked) 
+                          { unchecked := unchecked \ {i};
+                            if (num[i] > max) { max := num[i] }
+                          }
+                      };
+              e3:   with (i \in {j \in Nat : j > max}) { num[self] := i };
+              e4:   flag[self] := FALSE;
+                    unchecked := Procs \ {self} ;
+              w1:   while (unchecked # {}) 
+                      {     with (i \in unchecked) { nxt := i };
+                            await ~ flag[nxt];
+                        w2: await \/ num[nxt] = 0
+                                  \/ <<num[self], self>> 
+                                         \prec <<num[nxt], nxt>> ;
+                            unchecked := unchecked \ {nxt};
+                      } ;
+              cs:   skip ;  \* the critical section;
+              exit: num[self] := 0;
+            }
+    }
+}
+\end{verbatim*}
+
+\end{document}
+\end{popup}
+\makeasciipopup

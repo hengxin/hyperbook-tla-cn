@@ -1,0 +1,44 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{Rule WF1}
+\setpopup{31.5}
+\makeindex
+\file{rule-wf1}
+\begin{document}
+\subsection*{Rule WF1}
+
+The 
+  \tindex{2}{WF1 (proof rule)}%  
+  \ctindex{2}{rule!WF1}{rule-wf1}%
+following proof rule is used to deduce a $~>$ property from a weak
+fairness assumption.  It assumes that $P$ and $Q$ are state formulas
+(contain only unprimed variables and have no temporal operators),
+$N$ and $A$ are action formulas, and $v$ is a state expression.
+ \[ \mbox{WF1:}\ \proofrule{P /\ [N]_v => (P' \/ Q') \V{.2}
+              P /\ <<N /\ A>>_v => Q' \V{.2}
+              P => \ENABLED <<A>>_v}%
+              {[][N]_v /\ WF_v(A) => (P ~> Q)}
+ \]
+It is generally applied with $N$ the specification's next-state action
+and $A$ a subaction of $N$, meaning that $A$ implies $N$.  The first
+hypothesis then asserts that every step that begins in a state with
+$P$ true leaves $P$ true or makes $Q$ true.  The second hypothesis
+asserts that a non-stuttering $A$ step starting with $P$ true makes
+$Q$ true.  The three hypotheses imply that if $P$ ever becomes true,
+then it remains true and a non-stuttering $A$ action remains enabled
+unless a non-stuttering $A$ step occurs and makes $Q$ true.  Weak
+fairness of $A$ therefore implies that if $P$ ever becomes true, then
+$Q$ must eventually become true.
+
+\medskip
+
+As with all our temporal proof rules, the conclusion is true of a
+behavior $\sigma$ if all of the hypotheses are true of all suffixes of
+$\sigma$.  Hence, in applying the rule in a context in which $[]Inv$
+is assumed, we can assume $Inv$ in proving the hypotheses.
+
+\end{document}
+
+
+\end{popup}
+\makepopup

@@ -1,0 +1,35 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\makeindex
+\file{finite-behaviors}
+\pdftitle{Are All Behaviors Infinite?}
+\begin{popup}
+
+  \ctindex{1}{behavior!finite}{behavior-finite}%
+ \vspace{-2\baselineskip}
+\subsection*{Are All Behaviors of the One-Bit Clock Infinite?}
+
+It is not really true that this is the only possible behavior of the
+one-bit clock starting in the state $b=1$.  You don't need to know
+this now, and I am mentioning it only for advanced readers who might
+know that it's not true and be confused by reading that it is.  If
+you're not one of them, you can ignore this pop-up.
+
+ \medskip\noindent
+You will see later that our initial predicate and next-state action do
+not imply that the one-bit clock must continue forever.  They allow
+finite behaviors, in which the clock stops.  You will then learn how
+we can specify that the clock must keep ticking.
+
+\medskip \noindent 
+ You will also learn later that our specification
+actually allows ``stuttering steps'' in which the value of $b$ doesn't
+change.  For example, it allows a behavior that begins
+ \[ b=1 \s{.701}-> \s{.701}  b=1 \s{.701} -> \s{.701}
+    b=0 \s{.701} -> \s{.701} b=0 \s{.701} -> \s{.701} b=0 \]
+An execution in which the clock stops is represented by an infinite
+behavior that ends with an infinite sequence of stuttering steps.
+
+
+\end{popup}
+\makepopup

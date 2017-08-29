@@ -1,0 +1,91 @@
+\indexentry{TLAPS|indexref{2}{proof}{2TLAPS}}{2}
+\indexentry{proof!mathematicians'|indexref{1}{proof}{1proof-math}}{1}
+\indexentry{Zave, Pamela|indexref{1}{proof}{1Zave, Pamela}}{1}
+\indexentry{Chord|indexref{1}{proof}{1Chord}}{1}
+\indexentry{Alloy|indexref{1}{proof}{1Alloy}}{1}
+\indexentry{proof!TLA+@\icmd {tlaplus}|indexref{1}{proof}{1proof-tlaplus}}{1}
+\indexentry{proof manager|indexref{1}{proof}{1proof manager}}{1}
+\indexentry{proof!manager|indexref{1}{proof}{1proof-manager}}{1}
+\indexentry{proof obligation|indexref{1}{proof}{1proof obligation}}{1}
+\indexentry{obligation!proof|indexref{1}{proof}{1obligation-proof}}{1}
+\indexentry{backend prover|indexref{1}{proof}{1backend prover}}{1}
+\indexentry{prover!backend|indexref{1}{proof}{1prover-backend}}{1}
+\indexentry{default backend provers|indexref{1}{proof}{1default backend provers}}{1}
+\indexentry{fingerprint file|indexref{1}{proof}{1fingerprint file}}{1}
+\indexentry{file!fingerprint|indexref{1}{proof}{1file-fingerprint}}{1}
+\indexentry{Launch Prover (Toolbox command)@\icmd {textsf}{Launch Prover} (Toolbox command)|indexref{1}{proof}{1launch-prover}}{1}
+\indexentry{Euclid's Algorithm!TLAPLUS proof|indexref{1}{proof}{1euclids-algorithm-proof-of}}{1}
+\indexentry{QED@{\icmd {sc}qed}|indexref{1}{proof}{1QED}}{1}
+\indexentry{BY@\icmd {textsc}{by}|indexref{1}{proof}{1by}}{1}
+\indexentry{Prove Step or Module (Toolbox command)@\icmd {textsf}{Prove Step or Module} (Toolbox command)|indexref{1}{proof}{1prove-step}}{1}
+\indexentry{BY@\icmd {textsc}{by}|indexref{1}{proof}{1by}}{1}
+\indexentry{DEF@\icmd {textsc}{def}|indexref{1}{proof}{1def}}{1}
+\indexentry{PTL@\mmath {PTL} (backend prover)|indexref{1}{proof}{1PTL}}{1}
+\indexentry{Decompose Proof (Toolbox command)@\icmd {textsf}{Decompose Proof} (Toolbox command)|indexref{1}{proof}{1decompose-command}}{1}
+\indexentry{assume (proof construct)@\icmd {textsc}{assume} (proof construct)|indexref{1}{proof}{1assume}}{1}
+\indexentry{prove@\icmd {textsc}{prove}|indexref{1}{proof}{1prove}}{1}
+\indexentry{assume/prove|indexref{1}{proof}{1assume-prove}}{1}
+\indexentry{suffices@\icmd {textsc}{suffices}|indexref{1}{proof}{1suffices}}{1}
+\indexentry{Goto Declaration (Toolbox command)@\icmd {textsf}{Goto Declaration} (Toolbox command)|indexref{1}{proof}{1goto-declaration}}{1}
+\indexentry{Return from Goto Declaration (Toolbox command)@\icmd {textsf}{Return from Goto Declaration} (Toolbox command)|indexref{2}{proof}{2return-from-goto-declaration}}{2}
+\indexentry{theorem@\icmd {textsc}{theorem}|indexref{1}{proof}{1theorem}}{1}
+\indexentry{lemma@\icmd {textsc}{lemma}|indexref{1}{proof}{1lemma}}{1}
+\indexentry{corollary@\icmd {textsc}{corollary}|indexref{1}{proof}{1corollary}}{1}
+\indexentry{proposition@\icmd {textsc}{proposition}|indexref{1}{proof}{1proposition}}{1}
+\indexentry{assertion|indexref{1}{proof}{1assertion}}{1}
+\indexentry{assume/prove|indexref{2}{proof}{2assume-prove}}{2}
+\indexentry{new@\icmd {textsc}{new}|indexref{1}{proof}{1new}}{1}
+\indexentry{domain assumption|indexref{1}{proof}{1domain-assumption}}{1}
+\indexentry{assumption, domain|indexref{1}{proof}{1assumption-domain}}{1}
+\indexentry{proof!structured|indexref{2}{proof}{2proofs-structured}}{2}
+\indexentry{proof!non-leaf|indexref{1}{proof}{1proof-nonleaf}}{1}
+\indexentry{non-leaf proof|indexref{1}{proof}{1nonleaf-proof}}{1}
+\indexentry{proof!nonleaf|indexref{1}{proof}{1proof-leaf}}{1}
+\indexentry{leaf proof|indexref{1}{proof}{1leaf-proof}}{1}
+\indexentry{omitted@\icmd {textsc}{omitted}|indexref{1}{proof}{1omitted}}{1}
+\indexentry{by proof@\icmd {textsc}{by} proof|indexref{1}{proof}{1by-proof}}{1}
+\indexentry{proof!by@\icmd {textsc}{by}|indexref{1}{proof}{1proof-by}}{1}
+\indexentry{level specifier|indexref{1}{proof}{1level-specifier}}{1}
+\indexentry{Renumber Proof (Toolbox command)@\icmd {textsf}{Renumber Proof} (Toolbox command)|indexref{2}{proof}{2renumber-proof}}{2}
+\indexentry{proof!reading|indexref{1}{proof}{1proof-reading}}{1}
+\indexentry{Show Current Subtree(Toolbox command)@\icmd {textsf}{Show Current Subtree} (Toolbox command)|indexref{1}{proof}{1show-current-subtree}}{1}
+\indexentry{Hide Current Subtree(Toolbox command)@\icmd {textsf}{Hide Current Subtree} (Toolbox command)|indexref{1}{proof}{1hide-current-subtree}}{1}
+\indexentry{Show Children Only(Toolbox command)@\icmd {textsf}{Show Children Only} (Toolbox command)|indexref{1}{proof}{1show-children-only}}{1}
+\indexentry{Focus On Step(Toolbox command)@\icmd {textsf}{Focus On Step} (Toolbox command)|indexref{1}{proof}{1focus-on-step}}{1}
+\indexentry{Show All Proofs(Toolbox command)@\icmd {textsf}{Show All Proofs} (Toolbox command)|indexref{1}{proof}{1show-all-proofs}}{1}
+\indexentry{Hide All Proofs(Toolbox command)@\icmd {textsf}{Hide All Proofs} (Toolbox command)|indexref{1}{proof}{1hide-all-proofs}}{1}
+\indexentry{state!of a proof|indexref{1}{proof}{1state-of-proof}}{1}
+\indexentry{proof!state|indexref{1}{proof}{1proof-state}}{1}
+\indexentry{goal, of proof|indexref{1}{proof}{1goal-proof}}{1}
+\indexentry{proof!goal|indexref{1}{proof}{1proof-goal}}{1}
+\indexentry{facts!known|indexref{1}{proof}{1facts-known}}{1}
+\indexentry{facts!usable|indexref{1}{proof}{1facts-usable}}{1}
+\indexentry{case (proof step)@\icmd {textsc}{case} (proof step)|indexref{1}{proof}{1case-pf-step}}{1}
+\indexentry{pick (proof step)@\icmd {textsc}{pick} proof step|indexref{1}{proof}{1pick-pf-step}}{1}
+\indexentry{use@\icmd {textsc}{use}|indexref{1}{proof}{1use}}{1}
+\indexentry{hide@\icmd {textsc}{hide}|indexref{1}{proof}{1hide}}{1}
+\indexentry{DEF@\icmd {textsc}{def}|indexref{2}{proof}{2def}}{2}
+\indexentry{DEFINE@\icmd {textsc}{define}|indexref{1}{proof}{1define}}{1}
+\indexentry{witness (proof step)@\icmd {textsc}{witness} proof step|indexref{1}{proof}{1witness-pf-step}}{1}
+\indexentry{have@\icmd {textsc}{have}|indexref{1}{proof}{1have}}{1}
+\indexentry{take@\icmd {textsc}{take}|indexref{1}{proof}{1take}}{1}
+\indexentry{instance (proof step)@\icmd {textsc}{instance} (proof step)|indexref{1}{proof}{1instance-pfstep}}{1}
+\indexentry{proof obligation|indexref{2}{proof}{2proof obligation}}{2}
+\indexentry{obligation!proof|indexref{2}{proof}{2obligation-proof}}{2}
+\indexentry{+6ea@\mmath {"@} (in proof step)|indexref{1}{proof}{1+6ea}}{1}
+\indexentry{+4os@\mmath {\icmd {langle}*\icmd {rangle}} (in proofs)|indexref{1}{proof}{1+4os}}{1}
+\indexentry{+4op@\mmath {\icmd {langle}\mskip -\thinmuskip +\mskip -\thinmuskip \icmd {rangle}} (in proofs)|indexref{1}{proof}{1+4op}}{1}
+\indexentry{subexpression names|indexref{1}{proof}{1subexpression-names}}{1}
+\indexentry{instance@\icmd {textsc}{instance}!theorems imported by|indexref{1}{proof}{1instance-thms}}{1}
+\indexentry{module, special|indexref{1}{proof}{1module-special}}{1}
+\indexentry{definition!local|indexref{1}{proof}{1def-local}}{1}
+\indexentry{function!recursive definition of!use in proof|indexref{1}{proof}{1fcn-recursive-def-of-pf}}{1}
+\indexentry{recursive!function definition!use in proof|indexref{1}{proof}{1recursive-fcn-def-pf}}{1}
+\indexentry{operator!recursive definition of!use in proof|indexref{1}{proof}{1op-recursive-def-of-pf}}{1}
+\indexentry{recursive!operator definition!in proof|indexref{1}{proof}{1recursive-op-def-pf}}{1}
+\indexentry{Goto Declaration (Toolbox command)@\icmd {textsf}{Goto Declaration} (Toolbox command)|indexref{3}{proof}{3goto-declaration}}{3}
+\indexentry{Return from Goto Declaration (Toolbox command)@\icmd {textsf}{Return from Goto Declaration} (Toolbox command)|indexref{1}{proof}{1return-from-goto-declaration}}{1}
+\indexentry{Show Declarations (Toolbox command)@\icmd {textsf}{Show Declarations} (Toolbox command)|indexref{1}{proof}{1show-declarations}}{1}
+\indexentry{Show Uses (Toolbox command)@\icmd {textsf}{Show Uses} (Toolbox command)|indexref{1}{proof}{1show-uses}}{1}
+\indexentry{Goto Next Use (Toolbox command)@\icmd {textsf}{Goto Next Use} (Toolbox command)|indexref{1}{proof}{1goto-next-use}}{1}
+\indexentry{Goto Prev Use (Toolbox command)@\icmd {textsf}{Goto Prev Use} (Toolbox command)|indexref{1}{proof}{1goto-prev-use}}{1}

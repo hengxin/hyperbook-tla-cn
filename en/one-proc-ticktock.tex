@@ -1,0 +1,39 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{Answer}
+\begin{popup}
+\subsection*{Answer}
+
+\begin{nopcal}
+--algorithm UniprocessTickTock  {
+    variable b = 0 ;
+    { while (TRUE)
+        { either { await b = 0;
+                   b := 1 
+                 }
+          or     { await b = 1;
+                   b := 0
+                 }
+        }
+    }
+}
+\end{nopcal}
+\begin{tlatex}
+\@x{ {\p@mmalgorithm} UniprocessTickTock\@s{4.1} {\p@lbrace}}%
+\@x{\@s{16.4} {\p@variable} b \.{=} 0 {\p@semicolon}}%
+\@x{\@s{16.4} {\p@lbrace} {\p@while} {\p@lparen} {\TRUE} {\p@rparen}}%
+ \@x{\@s{34.18} {\p@lbrace} {\p@either} {\p@lbrace} {\p@await} b \.{=} 0
+ {\p@semicolon}}%
+\@x{\@s{86.51} b \.{:=} 1}%
+\@x{\@s{76.93} {\p@rbrace}}%
+ \@x{\@s{43.76} {\p@or}\@s{18.84} {\p@lbrace} {\p@await} b \.{=} 1
+ {\p@semicolon}}%
+\@x{\@s{86.51} b \.{:=} 0}%
+\@x{\@s{76.93} {\p@rbrace}}%
+\@x{\@s{34.18} {\p@rbrace}}%
+\@x{\@s{16.4} {\p@rbrace}}%
+\@x{ {\p@rbrace}}%
+\end{tlatex}
+
+\end{popup}
+\makepopup

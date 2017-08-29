@@ -1,0 +1,132 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{Contents}
+
+\begin{document}
+\showversions
+\makeatletter
+
+\def\contentsline#1#2#3#4{%
+%\typeout{unit: #1}%
+  \ifx\\#4\\%
+%\typeout{ \ if case}%
+    \csname l@#1\endcsname{#2}{#3}%
+  \else
+%\typeout{ \ else case}%
+    \ifcase\Hy@linktoc % none
+%\typeout{ \ \ case 0}%
+      \csname l@#1\endcsname{#2}{#3}%
+    \or % section
+%\typeout{ \ \ case 1}%
+      \csname l@#1\endcsname{%
+%%%        \hyper@linkstart{link}{#4}{#2}\hyper@linkend
+          \sref{\remotefile}{#4}{#2}%
+      }{}%%%%   {#3}%
+    \or % page
+%\typeout{ \ \ case 2}%
+%%      \csname l@#1\endcsname{{#2}}{%
+%%        \hyper@linkstart{link}{#4}{#3}\hyper@linkend
+%%      }%
+    \relax
+    \else % all
+%\typeout{ \ \ case else}%
+      \csname l@#1\endcsname{%
+      \sref{\remotefile}{#4}{#2}}{}%
+%%%        \hyper@linkstart{link}{#4}{#2}\hyper@linkend
+%%%      }{%
+%%%        \hyper@linkstart{link}{#4}{#3}\hyper@linkend
+%%%      }%
+    \fi
+  \fi
+  \gdef\sectionlabel{#4}
+}
+
+\newwrite\xreffile
+\immediate\openout\xreffile=xref.tex
+
+% The following hack is to ensure that pdflatex can be run on the 
+% xref.tex file without causing any harm.
+\immediate\write\xreffile{\string\documentclass{article}}
+\immediate\write\xreffile{\string\begin{document}}
+\immediate\write\xreffile{\string\end{document}}
+\immediate\write\xreffile{\string\xdocumentclass}
+
+
+ \renewcommand{\makeseclabel}[1]{%
+  \immediate\write\xreffile{\string\makexref{#1}{\sectionlabel}}}
+
+% added on 19 March 2012
+\renewcommand{\maketargetlabel}[2]{%
+  \immediate\write\xreffile{\string\makexref{#2}{#1}}}
+
+\target{top}%
+\begin{center}
+\hspace*{50pt}{\LARGE\boldmath\textbf{\makebox[0pt]{Principles and Specifications of Concurrent Systems}}}\V{.5}
+{\large \hspace*{50pt}\s{1}Leslie Lamport \V{.3}
+\hspace*{50pt}Version of \dayMonthYear}
+\end{center}
+
+\vspace{-2em}
+
+\section*{\protect\sref{main}{top}{The \emph{Principles}
+and \emph{Specification} Tracks}}
+% \subsection*{Main}
+
+\marginpar{%
+   \hspace*{-100pt}%
+   \raisebox{-25pt}[0pt][0pt]{\makebox[0pt][l]{%
+    \newlength{\thislength}%
+    \setlength{\thislength}{\marginparwidth}%
+    \addtolength{\thislength}{\marginparsep}%
+    \addtolength{\thislength}{50pt}%
+    \begin{minipage}{\thislength}
+    \puce \Large Sections colored like this have not yet 
+             been written.    
+    \end{minipage}}}}
+
+\vspace{-10pt}
+
+\def\remotefile{main}
+\input{main.toc}
+
+\section*{\sref{principles}{top}{The \emph{Principles} Track}}
+\def\remotefile{principles}
+\input{principles.toc}
+
+\section*{\sref{specification}{top}{\puce The \emph{Specification} Track}}
+\def\remotefile{specification}
+\input{specification.toc}
+
+
+% \section*{\sref{tlaplus}{top}{\puce The \protect\tlaplus\ Track}}
+% 
+% \def\remotefile{tlaplus}
+% \input{tlaplus.toc}
+
+% \section*{\sref{pluscal}{top}{\puce The PlusCal Track}}
+% 
+% \def\remotefile{pluscal}
+% \input{pluscal.toc}
+
+\section*{\sref{proof}{top}{The \protect\tlaplus\ Proof Track}}
+
+\def\remotefile{proof}
+\input{proof.toc}
+
+
+
+\section*{\sref{math}{top}{Math}}
+\def\remotefile{math}
+\input{math.toc}
+
+\section*{\sref{topics}{top}{\puce Topics}}
+\def\remotefile{topics}
+\input{topics.toc}
+
+
+
+% \section*{\sref{summary}{top}{Summary of \protect\tlaplus}}
+
+\closeout\xreffile
+
+\end{document}

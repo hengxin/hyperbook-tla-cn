@@ -1,0 +1,86 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{Algorithm Handshake}
+\begin{popup}
+\begin{notla}
+----------------------------- MODULE Handshake -----------------------------
+EXTENDS Integers, Sequences, TLAPS
+
+Put(s) == Append(s, "widget")
+Get(s) == Tail(s)
+
+a (+) b == (a + b) % 2
+\end{notla}
+\begin{tlatex}
+\@x{}\moduleLeftDash\@xx{ {\MODULE} Handshake}\moduleRightDash\@xx{}%
+\@x{ {\EXTENDS} Integers ,\, Sequences}%
+\@pvspace{8.0pt}%
+\@x{ Put ( s )\@s{0.18} \.{\defeq} Append ( s ,\,\@w{widget} )}%
+\@x{ Get ( s ) \.{\defeq} Tail ( s )}%
+\@pvspace{8.0pt}%
+\@x{ a \.{\oplus} b \.{\defeq} ( a \.{+} b ) \;\.{\%}\; 2}%
+\end{tlatex}
+\V{.75}
+\verb|(*********************************************************| \V{-.75}
+\begin{nopcal}
+--algorithm Handshake {
+
+    variable p = 0,  c = 0,  box = << >> ;
+
+    process (Producer = 0) 
+      { p1: while (TRUE)
+              { await p = c ;
+                box := Put(box) ;
+                p := p (+) 1
+              }
+      }
+      
+    process (Consumer = 1)
+      { c1: while (TRUE)
+              { await p # c ;
+                box := Get(box) ;
+                c := c (+) 1
+              }
+      }
+}
+\end{nopcal}
+\begin{tlatex}
+\@x{ {\p@mmalgorithm} Handshake {\p@lbrace}}%
+\@pvspace{8.0pt}%
+ \@x{\@s{16.4} {\p@variable} p \.{=} 0 ,\,\@s{4.1} c \.{=} 0 ,\,\@s{4.1} box
+ \.{=} {\langle}\, {\rangle} {\p@semicolon}}%
+\@pvspace{8.0pt}%
+\@x{\@s{16.4} {\p@process} {\p@lparen} Producer \.{=} 0 {\p@rparen}}%
+ \@x{\@s{24.59} {\p@lbrace} p1\@s{.5}\textrm{:}\@s{3} {\p@while} {\p@lparen}
+ {\TRUE} {\p@rparen}}%
+\@x{\@s{59.40} {\p@lbrace} {\p@await} p \.{=} c {\p@semicolon}}%
+\@x{\@s{68.98} box \.{:=} Put ( box ) {\p@semicolon}}%
+\@x{\@s{68.98} p \.{:=} p \.{\oplus} 1}%
+\@x{\@s{59.40} {\p@rbrace}}%
+\@x{\@s{24.59} {\p@rbrace}}%
+\@pvspace{8.0pt}%
+\@x{\@s{16.4} {\p@process} {\p@lparen} Consumer \.{=} 1 {\p@rparen}}%
+ \@x{\@s{24.59} {\p@lbrace} c1\@s{.5}\textrm{:}\@s{3} {\p@while} {\p@lparen}
+ {\TRUE} {\p@rparen}}%
+\@x{\@s{58.82} {\p@lbrace} {\p@await} p \.{\neq} c {\p@semicolon}}%
+\@x{\@s{68.40} box \.{:=} Get ( box ) {\p@semicolon}}%
+\@x{\@s{68.40} c \.{:=} c \.{\oplus} 1}%
+\@x{\@s{58.82} {\p@rbrace}}%
+\@x{\@s{24.59} {\p@rbrace}}%
+\@x{ {\p@rbrace}}%
+\@pvspace{4.0pt}%
+\end{tlatex}
+
+\noindent
+\verb|*********************************************************)|\vs{.3} 
+
+\begin{notla}
+=============================================================================
+\end{notla}
+\begin{tlatex}
+\@x{}\bottombar\@xx{}%
+\end{tlatex}
+
+
+\end{popup}
+\makepopup

@@ -1,0 +1,29 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{ASCII Text}
+\fixverbatim
+\addtolength{\textwidth}{20pt}
+\begin{popup}
+\begin{verbatim*}
+CRanking ==
+  LET DomEq == { r \in Cand \X Cand : ~(r[2] \succ r[1]) } 
+      DomEqPlus == SimpleTC(DomEq)
+      CWinners(C) == {c \in C : \A d \in C : <<c, d>> \in DomEqPlus}
+      RECURSIVE CRanking(_)
+      CRanking(C) == IF C = {} THEN << >>
+                               ELSE LET CW == CWinners(C) 
+                                    IN  <<CW>> \o CRanking(C \ CW)
+  IN  CRanking(Cand)
+\end{verbatim*}
+\end{popup}
+\makeasciipopup
+
+CRanking ==
+  LET DomEq == { r \in Cand \X Cand : ~(r[2] \succ r[1]) } 
+      DomEqPlus == SimpleTC(DomEq)
+      CWinners(C) == {c \in C : \A d \in C : <<c, d>> \in DomEqPlus}
+      RECURSIVE CRanking(_)
+      CRanking(C) == IF C = {} THEN << >>
+                               ELSE LET CW == CWinners(C) 
+                                    IN  <<CW>> \o CRanking(C \ CW)
+  IN  CRanking(Cand)

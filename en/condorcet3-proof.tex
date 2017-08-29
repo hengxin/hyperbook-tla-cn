@@ -1,0 +1,53 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{Proof}
+\newcommand{\cset}{\ensuremath{\mathcal{CW}}}
+\pflongnumbers
+\pflongindent
+\beforePfSpace{10pt, 5pt, 2pt}
+\afterPfSpace{10pt, 5pt, 2pt}
+\interStepSpace{10pt, 5pt, 2pt}
+
+\begin{popup}
+\textbf{C3.} $\cset = 
+      \{c \in Cand : \A d \in Cand: c\succeq^{+}d\}$
+
+\begin{proof}
+%%% \setlength{\stepsep}{.35em}
+\step{1}{$\cset \subseteq \{c \in Cand : \A d \in Cand: c\succeq^{+}d\}$}
+\begin{proof}
+\pf\ This follows from property C2 by the argument in the
+preceding paragraph.
+\end{proof}
+\step{2}{$\{c \in Cand : \A d \in Cand: c\succeq^{+}d\} \subseteq \cset$}
+\begin{proof}
+\step{2.1}{It suffices to assume $c\in Cand$ and 
+             $\A d \in Cand: c\succeq^{+}d$, and to prove $c\in \cset$.}
+\begin{proof}
+\pf\ Obvious
+\end{proof}
+
+\step{2.2}{Let $d$ be an element of $\cset$.}
+\begin{proof}
+\pf\ By definition, $\cset$ is nonempty.
+\end{proof}
+
+\step{2.3}{$c\succeq^{+}d$}
+\begin{proof}
+\pf\ By 2.2 and the assumption of 2.1.
+\end{proof}
+
+\qedstep
+\begin{proof}
+\pf\ By 2.2 and 2.3, since as we observed above, a simple induction
+argument shows that $d\in \cset$ and $c\succeq^{+}d$ implies $c\in \cset$.
+\end{proof}
+
+\end{proof}
+\qedstep
+\begin{proof}
+\pf\ By steps 1 and 2.
+\end{proof}
+\end{proof}
+\end{popup}
+\makepopup

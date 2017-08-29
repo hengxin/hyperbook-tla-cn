@@ -1,0 +1,40 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{}
+\begin{popup}
+\begin{verbatim*}
+-------------------------- MODULE Euclid -------------------------- 
+EXTENDS Integers
+CONSTANTS M, N 
+ 
+ASSUME MNPosInt == /\ M \in Nat \ {0}
+                   /\ N \in Nat \ {0}
+
+VARIABLES x, y
+ 
+TypeOK == x \in Nat \ {0}  /\  y \in Nat \ {0}
+ 
+Init == (x = M)  /\  (y = N)
+ 
+Next == \/ /\ x > y
+           /\ x' = x - y
+           /\ y' = y       
+        \/ /\ y > x
+           /\ y' = y - x
+           /\ x' = x
+-------------------------------------------------------------------
+Divides(p, n) == \E q \in 0..n : n = q * p       
+  
+DivisorsOf(n) == {p \in 0..n : Divides(p, n)}  
+ 
+Max(S)  ==  CHOOSE i \in S : \A j \in S : i >= j
+  
+GCD(m, n) == Max(DivisorsOf(m) \cap DivisorsOf(n)) 
+-------------------------------------------------------------------
+GCDInv == GCD(x, y) = GCD(M, N)
+ 
+Inv == TypeOK /\ GCDInv
+=================================================================== 
+\end{verbatim*}
+\end{popup}
+\makepopup

@@ -1,0 +1,23 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{Answer}
+\begin{popup}
+(a) One way is to change the $Rcv$ process's statement
+ \[ ch := Tail(ch)
+ \]
+to the following statement, which removes the last element from
+the sequence~$ch$:
+ \[ ch := [i \in 1\dd (Len(ch)-1) |-> ch[i]]
+ \]
+You can also do it by instead changing the $Send$ process so it adds
+the message to the beginning of $ch$.  How would you write that?
+
+\medskip
+
+(b)~Consider the behavior in which the sender sends one message and
+then keeps sending additional messages, and the receiver receives each
+of those additional messages immediately after they are sent.  This
+behavior is fair for the $Rcv$ process, but the first message sent is
+never received.
+\end{popup}
+\makepopup

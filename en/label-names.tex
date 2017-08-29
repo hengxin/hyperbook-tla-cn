@@ -1,0 +1,32 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{Names in PlusCal Code}
+\file{label-names}
+\begin{popup}
+
+\subsection*{Names in PlusCal Code}
+
+  \ctindex{2}{labels, PlusCal!name actions}{labels-name-action}%
+  \tindex{1}{names in PlusCal}%
+  \tindex{1}{renaming in PlusCal}%
+%  \vspace{-\baselineskip}%
+%
+Each label name is used as the name of a defined action.  Had we used
+$p$ as a label instead of $p1$, the translation could not have used
+$p$ as the name of the action because it would have conflicted with
+the variable name~$p$.  The translator would have chosen a different
+name (by default, the name $p\_$).  Similarly, had we used the same
+label in the two different processes, a different name would have been
+used for one of the corresponding actions.
+
+\medskip
+
+This kind of renaming makes the \tlaplus\ translation harder to
+understand.  In the hyperbook, I will choose names that avoid
+renaming.  You should do the same for your algorithms if you want to
+read the translations---for example, if you are writing rigorous
+correctness proofs.  The translator adds a comment at the beginning of
+the translation to indicate any renaming that it did.
+
+\end{popup}
+\makepopup

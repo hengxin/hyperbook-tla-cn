@@ -1,0 +1,30 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{ASCII}
+\begin{popup}
+\subsection*{Die Hard in PlusCal: ASCII Version}
+
+\bigskip
+
+\begin{verbatim*}
+--algorithm DieHard  {
+  variables big = 0, small = 0;  
+  { while (TRUE) 
+      { either big := 5    \* fill the big jug
+        or     small := 3  \* fill the small jug
+        or     big := 0    \* empty the big jug
+        or     small := 0  \* empty the small jug
+        or     \* pour from small to big
+               with (poured = Min (big + small, 5) - big)
+                   { big   := big + poured ;                 
+                     small := small - poured }
+        or     \* pour from big to small
+               with (poured = Min (big + small, 3) - small)  
+                   { big   := big - poured ;                 
+                     small := small + poured }
+      }
+  }
+}
+\end{verbatim*}
+\end{popup}
+\makepopup

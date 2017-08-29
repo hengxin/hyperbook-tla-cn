@@ -1,0 +1,37 @@
+\listfiles
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{ASCII Text}
+\fixverbatim
+\begin{popup}
+\begin{verbatim*}
+THEOREM /\ Init => IInv
+        /\ IInv /\ Next => IInv'
+        /\ IInv => EuclidInv 
+<1>1. Init => IInv
+   BY  PosIntAssump DEF Init, IInv, TypeOK
+<1>2. IInv /\ Next => IInv'
+  <2>1. SUFFICES ASSUME IInv, Next
+                 PROVE  IInv'
+     OBVIOUS
+  <2>2. CASE y > x
+    <3>1. (y - x \in Nat \ {0})  /\  ~(x > y)
+      BY <2>1, <2>2, SimpleArithmetic DEF IInv, TypeOK
+    <3>2. QED 
+      BY <2>1, <3>1, GCD3 DEF IInv, TypeOK, Next
+  <2>3. CASE x > y
+    <3>1. (x - y \in Nat \ {0})  /\  ~(y > x)
+      BY <2>1, <2>3, SimpleArithmetic DEF IInv, TypeOK
+    <3>2. GCD(y, x-y) = GCD(y, x)
+      BY <2>1, <3>1, GCD3 DEF IInv, TypeOK, Next
+    <3>3. QED
+      BY <2>1, <3>1, <3>2, GCD2, GCD3  DEF IInv, TypeOK, Next
+  <2>4. QED
+    BY  <2>1, <2>2, <2>3 DEF Next
+<1>3. IInv => EuclidInv  
+  BY GCD1 DEF IInv, EuclidInv, TypeOK
+<1>4. QED
+  BY <1>1, <1>2, <1>3
+\end{verbatim*}
+\end{popup}
+\makeasciipopup

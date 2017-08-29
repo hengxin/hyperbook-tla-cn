@@ -1,0 +1,34 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{Safety and Liveness}
+\file{safe-live-intro}
+\makeindex
+\begin{popup}
+  \tindex{1}{safety property}%
+  \tindex{1}{liveness property}%
+  \ctindex{1}{property!safety}{safety}%
+  \ctindex{1}{property!liveness}{liveness}%
+\vspace*{-2em}
+\subsection*{Safety and Liveness}
+
+Informally, a safety property asserts that something bad does not
+happen.  More precisely, a safety property is one that can be violated
+by a single step of a behavior, or by its first state.  For example, the
+property 
+\begin{display}
+whenever $x$ equals $y$,
+they both equal the gcd of $M$ and $N$.
+\end{display}
+is a safety property because it can be violated by a step that
+makes $x$ and $y$ equal without making them equal to 
+the gcd of $M$ and $N$.
+
+\medskip
+
+Informally, a liveness property asserts that something good eventually
+happens.  More precisely, a liveness property is one that you cannot
+tell is violated without seeing the entire behavior.  For example, 
+the property that eventually $x$ equals $y$ is a liveness property because
+you need to see the entire behavior to know that $x$ is never equal to $y$.
+\end{popup}
+\makepopup

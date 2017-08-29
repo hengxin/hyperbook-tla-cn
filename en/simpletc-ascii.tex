@@ -1,0 +1,14 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{ASCII Text}
+\fixverbatim
+\begin{popup}
+\begin{verbatim*}
+SimpleTC(R) ==
+  LET RECURSIVE STC(_)
+      STC(n) == IF n = 1 THEN R
+                         ELSE STC(n-1) \cup STC(n-1) ** R
+  IN  STC(Cardinality(NodesOf(R)))
+\end{verbatim*}
+\end{popup}
+\makeasciipopup

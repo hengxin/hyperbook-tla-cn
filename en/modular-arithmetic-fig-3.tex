@@ -1,0 +1,94 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+
+\newcommand{\kbuf}{\qbezier(0,50)(20.7,50)(35.35,35.35)
+\qbezier(50,0)(50,20.7)(35.35,35.35)
+\qbezier(0,-50)(20.7,-50)(35.35,-35.35)
+\qbezier(50,0)(50,-20.7)(35.35,-35.35)
+\qbezier(0,-50)(-20.7,-50)(-35.35,-35.35)
+\qbezier(-50,0)(-50,-20.7)(-35.35,-35.35)
+\qbezier(0,50)(-20.7,50)(-35.35,35.35)
+\qbezier(-50,0)(-50,20.7)(-35.35,35.35)
+\put(-46,19){\circle*{3}}
+\put(-57,22.2){\makebox(0,0){\small $K\!-\!$3}}
+\put(-35.35,35.35){\circle*{3}}
+\put(-47,41){\makebox(0,0){\small $K\!-\!2$}}
+\put(-19,46){\circle*{3}}
+\put(-24,53){\makebox(0,0){\small $K\!-\!1$}}
+\put(0,50){\circle*{3}}
+\put(0,58){\makebox(0,0){\small 0}}
+\put(19,46){\circle*{3}}
+\put(22.2,53.6){\makebox(0,0){\small 1}}
+\put(35.35,35.35){\circle*{3}}
+\put(41,41){\makebox(0,0){\small 2}}
+\put(46,19){\circle*{3}}
+\put(53.6,22.2){\makebox(0,0){\small 3}}
+\put(50,0){\circle*{3}}
+\put(46,-19){\circle*{3}}
+\put(35.35,-35.35){\circle*{3}}
+\put(19,-46){\circle*{3}}
+\put(0,-50){\circle*{3}}
+\put(-19,-46){\circle*{3}}
+\put(-35.35,-35.35){\circle*{3}}
+\put(-46,-19){\circle*{3}}
+\put(-50,0){\circle*{3}}
+}
+\newcommand{\gpp}{{\gray \graphpaper(-100,-100)(200,200)}}
+\newcommand{\cptr}[1]{\put(0,0){\rotatebox{-#1}{\begin{picture}(0,0)
+\put(0,25){\vector(0,1){20}} 
+%\put(0,20){\makebox(0,0)[t]{\normalsize $c$}}         
+\end{picture}}}}
+\newcommand{\pptr}[1]{\put(0,0){\rotatebox{-#1}{\begin{picture}(0,0)
+\put(0,85){\vector(0,-1){20}}        
+\end{picture}}}}
+\def\cpt(#1,#2){\put(#1,#2){\makebox(0,0){$c$}}}
+\def\ppt(#1,#2){\put(#1,#2){\makebox(0,0){$p$}}}
+\newcommand{\bbuf}{\qbezier(0,50)(20.7,50)(35.35,35.35)
+\qbezier(50,0)(50,20.7)(35.35,35.35)
+\qbezier(0,-50)(20.7,-50)(35.35,-35.35)
+\qbezier(50,0)(50,-20.7)(35.35,-35.35)
+\qbezier(0,-50)(-20.7,-50)(-35.35,-35.35)
+\qbezier(-50,0)(-50,-20.7)(-35.35,-35.35)
+\qbezier(0,50)(-20.7,50)(-35.35,35.35)
+\qbezier(-50,0)(-50,20.7)(-35.35,35.35)
+\put(-46,19){\circle*{3}}
+\put(-57,22.2){\makebox(0,0){\small $N\!-\!3$\s{1.1}}}
+\put(-35.35,35.35){\circle*{3}}
+\put(-47,39){\makebox(0,0){\small $N\!-\!2$\s{1}}}
+\put(-19,46){\circle*{3}}
+\put(-24,53){\makebox(0,0){\small $N\!-\!1$\s{1.7}}}
+\put(0,50){\circle*{3}}
+\put(0,58){\makebox(0,0){\small 0}}
+\put(19,46){\circle*{3}}
+\put(22.2,53.6){\makebox(0,0){\small 1}}
+\put(35.35,35.35){\circle*{3}}
+\put(41,41){\makebox(0,0){\small 2}}
+\put(46,19){\circle*{3}}
+\put(53.6,22.2){\makebox(0,0){\small 3}}
+\put(50,0){\circle*{3}}
+\put(46,-19){\circle*{3}}
+\put(35.35,-35.35){\circle*{3}}
+\put(19,-46){\circle*{3}}
+\put(0,-50){\circle*{3}}
+\put(-19,-46){\circle*{3}}
+\put(-35.35,-35.35){\circle*{3}}
+\put(-46,-19){\circle*{3}}
+\put(-50,0){\circle*{3}}
+}%
+\def\cptN(#1,#2){\put(#1,#2){\makebox(0,0){$c\,\%\,N$}}}
+\def\pptN(#1,#2){\put(#1,#2){\makebox(0,0){$p\,\%\,N$}}}
+
+\pdftitle{The Bounded Buffer}
+\begin{popup}
+\subsection*{The Bounded Buffer}
+\begin{picture}(115,115)(-75,-50)
+\bbuf
+%\gpp
+\thicklines
+\cptr{-45}%
+\cptN(-12,12)
+\pptr{67.5}%
+\pptN(94,35)%
+\end{picture}
+\end{popup}
+\makepopup

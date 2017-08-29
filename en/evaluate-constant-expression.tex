@@ -1,0 +1,39 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\makeindex
+\file{evaluate-constant-expression}
+\pdftitle{Evaluating Constant Expressions with TLC.}
+\setpopup{19}
+\begin{document}
+
+  \ctindex{1}{constant expression, evaluating}{const-exp}%
+  \ctindex{1}{evaluating a constant expression}{eval}%
+  \vspace{-2\baselineskip}%
+\subsection*{Evaluating Constant Expressions with TLC} 
+
+% \show\popref
+Go to the model's \textsf{Model Checking Results} page by clicking on
+the model's tab and then clicking on the \textsf{Model Checking
+Results} tab.  In the \textsf{Evaluate Constant Expression} section of
+that page, enter the expression to be evaluated in the text area
+labeled \emph{Expression} and \popref{run-tlc}{run TLC}\@.  TLC should
+print the value of the expression in the text area labeled
+\emph{Value}.
+
+\medskip
+
+\noindent
+You may want to have TLC evaluate this expression without checking
+your entire specification.  In that case, go to the \textsf{Model
+Overview} page, and in the \textsf{What is the behavior spec} section
+select \textsf{No Behavior Spec}.
+
+\medskip
+ \noindent
+You can evaluate only constant expressions in this way.  If the expression
+contains a variable (perhaps through a defined symbol in the expression),
+TLC will produce an error saying that the variable is undefined.
+
+\end{document}
+
+

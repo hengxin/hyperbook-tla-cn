@@ -1,0 +1,43 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\makeindex
+\file{parser-preferences}
+\pdftitle{Toolbox TLA+ Parser Preferences}
+\begin{popup}
+ \tindex{1}{parser preferences}%
+ \ctindex{1}{Toolbox!tla parser preferences@\icmd{tlaplus} 
+              parser preferences}{toolbox-parser-pref}%
+ \vspace{-2\baselineskip}%
+\subsection*{Toolbox \tlaplus\ Parser Preferences}
+
+In the Toolbox's \textsf{File} menu, click on \textsf{Preferences}.
+This will raise the \emph{Preferences} window.  Select \textsf{TLA+
+Preferences\,/\,TLA+ Parser}.  The default has all options selected.
+
+\setlength{\parindent}{1.5em} A very large spec can take 10 or more
+seconds to parse.  If it does, you may not want parsing to occur
+automatically when a file is saved.  The \emph{Re-parse module on
+save} option parses a single module, as well as all modules that it
+imports (directly or indirectly), when the module is saved.  The
+\emph{Re-parse specification on spec module save} option causes the
+entire specification to be parsed when any of its modules is saved.
+Parsing the entire specification means parsing the spec's root module.
+A module is considered to be part of the spec if it was imported by
+the root module the last time that root module was parsed.
+
+You can parse the current module or the entire specification with
+the \textsf{Parse Module} (\textsf{control+r}) or
+\textsf{Parse Spec} (\textsf{control+alt+r}) command on the
+Toolbox's \textsf{File} menu.
+
+If the \emph{Always pop up Parsing Errors view} option is not
+selected, then you will have to click on the \textsf{Parsing Errors}
+option in the Toolbox's \textsf{Window} menu to raise the window that
+lists all the parsing errors.  The locations of parsing errors are
+shown in the module editor even if that window is not raised.
+There is little reason not to select this option.
+
+
+
+\end{popup}
+\makepopup

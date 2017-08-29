@@ -1,0 +1,42 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{Two Process Clock}
+\setwidepopup{22.5}{10}
+\begin{document}
+\section*{A Two Process Clock}
+
+\begin{twocols}
+\begin{tabbing}
+\algorithm\ $Clock$ \{ \V{.3} 
+\s{1}\variable\ $b \in \{\,\}$;\V{.3}
+\s{1}\process\ $(Tick = "tick")$\\
+\s{2}\{ \=$i$: \=\pwhile\ $(\TRUE)$ \= \{ \= \await\ $b=0$ ; \s{5}\\
+        \>      \>                  \>    \> $b := 1$\\
+        \>      \>                  \>  \} \\
+\s{2}\} \V{.5}
+\s{1}\process\ $(Tock = "tock")$\\
+\s{2}\{ \> $o$: \>\pwhile\ $(\TRUE)$ \> \{ \> \await\ $b=1$ ; \\
+        \>      \>                   \>    \>  $ b := 0$\\
+        \>      \>                   \>  \}\\
+\s{2}\} \\
+\s{.5}\}
+\end{tabbing}
+\midcol
+\begin{verbatim*}
+--algorithm Clock {
+  variable b \in {0, 1} ;
+  process (Tick = "tick") 
+    { i: while (TRUE) { await b = 0;
+                        b := 1;
+                      }
+    }
+  process (Tock = "tick") 
+    { o: while (TRUE) { await b = 1;
+                        b := 0;
+                      }
+    }
+}
+\end{verbatim*}
+\end{twocols}
+
+\end{document}

@@ -1,0 +1,157 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{ASCII Representation of Symbols}
+
+\newcommand{\notemark}[1]{\ensuremath{^{(#1)}}}
+
+\setwidepopup{47}{1}
+
+\file{ascii-representation}
+\makeindex
+\begin{document}
+\subsection*{The {\rm\textsc{ascii}} Representation of Symbols}
+
+  \ctindex{1}{symbol!ascii representation@\icmd{textsc}{ascii} representation}{symbol-ascii}%
+  \ctindex{1}{ascii representation of symbols in@\icmd{textsc}{ascii} representation of symbols}{ascii-symbols}%
+
+\noindent
+\begin{tabular}[t]{@{}ll@{}}
+$/\ $ & \verb+/\+ \ {\small or} \ \verb+\land+ \\
+$~$ & \verb+~+ \ {\small or} \ \verb+\lnot+ \ {\small or} \ \verb+\neg+ \\
+$\in$ & \verb+\in+ \\
+$<<$ & \verb+<<+ \\
+$<$ & \verb+<+ \\
+$\leq$ & \verb+\leq+ \ {\small or} \ \verb+=<+ \ {\small or} \ \verb+<=+ \\
+$\ll$ & \verb+\ll+ \\
+$\prec$ & \verb+\prec+ \\
+$\preceq$ & \verb+\preceq+ \\
+$\subseteq$ & \verb+\subseteq+ \\
+$\subset$ & \verb+\subset+ \\
+$\sqsubset$ & \verb+\sqsubset+ \\
+$\sqsubseteq$ & \verb+\sqsubseteq+ \\
+$|-$ & \verb+|-+ \\
+$|=$ & \verb+|=+ \\
+$->$ & \verb+->+ \\
+%% $\{\![$ & \verb+{|+ \\
+$\cap$ & \verb+\cap+ \ {\small or} \ \verb+\intersect+ \\
+$\sqcap$ & \verb+\sqcap+ \\
+$\oplus$ & \verb|(+)| \ {\small or} \ \verb+\oplus+ \\
+$\ominus$ & \verb+(-)+ \ {\small or} \ \verb+\ominus+ \\
+$\odot$ & \verb+(.)+ \ {\small or} \ \verb+\odot+ \\
+$\otimes$ & \verb|(\X)| \ {\small or} \ \verb+\otimes+ \\
+$\oslash$ & \verb+(/)+ \ {\small or} \ \verb+\oslash+ \\
+$\E$ & \verb|\E| \\
+$\EE$ & \verb|\EE|\\
+$]_v$ & \verb|]_|$v$\\
+$\WF_v$ & \verb|WF_|$v$
+\end{tabular}%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\s{1.5}
+\begin{tabular}[t]{@{}ll@{}}
+$\/ $ & \verb+\/+ \ {\small or} \ \verb+\lor+ \\
+$\equiv$ & \verb+<=>+ \ {\small or} \ \verb+\equiv+ \\
+$\notin$ & \verb|\notin| \\
+$>>$ & \verb+>>+ \\
+$>$ & \verb+>+ \\
+$\geq$ & \verb+\geq+ \ {\small or} \ \verb+>=+ \\
+$\gg$ & \verb+\gg+ \\
+$\succ$ & \verb+\succ+ \\
+$\succeq$ & \verb+\succeq+ \\
+$\supseteq$ & \verb+\supseteq+ \\
+$\supset$ & \verb+\supset+ \\
+$\sqsupset$ & \verb+\sqsupset+ \\
+$\sqsupseteq$ & \verb+\sqsupseteq+ \\
+$\dashv$ & \verb+-|+ \\
+\NOTLA$=\s{-.45}|$ & \verb+=|+ \\
+$<-$ & \verb+<-+ \\
+%% $]\!\}$ & \verb+|}+ \\
+$\cup$ & \verb+\cup+ \ {\small or} \ \verb+\union+\\
+$\sqcup$ & \verb+\sqcup+ \\
+%% $\ominus$ & \verb+(-)+ \ {\small or} \ \verb+\ominus+ \\
+$\uplus$ & \verb+\uplus+ \\
+$\X$ & \verb+\X+ \ {\small or} \ \verb+\times+ \\
+$\wr$ & \verb+\wr+ \\
+$\propto$ & \verb+\propto+ \\
+$"s"$ & \verb+"s"+ \notemark{1} \\
+$\A$ & \verb|\A| \\
+$\AA$ & \verb|\AA| \\
+$>>_v$ & \verb|>>_|$v$\\
+$\SF_v$ & \verb|SF_|$v$\vs{.4}
+\end{tabular}%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\s{1,5}
+\begin{tabular}[t]{@{}ll@{}}
+$=>$ & \verb+=>+ \\
+$\deq$ & \verb+==+ \\
+$#$ & \verb+#+ \ {\small or} \ \verb+/=+ \\
+$[]$ & \verb+[]+ \\
+$<>$ & \verb+<>+ \\
+$~>$ & \verb+~>+ \\
+$-+->$ & \verb|-+->| \\
+$|->$ & \verb+|->+ \\
+$\div$ & \verb+\div+ \\
+$\cdot$ & \verb+\cdot+ \\
+$\circ$ & \verb+\o+ \ {\small or} \ \verb+\circ+\s{-2} \\
+$\bullet$ & \verb+\bullet+ \\
+$\star$ & \verb+\star+ \\
+$\bigcirc$ & \verb+\bigcirc+\\
+$\sim$ & \verb+\sim+ \\
+$\simeq$ & \verb+\simeq+ \\
+$\asymp$ & \verb+\asymp+ \\
+$\approx$ & \verb+\approx+ \\
+$\cong$ & \verb+\cong+ \\
+$\doteq$ & \verb+\doteq+ \\
+$x^y$ & \verb+x^y+ \notemark{2}\\
+$x^+$ & \verb|x^+| \notemark{2}\\
+$x^*$ & \verb+x^*+ \notemark{2}\\
+\NOTLA$X^{\#}$ & \verb+x^#+ \notemark{2}\\
+$'$ & \verb+'+ 
+\end{tabular}\\
+\begin{minipage}{.18\textwidth}
+\begin{nomodule}
+\makeatletter
+    \raisebox{\@nmlineraise}[0pt][0pt]{\rule[.5ex]{\boxrulewd
+               }{\boxlineht}}%
+    \boxrule 
+\end{nomodule}
+\end{minipage}\s{1}
+\verb|--------| \notemark{3} 
+\s{2}
+\begin{minipage}{.178\textwidth}
+\begin{nomodule}
+\makeatletter
+\mbox{}\boxrule 
+    \raisebox{\@nmlineraise}[0pt][0pt]{\rule[.5ex]{\boxrulewd
+               }{\boxlineht}}
+\end{nomodule}
+\end{minipage}\s{1}
+\verb|--------| \notemark{3} \\[.2em]
+\hspace*{\boxsep}\begin{minipage}{.15\textwidth}
+\begin{nomodule}
+\midbar
+\end{nomodule}
+\end{minipage}\hspace*{\boxsep}\s{1}
+\verb|--------| \notemark{3} 
+\s{2}
+\hspace*{\boxsep}\begin{minipage}{.15\textwidth}
+\vspace{1ex}
+\begin{nomodule}
+\bottombar
+\end{nomodule}
+\end{minipage}\hspace*{\boxsep}\s{1}
+\verb|========| \notemark{3} 
+%
+
+\vspace{\baselineskip}%
+%
+\noindent
+\rule{.2\textwidth}{.4pt}\\
+{\footnotesize
+\begin{tabular}[t]{@{}l@{\ }l}
+  (1)& $s$ is a sequence of characters.  See 
+        \rref{math}{\xlink{math-strings}}{Section~\xref{math-strings}}.\\[.1em]
+  (2)& $x$ and $y$ are any expressions.\\[.1em]
+  (3)& a sequence of four or more \verb|-| or \verb|=| characters.
+\end{tabular}}
+
+\end{document}

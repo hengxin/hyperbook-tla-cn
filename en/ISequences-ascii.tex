@@ -1,0 +1,22 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{ASCII Text}
+\fixverbatim
+\begin{popup}
+\begin{verbatim*}
+--------------------- MODULE ISequences ---------------------
+EXTENDS Integers, Sequences
+
+ISeq(S) == [(Nat \ {0}) -> S]
+
+ITail(iseq) == [i \in (Nat \ {0}) |-> iseq[i+1]]
+
+IHead(iseq) == iseq[1]
+
+seq ** iseq == [i \in (Nat \ {0}) |-> 
+                  IF i =< Len(seq) THEN seq[i]
+                                   ELSE iseq[i - Len(seq)]]
+=============================================================
+\end{verbatim*}
+\end{popup}
+\makeasciipopup

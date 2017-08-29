@@ -1,0 +1,351 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{Help}
+
+ 
+%&2&\begin{twocols}
+%\midcol
+%\verb|#|
+%\end{twocols}
+%&
+%&q&"#"&
+%&"&"#"& "
+%&c&\textsc{#}& 
+%&f&\textsf{#}& 
+%&t&\texttt{#}& 
+%&b&\textbf{#}& 
+%&k&\kwd{#}& 
+%&v&\verb|#|&  
+%&p&\documentclass[fleqn,leqno]{article}
+%\usepackage{hypertlabook}
+%\pdftitle{}
+%\begin{popup}
+%#
+%\end{popup}
+%\makepopup&
+%&a&\documentclass[fleqn,leqno]{article}
+%\usepackage{hypertlabook}
+%\pdftitle{ASCII Text}
+%\fixverbatim
+%\begin{popup}
+%\begin{verbatim*}
+%#
+%\end{verbatim*}
+%\end{popup}
+%\makeasciipopup&
+%&u&\documentclass[fleqn,leqno]{article}
+%\usepackage{hypertlabook}
+%\pdftitle{}
+%\setpopup{30}
+%\begin{document}
+%#
+%\end{document}&
+
+%&o&\overline{#}& 
+%&e&\ENABLED#& 
+%&G&$\mathcal{G}$#& 
+%&U&$\mathcal{U}$#& 
+
+\begin{document}
+
+
+\btarget{top}
+
+\begin{center}
+\large \bf Version of \dayMonthYear
+\end{center}
+
+% \noindent
+%\s{-2}\scalebox{.77}{\includegraphics{pink.png}}\\
+
+\bigskip
+
+\definecolor{rose}{rgb}{1,.95,.95} 
+ \noindent \s{-5}% 
+%
+\colorbox{rose}{
+\s{5}\begin{minipage}{\textwidth} 
+I am in the middle of revising this hyperbook. 
+The revised part has the light yellow
+background of most of this page.  Parts that have yet to be revised
+appear on a pink background like the one used for this paragraph.  The
+pink parts are inconsistent with the revised part of the document;
+they may duplicate earlier material and may depend on earlier material
+that I removed.  They may also include sections that I was
+still writing when I stopped and began the revision.
+\end{minipage}\s{12}}\s{-12}
+
+
+\section*{About This Hyperbook}
+
+This is a hypertext book, or \emph{hyperbook}, that is in the process
+of being written.  The hyperbook has two tracks: The \emph{Principles}
+track is about the principles of concurrent programming; the
+\emph{Specification} track is about specification---mainly of
+concurrent systems.  The two tracks run together for the first 6
+sections; the reader of just one of the tracks can jump past sections
+that pertain only to the other track.  The two tracks then separate.
+
+The two tracks use \tlaplus\ as the underlying language for describing
+algorithms and systems.  Both include a tutorial on \tlaplus\ and its
+tools.  Most of the algorithms in the \emph{Principles} track are not
+written directly in \tlaplus.  Instead, they are written in PlusCal,
+an algorithm language that is automatically translated to \tlaplus.
+
+The \emph{Principles} track contains proofs informal proofs and proof
+sketches.  There is an optional \emph{\tlaplus\ Proof} track for
+readers who want learn to write formal proofs and check them with the
+\hyperref{http://tla.msr-inria.inria.fr/tlaps/content/Home.html}{}{}{\protect\tlaplus\
+Proof System}.  
+I recommend that anyone who writes even informal proofs
+read at least part of the \emph{Proof} track.
+
+All the tracks assume that you are using
+the 
+%
+  \hyperref{http://research.microsoft.com/en-us/um/people/lamport/tla/toolbox.html}{}{}{\tlaplus\ Toolbox}.
+%
+Readers should also check out the 
+  \hyperref{http://research.microsoft.com/en-us/um/people/lamport/tla/tla.html}{}{}{TLA Home Page}, which will point you to other resources including
+the \tlaplus\ Google Group.
+
+
+The hyperbook is a work in progress.  Sections that are not
+yet completed are marked with section headings {\puce colored like
+this}.  Even sections that have been completed are likely to be
+rewritten.  However, there is enough to help you get started learning
+about \tlaplus.  
+%
+As I write the hyperbook, I will continually update the version posted
+on the Web.  
+% 
+% The table of contents entry for a section that has been
+% updated fairly recently will indicate when it was last modified.  The
+% most recent three modification dates will be shown in color as
+% follows: {\red most recent}, {\orange second most recent}, and {\green
+% third most recent}.  
+%
+Check 
+  \hyperref{http://research.microsoft.com/en-us/um/people/lamport/tla/hyperbook.html}{}{}{the hyperbook's web site}
+%
+regularly to see if there is a newer version than this one.
+
+You can help make the hyperbook better by telling me your reaction to
+both its form and its content.  Let me know what you like, what you
+don't like, and what you want to see but don't.  Please don't suggest
+wonderful hypertext features unless you know how to implement them in
+pdf---preferably using PDF\LaTeX. (Don't shoot the author; he's doing
+the best he can.)
+
+The hyperbook consists of a collection of pdf files that are designed
+to be read on-line with a pdf viewer.  I generally use the
+\hyperref{http://get.adobe.com/reader/}{}{}{Adobe Reader},
+but other viewers such as the 
+   \hyperref{http://www.foxitsoftware.com/Secure_PDF_Reader/}{}{}{Foxit Reader}
+should also work.
+As I write, I am using the latest Windows version of Adobe Reader,
+which is version 11.0.12.  I can't promise that it will work with other
+versions or with other operating systems or with a pink mouse.  Please
+let me know if it doesn't.  
+\popref{adobe-reader}{Here are some problems I've had when using Adobe Reader.}
+
+I recommend that you read the rest of this section before reading any
+of the hyperbook.  But if you get impatient, you can get right to it
+by clicking the \contentsbutton\ button in the left margin.  You can
+come back to this section at any time by clicking on the \helpbutton\
+button in the left margin.
+
+
+\subsection*{Links}
+
+A piece of text that is 
+{\hypersetup{pdfnewwindow=true}%
+ \hyperref{help-1.pdf}{}{}{\linkcolor this color}}
+is a link.  It is usually either a \popref{help-1}{link to a
+pop-up}, or a \lref{help-rref}{link to ordinary text}, which you
+should click now.  For a link that looks like
+\target{help-2-return}\rref{help-2}{top}{this}, clicking on the text
+opens the linked text in the same window; clicking on the $\Box$ opens
+the linked text in a new window.  If you haven't already clicked on
+the $\Box$, do it now.
+
+A link can also be to a Web page---for example,
+\hyperref{http://get.adobe.com/reader/}{}{}{\linkcolor here's a link
+to the Adobe Reader page}.  Such a link might not work unless your
+browser is already running.
+
+If you have difficulty distinguishing colors and cannot tell a
+link from ordinary text, please 
+  \hyperref{http://lamport.org}{}{}{\linkcolor \fbox{click here to contact me}}
+and I will try to produce a version of the hyperbook for you and
+others with the same problem.
+
+
+%
+% %\begin{marginal}[b]
+% \marginpar[9]{%
+% Unfortunately, each new version of the Adobe Reader seems to 
+% make some embedded pdf commands stop working.  With Version 10.0.0,
+% clicking on the $\Box$ no longer opens the linked page in a new window
+% if it is in the same pdf file as the current page.
+% }
+% %\end{marginal}
+% 
+%
+
+
+
+
+% \subsection*{How to Read It}
+% 
+% As mentioned above, this hyperbook is organized as a starting track
+% followed by three separate tracks, with detours.  There is also a
+% collection of examples that I have not yet figured out how to
+% organize.
+
+\subsection*{\protect\tlaplus\ Source Text}
+
+This hyperbook teaches you how to use the
+    \hyperref{http://research.microsoft.com/en-us/um/people/lamport/tla/toolbox.html}{}{}{\tlaplus\ Toolbox}
+to check your specifications and algorithms.  To save you typing, it
+contains a lot of example PlusCal and \tlaplus\ ``code'' that you will
+want to copy and paste.  To make this possible, the \textsc{ascii}
+versions that you need to use are provided.  For small examples, the
+printed version and the \textsc{ascii} version appear side by side, as
+in this example:
+\begin{twocols}
+$\TRUE \, /\ \, \FALSE$ \midcol \verb|TRUE /\ FALSE|
+\end{twocols}
+To copy the \textsc{ascii} text, select it with the mouse (left-click
+and drag) and \popref{help-control}{type \textsf{control+c}}.  You
+can then click the spot where you want the text to go and type
+\textsf{control+v} to paste it there.  For longer examples, the
+\textsc{ascii} version is provided in a pop-up, as in this example.
+\begin{display}
+\begin{notla}
+A == /\ x > y
+     /\ <<x, y>> \in S
+     /\ x' = x+y
+\end{notla}
+\begin{tlatex}
+\@x{ A \.{\defeq} \.{\land} x \.{>} y\vs{.2}}\ascii{help-ascii}%%%%
+\@x{\@s{26.32} \.{\land} {\langle} x ,\, y {\rangle} \.{\in} S\vs{.2}}%
+\@x{\@s{26.32} \.{\land} x \.{'} \.{=} x \.{+} y}%
+\end{tlatex}
+\end{display}
+Click on the link in the margin to get the \textsc{ascii} version.  To
+copy the contents of the window, type 
+ \textsf{control+a} \textsf{control+c}\@.  
+Often, as in this case, spaces are shown as \verb*| | to
+ensure that they are copied correctly.  
+%
+For larger examples, both the printed version and the \textsc{ascii}
+version may be provided in pop-ups.  
+
+For a few of the \textsc{ascii} version popups, selecting the text in
+Adobe Reader fails to capture many of the spaces, destroying the
+formatting when you paste the text into a specification.  (When you
+select the text, you will see that those spaces are not highlighted.)
+I have been unable to determine what it is about these popups that
+causes Adobe Reader to behave in this way.  Perhaps there still lurks
+in Adobe someone who could explain this behavior.  The Foxit Reader
+does not appear to have this problem.
+
+%\popref{ascii-representation}{Click here} 
+\rref{summary}{ascii}{Click here}
+for a list of all special
+symbols and how they are typed in \textsc{ascii}.  
+
+ \vspace{1em} \noindent
+\target{help-rref}\textsf{If you got here by clicking on a link, you
+can go back to where you came from by clicking on the \backbutton\
+button in the left margin.}
+
+
+\subsection*{The Left-Hand Column}
+
+The buttons on the left-hand side of the page perform the following
+actions:
+\begin{describe}{\helpbutton}
+\item[\helpbutton] 
+Go to this page.
+
+\item[\backbutton] 
+
+\emph{Back} navigation button.  (On some operating systems, Adobe
+Reader seems able to go back only to a location within the same file.)
+
+\item[\fwdbutton]
+\emph{Forward} navigation button.
+
+% \item[\tlabutton] Go to a summary of \tlaplus.  Click there
+% if you encounter some \tlaplus\ notation that you don't understand.
+
+\item[\contentsbutton] Go to the table of contents.
+
+\item[\indexbutton] Go to the index.  Eventually, every symbol or term
+whose meaning you might have forgotten will be indexed, with links to
+its explanation and other significant uses.
+
+\item[\summarybutton] Go to a very short summary of the \tlaplus\
+language, which includes the list of \rref{summary}{ascii}{\textsc{ascii}
+versions of symbols}.
+
+\end{describe}
+
+\subsection*{Size}
+
+Adjusting the size of the reader's window adjusts the size of the
+print.  The best way to do this is first to make the window very wide.
+This will show a black area on both sides of the page.  Then, adjust
+the height of the window so the page is the size you want it.
+Finally, narrow the window until the black area on the sides
+disappears.
+
+The hyperbook is designed to be read as a continuous scroll, rather
+than as a sequence of separate pages.  As of Version 11.0.3 on 15 May
+2013 at 9:33 UT, you can set Adobe Reader to display the hyperbook as
+a continuous scroll by going to the
+\textsf{Edit\,/\,Preferences\,/\,Accessibility} menu and selecting
+\textsf{Always use Page Layout Style\,/\, Single Page Continuous}.
+When you scroll, you might see a black space between pages.  In Adobe
+Reader, you can unselect the \textsf{View\,/\,Page Display\,/\,Show
+Gaps Between Pages} menu option to change the black space to a dashed
+line.  At the moment, it appears that you have to do this only once
+and the setting applies to all documents.  This might change if Adobe
+learns that it is too convenient.
+
+
+\btarget{toolbox-help}
+\subsection*{The Toolbox Help Pages} 
+
+The hyperbook contains links to some of the Toolbox's help pages, which
+are 
+on the Web at 
+  \hyperref{http://tla.msr-inria.inria.fr/tlatoolbox/doc/contents.html}{}{}%
+   {http://tla.msr-inria.inria.fr/tlatoolbox/doc/contents.html}.
+How to find the copies of the Web pages in the Toolbox itself
+is explained on \helppage{gettingstarted/help}{this help page}.
+
+\subsection*{Acknowledgments}
+
+I cannot possibly list everyone who has contributed to the development
+of \tlaplus\ and its tools.  The list would be too long, running from
+some of my math teachers in school through the people now working on
+the tools.
+
+Here is an incomplete list of those who have reported errors in
+previous versions of this hyperbook: Ross Kendle, Chris
+Grompanopoulos, Jingguo Yao, David Clark, Kavinda Wewegama, Martin
+Riener, Grant Slatton, and Piyush Bansal.  I appologize to the many people I've
+forgotten and urge you to remind me so I can include you here.
+
+
+\vspace{2em}
+
+\noindent
+\sref{main}{devices}{\sf You can begin both Tracks by clicking here.}
+
+
+
+\end{document}

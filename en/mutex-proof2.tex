@@ -1,0 +1,45 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\beforePfSpace{0pt}
+\afterPfSpace{0pt}
+\interStepSpace{0pt}
+\pdftitle{High-Level Proof of Step 2}
+\begin{popup}
+
+\subsection*{High-Level Proof of Step 2}
+
+\vspace{.41em}
+
+\begin{proof}
+\pflongnumbers
+\pflongindent
+
+\nostep{1}
+
+\step{2}{\assume{$Inv \; /\ \; (i \in \{0,1\}) \; /\ \; e2(i)$ }
+         \prove{$Inv'$}}
+\vspace{.41em}
+\begin{proof}
+\step{2.1}{$TypeOK'$}
+
+\vspace{.41em}
+
+\step{2.2}{$MutualExclusion'$}
+
+\vspace{.41em}
+
+\step{2.3}{\assume{$j \in \{0, 1\} $}
+            \prove{$InCS(j)' \,\/ \, (pc'[j]="e2") \, =>\, x'[j]$}}
+
+\vspace{.41em}
+
+\qedstep
+\begin{proof}
+\pf\ By \stepref{2.1}--\stepref{2.3} and the definition of $Inv$.
+\end{proof}
+\end{proof}
+\end{proof}
+
+
+\end{popup}
+\makepopup

@@ -1,0 +1,22 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{Is this really a formula?}
+\begin{popup}
+Actually, $1 + 1/2 + 1/4 + 1/8 + \cdots \;=\; 2$ isn't a real formula
+because ``$\cdots$'' isn't a real operation.  This ``formula'' is an
+abbreviation for the formula mathematicians usually write:
+ \[ \NOTLA \sum_{0}^{\infty} 2^{-i} = 2
+   \]
+This in turn is an example of informal mathematical notation that can be
+challenging to make formal.  A good exercise for mathematically
+sophisticated readers is to define an operator $InfiniteSum$ so that
+if $F$ is defined by
+ \[ F(i) == 2^{i}
+\]
+then the formula above can be written
+  \[ InfiniteSum(F,0) = 2 \]
+However, if you're reading this section, you're probably
+not ready for such an exercise.
+\end{popup}
+
+\makepopup

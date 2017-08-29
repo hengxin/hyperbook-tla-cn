@@ -1,0 +1,37 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\file{what-divides-means}
+\makeindex
+\pdftitle{Meaning of Divides(p,n)}
+\begin{popup}
+\subsection*{The Meaning of $Divides(p,\,n)$}
+
+$Divides(p,\,n)$ means
+ \[ \E \, q \in Int  : n = q * p 
+ \]
+regardless of what $p$ and $n$ equal.  If $p$ is an integer and $n$ is
+not (for example, if $n$ equals $\sqrt{2}$), then it equals $\FALSE$.
+(Do you see why?)  For completely arbitrary values of $p$ and $n$, the
+important thing we can say about its value is that it is a
+Boolean---that is, it equals either \TRUE\ or \FALSE. This is because
+\begin{itemize}
+\item $n = q*p$ is a Boolean.  Even if we don't know whether $n$ and 
+$q*p$ are equal, the assertion that they are equal must be true or false.
+
+\item $Int$ is a set.  Actually, $Divides(p, q)$ would be a Boolean
+even if we replaced $Int$ by $"abc"$ in the definition.
+\tlaplus\ is based on 
+  \tindex{1}{Zermelo-Fraenkel set theory}%
+  \tindex{1}{set theory}%
+  \tindex{1}{Fraenkel}%
+Zermelo-Fraenkel set theory, in which any value is a set.  Thus,
+the string $"abc"$ is a set, although the semantics of \tlaplus\
+don't tell us what its elements are.
+\end{itemize}
+If $n$ or $p$ is not a number, then a close examination of the
+definition of $*$ might tell us more about the value of
+$Divides(p,\,n)$.  However, such an examination is pointless because
+we should not use the expression $Divides(p,\,n)$ in any context in
+which we care what its value is when $p$ and $n$ are not both numbers.
+\end{popup}
+\makepopup

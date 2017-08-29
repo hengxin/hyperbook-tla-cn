@@ -1,0 +1,34 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\makeindex
+\file{green-meaning}
+\pdftitle{What makes a step green?}
+\begin{popup}
+  \ctindex{2}{proof step!green}{green-step}%
+  \ctindex{1}{proof!correct}{proof-correct}%
+  \ctindex{1}{TLAPS!what it checks}{TLAPS-what-it-checks}%
+  \vspace{-2\baselineskip}%
+\subsection*{What makes a step green?}
+
+A green step is one whose proof TLAPS determines to be correct.
+This does not mean that the step's assertion is true.  For example,
+add the following theorem and proof to a module:
+\begin{display}
+$\THEOREM 2+2=2$\V{.4}
+$<<1>>1.\ \FALSE$\V{.4}
+$<<1>>2.\ \QED$\\
+\s{1}$\BY <<1>>1$
+\end{display}
+Run the \textsf{Prove} command on the \textsc{qed} step.  TLAPS will
+color the step green, indicating that its proof is correct.  The fact
+asserted by the step, the goal $2+2=2$, does indeed follows from step
+$<<1>>1$, which asserts \FALSE.  (Anything follows from \FALSE\ because
+$\FALSE => F$ equals \TRUE\ for any formula $F$.)
+
+\medskip
+
+To get TLAPS to color the theorem green, you will have to write a
+correct proof of step $<<1>>1$.  You will be able to do that only 
+by using a false theorem or assumption asserted earlier in the module.
+\end{popup}
+\makepopup

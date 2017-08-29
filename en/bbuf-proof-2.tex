@@ -1,0 +1,90 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+% \makeindex
+\file{bbuf-proof-2}
+\pdftitle{A Partially Expanded Proof of <4>3}
+\newsetwidepopup{52}{12}
+\beforePfSpace{0pt}
+\afterPfSpace{0pt}
+\interStepSpace{0pt}
+\begin{document}
+
+\subsection*{A Partially Expanded Proof of \protect\ensuremath{\langle4\rangle3}}
+\begin{proof}
+\step{1}{\assume{$Inv$, $Producer$%
+
+\vs{.3}}
+         \prove {${C!Send}$\vs{.5}}}
+  \begin{proof}
+  \step{1-1}{$Len(chBar) # N$\vs{.5}}
+  \step{1-2}{$\E v \in Msg:
+             chBar\,\rule{0pt}{.8em}' = Append(chBar, v)$\vs{.5}}
+   \begin{proof}
+   \step{121}{Pick $v \in Msg$ such that 
+               $buf' = [buf \EXCEPT ![p \,\%\, N] = v]$\vs{.3}}
+
+   \step{122}{$chBar\,\rule{0pt}{.8em}' = Append(chBar, v)$\vs{.3}}
+     \begin{proof}
+     \step{1221}{$p\ominus c \in 0\dd(N-1)$\vs{.3}}
+    \step{1222}{$p'\ominus c' = (p\ominus c)+1$\vs{.3}}
+     \qedstep\vs{.3}
+       \begin{proof}
+        \step{<5>1}{$
+     \begin{noj}
+     Append(chBar, v) \; = \\ \s{1}
+      [\,i \in 1\dd((p \ominus c) + 1) \,\mapsto\,
+          \begin{noj}
+          \IF{i \in 1\dd(p \ominus c)} \\ \s{1}
+              \THEN {buf[(c \oplus (i - 1)) \,\%\, N]}\\ \s{1}
+               \ELSE {v\,]\vs{.3}}
+          \end{noj}
+         \end{noj}$}
+       \begin{proof}
+       \pf\ By definition of $chBar$ and $Append$, since
+        $Inv$ implies $p\ominus c$ is in $Nat$.\vs{.5}
+       \end{proof}
+         \step{<5>2}{$
+   chBar' \; = \; [\,i \in 1\dd((p \ominus c)+1) \,\mapsto\, 
+                 buf'[(c \oplus (i - 1)) \,\%\, N]\,]$\vs{.3}}
+          \begin{proof}
+          \pf\ By 
+              \marginpar{Remember that priming an expression
+                        means priming all the variables in it.}
+            definition of $chBar$, \stepref{1222},
+           and definition of $Producer$, which implies $c'=c$.\vs{.5}
+          \end{proof}
+
+         \step{<5>3}{\assume{$\NEW i \in 1\dd((p \ominus c)+1)$}
+                     \prove{$chBar'[i] = Append(chBar, v)[i]$\vs{.3}}}
+            \begin{proof}
+            \step{<6>1}{\case{$i \in 1\dd (p \ominus c)$}\vs{.5}}
+            \step{<6>2}{\case{$i = (p \ominus c)+1$}\vs{.5}}
+            \qedstep
+             \begin{proof}
+             \pf\ By the \stepref{<5>3} assumption, \stepref{<6>1}, 
+              \stepref{<6>2}, and $Inv$, which
+             implies $p \ominus c$ is in $Nat$, so
+             $1\dd((p \ominus c)+1)$ equals
+              $(1\dd (p \ominus c))\;\cup\;\{(p \ominus c)+1\}$.\vs{.5}
+             \end{proof}
+            \end{proof}
+
+         \qedstep
+          \begin{proof}
+          \pf\ By \stepref{<5>1}, \stepref{<5>2}, and \stepref{<5>3}.
+          \end{proof}
+       \end{proof}
+     \end{proof}
+    \qedstep\vs{.3}
+   \end{proof}
+  \qedstep\vs{.3}
+  \end{proof}
+\vspace{.5\baselineskip}%
+\step{2}{\assume{$Inv$, $Consumer$\vs{.3}}
+         \prove {${C!Rcv}$}}
+
+\vspace{.5\baselineskip}%
+\qedstep
+\end{proof}
+
+\end{document}

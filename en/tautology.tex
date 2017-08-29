@@ -1,0 +1,23 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{Tautologies}
+\file{tautology}
+\makeindex
+\setpopup{17}
+\begin{document}
+\subsection*{Tautologies}
+
+A 
+  \tindex{1}{tautology}%
+\emph{tautology} is a formula that is true regardless of what we
+substitute for its identifiers (as long as the substitution is
+syntactically correct).  The formula
+ \[ ~(F /\ G) \equiv (~F \/ ~G) \]
+is a tautology because it is true if any formulas 
+are substituted for $F$ and $G$.  The formula
+ \[ ~ (\A\,x \in S : P(x)) \;\equiv\; (\E\, x \in S : ~P(x))
+ \]
+is a tautology because it is true when any expression is substituted
+for $S$ and any formula (that may depend on $x$) is substituted for
+$P(x)$.
+\end{document}

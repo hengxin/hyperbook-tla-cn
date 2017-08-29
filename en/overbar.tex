@@ -1,0 +1,21 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{Overbarring}
+\begin{popup}
+\subsection*{A More Precise Definition of \, $\ov{s_{i}}$}
+
+Remember that we informally describe a state of the $BoundedChannel$
+specification to be an assignment of values to the three variables
+$in$, $out$, and $ch$ that are declared in the specification.
+Formally, any state is an assignment of values to all (of the
+infinitely many) possible variables.  However, whether or not a
+temporal formula defined in $BoundedBuffer$ is true of a behavior
+depends only on the values that the behavior's states assign to those
+three variables.  Thus, for the behavior
+$\ov{s_{1}}->\ov{s_{2}}->\cdots$, we don't care what values the states
+$\ov{s_{i}}$ assign to the other variables.  For example, we can
+define $\ov{s_{i}}$ so it assigns to any variable other than $in$,
+$out$, or $ch$ the same value assigned to that variable by $s_{i}$.
+
+\end{popup}
+\makepopup

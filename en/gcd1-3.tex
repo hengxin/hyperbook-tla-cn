@@ -1,0 +1,15 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{ASCII Text}
+\fixverbatim
+\begin{popup}
+\begin{verbatim*}
+THEOREM GCD1 == \A m \in Nat \ {0} : GCD(m, m) = m
+
+THEOREM GCD2 == \A m, n \in Nat \ {0} : GCD(m, n) = GCD(n, m)
+
+THEOREM GCD3 == \A m, n \in Nat \ {0} : 
+                     (n > m) => (GCD(m, n) = GCD(m, n-m))
+\end{verbatim*}
+\end{popup}
+\makeasciipopup

@@ -1,0 +1,1298 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{Topics}
+\file{topics}
+\makeindex
+\setcounter{section}{\topics}
+\begin{document}
+\renewcommand{\contentsname}{Topics\protect\target{top}}
+\addtocounter{section}{-1}
+
+\showversions
+\tableofcontents
+\hideversions
+\vspace{2em}
+
+\noindent
+This part consists of various topics that don't fit neatly into
+the existing structure.  As the hyperbook evolves, the sections in
+this part will be moved elsewhere.
+
+\vfill 
+\newpage
+\btarget{hiding-variables}%
+\ctindex{2}{variable hiding}{variable-hiding}%
+\ctindex{2}{hiding variables}{variable-hiding}%
+\ctindex{1}{+7e@\mmath{\icmd{EE}} (temporal existential quantification)}{+7e}%
+\section{Variable Hiding and Auxiliary Variables} \xlabel{hide-variables}
+
+A specification usually has some ``visible'' variables that describe
+real parts of the system that must be implemented and other
+``internal'' variables that are used only to help describe the
+behavior of the visible variables.  In a philosophically correct
+specification, the internal variables should be hidden.
+
+In \tlaplus, variables are hidden using the temporal existential
+quantification operator $\EE$.  For any temporal formula $F$, the
+formula $\EE x\midcolon F$ essentially asserts that there is some way
+of choosing values of $x$ that makes $F$ true.  The operator $\EE$ is
+temporal existential quantification.  It differs from the operator
+$\E$ of ordinary (non-temporal) logic because 
+ \mbox{$\EE\,x \midcolon F$} 
+asserts not that there is a single value of $x$ that makes $F$ true,
+but rather a sequence of values---one for each state of the behavior.
+The $\EE$ operator is defined precisely in Section 16.2.4
+of
+ \hyperref{http://research.microsoft.com/en-us/um/people/lamport/tla/book.html}{}{}{\emph{Specifying Systems}}.
+
+Engineers are not interested in philosophical correctness, so they
+don't worry about hiding variables.  All you probably need to know
+about the operator $\EE$ is that it obeys most of the rules of the
+existential operator $\E$ of ordinary math.  In particular, 
+we prove $(\EE x\midcolon F)=>G$ and $F=>(\EE x\midcolon G)$,
+for temporal formulas $F$ and $G$, the same way we prove the corresponding
+formulas for ordinary existential quantification:
+\begin{enumerate}
+\item If $x$ is not a free variable of $G$, then $F=>G$ implies 
+   $(\EE x\midcolon F)=>G$.
+
+\item If \ovn{G} is the formula obtained from $G$ by substituting the
+expression \ov{x} for $x$, then $F=>\ovn{G}$ implies
+$F=>(\EE x\midcolon G)$.
+\end{enumerate}
+If $F$ and $G$ are specifications, we restate the second rule as
+follows: to show that $F$ implies $\EE x\midcolon G$, it suffices
+to show that $F$ implements $G$ under a
+ \rref{main}{refinement-mapping-def}{refinement mapping} 
+that is the 
+identity on all variables of $G$ except $x$---that is,
+a refinement mapping such that $\ov{v}=v$ for all variables $v$
+of $G$ other than~$x$.
+
+The concept of variable hiding plays another role in reasoning about
+specifications.  Sometimes, we can't prove correctness as
+implementation of a higher-level specification because the
+implementation state doesn't contain enough information to define the
+necessary refinement mapping.  We solve this problem by adding
+ \ctindex{1}{variable!auxiliary}{variable-auxiliary}%
+  \tindex{1}{auxiliary variable}%
+\emph{auxiliary variables} (sometimes called 
+  \tindex{1}{dummy variable}%
+\emph{dummy variables})
+to the implementation.  Adding an auxiliary variable $a$ to a
+specification $S$ means writing a new spec $S^{a}$ containing the
+additional variable $S$ such that, hiding $a$ in $S^{a}$ produces a
+specification equivalent to $S$.  More precisely, $S^{a}$ is obtained
+from $S$ by adding the auxiliary variable $a$ iff $\EE a\midcolon
+S^{a}$ is equivalent to $S$.  We prove correctness of $S$ by showing
+that $S^{a}$ implements the desired higher-level specification under a
+refinement mapping.
+
+The most common form of auxiliary variable is a 
+  \ctindex{1}{variable!history}{variable-history}%
+  \tindex{1}{history variable}%
+\emph{history}
+variable.  A history variable essentially records information about
+what happened earlier in an execution, without altering the values
+that other variables assume.  There's an easy way to add a history
+variable $h$ to an existing PlusCal algorithm---assuming $h$ is not
+already a variable of the algorithm.  Add the declaration of $h$ and
+assignment statements of the form $h:= \ldots$.  As long as you
+don't add or remove labels or add an $h$ to any existing part of the
+code, the \tlaplus\ translation of the new algorithm will be obtained
+by adding the history variable $h$ to the translation of the original
+algorithm.
+
+TLC does not handle properties that contain the $\EE$ operator.  The
+TLAPS proof system might some day handle them, but it doesn't now.
+Also, note that the \tlaplus\ formula $\EE x\midcolon F$ is not legal
+in any context in which the variable $x$ is already declared.  This
+means that if $Spec$ is defined in a module $M$ to be a specification
+containing the variable $x$, then $\EE x\midcolon Spec$ is not a legal
+formula in that module.  To hide $x$ in $Spec$, we have to create
+a separate module containing a statement such as
+ \[ H(y) == \INSTANCE M \WITH x <- y
+ \]
+and write $\E x \midcolon H(x)!Spec$ in that module.
+
+\newpage
+%\btarget{reduction-section}
+\section{\puce Reduction} \xlabel{reduction-section}
+%% NOTE:
+%% IMMEDIATELY AFTER THE \end{document} of principles.tex is a 
+%% subsection on reduction in PlusCal that was deleted from
+%% the section "The Bounded Channel and Bounded Buffer"
+
+
+
+Reduction is a concept introduced in
+\begin{display}
+Richard J. Lipton.  Reduction: A Method of Proving Properties of
+Parallel Programs.  \emph{Communications of the ACM}, 18(12):717-721,
+December 1975.
+\end{display}
+This section will be based on 
+ \hyperref{%
+ http://research.microsoft.com/en-us/um/people/lamport/pubs/cohen-tlareduction.pdf%
+}{}{}{this paper}.
+
+
+
+\newpage
+\section[Debugging With TLC]{\puce Debugging With TLC%
+  \tindex{1}{debugging}%
+  \ctindex{1}{TLC!debugging with}{tlc-debugging}%
+  \target{debugging}%
+}
+
+This section is about how to locate the source of the problem when TLC
+reports an error or is having a performance problem.  A TLC
+performance problem is when TLC takes a long time to evaluate an
+expression.  This can manifest itself by TLC taking a long time to
+compute new reachable states, right from the beginning.  (However,
+it's normal for TLC's rate of generating new states to decrease
+dramatically after it has found enough states that it must start
+writing their fingerprints onto disk.)
+
+The standard $TLC$ module provides some special operators that are
+useful for debugging a specification.  \popref{not-math}{Some of them
+are outside the domain of mathematics} and should not be used as part
+of a specification.
+
+\subsection[Print Statements]{Print Statements%
+   \ctindex{1}{print statement}{print-statement}}
+ \xlabel{print-statements}
+
+The standard $TLC$ module defines two operators that cause TLC to
+print something when it evaluates them:
+\begin{itemize}
+\item The 
+  \ctindex{1}{PrintT@\mmath{PrintT}}{printt}%
+$PrintT$ command is defined so $PrintT(o)$ is equal to
+$\TRUE$, but evaluating it causes TLC to print the value~$o$.
+
+\item The 
+  \ctindex{1}{Print@\mmath{Print}}{print}%
+$Print$ command is defined so 
+$Print(v,\, o)$ equals $v$, but evaluating it causes
+%  \[ Print(val,\,out) == val\]
+TLC to print the values $e$ and $o$.  
+\end{itemize}
+These command are useful if TLC reports an error when evaluating an
+expression but does not report the precise location where the error
+occurred.  For example, suppose the error occurs when TLC is
+evaluating a conjunction but the error message does not tell you in
+which conjunct the error occurs.  TLC evaluates the conjuncts from
+``left to right''.  Inserting additional conjuncts $PrintT("a")$,
+$PrintT("b")$, etc.\ into the formula and seeing which ones were
+executed reveals where the error occurred.
+
+$PrintT$ conjuncts can be used this way even if there is no error, but
+the conjunction evaluates to $\FALSE$ and you want to find out which
+conjunct is false.  The ``conjunction'' can also be a $\A$ formula.
+For example, if a formula \tlabox{\A x \in S : P(x)} is false and you want to
+find out for what values of $x$ the expression $P(x)$ is false, you can
+rewrite that formula as
+ \[ \A x \in S : \If{P(x)} \Then \TRUE \LSE PrintT(x) \Fi
+ \]
+
+
+
+\subsection[Having TLC Set and Read Values]{Having 
+            TLC Set and Read Values%
+  \ctindex{1}{TLC!setting and reading values}{TLC-setting-reading}%
+  }%
+
+TLC can set and read a special list of values while evaluating
+expressions.  This works as follows.  The $TLC$ module defines two new
+operators:%
+  \ctindex{1}{TLCGet@\mmath{TLCGet}}{TLCGet}%
+  \ctindex{1}{TLCSet@\mmath{TLCSet}}{TLCSet}%
+ \[\begin{noj3}
+  TLCGet(i)    & == & \CHOOSE n : \TRUE \\
+  TLCSet(i, v) & == & \TRUE
+  \end{noj3}
+ \]
+When TLC evaluates $TLCSet(i,v)$, for any positive integer $i$ and
+arbitrary value $v$, in addition to obtaining the value $\TRUE$, it
+sets the $i^{\mathrm{th}}$ element of the list to~$v$.  When TLC
+evaluates $TLCGet(i)$, the value it obtains is the current value of
+the $i^{\mathrm{th}}$ element of this list.  For example, when TLC
+evaluates the formula
+ \[\begin{conj}
+   TLCSet(42, <<"a", 1>>) \V{.2}
+   \A i \in \{1,2,3\} : 
+      \begin{conj}
+         PrintT(TLCGet(42)) \V{.2}
+         TLCSet(42, [TLCGet(42) \EXCEPT ![2]=TLCGet(42)+1])
+      \end{conj}
+   \end{conj}
+  \]
+it prints 
+\begin{verbatim}
+     << "a", 1 >>  
+     << "a", 2 >>  
+     << "a", 3 >>  
+\end{verbatim}
+One use of this feature is to check TLC's progress during long
+computations.  For example, suppose TLC is evaluating a formula $\A x
+\in S : P$ where $S$ is a large set, so it evaluates $P$ many times.
+You can use $TLCGet$, $TLCSet$, and $Print$ to print something after
+every $1000^{\mathrm{th}}$ time TLC evaluates $P$.
+
+Another use of $TLCGet$ and $TLCSet$ is to measure the length of 
+  \ctindex{1}{time, measuring with TLC}{time-tlc}%
+time it takes TLC to evaluate an expression.  The $TLC$ module defines
+the operator
+   \ctindex{1}{JavaTime@\mmath{JavaTime}}{JavaTime}%
+$JavaTime$ to be an unspecified integer.  TLC evaluates it to equal
+approximately the number of milliseconds between 0:00 UTC on 1 January
+1970 and the current time.  Using the fact that TLC evaluates
+tuples from left to right, you can measure the approximate time in
+milliseconds taken to evaluate an expression $e$ by replacing $e$
+with:
+  \[ << TLCSet(1, JavaTime), e,  PrintT(JavaTime - TLCGet(1))>>[2]
+  \]
+%
+
+ \target{tlcset-get}As explained in 
+  \sref{topics}{\xlink{lazy-evaluation}}{Section 
+       \xref{lazy-evaluation} below},
+you may also want to use $TLCSet$ and $TLCGet$ to count how many times
+TLC is evaluating an expression $e$.  To use value number $i$ as the
+counter, just replace $e$ by
+ \[ \textsc{if} \ TLCSet(i,\, TLCGet(i)+1) \ \textsc{then} \ e \
+     \textsc{else} \ 42
+ \]
+(The \textsc{else} expression is never evaluated.)  Have TLC execute
+$TLCSet(i, 0)$ before execution and $PrintT(TLCGet(i))$ afterwards to
+print the number of executions of $e$.
+
+For reasons of efficiency, $TLCGet$ and $TLCSet$ behave somewhat
+strangely when TLC is run with multiple worker threads (using the
+\texttt{-workers} option).  Each worker thread maintains its own
+individual copy of the list of values on which it evaluates $TLCGet$
+and $TLCSet$.  The worker threads are activated only after the
+computation and invariance checking of the initial states.  Before
+then, evaluating $TLCSet(i,v)$ sets the element $i$ of the list
+maintained by all threads.  Thus, the lists of all the worker threads
+can be initialized by putting the appropriate $TLCSet$ expression in
+an \textsc{assume} expression or in the initial predicate.
+
+
+\subsection[Using LET]{Using LET%
+  \ctindex{1}{LET@\icmd{textsc}{let}!optimizing TLC execution with}{let-TLC}%
+} \xlabel{let-optimization}
+
+If multiple instances of the same subexpression occur in an expression
+$e$, TLC will evaluate that subexpression multiple times when
+evaluating $e$.  This multiple evaluation can be avoided by using a
+\textsc{let} to replace those instances by a single symbol.  For most
+specifications, the evaluation of an individual expression is
+responsible for only a small part of the execution time.  It's
+therefore generally best to use a \textsc{let} only to make the
+specification easier to read, not to optimize execution speed.
+However, occasionally the use of a \textsc{let} can significantly
+reduce execution time.  This is particularly true for the evaluation
+of recursively defined operators.
+
+As an example, consider this definition of the 
+transitive closure of a relation from 
+  \rref{specification}{\xlink{fast-tc}}{Section~\xref{fast-tc}}.
+\begin{display}
+\begin{notla}
+SimpleTC(R) ==
+  LET RECURSIVE STC(_)
+      STC(n) == IF n = 1 THEN R
+                         ELSE STC(n-1)  \cup  STC(n-1) **  R
+  IN IF R = {} THEN {} ELSE STC(Cardinality(NodesOf(R)))
+\end{notla}
+\begin{tlatex}
+\@x{ SimpleTC ( R ) \.{\defeq}\vs{.2}}%
+\@x{\@s{8.2} \.{\LET} {\RECURSIVE} STC ( \_ )\vs{.2}}%
+\@x{\@s{28.59} STC ( n ) \.{\defeq} {\IF} n \.{=} 1 \.{\THEN} R\vs{.2}}%
+ \@x{\@s{119.91} \.{\ELSE} STC ( n \.{-} 1 )\@s{4.1} \.{\cup}\@s{4.1} STC ( n
+ \.{-} 1 ) \.{\stst}\@s{4.1} R\vs{.2}}%
+ \@x{\@s{8.2} \.{\IN} {\IF} R \.{=} \{ \} \.{\THEN} \{ \} \.{\ELSE} STC (
+ Cardinality ( NodesOf ( R ) ) )}%
+\end{tlatex}
+\end{display}
+To evaluate $STC(n)$, TLC evaluates $STC(n-1)$ twice.  If $n-1>1$,
+then each of those evaluations evaluates $STC(n-2)$ twice.  This
+doubling of effort continues down to the evaluation of $STC(1)$, which
+requires evaluating the argument $R$.  Hence, to evaluate $STC(n)$,
+TLC evaluates $R$ about $2^{n}$ times.  To evaluate $SimpleTC(R)$, TLC
+evaluates $STC(n)$ for $n=Cardinality(NodesOf(R))$.  Depending upon
+$R$, this evaluation starts taking a few seconds for $n$ between
+10 and 15.  For the particular application for which the definition
+was written, that's probably good enough.  But if it isn't,
+we can replace the subexpression
+  \mbox{$STC(n-1) \ \cup \ STC(n-1)*\!*\;R$}
+with
+\begin{display}
+\begin{tlatex}
+\@x{{\LET} STCN \.{\defeq} STC ( n \.{-} 1 )\vs{.2}}%
+ \@x{\.{\IN} STCN\@s{4.1} \.{\cup}\@s{4.1} STCN \.{\stst}\@s{4.1}
+ R\vs{.2}}
+\end{tlatex}
+\end{display}
+
+\medskip
+
+Suppose we had written the definition of $SimpleTC$ with a 
+  \ctindex{2}{function!recursive definition of}{fcn-recursive-def-of}%
+  \ctindex{2}{recursive!function definition}{recursive-fcn-def}%
+recursively
+defined function instead of an operator---like this:
+\begin{display}
+\begin{notla}
+SimpleTC(R) ==
+  LET FTC[n \in Nat] == IF n = 1 THEN R
+                                 ELSE FTC[n-1]  \cup  FTC[n-1]  **  R
+  IN IF R = {} THEN {} ELSE FTC[Cardinality(NodesOf(R))]
+\end{notla}
+\begin{tlatex}
+\@x{ SimpleTC ( R ) \.{\defeq}\vs{.2}}%
+ \@x{\@s{8.2} \.{\LET} FTC [ n \.{\in} Nat ] \.{\defeq} {\IF} n \.{=} 1
+ \.{\THEN} R\vs{.2}}%
+ \@x{\@s{148.75} \.{\ELSE} FTC [ n \.{-} 1 ]\@s{4.1} \.{\cup}\@s{4.1} FTC [ n
+ \.{-} 1 ]\@s{4.1} \.{\stst}\@s{4.1} R\vs{.2}}%
+ \@x{\@s{8.2} \.{\IN} {\IF} R \.{=} \{ \} \.{\THEN} \{ \} \.{\ELSE} FTC [
+ Cardinality ( NodesOf ( R ) ) ]}%
+\end{tlatex}
+\end{display}
+Now, rather than computing the $n$ completely separate values
+$STC(n)$, $STC(n-1)$, \ldots\,, TLC is computing a single value---the
+function $FTC$.  A naive evaluation would yield the same exponential
+blow-up, evaluating $FTC[n]$ once, $FTC[n-1]$ twice, $FTC[n-2]$ four
+times, \ldots\, and evaluating $FTC[1]$ about $2^{n}$ times.  However,
+when TLC computes the value $FTC[i]$ for some $i$, it caches that
+value.  Hence, there is no exponential blow-up.  Using a \textsc{let}
+expression to eliminate the two instances of $FTC[n-1]$ in the
+definition would accomplish nothing.
+
+This example suggests that recursive function definitions should be
+preferred to recursive operator definitions.  That's true if the
+domain of the function can be made simple (e.g., $Nat$) and you are
+writing the spec for readers who understand the \tlaplus\ syntax for
+recursive function definitions.  However, I expect that a recursive
+operator definition will be easier to understand for a reader
+who is unfamiliar with \tlaplus.
+
+Note: TLAPS cannot yet handle recursive operator definitions.  Therefore,
+if you want to write TLAPS-checked proofs, you can use only recursive
+function definitions.
+
+\subsection[The Perils of Lazy Evaluation]{The Perils of Lazy Evaluation%
+  \tindex{1}{lazy evaluation}%
+  \tindex{1}{evaluation, lazy}%
+} \xlabel{lazy-evaluation}
+
+The obvious way to compute the value of an expression like $F(a, b)$
+is to first compute $a$ and $b$.  TLC does not always do this.  If
+$F(a, b)$ were defined to equal $a \in b$, then TLC can evaluate
+  $ F(42, \{x \in Nat : x > 37 \}) $
+even though it can't compute the (infinite) set 
+  $\{x \in Nat : x > 37 \}$.
+To accomplish this, TLC sometimes does what is known as \emph{lazy
+evaluation}: not completely evaluating an expression until it has to.
+
+
+
+TLC uses heuristics to determine whether it should completely evaluate
+an expression.  Its heuristics work well most of the time.  However,
+sometimes lazy evaluation can result in the expression ultimately
+being evaluated multiple times instead of just once.  This can
+especially be a problem when evaluating a recursively defined
+operator.  For example, consider this definition of the 
+transitive closure of a relation from 
+  \lref{\xlink{let-optimization}}{Section~\xref{let-optimization} above}.
+\begin{display}
+\begin{notla}
+SimpleTC(R) ==
+  LET RECURSIVE STC(_)
+      STC(n) == IF n = 1 THEN R
+                         ELSE LET STCN == STC(n-1)
+                              IN STCN  \cup  STCN **  R
+  IN IF R = {} THEN {} ELSE STC(Cardinality(NodesOf(R)))
+\end{notla}
+\begin{tlatex}
+\@x{ TransitiveClosure ( R ) \.{\defeq}\vs{.2}}%
+\@x{\@s{8.2} \.{\LET} {\RECURSIVE} STC ( \_ )\vs{.2}}%
+\@x{\@s{28.59} STC ( n ) \.{\defeq} {\IF} n \.{=} 1 \.{\THEN} R\vs{.2}}%
+\@x{\@s{119.91} \.{\ELSE} \.{\LET} STCN \.{\defeq} STC ( n \.{-} 1 )\vs{.2}}%
+ \@x{\@s{151.23} \.{\IN} STCN\@s{4.1} \.{\cup}\@s{4.1} STCN \.{\stst}\@s{4.1}
+ R\vs{.2}}%
+ \@x{\@s{8.2} \.{\IN} {\IF} R \.{=} \{ \} \.{\THEN} \{ \} \.{\ELSE} STC (
+ Cardinality ( NodesOf ( R ) ) )}%
+\end{tlatex}
+\end{display}
+We would expect that, to evaluate $STC(n)$, TLC would evaluate the
+expression $STCN \,\cup\, STCN *\!*\; R$ only $n$ times, leading to $n-1$
+evaluations of $\cup$ and $**$.  That is indeed what happens
+with the definition in 
+    \rref{specification}{\xlink{fast-tc}}{Section~\xref{fast-tc}}.
+However, if $**$ is defined as in 
+    \rref{specification}{\xlink{tc-question1}}{Question~\xref{tc-question1}},
+then TLC lazily evaluates this expression.  To see the effect of
+this, consider how TLC evaluates $STC(4)$.  Because of lazy
+evaluation, it obtains the value
+ \[ STC(3) \,\cup\, STC(3) *\!*\; R \]
+using the value it computed for $STC(3)$.  What value did it compute
+for $STC(3)$?  Again, because of lazy evalution, TLC evaluated
+$STC(3)$ to be
+ \[ STC(2) \,\cup\, STC(2) *\!*\; R \]
+so the value of $STC(3)$ it obtained is actually
+ \[ (STC(2) \,\cup\, STC(2) *\!*\; R) \,\cup\, 
+     (STC(2) \,\cup\, STC(2) *\!*\; R) *\!*\; R)\]
+Similarly, it computed $STC(2)$ to equal 
+ \[ STC(1) \,\cup\, STC(1) *\!*\; R \]
+which equals
+ \[ R \,\cup\, R *\!*\; R \]
+So the actual value of $STC(4)$ it obtained is
+ \[ ((R \,\cup\, R *\!*\; R) \,\cup\, (R \,\cup\, R *\!*\; R) *\!*\; R) \,\cup\, 
+     ((R \,\cup\, R *\!*\; R) \,\cup\, (R \,\cup\, R *\!*\; R) *\!*\; R) *\!*\; R)\]
+Instead of 3 evaluations of $\cup$ and $**$, it performed 7.  It's not
+hard to see that to evaluate $STC(n)$, TLC evalutes $\cup$ and $**$
+$2^{n-1}$ times instead of $n-1$ times.
+
+To allow you to solve this problem, the $TLC$ module provides the
+     \ctindex{1}{TLCEval@\mmath{TLCEval}}{TLCEval}%
+$TLCEval$ operator.  It defines $TLCEval$ by
+ \[ TLCEval(x) == x\] 
+However, TLC evaluates the expression $TLCEval(e)$ by completely
+evaluating~$e$.  For the definition of transitive closure above,
+TLC's lazy evaluation can be prevented by using $TLCEval$ as follows.
+\begin{display}
+\begin{tlatex}\gray
+\@x{ TransitiveClosure ( R ) \.{\defeq}\vs{.2}}%
+\@x{\@s{8.2} \.{\LET} {\RECURSIVE} STC ( \_ )\vs{.2}}%
+\@x{\@s{28.59} STC ( n ) \.{\defeq} {\IF} n \.{=} 1 \.{\THEN} R\vs{.2}}%
+\@x{\@s{119.91} \.{\ELSE} \.{\LET} STCN \.{\defeq} STC ( n \.{-} 1 )\vs{.2}}%
+ \@x{\@s{151.23} \.{\IN} {\black TLCEval(}STCN\@s{4.1} \.{\cup}\@s{4.1} STCN \.{\stst}\@s{4.1}
+ R\black{)}\vs{.2}}%
+ \@x{\@s{8.2} \.{\IN} {\IF} R \.{=} \{ \} \.{\THEN} \{ \} \.{\ELSE} STC (
+ Cardinality ( NodesOf ( R ) ) )}%
+\end{tlatex}
+\end{display}
+If TLC is taking a long time to evaluate something, you can check if
+lazy evaluation is the source of the problem by using the $TLC$
+module's $TLCSet$ and $TLCGet$ operators to count how many times
+expressions are being evaluated, \lref{tlcset-get}{as described above}.
+
+
+\end{document}
+
+THE FOLLOWING STUFF MAY CONTAIN SOMETHING USEFUL FOR THE
+REDUCTION SECTION.
+
+
+XXXXXXXXXXXXXXXXXXXX
+Algorithm \rd{\MF} is the same as $FGBBuf$ except that it specifies
+the values of the variable $t$.  (Algorithm $FGBBuf$ does not
+constrain the value of $t$.)  The variable $t$ is local to the
+producer process, so it doesn't affect the consumer's actions, and it
+is irrelevant to correctness.  Correctness of $FGBBuf$ therefore
+implies the correctness of \rd{\MF}.  So, to show that correctness of
+$FGBBuf$ implies the correctness of \MF, we just have to show that
+correctness of \rd{\MF} implies correctness of \MF. 
+
+An algorithm is correct iff every behavior of the algorithm is
+correct, meaning that it satisfies a certain property.  For a bounded
+buffer algorithm, the property is implemntation of the bounded channel
+under a refinement mapping.  To show that correctness of \rd{\MF}
+implies correctness of \MF, it suffices to show that for every
+behavior $\sigma$ of \MF\ there exists a behavior \rd{\sigma} of
+\rd{\MF} such that correctness of \rd{\sigma} implies correctness of
+$\sigma$.
+
+Producer actions $p3$ and $p3a$ of \MF\ write only the value of $t$,
+which is never accessed by the consumer, and they read only the values
+of $t$ and $p$, which are never written by the consumer.  Hence, these
+actions do not interact with any consumer actions---that is, they
+neither affect nor are affected by any consumer actions.  Thus, for
+any behavior $\sigma$ of \MF\ there is a corresponding behavior
+\rd{\sigma} of \rd{\MF} that is obtained from $\sigma$ by replacing
+each $p3$ and $p3a$ step with a stuttering step and replacing each
+$p3b$ step by a $\red p3$ step.  (Remember that $\red p3$ is an
+\rd{\MF} action that has the same effect as executing the sequence $p3$,
+$p3a$, $p3b$ of \MF\ actions.)  
+
+To show that correctness of algorithm \rd{\MF} implies correctness of
+algorithm \MF, it suffices to show that correctness of the behavior
+\rd{\sigma} implies correctness of $\sigma$.  Correctness of
+\rd{\sigma} means that it is mapped to a behavior of the bounded
+channel under the refinement mapping $ch<-chBar$.  The value of
+$chBar$ depends only on the values of the variables $p$, $c$, and
+$buf$.  The actions $p3$ and $p3a$ of \MF\ leave those variable
+unchanged, and action $\red p3$ of \rd{\MF} changes them the same way
+as the corresponding action $p3b$ of \MF\ does (incrementing $p$ and
+leaving $c$ and $buf$ unchanged).  Therefore, in each state of $\sigma$,
+the values of these three variables is the same as their value in the
+corresponding state of \rd{\sigma}.  Hence, if \rd{\sigma} implements
+a behavior of the bounded channel under the refinement mapping
+$ch<-chBar$, then so does $\sigma$.  This completes our proof.
+
+
+
+
+
+ZZZZZZZZZZZZZZZZZZZ
+
+
+shows that we don't.  It is based
+on a procedure called \emph{reduction}.
+
+We want to show that the correctness of $FGBBuf$ implies the
+correctness of \MF. Correctness of an algorithm means that each of its
+behaviors is correct---that is, satisfies the algorithm's correctness
+property.  For $FGBBuf$, the correctness property is $C!Spec$, which
+asserts of a behavior $\sigma$ that the behavior \ovs{\sigma} it is
+mapped to by the refinement mapping $ch <- chBar$ satisfies the
+bounded channel specification.  To show that correctness of $FGBBuf$
+implies correctness of \MF, it suffices to show that for each behavior
+$\sigma$ of \MF, there is a behavior \rd{\sigma} such that:
+\begin{display}
+\begin{description}
+\item[Red1.]  \rd{\sigma} is a behavior of $FGBBuf$.
+
+\item[Red2.] Correctness of \rd{\sigma} implies the correctness
+of $\sigma$.
+\end{description}
+\end{display}
+We construct \rd{\sigma} from $\sigma$ in two steps:
+\begin{enumerate}
+\item We construct a behavior $\mu$ in which the statements $p3$,
+$p3a$, and $p3b$ are executed consecutively, with no consumer
+statements executed between the executions of $p3$ and $p3b$.
+
+\item We obtain \rd{\sigma} from $\mu$ by replacing the three
+consecutive steps that execute $p3$, $p3a$, and $p3b$ by a single step
+that executes the atomic statement:
+\begin{display}
+$p3$: $t := p$ ; $t := t\oplus1$ ; $p := t$ 
+\end{display}
+\end{enumerate}
+The behavior \rd{\sigma} is a behavior of the algorithm \rd{\MF}
+obtained from \MF\ by replacing the three statements $p3$, $p3a$, and
+$p3b$ by the single statement $p3$ described in step~2.  Algorithm
+\rd{\MF} is the same as algorithm $FGBBuf$ except that it specifies
+the values of the variable $t$ (Algorithm $FGBBuf$ does not constrain
+the value of $t$.)  Therefore, any behavior of \rd{\MF} is a behavior of
+$FGBBuf$, so \rd{\sigma} is a behavior of $FGBBuf$.
+
+
+
+
+Let
+ \[s\action{A}t\]
+mean that $s->t$ is a step satisfying action $A$.  We can label all
+(non-stuttering) steps of an algorithm with the algorithm action that
+the step satisfies.  In a PlusCal algorithm, actions correspond to
+labels.  Let \MF\ be the algorithm obtained from $FGBBuf$ by replacing
+action (the statement) $p3$ with these three actions (statements)
+$p3$, $p3a$, and $p3b$.  To distinguish actions of \MF\ from actions of
+$FGBBuf$ with the same name, I will write actions of \MF\ in green and
+actions of $FGBBuf$.  Thus, $\green p3$ is the action $t:=p$ of \MF\,
+and $\blue p3$ is the action $p := p\oplus 1$ of $FGBBuf$.  For
+reasons that should clear later, I will write $\red p3b$ instead of
+$\green p3b$ for that \MF\ action.
+Consider the following portion of a
+behavior $\sigma$ of \MF:
+\begin{widedisplay}
+ $\sigma$: \ $ \ldots\; s_{42} \action{\green c1} s_{43} {\action{\green p3}} s_{44}
+      \action{\green c3} s_{45} \action{\green c1} s_{46}
+   {\action{\green p3a}} s_{47}\action{\green c3} s_{48}
+      {\red\action{p3b}} s_{49} \action{\green c1} s_{50} \;\ldots
+ $
+\end{widedisplay}
+(The actions $\green c1$ and $\green c3$ of \MF\ differs from the
+action $\blue c1$ and $\blue c2$ of $FGBBuf$ because they specify that
+the value of $t$ is left unchanged.)
+
+The actions $\green p3$ and $\green p3a$ change only the value of the
+variable $t$ and the producer's control state, $pc["P"]$.  These are
+not read by the consumer, so those actions have no effect on any
+consumer action.  The actions read only the values of $t$, $p$, and
+$pc["P"]$, none of which is are changed by the consumer; hence those
+actions are not affected by any consumer actions.  The relative order
+of execution of either $\green p3$ or $\green p3a$ and any consumer
+action doesn't matter.  We can therefore pretend that, in the
+preceding execution, these action happened in the following order, in
+a behavior of \MF\ called $\mu$.
+\begin{widedisplay}
+$\mu$: \  $ \ldots\; s_{42} \action{\green c1} s_{43} 
+      \action{\green c3} t_{44} \action{\green c1}  t_{45} 
+   \action{\green c3} t_{46}  {\action{\green p3}} t_{47} {\action{\green p3a}} t_{48}
+      {\red\action{p3b}} s_{49} \action{\green c1} s_{50} \;\ldots
+ $
+\end{widedisplay}
+Let 
+
+\vspace{2em}
+YYYYYYYYYYYYYYYXXXXXXXXXXXXXXXXXXXXXX
+(Changing the order of execution of the actions changes states
+$s_{44}$ through $s_{48}$.)  Aside from specifying values for the
+variable $t$, this part of the behavior $\sigma$ of \MF\ is the same as
+this part of a behavior $\tau$ of $FGBBuf$
+\begin{widedisplay}
+$\tau$: \ $ \ldots\; s_{42} \action{\blue c1} s_{43} 
+      \action{\blue c3} t_{44} \action{\blue c1}  t_{45} 
+   \action{\blue c3} t_{46}  {\action{\blue p3}} s_{49} \action{\blue c1} s_{50} \;\ldots
+ $
+\end{widedisplay}
+(Ignoring $t$, executing the $FGBBuf$ action $\blue p3$ has the same
+effect as executing the three action $\green p3$, $\green p3a$, and
+$\green p3b$ of \MF.)  
+
+We can do this grouping of actions $\green p3$, $\green p3a$, and
+$\green p3b$ throughout the entire execution of $\sigma$ of \MF\ to get
+an execution $\tau$ of $FGBBuf$.  If, in $\sigma$, the producer stops
+after executing a $\green p3$ or $\green p3a$ action, we can replace
+$\sigma$ with a behavior in which the final $\green p3$ step or
+$\green p3$ and $\green p3a$ steps never happen.  Since correctness of
+a bounded buffer algorithm depends only on how it changes the values
+of $p$, $c$, and $buf$, if the behavior $\tau$ of $FGBBuf$ is correct,
+then the behavior $\sigma$ of \MF\ is correct.  Therefore, we can infer
+the correctness of the finer-grained algorithm \MF\ from correctness of
+$FGBBuf$, so there is no need to consider \MF.
+
+The same argument shows that breaking the consumers statement
+$c3:c:=c\oplus1$ into finer-grained actions does not affect
+correctness, as long as changing the value of $c$ remains a single
+atomic action.  Moreover, suppose we break both $p3$ and $c3$ into
+finer-grained actions to obtain an algorithm \MG. The same reasoning
+applied to $c3$ shows that correctness of \MF\ implies correctness of
+\MG. Since correctness of $FGBBuf$ implies correctness of \MF, it also
+implies correctness of \MG.
+
+\medskip
+
+We can generalize what we've done as follows.  Suppose
+$R$ is an atomic action of a process $\Pi$ of an algorithm
+$$
+
+
+
+
+XXXXXXXXXXXXXXXXXXXX
+
+To answer this question, we introduce the concept of \emph{reduction}.
+We discuss reduction here fairly informally, and only for PlusCal
+algorithms.  The generalization and formalization of the concept
+appears in
+ \rref{topics}{\xlink{reduction-section}}{Section~\xref{reduction-section}}.
+For now, let's ignore liveness/fairness and consider only the safety
+specifications of algorithms, so an algorithm is specified by a
+formula of the form $Init /\ [][Next]_vars$.
+
+
+Let \MF\ be the algorithm obtained from $FGBBuf$ by replacing
+statement $p3$ with these three statements $p3$, $p3a$, and $p3b$.  
+Let \rd{\MF} be the algorithm obtained from \MF\ by replacing those
+three statements by the statement
+\begin{display}
+$p3$: $t := p$; $t := t\oplus1$; $p := t$
+\end{display}
+We call \rd{\MF} the \emph{reduction} of \MF\ by region of code
+consisting of the statements $p3$, $p3a$, and $p3b$.
+
+Algorithm \rd{\MF} is same as $FGBBuf$ except it also specifies the
+values of the irrelevant variable $t$.  Correctness of $FGBBuf$
+obviously implies the correctness of \rd{\MF}.  What we would like to
+show is that correctness of \rd{\MF} implies correctness of \MF. That
+would tell us that there is no need to consider the finer-grained
+algorithm \MF, since its correctness is implied by the correctness of
+$FGBBuf$ (which TLC has already checked).  To do this, it suffices to
+show that for every behavior $\sigma$ of \MF, there is a behavior
+\rd{\sigma} of \rd{\MF} such that correctness of \rd{\sigma} implies
+the correctness of $\sigma$.
+
+
+
+
+
+
+
+YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
+
+
+There is a
+folk theorem that suggests that we don't have to.
+
+The folk theorem isn't a real theorem; it's just a guide.  It's an
+informal, vague statement of a real theorem that's discussed in
+ \rref{topics}{\xlink{reduction-section}}{Section~\xref{reduction-section}}.
+I will therefore not try to state it precisely.
+
+Let $\mathcal{F}$ be the algorithm obtained from $FGBBuf$ by replacing
+statement $p3$ with these three statements $p3$, $p3a$, and $p3b$.  We
+say that $\mathcal{F}$ is obtained from $FGBBuf$ by splitting the
+atomic action $p3$ into the code region consisting of statements $p3$,
+$p3a$, and $p3b$.  The general definition of splitting an action into
+a code region should be reasonably clear from this example.  As in the
+example, splitting an action can include the introduction of one or more
+variables local to the action's process.
+
+The folk theorem is based on the concept of commutativity of actions.
+We say that two actions of an algorithm \emph{commute} iff executing
+them in either order has the same effect.  More precisely, let
+ \[s\action{A}t\]
+mean that $s->t$ is a step satisfying action $A$.  Actions $A$ and $B$
+of an algorithm $\mathcal{A}$ commute iff the following condition
+holds for every pair of states $s$ and $t$ with $s$ a reachable state
+of $\mathcal{A}$: there exists a state $u$ such that
+ \[s\action{A}u \action{B} t\]
+iff there exists a state $v$ such that
+ \[ s\action{B}v \action{A} t\]
+For example, in
+  \popref{pcalXXX-XXXfgbbuffer}{algorithm $FGBBuf$},
+the $p3$ action and the $c3$ action commute.  However, the $p3$ and
+$c1$ actions do not commute because, in a state $s$ with $p=c$, it is
+possible to execute $p3$ and then $c1$ but not $c1$ and then $p3$.
+%
+\begin{display}
+\textbf{Folk Theorem } Let algorithm $\mathcal{F}$ be obtained from
+algorithm $\mathcal{C}$ by splitting an atomic action $A$ of a process
+$\Pi$ into a code region $R$.  Suppose that every execution of $R$
+consists of the execution of a sequence $R_{1}$, \ldots\,, $R_{n}$ of
+atomic actions of $\mathcal{F}$ for which there exists a $k$ such
+that, for every $i#k$, action $R_{i}$ commutes with every action of
+ever process other than $\Pi$.  Then every behavior $\rho$ of
+$\mathcal{F}$ is essentially the same as some behavior $\sigma$ of
+$\mathcal{C}$.
+\end{display}
+%
+This folk theorem has two problems.  First, it is meaningless without
+a definition of what ``essentially the same'' means for behaviors.
+Second, it is correct only if $\mathcal{C}$ and $\mathcal{F}$ specify
+just safety.  Additional hypotheses are needed if $\mathcal{C}$ also
+includes a fairness condition (or some other liveness condition).
+Before addressing these problems, let's see why the folk theorem is
+helpful.
+
+Suppose algorithm $\mathcal{C}$ is correct.  The conclusion of the
+folk theorem implies that algorithm $\mathcal{F}$ is essentially
+correct.  To see this, remember that correctness of $\mathcal{C}$
+means that every behavior $\sigma$ of $\mathcal{C}$ satisfies some
+property $P$.  The conclusion of the folk theorem asserts that every
+behavior $\rho$ of $\mathcal{F}$ is essentially the same as some
+behavior $\sigma$ of $\mathcal{C}$, which satisfies $P$.  Hence,
+$\mathcal{F}$ essentially satisfies $P$, so it is essentially correct.
+This reasoning is all nonsense without a precise definition of what
+``essentially the same'' and ``essentially correct'' mean, but let's
+not worry about that yet.
+
+Given an algorithm $\mathcal{C}$ that we believe to be correct, we
+want to know if we also need to show that a finer-grained version
+$\mathcal{F}$ of $\mathcal{C}$ is correct.  Algorithm $\mathcal{F}$
+can be obtained from $\mathcal{C}$ by a series of transformations,
+each splitting a different atomic action of $\mathcal{C}$.  We can
+apply the folk theorem to each of the transformations, showing that
+correctness of each implies that the next is essentially correct.  We
+can then conclude that $\mathcal{F}$ is essentially correct.
+
+Making sense of all this requires defining what it means for the
+behaviors $\rho$ and $\sigma$ of the folk theorem to be ``essentially
+the same''.  Such a definition is given in 
+  \rref{topics}{\xlink{reduction-section}}{Section~\xref{reduction-section}}.
+Here, I will describe how $\sigma$ is obtained from $\rho$.  You can
+think of $\sigma$ being essentially the same as $\rho$ to mean that
+$\sigma$ can obtained from $\rho$ by this procedure.
+
+I now show how we construct $\sigma$.  For simplicity, assume that
+each execution of the code region $R$ consists of an execution of the
+same sequence $R_{1}$, \ldots\,, $R_{n}$ of atomic actions of
+$\mathcal{F}$.  It's obvious how to generalize the procedure for
+constructing $\sigma$ when different executions of $R$ can consist of
+different sequences of atomic actions; it's just awkward to describe
+the general case.
+
+\smallskip
+
+\textbf{Warning } The following construction is flawed.  Its problems
+are discussed after the construction is described.
+
+\smallskip
+
+To construct $\sigma$, we first to construct from $\rho$ a behavior
+$\mu$ in which each execution of any of the actions $R_{i}$ occurs in
+a sequence of states
+ \[ \ldots \; -> \;\; u_{j} \action{R_{1}} u_{j+1} \action{R_{2}} \ldots \;
+     u_{j+n-1} \action{R_{n}} u_{j+n} \; \; -> \; \ldots
+ \]
+Remember that the behavior consists of the sequence of states $u_{i}$;
+a label on an arrow just indicates the action satisfied by the
+step (pair of states).  Consider any step 
+ \[  -> \;\; v_{j} \action{R_{i}} v_{j+1}  \;\;->
+ \]
+in $\rho$.  If $i<n$, then all steps to its right until an $R_{i+1}$
+step must be steps of processes other than $\Pi$.  If $1 < i$, then to
+its left is an $R_{i-1}$ step followed by a sequence of steps by
+processes other than $\Pi$.  We use commutativity to construct a
+sequence of behaviors satisfying $\mathcal{F}$; from each behavior, we
+construct the next by either moving an $R_{i}$ action with $i<k$ to
+the right, or else moving an $R_{i}$ action with $k<i$ to the left.
+For example, from a behavior
+ \[ \ldots \; -> \;\; v_{j} \action{R_{i}} v_{j+1} \action{B} v_{j} \;\;-> \;
+     \ldots
+ \]
+   with $B$ an action of a process other than $\Pi$, we can use commutativity
+to construct a behavior
+ \[ \ldots \; -> \;\; v_{j} \action{B} w_{j+1} \action{R_{i}} v_{j} \;\;-> \;
+     \ldots
+ \]
+for some state $w_{j+1}$.  Since the original behavior satisfies
+$\mathcal{F}$, the new behavior satisfies the initial predicate and
+next-state relation of $\mathcal{F}$.  Since we have changed only
+a finite portion of the behavior, the new behavior also satisfies any
+fairness conditions of $\mathcal{F}$, so it satisfies $\mathcal{F}$.
+
+By a sequence of such constructions, we obtain a behavior $\mu$
+satisfying $\mathcal{F}$ in which each $R_{i}$ action appears in a
+sequence of consecutive actions $R_{1}$, $R_{2}$, \ldots, $R_{n}$.
+
+Finally, we obtain $\sigma$ from $\mu$ by replacing each
+sequence
+ \[ \ldots \; -> \;\; u_{j} \action{R_{1}} u_{j+1} \action{R_{2}} \ldots \;
+     u_{j+n-1} \action{R_{n}} u_{j+n} \; \; -> \; \ldots
+ \]
+by 
+ \[ \ldots \; -> \;\; u_{j} \action{A} u_{j+n} \; \; -> \; \ldots
+ \]
+where $A$ is the atomic action of algorithm $\mathcal{C}$ that was
+split into the code region $R$.  This is the desired behavior $\sigma$
+of $\mathcal{C}$.
+
+\smallskip
+
+There are two flaws in this argument.  The first is the claim that,
+because we constructed a sequence of behaviors of $\mathcal{F}$ that
+leads to $\mu$, the behavior $\mu$ itself is a behavior of
+$\mathcal{F}$.  Let $\mu_{0}$, $\mu_{1}$, \ldots\ be that sequence of
+behaviors of $\mathcal{F}$.  It's clear that if this sequence is
+finite, then $\mu$ satisfies $\mathcal{F}$.  However, it's not obvious
+that the sequence even leads to a behavior $\mu$ if it is infinite,
+let alone that $\mu$ satisfies $\mathcal{F}$.  It can be shown that
+the infinite sequence $\mu_{0}$, $\mu_{1}$, \ldots\ converges to a
+limit $\mu$.  It can also be shown that $\mu$ satisfies the safety
+part of $\mathcal{F}$.  (The proof of safety rests on the observation
+that if $\mu$ did not satisfy the safety part of $\mathcal{F}$, the
+violation would occur in some particular step and that step would
+occur in an infinite number of the behaviors $\mu_{i}$.)  However, the
+limit $\mu$ need not satisfy a fairness condition of $\mathcal{F}$.
+Hence, even if $\mathcal{F}$ has the same process fairness conditions
+as $\mathcal{C}$, the behavior $\sigma$ need not satisfy the fairenss
+conditions of $\mathcal{C}$.
+
+The second flaw is that if $\rho$ has only a finite number of $R_{i}$
+actions, the last one may be for an $R_{i}$ with $i<n$.  Hence, $\mu$
+may be left with a partial execution $R_{1}$, $R_{2}$, \ldots\,,
+$R_{m}$ of the code region $R$, for $m<n$.  
+
+The omission
+is that I stated without proof that transforming a behavior satisfying
+$\mathcal{F}$ by moving an $R_{i}$ action right or left yields a
+behavior that also satisfies $\mathcal{F}$.  This is obvious if
+$\mathcal{F}$ specifies only safety, since the new behavior satisfies
+the initial predicate and next-state action of $\mathcal{F}$.
+
+
+
+XXXXXXXXXXXXX
+---except perhaps for a final incomplete
+sequence $R_{1}$, \ldots, $R_{m}$ for $m<n$.  In this case, the
+assumption about $\rho$ implies that $m<k$, and we can eliminate the
+incomplete sequence by moving the final actions $R_{1}$, \ldots
+$R_{m}$ infinitely far to the right.  (Remember that all behaviors are
+infinite.)  We then have the desired behavior $\mu$.
+
+Any finer-grained version
+of algorithm 
+
+Viewed rigorously, this argument is absurd.  
+
+
+$\mathcal{F}$ means that every behavior
+$\rho$ of $\mathcal{F}$ 
+
+This means that
+every behavior $\sigma$ 
+
+
+like to know if we need to check the correctness of a finer-grained
+version algorithm $\mathcal{F}$.  
+
+
+
+If every behavior of $\mathcal{F}$ is essentially the same as a
+behavior of $\mathcal{C}$, then there's no need to consider the
+finer-grained algorithm $\mathcal{F}$ because in reasoning about
+$\mathcal{C}$ we have essentially considered all the behaviors
+of $\mathcal{F}$.  
+
+
+
+split the action
+$A$ because 
+
+XXXXXXXXXXXXXXXXXXXXXXXXX
+
+\vspace{2\baselineskip}
+
+XXXXXXXXXXXXXXXXXXXXXXXXX
+
+There's a popular rule of thumb that tells us we don't have to refine
+algorithm $FGBBuf$ any further.  Simple versions of the rule work
+only for safety properties.  So, let's ignore liveness and assume that
+our specifications have the form $Init /\ [][Next]_{vars}$, so the
+only properties they satisfy are safety properties.
+
+The rule is based on the concept of commutativity of actions.  We say
+that two actions \emph{commute} iff executing them in either order has
+the same effect.  More precisely, let
+ \[s\action{A}t\]
+mean that $s->t$ is a step satisfying action $A$. Actions $A$ and $B$
+commute iff for every pair of states $s$ and $t$, there exists a 
+state $u$ such that
+ \[s\action{A}u \action{B} t\]
+iff there exists a state $v$ such that
+ \[ s\action{B}v \action{A} t\]
+For example, 
+  \popref{pcalxxx-xxxfgbbuffer}{algorithm $FGBBuf$},
+the $p3$ action and the $c3$ action commute.  However, the $p3$ and
+$c1$ action executes \await~$p#c$) do not commute because, in a state
+$s$ with $p=c$, it is possible to execute $p3$ and then $c1$ but not
+$c1$ and then $p3$.  Here is one statement of the rule for algorithms
+written in PlusCal.
+\begin{display}
+\textbf{Rule of Thumb } Let $\mathcal{F}$ be a multiprocess algorithm
+in which one process $\Pi$ contains the sequence
+ \begin{display}
+ $r_{1}$: $R_{1}$ ; \ $r_{2}$: $R_{2}$ ; \ \ldots \ ; \ $r_{n}$: $R_{n}$
+ \end{display}
+of atomic statements, and let $\mathcal{C}$ be the algorithm obtained by 
+replacing this sequence of statements by the single atomic statement
+ \begin{display}
+  $r_{1}$: $R_{1}$ ; $R_{2}$ ; \ \ldots \ ; $R_{n}$
+ \end{display}
+Assume that there exists a $k$ such that, for all $i#k$, action
+$r_{i}$ commutes with every action of every process other than $\Pi$.
+Let $\rho$ be any behavior of $\mathcal{F}$ such that, if $\rho$
+contains a finite number of $r_{i}$ steps and the last such step is
+for $i<n$, then $i<k$.  For such a $\rho$, there exists a behavior
+$\sigma$ of $\mathcal{C}$ that is ``equivalent'' to $\rho$.
+\end{display}
+It's difficult to state precisely what ``equivalent'' means in this
+rule.  The best way to understand the rule is to understand how the
+behavior $\sigma$ is obtained from $\rho$.  
+
+To construct, $\sigma$ we first to construct from $\rho$ a behavior
+$\mu$ in which each each execution of one of the actions $r_{i}$
+occurs in a sequence of states
+ \[ \ldots \; -> \;\; u_{j} \action{r_{1}} u_{j+1} \action{r_{2}} \ldots \;
+     u_{j+n-1} \action{r_{n}} u_{j+n} \; \; -> \; \ldots
+ \]
+Remember that the behavior consists of the sequence of states $u_{i}$;
+a label on an arrow just indicates the action satisfied by the
+step (pair of states).  Consider any step 
+ \[  -> \;\; v_{j} \action{r_{i}} v_{j+1}  \;\;->
+ \]
+in $\rho$.  If $i<n$, then all steps to its right until an $r_{i+1}$
+step must be steps of a processes other than $\Pi$.  If $1 < i$, then
+to its left is an $r_{i-1}$ step followed by a sequence of steps by
+processes other than $\Pi$.  We use commutativity to construct a
+sequence of behaviors in which we either move to the right a $r_{i}$
+action with $i<k$ or move to the left an $r{i}$ action with $k<i$.
+For example, from a behavior
+ \[ \ldots \; -> \;\; v_{j} \action{r_{i}} v_{j+1} \action{A} v_{j} \;\;-> \;
+     \ldots
+ \]
+with $A$ an action of a process other than $\Pi$, we can use commutativity
+to construct a behavior
+ \[ \ldots \; -> \;\; v_{j} \action{A} w_{j+1} \action{r_{i}} v_{j} \;\;-> \;
+     \ldots
+ \]
+for some state $w_{j+1}$.  Since $\mathcal{F}$ is a safety
+specification, if the original behavior satisfies $\mathcal{F}$, then
+so does the new behavior.
+
+By a (possibly infinite) sequence of such
+constructions,
+   \marginpop{right-moving}{Can we really construct $\mu$ this way?}
+we obtain a behavior $\mu$ satisfying $\mathcal{F}$ in which each
+$r_{i}$ action appears in a sequence of consecutive actions $r_{1}$,
+$r_{2}$, \ldots, $r_{n}$---except perhaps for a final incomplete
+sequence $r_{1}$, \ldots, $r_{m}$ for $m<n$.  In this case, the
+assumption about $\rho$ implies that $m<k$, and we can eliminate the
+incomplete sequence by moving the final actions $r_{1}$, \ldots
+$r_{m}$ infinitely far to the right.  (Remember that all behaviors are
+infinite.)  We then have the desired behavior $\mu$.
+
+Finally, we obtain $\sigma$ from $\mu$ by replacing each
+sequence
+ \[ \ldots \; -> \;\; u_{j} \action{r_{1}} u_{j+1} \action{r_{2}} \ldots \;
+     u_{j+n-1} \action{r_{n}} u_{j+n} \; \; -> \; \ldots
+ \]
+by 
+ \[ \ldots \; -> \;\; u_{j} \action{r_{1}} u_{j+n} \; \; -> \; \ldots
+ \]
+where $r_{1}$ is the action of algorithm $\mathcal{C}$ that executes
+$R_{1};\;\ldots\,;\;R_{n}$.  This is the desired behavior $\sigma$ of
+$\mathcal{C}$.
+
+As an example, suppose $\mathcal{F}$ is algorithm $FGBBuf$ with $p3$
+replaced by
+  \lref{p3a-p3c}{the statements $p3$, $p3a$, and $p3b$ above}.
+Since the consumer process does not write $p$ and does not read or
+write $t$, these actions $p3$ and $p3a$ commute with every action of
+the consumer.  Hence, the hypotheses of the rule of thumb hold with
+$n$ and $k$ both equal to 3, and the condition on a final $r_{i}$ of
+$\rho$ is vacuous.  The rule therefore states that every behavior
+$\rho$ of the algorithm containing these three statements is
+``equivalent'' to a behavior $\sigma$ of the algorithm $\mathcal{C}$
+obtained by replacing those statements with
+\begin{display}
+$p3$: $t := p$ ; $t := t\oplus1$ ; $p := t$
+\end{display}
+In what sense are these behaviors ``equivalent''.  The statements
+$p3a$ and $p3b$ change only the values of the variables $t$ and $pc$.
+The behaviors $\rho$ and $\sigma$ are therefore equivalent in the
+sense that, if we ignore the variables $t$ and $pc$, then they are the
+same except for stuttering steps.  Moreover, because the actions of
+$\mathcal{C}$ differ from corresponding actions of $FGBBuf$ only by
+assigning values to $t$, the behavior $\sigma$ is also a behavior
+of $FGBBuf$.  (Algorithm $FGBBuf$ allows $t$ to assume an values.)
+
+This equivalence is enough to show that the correctness of $FGBBuf$
+implies the correctness of $\mathcal{F}$, so there is no need to check
+the finer-grained algorithm.  This is because correctness of $FGBBuf$
+means that it implements the bounded channel under the refinement
+mapping $ch <- chBar$.  Since the value of $chBar$ does not depend on
+the values of $t$ or $pc$, the equivalence of $\rho$ and $\sigma$
+implies that \ov{\rho} 
+  \marginpar{\sref{main}{main-refinement}{\ov{\rho} and \ov{\sigma}
+    are defined above.}}
+differs from \ov{\sigma} only by stuttering steps, where \ov{\rho} and
+\ov{\sigma} are defined by this refinement mapping.  Hence, \ov{\rho}
+satisfies the bounded channel specification iff \ov{\sigma} does.
+Since there exists such a behavior $\sigma$ of $FGBBuf$ for every
+behavior $\rho$ of $\mathcal{F}$, the fact that $FGBBuf$ implements
+the bounded channel under this refinement mapping implies that
+$\mathcal{F}$ does too.
+
+\medskip
+
+The rule of thumb can be generalized from a simple sequence of
+assignment statements to more complicated sections of code---for
+example, to an \pif\ statement.  It can also be extended to
+situations when $\mathcal{F}$ contains a potentially infinite
+loop that is made in a single atomic action of $\mathcal{C}$.
+For example, let $\mathcal{F}$ be the algorithm obtained
+from $FGBBuf$ by rewriting the consumer's \textbf{await} statement as
+follows:%
+ \marginpar{As the example shows, PlusCal has a {\rm\textbf{goto}} statement.
+            It's seldom used.}
+\begin{display}
+\begin{tabbing}
+   $p1$: \= \pwhile $(\TRUE)$ \V{.2}
+      \> \s{1}\{ \= $p1a$: \= \kill
+      \> \s{1}\{ \> \> $t := c$ ;\V{.2}
+      \>         \> $p1a$: \> \textbf{if} $(p \ominus t = N)$
+                               \{ {\textbf{goto}} $p1$ \} ; \V{.2}
+      \>         \> $p2$: \> \ldots
+\end{tabbing}
+\end{display}
+
+
+
+
+\end{document}
+\newpage
+\section{\puce What Comes Next}
+
+The following text is left over from an earlier draft.  Some of it
+will be recycled in later drafts.  Meanwhile, you can ignore it.
+
+\bigskip
+
+You have learned how to describe a simple computing device with an
+initial predicate and next-state relation, and how to check that it
+satisfies invariance properties.  You now need to learn how to check
+other kinds of properties, and how to describe more complex computing
+devices.
+
+
+\subsection{Other Properties}
+
+\subsubsection{Liveness} \xlabel{main:liveness}
+
+Invariance belong to a class of properties called \emph{safety}
+properties.  Safety describes what a computing device is permitted to
+do.  The one-bit clock is permitted only to change the value of $b$
+from 0 to 1 or from 1 to 0.  The invariance of $EuclidInv$ asserts that
+Euclid's algorithm is permitted to make $x$ and $y$ equal only when
+$x$ equals $GCD(M, N)$.
+
+The other class of properties that we study are called \emph{liveness}
+properties.  A liveness property describes what a device \emph{must}
+do.  For example, the liveness property we might require of the binary
+clock is that it never stop, so the value of $b$ keeps changing
+forever.  A liveness property we require generally require of Euclid's
+algorithm is that it eventually does stop, by reach a terminating
+state in which $x$ equals $y$.
+
+Most people find it natural to assume that a computing device not stop
+in a state from which the next-state relation allows it to take a
+step.  This would imply the aforementioned liveness properties of the
+one-bit clock and Euclid's algorithm.  The one-bit clock's next-state
+relation allows it to take a step, changing the value of $b$, from any
+reachable state.  The next-state relation of Euclid's algorithm allows
+it to take a step from any non-terminating reachable state, and it can
+take only a finite number of steps before it reaches a terminating
+state.
+
+While it may seem natural to assume that our specifications imply these
+liveness properties, it turns out to be a bad idea.  It is useful to
+separate safety and liveness.  We therefore interpret our next-state
+relation to specify only what steps are permitted, not to imply that
+any step must occur.  To specify the liveness properties that a
+computing device must satisfy, we need something more than the initial
+predicate and next-state relation.
+
+\subsubsection{Refinement}
+
+Invariance is a safety property, asserting that the computing device
+is permitted to reach only states that satisfy the invariant.
+However, not every safety property is an invariance property.  For
+example, the property that the one-bit clock can change the value of $b$
+only from 0 to 1 or from 1 to 0 is not an invariance property.
+ \marginpar{\popref{one-bit-safety}{\normalsize Why 
+  this is not really true.}}
+We can specify this property only as a computing device.
+
+In many cases, the only way to specify what a computing device should
+do is with another computing device.  Correctness of the computing
+device means that it \emph{refines} or \emph{implements} another,
+simpler computing device.  
+
+
+\subsection{More Complex Computing Devices}
+
+
+The best tool we have for coping with complexity is mathematics.
+Learning to describe more complex computing devices requires learning
+some more mathematics.  The most important bit of math you need is
+very simple: it's the concept of a function.  There are two ways to
+use math to describe computing devices.
+
+\subsubsection{Specifying with \protect\tlaplus}
+
+Conceptually, the simplest method of describing computing devices is
+to continue what we have been doing: specifying them with mathematics
+using \tlaplus.  Writing directly in \tlaplus\ puts the full power of
+mathematics at your disposal.  It is the best way to specify a
+computing device that describes what a complex system is supposed to
+do.
+
+\tlaplus\ allows you to combine the initial predicate and next-state
+action into a single temporal-logic formula.  You can then add any
+liveness requirements you want by conjoining another temporal-logic
+formula.  
+
+Writing a specification as a single formula makes it possible to
+explain refinement mathematically, making it easier to understand.
+This understanding is important, because refinement is the basis for
+designing a computing device that satisfies its specification.
+
+Describing computing devices directly in \tlaplus\ is the subject of
+\rref{tlaplus}{top}{the \tlaplus\ Track}.
+
+\btarget{pluscal-intro}%
+\subsubsection{Using PlusCal} \xlabel{main:pluscal-intro}
+
+Less sophisticated readers may prefer to describe computing devices
+with the PlusCal algorithm language.  PlusCal looks superficially like
+a very simple toy programming language, making it feel more
+comfortable to most computer scientists.  However, any \tlaplus\
+expression can be used as an expression in a PlusCal algorithm.  This
+makes PlusCal infinitely more expressive than any programming language
+ever dreamed of by language designers.  For example, we can write in
+\tlaplus\ the mathematical definition of what it means for a Turing
+machine to halt.  Using that definition, we can write a terminating
+PlusCal algorithm that determines whether an arbitrary Turing machine
+halts.
+
+A PlusCal algorithm is automatically translated into a \tlaplus\
+specification to which we can apply our tools, including the TLC model
+checker.  (Unfortunately, TLC would not be able to check a PlusCal
+algorithm that solves the halting problem for Turing machines.)  The
+\tlaplus\ translation is simple enough that we can reason
+mathematically about it.  Since \tlaplus\ is mathematics, we want to
+reason about that translation and not about the PlusCal code.  (Even
+though PlusCal is much simpler than an ordinary programming language,
+it is still not as simple as mathematics.)
+
+Readers who learn to write specifications directly in \tlaplus\ will
+probably also want to learn to write algorithms in PlusCal.  Because
+most computer scientists will be more comfortable with PlusCal than
+\tlaplus, PlusCal is good for describing a computing device to a wide
+audience.  For example, it is a good language in which to publish
+algorithms---especially multiprocess (multi-threaded) algorithms.  A
+PlusCal algorithm can be as easy to understand as one written in
+pseudo-code, but it is precisely defined and can be checked.
+
+The comfort of familiar programming-language notation does come at a
+price.  By providing the full power of mathematics in writing the
+next-state relation, \tlaplus\ allows you to manage the complexity of
+large specifications in ways that you can't with PlusCal.  PlusCal is
+suited to describing algorithms, which can generally be specified in a
+few pages.  \tlaplus\ is better for the larger specifications that
+arise when describing systems.
+
+\tlaplus\ can also express liveness properties that cannot be
+expressed directly in PlusCal.  When using PlusCal, you may sometimes
+need to write your algorithm's liveness requirement directly in
+\tlaplus\ and conjoin it to the safety specification produced by the
+PlusCal translator.  This is especially true of the current version of
+PlusCal (Version 1.4).  Future versions should permit more flexible
+liveness specifications.
+
+It will come as no surprise that PlusCal is described in 
+\rref{pluscal}{top}{the PlusCal Track}.
+
+\subsection{Proofs}
+
+Model checking is wonderful for finding errors in the specification of
+a computing device---errors that could indicate design errors in the
+actual device being specified.  However, we often cannot check a
+specification on a large enough model to be confident that it is error
+free.  How large a model that requires depends on the details of the
+computing device.  There is no rule for determining how much
+confidence in the correctness of a specification we obtain by checking
+it on a particular collection of models.  That is a matter of
+engineering judgment.
+
+If model checking can't provide the confidence we need, the only
+alternative is to prove the required properties of the specification.
+It is extremely unlikely that you will ever write a formal \tlaplus\
+correctness proof of any computing device that you specify.  However,
+you might want to write a less formal proof.  You should certainly
+be extremely confident in the correctness of any algorithm that you
+publish, and this generally requires writing a proof.
+
+Correctness proofs of computing devices are usually complicated.
+Hierarchical structure is the best way to handle complexity.  The
+hierarchical structure provided by \tlaplus\ proofs can be used to
+make less formal proofs more reliable.  Also, even when reasoning
+informally, a precise mathematical statement of what is to be proved
+helps avoid errors.
+
+Learning to write a formal proof will help eliminate errors when
+writing less formal proofs.  The best way to learn to write formal
+proofs is to have a computer check them.  You can use TLAPS, the
+\tlaplus\ proof system, to check \tlaplus\ proofs.  How to write and
+check proofs is the subject of \rref{proof}{top}{the Proof Track}.
+This track can be read in conjunction with \rref{tlaplus}{top}{the
+\tlaplus\ Track} or \rref{pluscal}{top}{the PlusCal Track}.
+

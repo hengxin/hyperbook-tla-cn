@@ -1,0 +1,73 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{Explanation of the Proof}
+\setpopup{38}
+\begin{document}
+
+\subsection*{Explanation of the Proof}
+
+We must show that to prove
+ \[ Inv \,/\ \, (\E\, i \in \{0,1\} : e1(i) 
+            \,\/\, e2(i) \,\/\, CS(i) \,\/\, Rest(i))
+      \ => \ Inv'\]
+it suffices to prove steps 1--4 of the proof.  Here is the argument:
+\begin{proof}
+\pflongnumbers
+\pflongindent
+
+\step{1}{It suffices to prove\vs{.41}
+ \[(\E\, i \in \{0,1\} : Inv \,/\ \, (e1(i) 
+            \,\/\, e2(i) \,\/\, CS(i) \,\/\, Rest(i)))
+      \; => \ Inv'\]}
+\vspace{.42em}
+\begin{proof}
+\pf\ Since $i$ does not \popref{free-symbols}{occur free} in $Inv$,
+the formulas \V{.41}
+\s{1}$Inv /\ (\E i \in \{0,1\} : \ldots)$ \ and \
+$(\E i \in \{0,1\} : Inv /\ \ldots)$ \V{.41}
+are equivalent.
+\end{proof}
+
+\vspace{.61em}
+
+\step{2}{It suffices to prove\vs{.2}
+ \[(i \in \{0,1\}) \, /\ \, Inv \,/\ \, (e1(i) 
+            \,\/\, e2(i) \,\/\, CS(i) \,\/\, Rest(i))
+      \; => \ Inv'\]}
+\vspace{.42em}
+\begin{proof}
+\pf\ For any $P$ and $Q$, if $i$ does not occur free in $Q$, then to
+prove $(\E i \in S : P(i)) => Q$, it suffices to prove 
+ $(i \in S) /\ P(i) => Q$.
+\end{proof}
+
+\vspace{.61em}
+
+\step{3}{$(i \in \{0,1\}) \, /\ \, Inv \,/\ \, (e1(i) 
+            \,\/\, e2(i) \,\/\, CS(i) \,\/\, Rest(i))$
+is equivalent to\vs{.3}
+ \[ \begin{disj}
+     (i \in \{0,1\}) \, /\ \, Inv \,/\ \, e1(i) \\
+     (i \in \{0,1\}) \, /\ \, Inv \,/\ \, e2(i) \\
+     (i \in \{0,1\}) \, /\ \, Inv \,/\ \, CS(i)  \\
+     (i \in \{0,1\}) \, /\ \, Inv \,/\ \, Rest(i)
+    \end{disj}
+ \]}
+\vspace{.42em}
+\begin{proof}
+\pf\ By propositional logic.
+\end{proof}
+
+\vspace{.61em}
+
+\qedstep
+\vspace{.42em}
+\begin{proof}
+\pf\ By steps \stepref{2} and \stepref{3}, since 
+  $(P_{1} \/ \ldots \/ P_{k}) => Q$ is equivalent to\\
+  $(P_{1} => Q) /\ \ldots /\ (P_{k}=>Q)$.
+\end{proof}
+\end{proof}
+
+
+\end{document}

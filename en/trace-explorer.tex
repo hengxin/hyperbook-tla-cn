@@ -1,0 +1,24 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{TLC's Trace Explorer}
+\file{trace-explorer}
+\makeindex
+\begin{popup}
+
+  \tindex{1}{trace explorer}%
+  \ctindex{1}{TLC!trace explorer}{tlc-trace-expl}%
+  \vspace{-2\baselineskip}%
+
+\subsection*{TLC's Trace Explorer}
+
+You should have the \textsf{TLC Errors} window containing the error
+trace open in the Toolbox.  If not, raise it again by running
+TLC to check the invariance of $pc[1]="c1"$.  Right above the
+\textsf{Error-Trace} section is a section labeled
+\textsf{Error-Trace Exploration}.  Open it (click on the
+{\setlength{\fboxsep}{.5pt}\footnotesize\fbox{+}}) and add the
+expression $p\oplus c$, which equals \ov{b}.  Click on the
+\textsf{Explore} button.  TLC will now display the value of $p\oplus
+c$ for each state of the error trace.
+\end{popup}
+\makepopup

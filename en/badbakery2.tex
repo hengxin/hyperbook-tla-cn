@@ -1,0 +1,84 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{Towards the Bakery Algorithm -- 2}
+
+\begin{popup}
+%\begin{document}
+\subsection*{Towards the Bakery Algorithm -- 2}
+
+\begin{pcal}
+process (p \in Procs)
+  variables unchecked,  max ;         
+  { ncs: while (TRUE) 
+          { e1:   unchecked := Procs \ {self} ;
+                  max := 0;
+            e2:   while (unchecked # {}) 
+                    { with (i \in unchecked) 
+                        { unchecked := unchecked \ {i};
+                          if (num[i] > max) { max := num[i] }
+                        }
+                    };
+            e3:   with (i \in {j \in Nat : j > max}) { num[self] := i };
+                  unchecked := Procs \ {self} ;
+            wait: while (unchecked # {}) 
+                    {  with (i \in unchecked) 
+                         { await \/ num[i] = 0
+                                 \/ <<num[self], self>> \prec <<num[i], i>> ;
+                           unchecked := unchecked \ {i}
+                         }
+                    } ;
+            cs:   skip ;  \* the critical section;
+            exit: num[self] := 0
+          }
+  }
+\end{pcal}
+\begin{tlatex}
+\@x{ {\p@process} {\p@lparen} p \.{\in} Procs {\p@rparen}}%
+\@x{\@s{8.2} {\p@variables} unchecked ,\,\@s{4.1} max {\p@semicolon}}%
+ \@x{\@s{8.2} {\p@lbrace} ncs\@s{.5}\textrm{:}\@s{3} {\p@while} {\p@lparen}
+ {\TRUE} {\p@rparen}}%
+ \@x{\@s{43.29} {\p@lbrace} e1\@s{.5}\textrm{:}\@s{3}\@s{8.2} unchecked \.{:=}
+ Procs \.{\,\backslash\,} \{ self \} {\p@semicolon}}%
+\@x{\@s{78.24} max \.{:=} 0 {\p@semicolon}}%
+ \@x{\@s{52.87} e2\@s{.5}\textrm{:}\@s{3}\@s{8.74} {\p@while} {\p@lparen}
+ unchecked \.{\neq} \{ \} {\p@rparen}}%
+ \@x{\@s{86.44} {\p@lbrace} {\p@with} {\p@lparen} i \.{\in} unchecked
+ {\p@rparen}}%
+ \@x{\@s{104.23} {\p@lbrace} unchecked \.{:=} unchecked \.{\,\backslash\,} \{
+ i \} {\p@semicolon}}%
+ \@x{\@s{113.81} {\p@if} {\p@lparen} num [ i ] \.{>} max {\p@rparen}
+ {\p@lbrace} max \.{:=} num [ i ] {\p@rbrace}}%
+\@x{\@s{104.23} {\p@rbrace}}%
+\@x{\@s{86.44} {\p@rbrace} {\p@semicolon}}%
+ \@x{\@s{52.87} e3\@s{.5}\textrm{:}\@s{3}\@s{8.74} {\p@with} {\p@lparen} i
+ \.{\in} \{ j \.{\in} Nat \.{:} j \.{>} max \} {\p@rparen} {\p@lbrace} num [
+ self ] \.{:=} i {\p@rbrace} {\p@semicolon}}%
+ \@x{\@s{78.24} unchecked \.{:=} Procs \.{\,\backslash\,} \{ self \}
+ {\p@semicolon}}%
+ \@x{\@s{52.87} wait\@s{.5}\textrm{:}\@s{3} {\p@while} {\p@lparen} unchecked
+ \.{\neq} \{ \} {\p@rparen}}%
+ \@x{\@s{86.44} {\p@lbrace}\@s{4.1} {\p@with} {\p@lparen} i \.{\in} unchecked
+ {\p@rparen}}%
+\@x{\@s{108.33} {\p@lbrace} {\p@await} \.{\lor} num [ i ] \.{=} 0}%
+ \@x{\@s{148.26} \.{\lor} {\langle} num [ self ] ,\, self {\rangle} \.{\prec}
+ {\langle} num [ i ] ,\, i {\rangle} {\p@semicolon}}%
+\@x{\@s{117.91} unchecked \.{:=} unchecked \.{\,\backslash\,} \{ i \}}%
+\@x{\@s{108.33} {\p@rbrace}}%
+\@x{\@s{86.44} {\p@rbrace} {\p@semicolon}}%
+ \@x{\@s{52.87} cs\@s{.5}\textrm{:}\@s{3}\@s{9.58} {\p@skip}
+ {\p@semicolon}\@s{4.1}}%
+\@y{%
+  the critical section;
+}%
+\@xx{}%
+\@x{\@s{52.87} exit\@s{.5}\textrm{:}\@s{3}\@s{2.51} num [ self ] \.{:=} 0}%
+\@x{\@s{43.29} {\p@rbrace}}%
+\@x{\@s{8.2} {\p@rbrace}}%
+\end{tlatex}
+
+%\end{document}
+
+
+
+\end{popup}
+\makepopup

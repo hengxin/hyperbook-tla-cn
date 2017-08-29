@@ -1,0 +1,112 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{Start}
+
+%% Now set for the pdf file to be moved to a super-directory of hyper-tla.
+
+\begin{document}
+
+\showversions
+\makeatletter
+
+\def\contentsline#1#2#3#4{%
+  \ifx\\#4\\%
+    \csname l@#1\endcsname{#2}{#3}%
+  \else
+    \ifcase\Hy@linktoc % none
+      \csname l@#1\endcsname{#2}{#3}%
+    \or % section
+      \csname l@#1\endcsname{%
+%%%        \hyper@linkstart{link}{#4}{#2}\hyper@linkend
+          \sref{hyper-tla/\remotefile}{#4}{#2}%
+      }{}%%%%   {#3}%
+    \or % page
+%%      \csname l@#1\endcsname{{#2}}{%
+%%        \hyper@linkstart{link}{#4}{#3}\hyper@linkend
+%%      }%
+    \relax
+    \else % all
+      \csname l@#1\endcsname{%
+      \sref{hyper-tla/\remotefile}{#4}{#2}}{}%
+%%%        \hyper@linkstart{link}{#4}{#2}\hyper@linkend
+%%%      }{%
+%%%        \hyper@linkstart{link}{#4}{#3}\hyper@linkend
+%%%      }%
+    \fi
+  \fi
+}
+
+\def\@oddfoot{}
+\vspace*{10pt}
+\begin{center}
+\hspace*{50pt}{\LARGE\boldmath\textbf{\makebox[0pt]{Principles and Specifications of Concurrent Systems}}}\V{.5}
+{\large \hspace*{50pt}\s{1}Leslie Lamport \V{.3}
+\hspace*{50pt}Version of \dayMonthYear}
+\end{center}
+
+\vspace{-2em}
+
+\target{top}\section*{\protect\sref{hyper-tla/main}{top}{The \emph{Principles}
+and \emph{Specification} Tracks}}
+% \subsection*{Main}
+
+\mbox{}\marginpar[-1]{% 
+  \newlength{\xxlen}%
+  \setlength{\xxlen}{\marginparwidth}%
+  \addtolength{\xxlen}{\marginparsep}%
+  \addtolength{\xxlen}{50pt}%
+  \newlength{\xylen}%
+  \setlength{\xylen}{\marginparsep}%
+  \addtolength{\xylen}{100pt}%
+ \makebox[0pt][l]{%
+   \hspace{-\xylen}%
+   \begin{minipage}[t]{\xxlen}
+\sref{hyper-tla/help}{top}{%
+   \textsf{\Large \aqua If you are just starting to read\\[.2em]this 
+       hyperbook, click here.\\[1em]
+      \puce Sections colored like this have\\[.4em] not yet 
+             been written.    
+}}
+   \end{minipage}}}
+
+\vspace{-2em}
+\def\remotefile{main}
+\input{main.toc}
+
+\subsection*{\sref{hyper-tla/principles}{top}{\puce The \emph{Principles} Track}}
+\def\remotefile{principles}
+\input{principles.toc}
+
+\subsection*{\sref{hyper-tla/specification}{top}{\puce The \emph{Specification} Track}}
+\def\remotefile{specification}
+\input{specification.toc}
+
+
+% \subsection*{\sref{hyper-tla/tlaplus}{top}{The \protect\tlaplus\ Track}}%
+% \def\remotefile{tlaplus}
+% \input{tlaplus.toc}
+
+% \subsection*{\sref{hyper-tla/pluscal}{top}{The PlusCal Track}}
+% \def\remotefile{pluscal}
+% \input{pluscal.toc}
+
+\subsection*{\sref{hyper-tla/proof}{top}{The \protect\tlaplus\ Proof Track}}
+\def\remotefile{proof}
+\input{proof.toc}
+
+
+% \subsection*{\sref{hyper-tla/examples}{top}{Examples}}
+% \def\remotefile{examples}
+% \input{examples.toc}
+
+
+\subsection*{\sref{hyper-tla/math}{top}{Math}}
+\def\remotefile{math}
+\input{math.toc}
+
+\section*{\sref{hyper-tla/topics}{top}{\puce Topics}}
+\def\remotefile{topics}
+\input{topics.toc}
+
+
+\end{document}

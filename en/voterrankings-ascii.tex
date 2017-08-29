@@ -1,0 +1,16 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{ASCII Text}
+\fixverbatim
+\begin{popup}
+\begin{verbatim*}
+VoterRankings == LET Cand == 1..N
+                 IN  {seq \in [Cand -> Cand] : 
+                        Cand \subseteq {seq[i] : i \in Cand}}
+
+AllVotes == [1..V -> VoterRankings]
+
+ASSUME \A v \in AllVotes : CR(v)!CondorcetRanking = CR(v)!CRanking
+\end{verbatim*}
+\end{popup}
+\makeasciipopup

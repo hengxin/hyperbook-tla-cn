@@ -1,0 +1,98 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{The Atomic Bakery Algorithm}
+
+%\begin{document}
+\begin{popup}
+\subsection*{The Atomic Bakery Algorithm}
+
+\begin{pcal}
+--algorithm AtomicBakery 
+{ variable num = [i \in Procs |-> 0], flag = [i \in Procs |-> FALSE];
+  process (p \in Procs)
+    variables unchecked = {}, max = 0, nxt = 1 ;
+    { ncs: while (TRUE) 
+            { e1:   flag[self] := TRUE;
+                    unchecked := Procs \ {self} ;
+                    max := 0;
+              e2:   while (unchecked # {}) 
+                      { with (i \in unchecked) 
+                          { unchecked := unchecked \ {i};
+                            if (num[i] > max) { max := num[i] }
+                          }
+                      };
+              e3:   with (i \in {j \in Nat : j > max}) { num[self] := i };
+              e4:   flag[self] := FALSE;
+                    unchecked := Procs \ {self} ;
+              w1:   while (unchecked # {}) 
+                      {     with (i \in unchecked) { nxt := i };
+                            await ~ flag[nxt];
+                        w2: await \/ num[nxt] = 0
+                                  \/ <<num[self], self>> \prec <<num[nxt], nxt>> ;
+                            unchecked := unchecked \ {nxt};
+                      } ;
+              cs:   skip ;  \* the critical section;
+              exit: num[self] := 0;
+            }
+    }
+}
+\end{pcal}
+\begin{tlatex}
+\@x{ {\p@mmalgorithm} AtomicBakery}%
+ \@x{ {\p@lbrace} {\p@variable} num \.{=} [ i \.{\in} Procs \.{\mapsto} 0 ]
+ ,\, flag \.{=} [ i \.{\in} Procs \.{\mapsto} {\FALSE} ] {\p@semicolon}}%
+\@x{\@s{9.58} {\p@process} {\p@lparen} p \.{\in} Procs {\p@rparen}}%
+ \@x{\@s{17.78} {\p@variables} unchecked \.{=} \{ \} ,\, max \.{=} 0 ,\, nxt
+ \.{=} 1 {\p@semicolon}}%
+ \@x{\@s{17.78} {\p@lbrace} ncs\@s{.5}\textrm{:}\@s{3} {\p@while} {\p@lparen}
+ {\TRUE} {\p@rparen}}%
+ \@x{\@s{52.87} {\p@lbrace} e1\@s{.5}\textrm{:}\@s{3}\@s{8.2} flag [ self ]
+ \.{:=} {\TRUE} {\p@semicolon}}%
+ \@x{\@s{87.28} unchecked \.{:=} Procs \.{\,\backslash\,} \{ self \}
+ {\p@semicolon}}%
+\@x{\@s{87.28} max \.{:=} 0 {\p@semicolon}}%
+ \@x{\@s{62.45} e2\@s{.5}\textrm{:}\@s{3}\@s{8.20} {\p@while} {\p@lparen}
+ unchecked \.{\neq} \{ \} {\p@rparen}}%
+ \@x{\@s{95.48} {\p@lbrace} {\p@with} {\p@lparen} i \.{\in} unchecked
+ {\p@rparen}}%
+ \@x{\@s{113.27} {\p@lbrace} unchecked \.{:=} unchecked \.{\,\backslash\,} \{
+ i \} {\p@semicolon}}%
+ \@x{\@s{122.85} {\p@if} {\p@lparen} num [ i ] \.{>} max {\p@rparen}
+ {\p@lbrace} max \.{:=} num [ i ] {\p@rbrace}}%
+\@x{\@s{113.27} {\p@rbrace}}%
+\@x{\@s{95.48} {\p@rbrace} {\p@semicolon}}%
+ \@x{\@s{62.45} e3\@s{.5}\textrm{:}\@s{3}\@s{8.20} {\p@with} {\p@lparen} i
+ \.{\in} \{ j \.{\in} Nat \.{:} j \.{>} max \} {\p@rparen} {\p@lbrace} num [
+ self ] \.{:=} i {\p@rbrace} {\p@semicolon}}%
+ \@x{\@s{62.45} e4\@s{.5}\textrm{:}\@s{3}\@s{8.20} flag [ self ] \.{:=}
+ {\FALSE} {\p@semicolon}}%
+ \@x{\@s{87.28} unchecked \.{:=} Procs \.{\,\backslash\,} \{ self \}
+ {\p@semicolon}}%
+ \@x{\@s{62.45} w1\@s{.5}\textrm{:}\@s{3}\@s{5.83} {\p@while} {\p@lparen}
+ unchecked \.{\neq} \{ \} {\p@rparen}}%
+ \@x{\@s{95.48} {\p@lbrace}\@s{16.4} {\p@with} {\p@lparen} i \.{\in} unchecked
+ {\p@rparen} {\p@lbrace} nxt \.{:=} i {\p@rbrace} {\p@semicolon}}%
+\@x{\@s{122.68} {\p@await} {\lnot} flag [ nxt ] {\p@semicolon}}%
+ \@x{\@s{103.68} w2\@s{.5}\textrm{:}\@s{3} {\p@await} \.{\lor} num [ nxt ]
+ \.{=} 0}%
+ \@x{\@s{153.03} \.{\lor} {\langle} num [ self ] ,\, self {\rangle} \.{\prec}
+ {\langle} num [ nxt ] ,\, nxt {\rangle} {\p@semicolon}}%
+ \@x{\@s{122.68} unchecked \.{:=} unchecked \.{\,\backslash\,} \{ nxt \}
+ {\p@semicolon}}%
+\@x{\@s{95.48} {\p@rbrace} {\p@semicolon}}%
+ \@x{\@s{62.45} cs\@s{.5}\textrm{:}\@s{3}\@s{9.04} {\p@skip}
+ {\p@semicolon}\@s{4.1}}%
+\@y{%
+  the critical section;
+}%
+\@xx{}%
+ \@x{\@s{62.45} exit\@s{.5}\textrm{:}\@s{3}\@s{1.97} num [ self ] \.{:=} 0
+ {\p@semicolon}}%
+\@x{\@s{52.87} {\p@rbrace}}%
+\@x{\@s{17.78} {\p@rbrace}}%
+\@x{ {\p@rbrace}}%
+\end{tlatex}
+
+%\end{document}
+\end{popup}
+\makepopup

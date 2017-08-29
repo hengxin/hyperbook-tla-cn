@@ -1,0 +1,14 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{ASCII Text}
+\addtolength{\textwidth}{70pt}
+\fixverbatim
+\begin{popup}
+\begin{verbatim*}
+GeneralSortings(S, LEQ(_, _)) ==
+  LET D == 1..Cardinality(S)
+  IN  { seq \in [D -> S] : /\ S \subseteq {seq[i] : i \in D}
+                           /\ \A i, j \in D : (i < j) => LEQ(seq[i], seq[j]) }
+\end{verbatim*}
+\end{popup}
+\makeasciipopup

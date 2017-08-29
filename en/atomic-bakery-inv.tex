@@ -1,0 +1,99 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{The Bakery Algorithm Invariant}
+%\begin{document}
+\begin{popup}
+\subsection*{The Bakery Algorithm Invariant}
+
+Here is the inductive invariant I found that is implied by $Init$
+and implies $MutualExclusion$.
+\begin{display}
+\begin{tla}
+TypeOK == /\ num \in [Procs -> Nat]
+          /\ flag \in [Procs -> BOOLEAN]
+          /\ unchecked \in [Procs -> SUBSET Procs]
+          /\ max \in [Procs -> Nat]
+          /\ nxt \in [Procs -> Procs]
+          /\ pc \in [Procs -> {"ncs", "e1", "e2", "e3",
+                               "e4", "w1", "w2", "cs", "exit"}]
+             
+Before(i,j) == /\ num[i] > 0
+               /\ \/ pc[j] \in {"ncs", "e1"}
+                  \/ /\ pc[j] = "e2"
+                     /\ \/ i \in unchecked[j]
+                        \/ max[j] >= num[i]
+                  \/ /\ pc[j] = "e3"
+                     /\ max[j] >= num[i]
+                  \/ /\ pc[j] \in {"e4", "w1", "w2"}
+                     /\ <<num[i],i>> \prec <<num[j],j>>
+                     /\ (pc[j] \in {"w1", "w2"}) => (i \in unchecked[j])
+
+Inv == /\ TypeOK 
+       /\ \A i \in Procs : 
+             /\ (num[i] = 0) <=> (pc[i] \in {"ncs", "e1", "e2", "e3"})
+             /\ flag[i] <=> (pc[i] \in {"e2", "e3", "e4"})
+             /\ (pc[i] = "w2") => (nxt[i] # i)
+             /\ pc[i] \in {"e2", "w1", "w2"} => i \notin unchecked[i]
+             /\ (pc[i] \in {"w1", "w2"}) =>
+                   \A j \in (Procs \ unchecked[i]) \ {i} : Before(i, j)
+             /\ /\ (pc[i] = "w2")
+                /\ \/ (pc[nxt[i]] = "e2") /\ (i \notin unchecked[nxt[i]])
+                   \/ pc[nxt[i]] = "e3"
+                => max[nxt[i]] >= num[i]
+             /\ (pc[i] \in {"cs", "exit"}) => \A j \in Procs \ {i} : Before(i, j)
+\end{tla}
+\begin{tlatex}
+\@x{ TypeOK \.{\defeq} \.{\land} num \.{\in} [ Procs \.{\rightarrow} Nat ]}%
+\@x{\@s{56.14} \.{\land} flag \.{\in} [ Procs \.{\rightarrow} {\BOOLEAN} ]}%
+ \@x{\@s{56.14} \.{\land} unchecked \.{\in} [ Procs \.{\rightarrow} {\SUBSET}
+ Procs ]}%
+\@x{\@s{56.14} \.{\land} max \.{\in} [ Procs \.{\rightarrow} Nat ]}%
+ \@x{\@s{56.14} \.{\land} nxt\@s{4.59} \.{\in} [ Procs \.{\rightarrow} Procs
+ ]}%
+ \@x{\@s{56.14} \.{\land} pc \.{\in} [ Procs \.{\rightarrow} \{\@w{ncs}
+ ,\,\@w{e1} ,\,\@w{e2} ,\,\@w{e3} ,\,}%
+\@x{\@s{138.28}\@w{e4} ,\,\@w{w1} ,\,\@w{w2} ,\,\@w{cs} ,\,\@w{exit} \} ]}%
+\@pvspace{8.0pt}%
+\@x{ Before ( i ,\, j ) \.{\defeq} \.{\land} num [ i ] \.{>} 0}%
+\@x{\@s{70.24} \.{\land} \.{\lor} pc [ j ] \.{\in} \{\@w{ncs} ,\,\@w{e1} \}}%
+\@x{\@s{81.36} \.{\lor} \.{\land} pc [ j ] \.{=}\@w{e2}}%
+\@x{\@s{92.47} \.{\land} \.{\lor} i \.{\in} unchecked [ j ]}%
+\@x{\@s{103.58} \.{\lor} max [ j ] \.{\geq} num [ i ]}%
+\@x{\@s{81.36} \.{\lor} \.{\land} pc [ j ] \.{=}\@w{e3}}%
+\@x{\@s{92.47} \.{\land} max [ j ] \.{\geq} num [ i ]}%
+ \@x{\@s{81.36} \.{\lor} \.{\land} pc [ j ] \.{\in} \{\@w{e4} ,\,\@w{w1}
+ ,\,\@w{w2} \}}%
+ \@x{\@s{92.47} \.{\land} {\langle} num [ i ] ,\, i {\rangle} \.{\prec}
+ {\langle} num [ j ] ,\, j {\rangle}}%
+ \@x{\@s{92.47} \.{\land} ( pc [ j ] \.{\in} \{\@w{w1} ,\,\@w{w2} \} )
+ \.{\implies} ( i \.{\in} unchecked [ j ] )}%
+\@pvspace{8.0pt}%
+\@x{ Inv \.{\defeq} \.{\land} TypeOK}%
+\@x{\@s{34.04} \.{\land} \A\, i \.{\in} Procs \.{:}}%
+ \@x{\@s{52.37} \.{\land} ( num [ i ] \.{=} 0 ) \.{\equiv} ( pc [ i ] \.{\in}
+ \{\@w{ncs} ,\,\@w{e1} ,\,\@w{e2} ,\,\@w{e3} \} )}%
+ \@x{\@s{52.37} \.{\land} flag [ i ] \.{\equiv} ( pc [ i ] \.{\in} \{\@w{e2}
+ ,\,\@w{e3} ,\,\@w{e4} \} )}%
+ \@x{\@s{52.37} \.{\land} ( pc [ i ] \.{=}\@w{w2} ) \.{\implies} ( nxt [ i ]
+ \.{\neq} i )}%
+ \@x{\@s{52.37} \.{\land} pc [ i ] \.{\in} \{\@w{e2} ,\,\@w{w1} ,\,\@w{w2} \}
+ \.{\implies} i \.{\notin} unchecked [ i ]}%
+ \@x{\@s{52.37} \.{\land} ( pc [ i ] \.{\in} \{\@w{w1} ,\,\@w{w2} \} )
+ \.{\implies}}%
+ \@x{\@s{77.14} \A\, j \.{\in} ( Procs \.{\,\backslash\,} unchecked [ i ] )
+ \.{\,\backslash\,} \{ i \} \.{:} Before ( i ,\, j )}%
+\@x{\@s{52.37} \.{\land} \.{\land} ( pc [ i ] \.{=}\@w{w2} )}%
+ \@x{\@s{63.48} \.{\land} \.{\lor} ( pc [ nxt [ i ] ] \.{=}\@w{e2} ) \.{\land}
+ ( i \.{\notin} unchecked [ nxt [ i ] ] )}%
+\@x{\@s{79.04} \.{\lor} pc [ nxt [ i ] ] \.{=}\@w{e3}}%
+\@x{\@s{63.48} \.{\implies} max [ nxt [ i ] ] \.{\geq} num [ i ]}%
+ \@x{\@s{52.37} \.{\land} ( pc [ i ] \.{\in} \{\@w{cs} ,\,\@w{exit} \} )
+ \.{\implies} \A\, j \.{\in} Procs \.{\,\backslash\,} \{ i \} \.{:} Before (
+ i ,\, j )}%
+\end{tlatex}
+\end{display}
+%\end{document}
+
+\end{popup}
+\makepopup
+

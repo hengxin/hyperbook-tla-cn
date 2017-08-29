@@ -1,0 +1,36 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{The Floyd-Hoare Method}
+\file{floyd-hoare}
+\makeindex
+\begin{popup}
+\setlength{\parindent}{1.5em}
+\subsection*{The Floyd-Hoare Method}
+
+If you were taught how to prove partial correctness of programs, you
+probably learned the
+ \tindex{1}{Floyd-Hoare method}%
+Floyd-Hoare method.  A Floyd-Hoare proof is equivalent to an
+inductive-invariance proof such as the one for algorithm $Euclid$.
+It's easy to convert either kind of proof to the other.
+
+The Floyd-Hoare method proves that if a program begins in a state
+satisfying a precondition $P$ and it terminates, then it does so in a
+state satisfying a postcondition $Q$.  This is proved in \tlaplus\ by
+proving the invariance of
+ $(pc="Done")=>Q$ 
+for an algorithm whose initial predicate is $Init /\ P$, where $Init$
+is the initial predicate of the algorithm's \tlaplus\ translation.
+
+To write a Floyd-Hoare proof of a PlusCal program, we would annotate
+each labeled statement with a state predicate $P_{c}$, where $c$ is
+the statement's label.  We would also put a predicate $P_{Done}$ at
+the end of the algorithm.  The Floyd-Hoare proof for this annotation
+would be equivalent to an inductive-invariance proof, where the
+inductive invariant is the conjunction of the formulas
+ \[ (pc = "c") => P_{c}
+ \]
+for all annotations $P_{c}$.  
+
+\end{popup}
+\makepopup

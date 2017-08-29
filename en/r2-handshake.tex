@@ -1,0 +1,80 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+
+\pflongnumbers
+\pflongindent
+\beforePfSpace{7pt,3pt}
+\afterPfSpace{4pt,9pt,5pt}
+\interStepSpace{4pt,2pt}
+
+\pdftitle{Proving R2 for the Handshake Algorithm}
+\begin{popup}
+\subsection*{Proving R2 for the Handshake Algorithm}
+
+\vspace{5pt}
+\textsc{theorem} \ $Inv_{H} \,/\ \, {Inv_{H}}' \, /\ \, Next_{H} \;=>\;
+[\ov{Next_{A}}]_{\ov{vars_{A}}}$ 
+\begin{proof}
+\step{1}{$p1_{H} => \UNCHANGED \ov{vars_{A}}$}
+\begin{proof}
+\pf\ Obvious, since $p1_{H}$ implies that $p$, $c$, and $box$
+are unchanged.
+\end{proof}
+
+
+\step{2}{\assume{$Inv_{H} \, /\ \, p2_{H}$\vs{.2}} \prove{$\ov{Producer_{A}}$} }
+\begin{proof}
+\step{2.1}{$p\oplus c = 0$}
+\begin{proof}
+\pf\ $p2_{H}$ implies $p=c$, which by the first two conjuncts
+of $Inv_{H}$ imply $p\oplus c = 0$.
+\end{proof}
+
+\step{2.2}{$box' = \ov{Put_{A}}(box)$}
+\begin{proof}
+\pf\ Follows from the definition of $p2_{H}$, since $\ov{Put_{A}}(box)$
+equals $Put_{H}(box)$.
+\end{proof}
+
+\step{2.3}{$(p\oplus c)' = 1$}
+\begin{proof}
+\pf\ $p2_{H}$ implies $(p\oplus c)' = (p \oplus 1)\oplus c$, which by
+\stepref{2.1} and the first two conjuncts of $Inv_{H}$ implies
+$(p\oplus c)' = 1$.
+\end{proof}
+
+\qedstep
+\begin{proof}
+\pf\ By \stepref{2.1}--\stepref{2.3}, which prove the three conjuncts
+of $\ov{Producer_{A}}$.
+\end{proof}
+\end{proof}
+
+\step{3}{$c1_{H} => \UNCHANGED \ov{vars_{A}}$}
+\begin{proof}
+\pf\ Obvious, since $c1_{H}$ implies that $p$, $c$, and $box$
+are unchanged.
+\end{proof}
+
+
+\step{4}{\assume{$Inv /\ c2_{H}$\vs{.2}} \prove{$\ov{Consumer_{A}}$} }
+
+\begin{proof}
+\pf\ Similar to the proof of step~\stepref{2}.
+\end{proof}
+
+
+\qedstep
+\begin{proof}
+\pf\ By \stepref{1}--\stepref{4} and simple logic, because
+$Next_{H}$ equals\vs{.3}
+ \[ p1_{H} \,\/ \, p2_{H} \,\/ \, c1_{H} \,\/ \, c2_{H} \vs{.4}
+ \]
+and $[\ov{Next_{A}}]_{\ov{vars_{A}}}$ equals\vs{.5}
+ \[ \ov{Producer_{A}} \;\/ \; \ov{Consumer_{A}} \;\/ \; \UNCHANGED \ov{vars_{A}}
+ \]
+\end{proof}
+\end{proof}
+
+\end{popup}
+\makepopup

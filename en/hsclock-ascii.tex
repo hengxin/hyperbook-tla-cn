@@ -1,0 +1,28 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{ASCII Text}
+\fixverbatim
+\begin{popup}
+\begin{verbatim*}
+(***********************************************************
+--algorithm HSClock {
+  variable ca = [i \in 0..(N-1) |-> 0] ;
+
+  process (Proc0 = 0) 
+    { t: while (TRUE) 
+          { await ca[0] = ca[N - 1] ;
+            ca[0] := ca[0] (+) 1
+          }
+    }
+     
+  process (Proc \in 1..(N-1)) 
+    { t: while (TRUE) 
+          { await ca[self] # ca[self - 1] ;
+            ca[self] := ca[self] (+) 1 
+          }
+    }
+}
+ ***********************************************************)
+\end{verbatim*}
+\end{popup}
+\makeasciipopup

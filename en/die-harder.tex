@@ -1,0 +1,96 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{Algorithm DieHarder}
+\begin{popup}
+\subsection*{Algorithm \emph{DieHarder}}
+
+\begin{notla}
+----------------------------- MODULE DieHarder ------------------------------ 
+EXTENDS Integers
+
+Min(m,n) == IF m < n THEN m ELSE n
+-----------------------------------------------------------------------------
+CONSTANTS Goal, Jugs, Capacity  
+         
+ASSUME /\ Goal \in Nat
+       /\ Capacity \in [Jugs -> Nat \ {0}]
+\end{notla}
+\begin{tlatex}
+\@x{}\moduleLeftDash\@xx{ {\MODULE} DieHarder}\moduleRightDash\@xx{}%
+\@x{ {\EXTENDS} Integers}%
+\@pvspace{8.0pt}%
+\@x{ Min ( m ,\, n ) \.{\defeq} {\IF} m \.{<} n \.{\THEN} m \.{\ELSE} n}%
+\@x{}\midbar\@xx{}%
+\@x{ {\CONSTANTS} Goal ,\, Jugs ,\, Capacity}%
+\@pvspace{8.0pt}%
+\@x{ {\ASSUME} \.{\land} Goal \.{\in} Nat}%
+ \@x{\@s{38.24} \.{\land} Capacity \.{\in} [ Jugs \.{\rightarrow} Nat
+ \.{\,\backslash\,} \{ 0 \} ]}%
+\end{tlatex}\V{.5}
+\verb|(***********************************************************|\V{-1}
+\begin{nopcal}
+--algorithm DieHarder  {
+  variable injug = [j \in Jugs |-> 0] ;
+  { while (TRUE)
+     { either with (j \in Jugs) \* fill jug j
+                { injug[j] := Capacity[j] }
+       or     with (j \in Jugs) \* empty jug j
+                { injug[j] := 0 } 
+       or     with (j \in Jugs, k \in Jugs \ {j}) \* pour from jug j to jug k
+                { with ( poured = 
+                           Min(injug[j] + injug[k], Capacity[k]) - injug[k] )
+                    { injug[j] := injug[j] - poured ||
+                      injug[k] := injug[k] + poured
+                    }
+                }
+     }
+  }
+}
+\end{nopcal}
+\begin{tlatex}
+\@x{ {\p@mmalgorithm} DieHarder\@s{4.1} {\p@lbrace}}%
+ \@x{\@s{8.2} {\p@variable} injug \.{=} [ j \.{\in} Jugs \.{\mapsto} 0 ]
+ {\p@semicolon}}%
+\@x{\@s{8.2} {\p@lbrace} {\p@while} {\p@lparen} {\TRUE} {\p@rparen}}%
+ \@x{\@s{21.88} {\p@lbrace} {\p@either} {\p@with} {\p@lparen} j \.{\in} Jugs
+ {\p@rparen}}%
+\@y{%
+  \colorbox{gray}{fill jug j}
+}%
+\@xx{}%
+\@x{\@s{72.83} {\p@lbrace} injug [ j ] \.{:=} Capacity [ j ] {\p@rbrace}}%
+ \@x{\@s{31.46} {\p@or}\@s{18.84} {\p@with} {\p@lparen} j \.{\in} Jugs
+ {\p@rparen}}%
+\@y{%
+  \colorbox{gray}{empty jug j}
+}%
+\@xx{}%
+\@x{\@s{72.83} {\p@lbrace} injug [ j ] \.{:=} 0 {\p@rbrace}}%
+ \@x{\@s{31.46} {\p@or}\@s{18.84} {\p@with} {\p@lparen} j \.{\in} Jugs ,\, k
+ \.{\in} Jugs \.{\,\backslash\,} \{ j \} {\p@rparen}}%
+\@y{%
+  \colorbox{gray}{pour from jug j to jug k}
+}%
+\@xx{}%
+\@x{\@s{72.83} {\p@lbrace} {\p@with} {\p@lparen} poured \.{=}}%
+ \@x{\@s{125.11} Min ( injug [ j ] \.{+} injug [ k ] ,\, Capacity [ k ] )
+ \.{-} injug [ k ] {\p@rparen}}%
+ \@x{\@s{90.61} {\p@lbrace} injug [ j ]\@s{1.16} \.{:=} injug [ j ]\@s{1.16}
+ \.{-} poured \.{\p@barbar}}%
+\@x{\@s{100.20} injug [ k ] \.{:=} injug [ k ] \.{+} poured}%
+\@x{\@s{90.61} {\p@rbrace}}%
+\@x{\@s{72.83} {\p@rbrace}}%
+\@x{\@s{21.88} {\p@rbrace}}%
+\@x{\@s{8.2} {\p@rbrace}}%
+\@x{ {\p@rbrace}}%
+\end{tlatex}\V{.3}
+\verb|***********************************************************)|\V{-.3}
+\begin{notla}
+=============================
+\end{notla}
+\begin{tlatex}
+\@x{}\bottombar\@xx{}%
+\end{tlatex}
+
+\end{popup}
+\makepopup

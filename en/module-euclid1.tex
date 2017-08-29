@@ -1,0 +1,83 @@
+\documentclass[fleqn,leqno]{article}
+% Run TLATeX by copying the tla environment into main.tex and
+% running TLATeX there.
+\usepackage{hypertlabook}
+\pdftitle{}
+\begin{popup}
+\begin{notla}
+------------------------ MODULE Euclid ------------------------
+EXTENDS Integers
+CONSTANTS M, N 
+
+ASSUME  /\ M \in Nat \ {0}
+        /\ N \in Nat \ {0}
+
+VARIABLES x, y
+
+TypeOK == x \in Nat \ {0}  /\  y \in Nat \ {0}
+
+Init == (x = M)  /\  (y = N)
+
+Next == \/ /\ x > y
+           /\ x' = x - y
+           /\ y' = y       
+        \/ /\ y > x
+           /\ y' = y - x
+           /\ x' = x
+--------------------------------------------------------------- 
+Divides(p, n) == \E q \in 0..n : n = q * p       
+  
+DivisorsOf(n) == {p \in 0..n : Divides(p, n)}  
+
+Max(S)  ==  CHOOSE i \in S : \A j \in S : i >= j
+  
+GCD(m, n) == Max(DivisorsOf(m) \cap DivisorsOf(n)) 
+--------------------------------------------------------------- 
+GCDInv == GCD(x, y) = GCD(M, N)
+
+Inv == TypeOK /\ GCDInv
+================================================================
+\end{notla}
+\begin{tlatex}
+\@x{}\moduleLeftDash\@xx{ {\MODULE} Euclid}\moduleRightDash\@xx{}%
+\@x{ {\EXTENDS} Integers}%
+\@x{ {\CONSTANTS} M ,\, N}%
+\par\vspace{8.0pt}%
+\@x{ {\ASSUME}\@s{4.1} \.{\land} M \.{\in} Nat \.{\,\backslash\,} \{ 0 \}}%
+\@x{\@s{42.34} \.{\land} N\@s{1.53} \.{\in} Nat \.{\,\backslash\,} \{ 0 \}}%
+\par\vspace{8.0pt}%
+\@x{ {\VARIABLES} x ,\, y}%
+\par\vspace{8.0pt}%
+ \@x{ TypeOK \.{\defeq} x \.{\in} Nat \.{\,\backslash\,} \{ 0 \}\@s{4.1}
+ \.{\land}\@s{4.1} y \.{\in} Nat \.{\,\backslash\,} \{ 0 \}}%
+\par\vspace{8.0pt}%
+ \@x{ Init\@s{4.12} \.{\defeq} ( x \.{=} M )\@s{4.1} \.{\land}\@s{4.1} ( y
+ \.{=} N )}%
+\par\vspace{8.0pt}%
+\@x{ Next \.{\defeq} \.{\lor} \.{\land} x \.{>} y}%
+\@x{\@s{50.94} \.{\land} x \.{'} \.{=} x \.{-} y}%
+\@x{\@s{50.94} \.{\land} y \.{'}\@s{0.10} \.{=} y}%
+\@x{\@s{39.83} \.{\lor} \.{\land} y \.{>} x}%
+\@x{\@s{50.94} \.{\land} y \.{'}\@s{0.10} \.{=} y \.{-} x}%
+\@x{\@s{50.94} \.{\land} x \.{'} \.{=} x}%
+\@x{}\midbar\@xx{}%
+ \@x{ Divides ( p ,\, n )\@s{3.88} \.{\defeq} \E\, q \.{\in} 0 \.{\dotdot} n
+ \.{:} n \.{=} q \.{*} p}%
+\par\vspace{8.0pt}%
+ \@x{ DivisorsOf ( n ) \.{\defeq} \{ p \.{\in} 0 \.{\dotdot} n \.{:} Divides (
+ p ,\, n ) \}}%
+\par\vspace{8.0pt}%
+ \@x{ Max ( S )\@s{4.1} \.{\defeq}\@s{4.1} {\CHOOSE} i \.{\in} S \.{:} \A\, j
+ \.{\in} S \.{:} i \.{\geq} j}%
+\par\vspace{8.0pt}%
+ \@x{ GCD ( m ,\, n ) \.{\defeq} Max ( DivisorsOf ( m ) \.{\cap} DivisorsOf (
+ n ) )}%
+\@x{}\midbar\@xx{}%
+\@x{ GCDInv \.{\defeq} GCD ( x ,\, y ) \.{=} GCD ( M ,\, N )}%
+\par\vspace{8.0pt}%
+\@x{ Inv \.{\defeq} TypeOK \.{\land} GCDInv}%
+\@x{}\bottombar\@xx{}%
+\end{tlatex}
+\end{popup}
+\makepopup
+

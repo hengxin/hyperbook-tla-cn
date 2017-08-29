@@ -1,0 +1,85 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\file{well-founded}
+\makeindex
+\pdftitle{Well-Founded Relations}
+%\newcommand{\N}{\mathcal{N}}
+\setpopup{53}%\setpopup{29.3}
+
+\begin{document}
+\setlength{\parindent}{1.5em}
+\subsection*{Well-Founded Relations}
+
+An operator $\succ$ is called a
+ \tindex{1}{partial order}%
+ \ctindex{1}{order!partial}{order-partial}%
+  \tindex{1}{well-founded}%
+  \ctindex{1}{relation!well-founded}{rel-well-founded}%
+\emph{partial order} on a set $\N$ iff it satisfies the following two
+conditions:
+\begin{describe}{\textbf{Irreflexivity}}
+\item[\textbf{Irreflexivity}] $\A\, n \in \N : ~\,(n \succ n)$
+
+\item[\textbf{Transitivity}] 
+ $\A\, m, n, p \in \N : (m \succ n) /\ (n \succ p) => (m \succ p)$
+\end{describe}
+A partial order $\succ$ on $\N$ is called a
+ \tindex{1}{total order}%
+ \ctindex{1}{order!total}{order-total}%
+\emph{total order} iff it also satisfies the condition:
+\begin{describe}{\textbf{Completeness}}
+\item[\textbf{Completeness}] $\A\,m, n \in \N : (m \succ n) \/ (n \succ m) \/ (m=n)$
+\end{describe}
+%
+A partial order $\succ$ on a set $\N$ is said to be \emph{well-founded}
+iff there is no infinite descending chain of the form:
+ \[ n_{1} \succ n_{2} \succ n_{3} \succ \ldots
+ \]
+with all the $n_{i}$ in $\N$. 
+This condition can be expressed formally in terms of 
+  \rref{math}{functions}{functions}
+as
+ \[ ~ \,\E\, f \in [Nat -> \N] : \A\, i \in Nat : f[i] \succ f[i+1]
+ \]
+Any partial order on a finite set is obviously well-founded.  The
+relation $>$ is a well-founded total order on the set $Nat$ of natural
+numbers.  A well-founded partial (or total) order $\succ$ on a set
+$\N$ is also a well-founded partial (or total) order on any subset
+of $\N$.
+
+% \newpage
+
+A useful well-founded total order is the relation $\succ_{\!\!k}$ on
+$k$-tuples
+of natural numbers, defined by letting
+  \[ <<a_{1}, \ldots , a_{k}>> \,\succ_{\!\!k}\, <<b_{1}, \ldots , b_{k}>>
+ \]
+iff there exists $i$ in $1\dd k$ such that $a_{i} > b_{i}$ and $a_{j}
+= b_{j}$ for all $j$ in $1\dd(i-1)$.  Since 
+ \rref{math}{\xlink{math:tuples}}{a $k$-tuple of natural numbers 
+           is a function} 
+from $1\dd k$ to $Nat$, this definition can be written formally as
+  \[ a \succ_{\!\!k} b == \begin{conj}
+                  a \in [1\dd k -> Nat] \V{.2}
+                  b \in [1\dd k -> Nat] \V{.2}
+                  \E\, i \in 1\dd k : \begin{conj}
+                                    a[i] > b[i] \\
+                                    \A j \in 1\dd(i-1) : a[j] > b[j]
+                                    \end{conj}
+                  \end{conj}
+  \]
+(This isn't a \tlaplus\ definition because we can't write $\succ_{\!\!k}$
+in \tlaplus; we would have to define the operator for a particular value
+of~$n$.)
+
+ % \newpage \setpopup{47.5}
+
+We can generalize these relations $\succ_{\!\!k}$ to the well-founded
+total order $\succ$ on the set of all finite sequences of natural
+numbers by defining $m \succ n$ to be true iff either (i)~sequence $m$
+is longer than sequence $n$ or (ii)~they both have length $k$ and $m
+\succ_{\!\!k} n$.  The \tlaplus\ definition of $\succ$ is easily
+written using the operators $Seq$ and $Len$ defined in the 
+\rref{math}{math:sequences-module}{standard $Sequences$ module}.
+
+\end{document}

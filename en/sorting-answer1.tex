@@ -1,0 +1,14 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{Answer}
+\begin{popup}
+\subsection*{Answer}
+
+Begin by recursively defining an operator $SetToSeq$ such that
+$SetToSeq(S)$ is some sequence containing every element of the set $S$
+exactly once.  Then define $GeneralSortSet(S, LEQ(\_,\,\_))$ to equal
+$SortSeq(SetToSeq(S), LEQ)$.  Don't forget to add the $TLC$ module to
+the list of modules imported by the \textsc{extends} statement.
+
+\end{popup}
+\makepopup

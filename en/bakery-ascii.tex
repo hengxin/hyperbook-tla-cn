@@ -1,0 +1,55 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{ASCII Text}
+\fixverbatim
+\setwidepopup{53}{8}
+\begin{document}
+%\begin{popup}
+\begin{verbatim*}
+--algorithm Bakery 
+{ variable num = [i \in Procs |-> 0], flag = [i \in Procs |-> FALSE];
+  process (p \in Procs)
+    variables unchecked = {}, max = 0, nxt = 1 ;
+    { ncs: while (TRUE) 
+            { e1:   either { flag[self] := ~ flag[self] ;
+                             goto e1 }
+                    or     { flag[self] := TRUE;
+                             unchecked := Procs \ {self} ;
+                             max := 0
+                           } ;
+                    
+              e2:   while (unchecked # {}) 
+                      { with (i \in unchecked) 
+                          { unchecked := unchecked \ {i};
+                            if (num[i] > max) { max := num[i] }
+                          }
+                      };
+              e3:   either { with (k \in Nat) { num[self] := k } ;
+                             goto e3 }
+                    or     { with (i \in {j \in Nat : j > max}) 
+                               { num[self] := i }
+                           } ;
+              e4:   either { flag[self] := ~ flag[self] ;
+                             goto e4 }
+                    or     { flag[self] := FALSE;
+                               unchecked := Procs \ {self} 
+                           } ;
+              w1:   while (unchecked # {}) 
+                      {     with (i \in unchecked) { nxt := i };
+                            await ~ flag[nxt];
+                        w2: await \/ num[nxt] = 0
+                                  \/ <<num[self], self>> \prec <<num[nxt], nxt>> ;
+                            unchecked := unchecked \ {nxt};
+                      } ;
+              cs:   skip ;  \* the critical section;
+              exit: either { with (k \in Nat) { num[self] := k } ;
+                             goto exit }
+                    or     { num[self] := 0 } 
+            }
+    }
+}
+\end{verbatim*}
+\vspace{-2em}
+\end{document}
+\end{popup}
+\makeasciipopup

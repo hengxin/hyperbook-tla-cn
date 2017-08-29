@@ -1,0 +1,87 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+% \makeatletter
+% \def\providetabstops #1{%
+%    \count@#1\relax
+%    \newdimen\@gtempa
+%    \chardef\@firsttab=\the\allocationnumber
+%    \loop
+%      \newdimen\@gtempa
+%      \advance\count@\m@ne
+%      \ifnum\count@>\z@
+%    \repeat
+%    \chardef\@maxtab=\the\allocationnumber
+% }
+% \makeatother
+
+% \providetabstops{25}
+
+
+\pdftitle{}
+\begin{popup}
+\begin{tabbing}
+\algorithm\ $OneBitMutex$ \V{.2}
+ \s{1}\= \{ \= 
+       \variable\ $x = [i \in Procs |-> \FALSE]$ ; \+\+ \V{.2}
+%
+%  \s{1}\=
+       \fair\ \process\ $(p \in Procs)$ %\+ 
+   \V{.2}
+% 
+ \s{1}\=
+        \variables\ \= $unchecked = \{\}$ ; \+ \V{.2}
+%
+                    \> $other \in Procs$ ; \- \V{.2}
+%
+  \>
+         \{ $ncs$:- \= \pwhile\ $(\TRUE)$ \+ \V{.2}
+%
+  \s{4}\=
+            \{ \= $e1$: \= $x[self] := \TRUE$ ; \+\+\V{.2}
+%
+                         \> $unchecked := Procs :\: \{self\}$ ; \V{.2}
+%
+                  $e2$: \> \pwhile\ $(unchecked # \{\})$ \+ \V{.2}
+%
+  \s{1}\=
+                          \{ \= $e3$: \= \+ \kill
+
+                          \{ \> \>  \with\ $(i \in unchecked)$  
+                               \{ $other := i$ \} ; \+ \+ \V{.2}
+%
+                             $unchecked := unchecked :\: \{other\}$ ; \- \V{.2}
+%
+                       $e3$: \>  \pif\ $(x[other])$ \+ \V{.2}
+%
+ \s{1}\=
+                              \{ \= \pif\ $(self > other)$ \+\+ \V{.2}
+%
+ \s{1}\=
+                               \{ \ $e4$: $x[self] := \FALSE$ ; \+
+                                                                    \V{.2}
+%
+                         \s{.85}            $e5$: \await\ $~x[other]$ ; \V{.2}
+%
+                                          \s{2.65} \goto\ $e1$ ;  \V{.2}
+%
+                                   \} \- \V{.2}
+%
+                                 \pelse\ \{ $e6$: \await\ $~x[other]$ ; \} \-\V{.2}
+%
+                                \}  ; \-\- \V{.2}
+%
+                          \} ; \- \-\- \V{.2}
+%
+                    $cs$: \= \pskip\ ; \V{.2}
+%
+                    $f$:  \> $x[self] := \FALSE$ \- \V{.2}
+%
+                  \} \- \V{.2}
+%
+       \} \- \- \V{.2}
+%
+    \}
+\end{tabbing}
+\end{popup}
+\makepopup
+

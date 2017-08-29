@@ -1,0 +1,98 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+% \makeindex
+\file{bbuf-proof}
+\pdftitle{A Partial Proof of B2a}
+\newsetwidepopup{51}{11}
+\beforePfSpace{0pt}
+\afterPfSpace{0pt}
+\interStepSpace{0pt}
+\begin{document}
+\subsection*{A Partial Proof of B2a}
+\begin{proof}
+\NOTLA\step{1}{\assume{$Inv_{B}$, $Producer_{B}$%
+  \marginpar{I use the A\textsc{ssume}, P\textsc{rove}
+             to avoid an extra level of proof.}
+\vs{.3}}
+         \prove {$\ov{Send_{C}}$\vs{.5}}} \TLA
+  \begin{proof}
+  \step{1-1}{$Len(\ov{ch}) # N$\vs{.5}}
+  \step{1-2}{$\E v \in Msg:
+             \ov{ch}\,\rule{0pt}{.8em}' = Append(\ov{ch}, v)$\vs{.5}}
+   \begin{proof}
+   \step{121}{Pick $v \in Msg$ such that 
+               $buf' = [buf \EXCEPT ![p \,\%\, N] = v]$\vs{.3}}
+    \begin{proof}
+    \pf\ Such a $v$ exists by definition of $Producer_{B}$,
+     %
+%        \marginpar{I don't bother mentioning that $Inv_{B}$
+%                   and $Producer_{B}$ are assumed in \stepref{1}.\par}
+    which holds by the assumption of \stepref{1}.\vs{.5}
+    \end{proof}
+
+   \step{122}{$\ov{ch}\,\rule{0pt}{.8em}' = Append(\ov{ch}, v)$\vs{.3}}
+     \begin{proof}
+     \step{1221}{$p\ominus c \in 0\dd(N-1)$\vs{.3}}
+       \begin{proof}
+       \pf\ $Inv_{B}$
+        implies 
+        $p\ominus c \in 0\dd N$, and
+        $Producer_{B}$ implies 
+       $p\ominus c # N$.\vs{.5}
+       \end{proof}
+    \step{1222}{$p'\ominus c' = (p\ominus c)+1$\vs{.3}}
+       \begin{proof}
+       \step{12221}{$p'\ominus c' = (p\oplus 1) \ominus c$\vs{.1}}
+         \begin{proof}
+         \pf\ By definition of $Producer_{B}$, which is assumed 
+         in \stepref{1}.\vs{.3}
+         \end{proof}
+
+        \step{12222}{$(p\oplus 1) \ominus c = (p \ominus c) \oplus 1$\vs{.3}}
+          \begin{proof}
+          \pf\ By $Inv_{B}$, which implies that $p$ and $c$ are 
+          in $0\dd (2N-1)$, and the properties of 
+          $\oplus$ and $\ominus$ as operators on $0\dd (2N-1)$.\vs{.5}
+          \end{proof}
+
+        \step{12223}{$(p \ominus c) \oplus 1 = (p \ominus c) + 1$\vs{.1}}
+          \begin{proof}
+          \pf\ By \stepref{1221} and definition of $\oplus$.\vs{.3}
+          \end{proof}
+        \qedstep\vs{.1}
+          \begin{proof}
+          \pf\ By \stepref{12221}, \stepref{12222}, and \stepref{12223}.\vs{.3}
+          \end{proof}
+       \end{proof}
+     \qedstep\vs{.3}
+       \begin{proof}
+       \pf\ By \stepref{121}, \stepref{1221}, \stepref{1222}, 
+        and the definition of \ov{ch}.\vs{.5}
+       \end{proof}
+     \end{proof}
+    \qedstep\vs{.3}
+      \begin{proof}
+      \pf\ By \stepref{121} (which asserts $v \in Msg$) and
+       \stepref{122}.\vs{.5}
+      \end{proof}
+   \end{proof}
+  \qedstep\vs{.3}
+    \begin{proof}
+    \pf\ By \stepref{1-1}, \stepref{1-2}, and the
+     definition of $Send_{C}$.
+    \end{proof}
+  \end{proof}
+\vspace{.5\baselineskip}%
+\step{2}{\assume{$Inv_{B}$, $Consumer_{B}$\vs{.3}}
+         \prove {$\ov{Rcv_{C}}$}}
+
+\vspace{.5\baselineskip}%
+\qedstep
+\vspace{.2\baselineskip}%
+\begin{proof}
+\pf\ By \stepref{1}, \stepref{2}, and the definitions of $Next_{B}$
+and $Next_{C}$.
+\end{proof}
+\end{proof}
+
+\end{document}

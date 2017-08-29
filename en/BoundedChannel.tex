@@ -1,0 +1,87 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{Module BoundedChannel}
+\begin{popup}
+%\subsection*{}
+\begin{tla}
+-------------------------- MODULE BoundedChannel --------------------------
+EXTENDS Integers, Sequences
+
+ISeq(S) == [(Nat \ {0}) -> S]
+
+ITail(iseq) == [i \in (Nat \ {0}) |-> iseq[i+1]]
+
+IHead(iseq) == iseq[1]
+
+CONSTANT N, Msg, Input
+
+ASSUME /\ N \in Nat \ {0}
+       /\ Input \in ISeq(Msg)
+\end{tla}
+\begin{tlatex}
+\@x{}\moduleLeftDash\@xx{ {\MODULE} BoundedChannel}\moduleRightDash\@xx{}%
+\@x{ {\EXTENDS} Integers ,\, Sequences}%
+\@pvspace{8.0pt}%
+ \@x{ ISeq ( S ) \.{\defeq} [ ( Nat \.{\,\backslash\,} \{ 0 \} )
+ \.{\rightarrow} S ]}%
+\@pvspace{8.0pt}%
+ \@x{ ITail ( iseq )\@s{4.62} \.{\defeq} [ i \.{\in} ( Nat \.{\,\backslash\,}
+ \{ 0 \} ) \.{\mapsto} iseq [ i \.{+} 1 ] ]}%
+\@pvspace{8.0pt}%
+\@x{ IHead ( iseq ) \.{\defeq} iseq [ 1 ]}%
+\@pvspace{8.0pt}%
+\@x{ {\CONSTANT} N ,\, Msg ,\, Input}%
+\@pvspace{8.0pt}%
+\@x{ {\ASSUME} \.{\land} N \.{\in} Nat \.{\,\backslash\,} \{ 0 \}}%
+\@x{\@s{38.24} \.{\land} Input \.{\in} ISeq ( Msg )}%
+\end{tlatex}
+\vspace{-.25em}
+\begin{verbatim}
+(***********************************************
+\end{verbatim}
+\vspace{-.5em}
+\begin{pcal}
+--algorithm BChan {
+   variables in = Input, out = << >>, ch = << >> ;
+   process (Send = 0) {
+      s: while (TRUE) {
+           await Len(ch) # N ;
+           ch := Append(ch, IHead(in)) ;
+           in := ITail (in) } }
+   process (Rcv = 1) {
+      r: while (TRUE) {
+           await Len(ch) # 0 ;
+           out := Append(out, Head(ch)) ;
+           ch := Tail (ch) } } }
+\end{pcal}
+\begin{tlatex}
+\@x{ {\p@mmalgorithm} BChan {\p@lbrace}}%
+ \@x{\@s{12.29} {\p@variables} in \.{=} Input ,\, out \.{=} {\langle}
+ {\rangle} ,\, ch \.{=} {\langle} {\rangle} {\p@semicolon}}%
+\@x{\@s{12.29} {\p@process} {\p@lparen} Send \.{=} 0 {\p@rparen} {\p@lbrace}}%
+ \@x{\@s{24.59} s\@s{.5}\textrm{:}\@s{3} {\p@while} {\p@lparen} {\TRUE}
+ {\p@rparen} {\p@lbrace}}%
+\@x{\@s{43.98} {\p@await} Len ( ch ) \.{\neq} N {\p@semicolon}}%
+\@x{\@s{43.98} ch \.{:=} Append ( ch ,\, IHead ( in ) ) {\p@semicolon}}%
+\@x{\@s{43.98} in\@s{1.02} \.{:=} ITail ( in ) {\p@rbrace} {\p@rbrace}}%
+\@x{\@s{12.29} {\p@process} {\p@lparen} Rcv \.{=} 1 {\p@rparen} {\p@lbrace}}%
+ \@x{\@s{24.59} r\@s{.5}\textrm{:}\@s{3} {\p@while} {\p@lparen} {\TRUE}
+ {\p@rparen} {\p@lbrace}}%
+\@x{\@s{44.37} {\p@await} Len ( ch ) \.{\neq} 0 {\p@semicolon}}%
+\@x{\@s{44.37} out \.{:=} Append ( out ,\, Head ( ch ) ) {\p@semicolon}}%
+\@x{\@s{44.37} ch \.{:=} Tail ( ch ) {\p@rbrace} {\p@rbrace} {\p@rbrace}}%
+\end{tlatex}
+\vspace{-.5em}
+\begin{verbatim}
+***********************************************)
+\end{verbatim}
+\vspace{-.75em}
+\begin{tla}
+===============================================================
+\end{tla}
+\begin{tlatex}
+\@x{}\bottombar\@xx{}%
+\end{tlatex}
+
+\end{popup}
+\makepopup

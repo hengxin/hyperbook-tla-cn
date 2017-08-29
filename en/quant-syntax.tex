@@ -1,0 +1,33 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{P or P(x)?}
+\begin{popup}
+\subsection*{Should it be $\E\,x:P$ or $\E\,x:P(x)$?}
+
+I often write \tlabox{\A\,x:P}, where $P$ is an arbitrary formula that can
+contain $x$.  To emphasize that $P$ can contain $x$, I may instead
+write \tlabox{\A\,x:P(x)}.  There is no significance to this difference when
+I'm discussing quantification in general.  However, the exact formula
+\tlabox{\A\,x:P} will never appear in a specification for the folllowing
+reason.  Because \tlabox{\A\,x:P} can be a legal \tlaplus\ formula only in a
+context in which $x$ has no meaning, $P$ cannot depend on $x$.
+(In particular, if $P$ is a user-defined symbol, then $x$ cannot
+appear in its definition.)  Since $P$ does not depend on $x$, the
+formula \tlabox{\A\,x:P} is equivalent to $P$, so one would write simply $P$
+instead of \tlabox{\A\,x:P}.  On the other hand, the exact formula
+\tlabox{\A\,x:P(x)} could very well appear in a specification.
+
+\medskip
+\noindent
+With obvious modifications,
+everything I just wrote applies as well to \tlabox{\A\,x\in S: P} and with
+\tlabox{\A} replaced by $\E$.  (Note that, if $P$ does not depend on $x$, then
+\tlabox{\A x \in S:P} equals 
+  $P \/ (S = \{\})$ 
+rather than $P$.)  I will never write
+  \tlabox{\A x \in S(x):P(x)}
+because, in the formula \tlabox{\A x \in S:P}, the variable $x$ may not
+appear in $S$.
+
+\end{popup}
+\makepopup

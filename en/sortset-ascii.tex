@@ -1,0 +1,15 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{ASCII Text}
+\fixverbatim
+\addtolength{\textwidth}{40pt}
+\begin{popup}
+\begin{verbatim*}
+RECURSIVE SortSet(_)
+SortSet(S) == 
+  IF S = {} THEN << >>
+            ELSE LET s == CHOOSE ss \in S : \A t \in S : ss.key =< t.key
+                 IN  <<s>> \o SortSet(S \ {s})
+\end{verbatim*}
+\end{popup}
+\makeasciipopup

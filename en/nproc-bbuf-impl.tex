@@ -1,0 +1,33 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{Answer}
+\setpopup{16}
+\begin{document}
+\subsection*{Answer}
+
+Remember how we consider the numbers in $0\dd(2N-1)$ to be
+\popref{modular-arithmetic-fig-5}{arranged in a circle}.  For any $a$
+and $b$ in $0\dd(2N-1)$, define $Interval(a, b)$ to be the set of
+numbers along the circle going clockwise from $a$ up to, but
+excluding, $b$.  Thus, if $a\leq b$, then $Interval(a, b)=a\dd(b-1)$.
+The required invariant is then:
+\begin{display}
+\begin{tla}
+pc  =  [self \in 0..(N-1) |-> 
+         IF (self \in Interval(c,p)) \/ (self+N \in Interval(c, p)) 
+           THEN "b2" 
+           ELSE "b1"]
+\end{tla}
+\begin{tlatex}
+ \@x{ pc\@s{4.1} \.{=}\@s{4.1} [ self \.{\in} 0 \.{\dotdot} ( N \.{-} 1 )
+ \.{\mapsto}}%
+ \@x{\@s{38.17} {\IF} ( self \.{\in} Interval ( c ,\, p ) ) \.{\lor} ( self
+ \.{+} N \.{\in} Interval ( c ,\, p ) )}%
+\@x{\@s{46.37} \.{\THEN}\@w{b2}}%
+\@x{\@s{46.37} \.{\ELSE}\@w{b1} ]}%
+\end{tlatex}
+\end{display}
+
+
+
+\end{document}

@@ -1,0 +1,13 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{ASCII Text}
+\addtolength{\textwidth}{4em}
+\fixverbatim
+\begin{popup}
+\begin{verbatim*}
+Trying(p) == pc[p] \in {"enter", "wait"}
+InCS(p)   == pc[p] = "cs"
+DeadlockFree == (\E p \in Procs : Trying(p)) ~> (\E p \in Procs : InCS(p))
+\end{verbatim*}
+\end{popup}
+\makeasciipopup

@@ -1,0 +1,26 @@
+%% BAD ASCII
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{ASCII Text}
+\addtolength{\textwidth}{10pt}
+\fixverbatim
+\begin{popup}
+\begin{verbatim*}
+(******************************************************************
+--algorithm OneBitProtocol {
+   variable x \in [{0,1} -> BOOLEAN] ;
+   process (P \in {0,1}) 
+    { r: while (TRUE) 
+          {     either { with (v \in BOOLEAN) { x[self] := v };
+                                goto r
+                       }
+                 or    skip;
+            e1:  x[self] := TRUE;
+            e2:  if (~x[1-self]) { cs: skip }; 
+          }
+    }
+ }
+ ******************************************************************)
+\end{verbatim*}
+\end{popup}
+\makeasciipopup

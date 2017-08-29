@@ -1,0 +1,23 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{The Action-Composition Operator}
+\file{cdot}
+\makeindex
+\begin{popup}
+\subsection*{The Action-Composition Operator}
+
+The 
+ \ctindex{1}{+3jj@\mmath{\icmd{cdot}} (action composition)}{+3jj}%
+ \tindex{1}{action composition operator}%
+action-composition operator \,$\cdot$\, (typed \verb|\cdot|) is a
+\tlaplus\ primitive operator.  For any actions $A$ and $B$, the action
+$A\cdot B$ is defined so that a step $s->t$ is an $A\cdot B$ step iff
+there exists a state $u$ such that $s->u$ is an $A$ step and $u->t$
+is a $B$ step.  In other words,
+ \[ \M{\langle s,t\rangle}{A\cdot B} \;\;\equiv\;
+\E\,u : \M{\langle s,u\rangle}{A} /\ \M{\langle u,t\rangle}{A}\] 
+This operator is rarely used.  It is not currently supported by the TLC
+model checker or the TLAPS prover.
+
+\end{popup}
+\makepopup

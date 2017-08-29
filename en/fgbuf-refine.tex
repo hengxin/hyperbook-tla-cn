@@ -1,0 +1,15 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{Answer}
+\begin{popup}
+\subsection*{Answer} Use the same \textsc{instance} statement and
+definition of $chBar$ as in module $BoundedChannel$, and have TLC
+check the temporal property $C!Spec$.  TLC reports that an action
+property at a certain location of module $BoundedChannel$ is violated.
+Clicking on that location reveals the property to be $[][Next]_{var}$,
+indicating that a step of $FGBBuf$ does not implement a legal step of
+$BChan$.  Using the Trace Explorer reveals the problem to be that a
+$p2$ action changes $in$, but leaves $chBar$ unchanged---the change to
+$chBar$ being effected by the subsequent $p3$ action.
+\end{popup}
+\makepopup

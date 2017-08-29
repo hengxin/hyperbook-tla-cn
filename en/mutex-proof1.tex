@@ -1,0 +1,97 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{High-Level Proof of Inductive Invariance}
+\beforePfSpace{0pt}
+\afterPfSpace{0pt}
+\interStepSpace{0pt}
+\setpopup{25}
+
+\begin{document}
+\subsection*{High-Level Proof of Inductive Invariance}
+
+\vspace{.41em}
+
+$Inv \land Next \implies Inv'$
+\vspace{.4em}
+\begin{proof}
+\pflongnumbers
+\pflongindent
+
+\step{1}{\assume{$Inv \; /\ \; (i \in \{0,1\}) \; /\ \; e1(i)$ }
+         \prove{$Inv'$}}
+
+\vspace{.41em}
+
+\step{2}{\assume{$Inv \; /\ \; (i \in \{0,1\}) \; /\ \; e2(i)$ }
+         \prove{$Inv'$}}
+
+\vspace{.41em}
+
+\step{3}{\assume{$Inv \; /\ \; (i \in \{0,1\}) \; /\ \; CS(i)$ }
+         \prove{$Inv'$}}
+
+\vspace{.41em}
+
+\step{4}{\assume{$Inv \; /\ \; (i \in \{0,1\}) \; /\ \; Rest(i)$ }
+         \prove{$Inv'$}}
+
+\vspace{.41em}
+
+\qedstep
+\begin{proof}
+\pf\ By \stepref{1}--\stepref{4} and the assumption that $Next$ equals\vs{.2}
+ \[ \E\, i \in \{0,1\} : e1(i) 
+            \,\/\, e2(i) \,\/\, CS(i) \,\/\, Rest(i)\]
+
+\vspace{.4em}
+\popref{mutex-proof1-exp}{Click here if you
+  don't understand why steps 1--4 imply the conclusion.}
+\end{proof}
+\end{proof}
+\end{document}
+
+
+\end{popup}
+\makepopup
+
+% \subsection*{Proof}
+% An $e2$ step of process $i$ leaves $Inv$ true.
+% \begin{proof}
+% \pfshortnumbers{10}%
+% \pflongindent
+% \step{1}{An $e2$ step of process $i$ leaves $I1$ true for process $i$.}
+% \vspace{.41em}
+% \begin{proof}
+% \pf\ $I1$ implies $x[i]$ equals \TRUE, and $x[i]$ is left unchanged by
+% step $e2$.
+% \end{proof} 
+% \vspace{.6em}
+% 
+% 
+% \step{2}{An $e2$ step of process $i$ leaves $I1$ true for process $1-i$.}
+% \vspace{.41em}
+% \begin{proof}
+% \pf\ Since $e2$ modifies neither $x[1-i]$ nor the control state of
+% process $1-i$, it does not change whether $I1$ is true for $1-i$.
+% \end{proof}
+% 
+% \vspace{.6em}
+% 
+% \step{3}{An $e2$ step of process $i$ leaves $I2$ true for both processes.}
+% \vspace{.41em}
+% \begin{proof}
+% \pf\ $I2$ for either process asserts that both processes are not in
+% their critical section.  Executing $e2$ puts $i$ in its critical
+% section only if $x[1-i]$ equals $\FALSE$, which by $I1$ implies that
+% process $1-i$ is not in its critical section.
+% \end{proof}
+% 
+% \vspace{.6em}
+% 
+% \qedstep
+% \vspace{.41em}
+% \begin{proof}
+% \pf\ The result follows immediately from steps 1--3 and the definition
+% of $Inv$.
+% \end{proof}
+% \end{proof}

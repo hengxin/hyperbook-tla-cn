@@ -1,0 +1,18 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{equiv vs. =    }
+\file{whyequiv}
+\makeindex
+\begin{popup}
+\subsection*{Equivalence versus Equality} %{$\equiv$ versus $=$}
+
+The semantics 
+  \ctindex{1}{+3bj@\mmath{\icmd{equiv}} (equivalence)!versus \mmath{=}}{+3bj-vs}%
+of \tlaplus\ determine the value of $F\equiv G$ only if
+$F$ and $G$ are Booleans.  Writing $F\equiv G$ therefore tells both the
+reader and a tool that $F$ and $G$ should be
+Booleans.  TLC will report an error if checking the spec requires
+evaluating \,$\equiv$\, for non-Boolean arguments.  You should therefore
+use \,$\equiv$\, rather than \,$=$\, for equality of Booleans.
+\end{popup}
+\makepopup

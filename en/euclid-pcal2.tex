@@ -1,0 +1,21 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{Action Lbl_1}
+\begin{popup}
+\subsection*{Action \protect\ensuremath{Lbl\_1}}
+
+\medskip
+\begin{tlatex}
+\@x{ Lbl\_1 \.{\defeq} \.{\land}\@s{4.1} pc \.{=}\@w{Lbl\_1}}%
+\@x{\@s{42.84} \.{\land}\@s{4.09} {\IF} x \.{\neq} y}%
+\@x{\@s{70.21} \.{\THEN} \.{\land} {\IF} x \.{<} y}%
+\@x{\@s{120.83} \.{\THEN} \.{\land} y \.{'} \.{=} y \.{-} x}%
+\@x{\@s{152.14} \.{\land} {x' = x}}%
+\@x{\@s{120.83} \.{\ELSE} \.{\land} x \.{'} \.{=} x \.{-} y}%
+\@x{\@s{152.14} \.{\land} {y' = y}}%
+\@x{\@s{101.52} \.{\land} pc \.{'} \.{=}\@w{Lbl\_1}}%
+\@x{\@s{70.21} \.{\ELSE} \.{\land} pc \.{'} \.{=}\@w{Done}}%
+\@x{\@s{101.52} \.{\land} {\UNCHANGED} {\langle} x ,\, y {\rangle}}%
+\end{tlatex}
+\end{popup}
+\makepopup

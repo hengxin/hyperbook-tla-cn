@@ -1,0 +1,40 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{Links}
+\file{help-2}
+
+\begin{document}
+\noindent I don't like the use of the $\Box$, but I can't think of a
+better way to give you the choice of opening a link in the same
+window or in a new one.  It would be great if you could make the
+choice by left- or right-clicking.  Perhaps someone will suggest that
+to Adobe.  However, for now you can make the choice only by clicking
+in one of two different places.
+
+Clicking on the part of the link other than the $\Box$ might also
+open a new window.  You can prevent that by going Adobe Reader's
+\emph{Preferences} menu, reached from its main \emph{Edit} menu,
+clicking on the \emph{Documents} category, and selecting the
+\emph{Open cross-document links in same window} option in the
+\emph{Open Settings} section.
+
+If you opened this text in a new window, you can close that window the
+same way you close other windows on your computer.  If you opened this
+text in the same window as the link that brought you here, it would be
+nice if you could return by clicking on the \backbutton\ button in the
+left margin.  Unfortunately, that button may or may not work when
+you jump to new text using a link like \rref{help-2}{nowhere}{this},
+depending on your operating system, the version of Adobe Reader you
+are using, and perhaps the weather in Katmandu.  It seems always to
+work if you jump with a link like \lref{top}{this}.  To return to
+where you came from, \sref{help}{help-2-return}{click here}.
+
+% \medskip Note: the \backbutton\ button doesn't work the way it should
+% because Adobe Reader's \emph{Preview View} command doesn't take you
+% back to text in a different pdf file.  Someone might suggest to Adobe
+% that this is a feature they might want to add.  (I have tried
+% this only on Windows; 
+%    \hyperref{http://lamport.org}{}{}{\linkcolor tell me}
+% if it works on your operating system.)
+
+\end{document}

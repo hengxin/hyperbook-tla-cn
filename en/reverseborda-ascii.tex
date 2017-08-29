@@ -1,0 +1,16 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{ASCII Text}
+\addtolength{\textwidth}{20pt}
+\fixverbatim
+\begin{popup}
+\begin{verbatim*}
+N == Cardinality(Cand)
+V == Len(Votes)
+
+RankBy(c, i) == CHOOSE r \in 1..N : Votes[i][r] = c
+Score(c) == SumSeq([i \in 1..V |-> N - RankBy(c, i)]) 
+Borda == SortSet({[name |-> c, key |-> Score(c)] : c \in Cand})
+\end{verbatim*}
+\end{popup}
+\makeasciipopup

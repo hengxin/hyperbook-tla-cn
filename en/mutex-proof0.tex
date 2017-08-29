@@ -1,0 +1,54 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{Proof of Condition 1}
+\beforePfSpace{5pt,0pt}
+\afterPfSpace{4pt}
+%\interStepSpace{0pt}
+\begin{popup}
+
+\subsection*{Proof of Condition 1}
+
+\vspace{.41em}
+
+$Init => Inv$
+\begin{proof}
+\pflongnumbers
+\pflongindent
+
+\step{1}{$Init => TypeOK$}
+\vspace{.21em}
+\begin{proof}
+\pf\ By Init1.
+\end{proof}
+
+\vspace{.41em}
+
+\step{2}{$Init => MutualExclusion$}
+\vspace{.21em}
+\begin{proof}
+\pf\ By the definition of $MutualExclusion$ and Init2, which implies $InCS(i)$
+is false for both processes $i$.
+\end{proof}
+
+\vspace{.41em}
+
+\step{3}{$Init \ => \ \A\, i \in \{0, 1\} : 
+           InCS(i) \lor (pc[i] = \tlastring{e2}]) \implies x[i]$}
+\vspace{.21em}
+\begin{proof}
+\pf\ By Init2, which implies $InCS(i)$ is false and $pc[i] # "e2"$,
+for each $i$.  (Of course, we are using the fact that $\FALSE => P$
+is true for any formula $P$.)
+\end{proof}
+\vspace{.41em}
+
+\qedstep
+\begin{proof}
+\pf\ By steps 1--3 and the definition of $Inv$
+\end{proof}
+
+\end{proof}
+
+
+\end{popup}
+\makepopup

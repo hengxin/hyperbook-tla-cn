@@ -1,0 +1,43 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{Functions versus Operators}
+\file{function-vs-operator}
+\makeindex
+\setpopup{29}
+\setlength{\textheight}{29em}
+
+\begin{document}
+\subsection*{Functions versus Operators}
+
+When 
+  \ctindex{1}{function!versus operator}{fcn-vs-operator}%
+  \ctindex{1}{operator!versus function}{op-vs-function}%
+you define an operator $Op$ by writing something like
+ \[ Op(a) == a + 42 \]
+this defines $Op(e)$ to equal $e+42$ for any value $e$.  For example,
+it defines $Op(1/2)$ to equal $(1/2)+42$, and it defines
+$Op("abc")$ to equal $"abc"+42$, which is a nonsensical expression
+whose value we know nothing about.
+
+Defining a function specifies its value only for elements of its
+domain.  For example, either of the two equivalent definitions
+  \[ \begin{noj}
+     fcn == [a \in Int |-> a + 42] \V{.5}
+     fcn[a \in Int] == a + 42
+     \end{noj}\]
+defines $fcn[e]$ to equal $e+42$ only if $e$ is an element of the
+domain of $fcn$, which is the set $Int$ of integers.  It tells us
+nothing about the value of $f[1/2]$  or $f["abc"]$; both of these
+are nonsensical expressions.
+
+The function $fcn$ by itself is a legal expression.  The expression
+$fcn+1$ is a syntactically legal (but nonsensical) expression.
+On the other hand, $Op + 1$ is not syntactically legal and produces
+a parsing error.
+
+See Section 6.4 of
+  \hyperref{http://research.microsoft.com/en-us/um/people/lamport/tla/book.html}{}{}{\emph{Specifying 
+   Systems}} for a more extensive discussion of the difference between
+functions an operators.
+
+\end{document}

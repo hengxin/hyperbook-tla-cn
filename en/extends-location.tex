@@ -1,0 +1,21 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{Where EXTENDS Goes}
+\makeindex
+\file{extends-location}
+\setpopup{10.3}
+\begin{document}
+
+  \ctindex{1}{extends@\icmd{textsc}{extends}!where it goes}{extends}%
+  \vspace{-2.2\baselineskip}%
+\subsection*{Where an {\rm\textsc{extends}} Statement Goes}
+
+An \textsc{extends} statement must be the first statement in the
+module; nothing can come between it and the module opening except for
+comments, which are described \tref{main}{main:comments}{later}.  This
+means that a module can have at most one \textsc{extends} statement.
+That statement can be used to import multiple modules, whose names are
+separated by commas.
+
+
+\end{document}

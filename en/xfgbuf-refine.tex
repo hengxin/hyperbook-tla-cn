@@ -1,0 +1,17 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{Answer}
+\begin{popup}
+\subsection*{Answer}
+
+We do not want to put a fairness requirement on $p2a$ because we do
+not want to require the producer ever to receive a message.  (If we
+put a ``\verb|-|'' after the label $p1$, so there is no fairness
+requirement on $p1$, then it doesn't matter if we have a fairness
+requirement on $p2a$ because the producer can halt at $p1$.)  We need
+to require fairness of $p2b$ because, once $\ov{buf}$ and \ov{in} have
+changed, implementing liveness of $FGBBuf$ requires that the process
+execute $p2b$ and then $p3$.
+
+\end{popup}
+\makepopup

@@ -1,0 +1,43 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{Bounded Channel in Pseudo-Code}
+\begin{popup}
+\subsection*{The Bounded Channel in Pseudo-PlusCal}
+\begin{nopcal}
+--algorithm BChan {
+   variables in = Input, out = mbox{the empty sequence}, ch = mbox{the empty sequence};
+   process (Send = 0) {
+      s: while (TRUE) {
+           await Len(ch) # N ;
+           mbox{append the first message in $in$ to the end of $ch$} ;
+           mbox{remove the first message from $in$} } }
+   process (Rcv = 1) {
+      r: while (TRUE) {
+           await Len(ch) # 0 ;
+           mbox{append the first message in ch to out} ;
+           mbox{remove the first message from $ch$} } } }
+\end{nopcal}
+\begin{tlatex}
+\@x{ {\p@mmalgorithm} BChan {\p@lbrace}}%
+ \@x{\@s{12.29} {\p@variables} in \.{=} Input ,\, out \.{=} 
+   \mbox{ the\ empty\ sequence } ,\, ch \.{=} 
+   \mbox{ the\ empty\ sequence }  {\p@semicolon}}%
+\@x{\@s{12.29} {\p@process} {\p@lparen} Send \.{=} 0 {\p@rparen} {\p@lbrace}}%
+ \@x{\@s{24.59} s\@s{.5}\textrm{:}\@s{3} {\p@while} {\p@lparen} {\TRUE}
+ {\p@rparen} {\p@lbrace}}%
+\@x{\@s{43.98} {\p@await} \mbox{Length of }ch  \.{\neq} N {\p@semicolon}}%
+ \@x{\@s{43.98} 
+ \mbox {append\ the\ first\ message\ in\ \emph{in}\ to\ the\ end\ of\ \emph{ch}} {\p@semicolon}}%
+ \@x{\@s{43.98} \mbox {remove the first message from \emph{in}
+ } {\p@rbrace} {\p@rbrace}}%
+\@x{\@s{12.29} {\p@process} {\p@lparen} Rcv \.{=} 1 {\p@rparen} {\p@lbrace}}%
+ \@x{\@s{24.59} r\@s{.5}\textrm{:}\@s{3} {\p@while} {\p@lparen} {\TRUE}
+ {\p@rparen} {\p@lbrace}}%
+\@x{\@s{44.37} {\p@await} \mbox{Length of } ch \.{\neq} 0 {\p@semicolon}}%
+ \@x{\@s{44.37} \mbox {append the first message in \emph{ch} to \emph{out}}
+ {\p@semicolon}}%
+ \@x{\@s{44.37} \mbox {remove the first message from \emph{ch} 
+ } {\p@rbrace} {\p@rbrace} {\p@rbrace}}%
+\end{tlatex}
+\end{popup}
+\makepopup

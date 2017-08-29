@@ -1,0 +1,30 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\makeindex
+\file{standard-arith-modules}
+\pdftitle{Standard Arithmetic Modules}
+
+\setpopup{15.5}
+
+\begin{document}
+
+
+  \tindex{1}{standard arithmetic modules}%
+  \vspace{-2\baselineskip}
+\subsection*{The Standard \protect\tlaplus\ Arithmetic Modules}
+
+Mathematicians often use $\,+\,$ to mean something other than addition
+of numbers.  For example, $\,+\,$ is generally used to denote the
+group operation of an arbitrary Abelian group.  To allow you to use
+such mathematical notation in your specs, operators like $\,+\,$ are
+not built into \tlaplus; they must be declared or defined.  You will
+almost always want them to have their usual meanings.
+
+\vspace{.5\baselineskip}\noindent
+There are three standard \tlaplus\ modules that define ordinary
+arithmetic operators.  You will most often want to import the
+$Integers$ module.  
+  \rref{math}{\xlink{math:arithmetic}}{Section~\xref{math:arithmetic}}
+describes all the operators that these modules define.
+\end{document}
+\makedocument

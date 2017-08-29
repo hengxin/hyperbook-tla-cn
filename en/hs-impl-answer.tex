@@ -1,0 +1,105 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{The Module}
+\setpopup{40}
+\begin{document}
+\setlength{\parindent}{0pt}
+\subsection*{The Module}
+
+
+\smallskip
+
+
+\begin{notla}
+--------------------------------- MODULE HS ---------------------------------
+EXTENDS Integers
+
+a (+) b == (a + b) % 2
+\end{notla}
+\begin{tlatex}
+\@x{}\moduleLeftDash\@xx{ {\MODULE} HS}\moduleRightDash\@xx{}%
+\@x{ {\EXTENDS} Integers}%
+\@pvspace{8.0pt}%
+\@x{ a \.{\oplus} b \.{\defeq} ( a \.{+} b ) \.{\%} 2}%
+\end{tlatex}
+
+\vspace{1em}
+
+\verb|(***************************************************************|
+
+
+\begin{nopcal}
+--algorithm Handshake {
+
+    variable p = 0,  c = 0 ;
+
+    process (Producer = 0) 
+      { pe: while (TRUE)
+              {      await p = c ;
+                put: skip ;
+                px:  p := p (+) 1   }
+      }
+      
+   process (Consumer = 1)
+     { ce: while (TRUE)
+             {      await p # c ;
+               get: skip ;
+               cx:  c := c (+) 1   }
+     }
+}
+\end{nopcal}
+\begin{tlatex}
+\@x{ {\p@mmalgorithm} Handshake {\p@lbrace}}%
+\@pvspace{8.0pt}%
+\@x{\@s{16.4} {\p@variable} p \.{=} 0 ,\,\@s{4.1} c \.{=} 0 {\p@semicolon}}%
+\@pvspace{8.0pt}%
+\@x{\@s{16.4} {\p@process} {\p@lparen} Producer \.{=} 0 {\p@rparen}}%
+ \@x{\@s{24.59} {\p@lbrace} pe\@s{.5}\textrm{:}\@s{3} {\p@while} {\p@lparen}
+ {\TRUE} {\p@rparen}}%
+\@x{\@s{58.61} {\p@lbrace}\@s{20.5} {\p@await} p \.{=} c {\p@semicolon}}%
+\@x{\@s{66.81} put\@s{.5}\textrm{:}\@s{3}\@s{0.85} {\p@skip} {\p@semicolon}}%
+ \@x{\@s{66.81} px\@s{.5}\textrm{:}\@s{3}\@s{4.65} p \.{:=} p \.{\oplus}
+ 1\@s{8.2} {\p@rbrace}}%
+\@x{\@s{24.59} {\p@rbrace}}%
+\@pvspace{8.0pt}%
+\@x{\@s{12.29} {\p@process} {\p@lparen} Consumer \.{=} 1 {\p@rparen}}%
+ \@x{\@s{20.5} {\p@lbrace} ce\@s{.5}\textrm{:}\@s{3} {\p@while} {\p@lparen}
+ {\TRUE} {\p@rparen}}%
+\@x{\@s{54.00} {\p@lbrace}\@s{20.5} {\p@await} p \.{\neq} c {\p@semicolon}}%
+\@x{\@s{62.20} get\@s{.5}\textrm{:}\@s{3}\@s{2.13} {\p@skip} {\p@semicolon}}%
+ \@x{\@s{62.20} cx\@s{.5}\textrm{:}\@s{3}\@s{5.16} c \.{:=} c \.{\oplus}
+ 1\@s{8.2} {\p@rbrace}}%
+\@x{\@s{20.5} {\p@rbrace}}%
+\@x{ {\p@rbrace}}%
+\end{tlatex}
+
+
+\verb| ***************************************************************)|
+
+\vspace{1em}
+
+\begin{notla}
+Alt == INSTANCE AltSpec WITH b <- p (+) c
+=============================================================================
+\end{notla}
+\begin{tlatex}
+ \@x{ Alt \.{\defeq} {\INSTANCE} AltSpec {\WITH} b \.{\leftarrow} p \.{\oplus}
+ c}%
+% \@pvspace{8.0pt}%
+%  \@x{ pcBar \.{\defeq} [ i \.{\in} \{ 0 ,\, 1 \} \.{\mapsto} {\CASE} i \.{=} 0
+%  \.{\rightarrow} {\IF} pc [ 0 ] \.{=}\@w{pe1} \.{\THEN}\@w{pe}}%
+% \@x{\@s{242.04} \.{\ELSE} pc [ 0 ]}%
+%  \@x{\@s{115.59} {\Box}\@s{10.30} i \.{=} i\@s{0.91} \.{\rightarrow} {\IF} pc
+%  [ 1 ] \.{=}\@w{ce1}\@s{1.00} \.{\THEN}\@w{ce}}%
+% \@x{\@s{242.04} \.{\ELSE} pc [ 1 ] ]}%
+%  \@x{ Alt2 \.{\defeq} {\INSTANCE} AltSpec {\WITH} b \.{\leftarrow} p
+%  \.{\oplus} c ,\, pc \.{\leftarrow} pcBar}%
+\@x{}\bottombar\@xx{}%
+\end{tlatex}
+
+\bigskip
+
+\popref{hs-impl-ascii}{{\large Here is the \textsc{ascii} version.}}
+
+\end{document}
+

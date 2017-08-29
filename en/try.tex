@@ -1,0 +1,55 @@
+%The following hack from Frank.
+%
+% \makeatletter
+% \def\providetabstops #1{%
+%    \count@#1\relax
+%    \newdimen\@gtempa
+%    \chardef\@firsttab=\the\allocationnumber
+%    \loop
+%      \newdimen\@gtempa
+%      \advance\count@\m@ne
+%      \ifnum\count@>\z@
+%    \repeat
+%    \chardef\@maxtab=\the\allocationnumber
+% }
+% \makeatother
+% 
+% \providetabstops{20}
+
+
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{Principles}
+\file{principles}
+\makeindex
+
+%%% Hack for showing index elements.  Suppresses writing
+%% of the idx file.
+%%
+%% \let\mmath=\ensuremath
+%% \def\icmd#1{\csname#1\endcsname}
+%% \renewcommand{\tindex}[2]{\marginpar{\red #2 (#1)}}
+%% \renewcommand{\ctindex}[3]{\marginpar{\red #2 (#1)}}
+
+
+% The following doesn't work.
+% \let\xtindex=\tindex
+% \let\xctindex=\ctindex
+% \renewcommand{\tindex}[2]{\xtindex{#1}{#2}{\let\mmath=\ensuremath
+% \def\icmd##1{\csname##1\endcsname}%
+% \marginpar{\red #2 (#1)}}}
+% \renewcommand{\ctindex}[3]{\xctindex{#1}{#2}{#3}{\let\mmath=\ensuremath
+% \def\icmd##1{\csname##1\endcsname}%
+% \marginpar{\red #2 (#1)}}}
+
+
+
+
+\setcounter{section}{\principlestrack}
+\begin{document}
+%try
+\catcode`\z\active
+\defz{42}
+$x = z$
+%try
+\end{document}

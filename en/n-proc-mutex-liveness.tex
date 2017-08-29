@@ -1,0 +1,232 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{A Proof of Deadlock Freedom}
+
+% \beforePfSpace{5pt, 2pt, 2pt}
+% \afterPfSpace{10pt, 5pt, 2pt}
+% \interStepSpace{10pt, 5pt, 2pt}
+
+
+\begin{document}
+\subsection*{A Proof of Deadlock Freedom}
+
+
+The proof uses the following additional definitions:
+\begin{display}
+\begin{notla}
+InNCS(i)   == pc[i] = "ncs"
+Fairness   == \A i \in Procs : WF_vars((pc[i] # "ncs") /\ p(i))
+SomeTrying == \E i \in Procs : Trying(i)
+NoneInCS   == \A i \in Procs : ~InCS(i)
+\end{notla}
+\begin{tlatex}
+\@x{ InNCS ( i )\@s{10.39} \.{\defeq} pc [ i ] \.{=}\@w{ncs}\vs{.2}}%
+ \@x{ Fairness\@s{15.76} \.{\defeq} \A\, i \.{\in} Procs \.{:} {\WF}_{ vars} (
+ ( pc [ i ] \.{\neq}\@w{ncs} ) \.{\land} p ( i ) )\vs{.2}}%
+\@x{ SomeTrying \.{\defeq} \E\, i \.{\in} Procs \.{:} Trying ( i )\vs{.2}}%
+ \@x{ NoneInCS\@s{6.92} \.{\defeq} \A\, i \.{\in} Procs \.{:} {\lnot} InCS ( i
+ )}%
+\end{tlatex}
+\end{display}
+
+\vspace{.4em}
+
+\pflongnumbers
+\pflongindent
+%\pfshortnumbers
+\beforePfSpace{5pt, 5pt, 2pt}
+\afterPfSpace{10pt, 10pt, 5pt}
+\interStepSpace{.5pt}
+%\pfsidenumbers{0}{1em}
+\noindent
+\textbf{Theorem } $Spec => DeadlockFree$
+
+%\smallskip
+
+\begin{proof}
+
+\step{0}{$Spec => []LInv$}
+\begin{proof}
+\pf\ This is a standard invariance proof, which is omitted.
+\end{proof}
+
+\step{1}{\sassume{$[]LInv \, /\ \, [][Next]_{vars} \, /\ \, Fairness \, /\ \, []NoneInCS$ }
+\prove{$SomeTrying ~> \FALSE$}}
+\begin{proof}
+\sloppy
+ \pf\ By \stepref{0} and the definition of $Spec$, since
+$DeadlockFree$ equals 
+$SomeTrying ~> ~NoneInCS$, which we prove by assuming $SomeTrying$ and
+$[]NoneInCS$ and obtaining a contradiction.
+\end{proof}
+
+\step{2}{$Trying(i) => []Trying(i)$ and 
+    $~Trying(i) ~> []InNCS(i) \/ []Trying(i)$, for
+         all $i\in Proc$.}
+\begin{proof}
+\sloppypar
+\pf\ 
+Fairness implies $~Trying(i) ~> InNCS(i)$, the program
+ \marginpar{``The program'' is an abbreviation for the assumptions
+   $\Box LInv$ and $\Box[Next]_{vars}$.}
+implies $InNCS(i) ~> Trying(i) \/ []InNCS(i)$, and the program
+and the assumption $[]NoneInCS$ imply 
+  $Trying(i) => []Trying(i)$.
+\end{proof}
+
+\step{2a}{$SomeTrying ~> 
+             \begin{conj}
+             []SomeTrying \\
+             \A i \in Procs : []Trying(i) \/ []InNCS(i)
+             \end{conj}$}
+\begin{proof}
+\newcommand{\ST}{\emph{ST}}
+\textsc{Define}: $\begin{noj3}
+                  T(i) & \deq & Trying(i)\\
+                  ST & \deq  & SomeTrying
+                  \end{noj3}$
+
+\vspace{5pt}
+
+\step{2a.1}{$\ST ~> []\ST$}
+\begin{proof}
+\pf\ By step \stepref{2}.
+\end{proof}
+\step{2a.2}{$\ST \;=>\; ([]\ST /\ T(i)) \/ ([]\ST /\ ~T(i))$}
+\begin{proof}
+\pf\  Obvious.
+\end{proof}
+\step{2a.3}{$[]\ST /\ T(i) \;~>\; []\ST /\ []T(i)$}
+\begin{proof}
+\pf\  By step \stepref{2}.
+\end{proof}
+\step{2a.4}{$[]\ST /\ ~T(i) \;~>\; []\ST /\ ([]InNCS(i) \/ []T(i))$}
+\begin{proof}
+\pf\  By step \stepref{2}.
+\end{proof}
+\qedstep
+\begin{proof} \sloppy
+\pf\ Steps \stepref{2a.1}--\stepref{2a.4} and leads-to induction
+with the following proof graph
+imply 
+   $ST ~> []ST /\ ([]T(i) \/ []InNCS(i))$
+for each $i\in Proc$.  \\
+\s{1}\begin{picture}(0,50)(-25,-10)
+     \put(-32,15){\makebox(0,0)[l]{$\ST$}}
+     \put(0,15){\makebox(0,0)[l]{$\Box\ST$}}
+     \put(40,30){\makebox(0,0)[l]{$(\Box\ST) \land T(i)$}}
+     \put(40,0){\makebox(0,0)[l]{$(\Box\ST) \land ~T(i)$}}
+     \put(130,30){\makebox(0,0)[l]{$(\Box\ST) \land \Box T(i)$}}
+     \put(130,0){\makebox(0,0)[l]{$(\Box\ST) \land \Box InNCS(i)$}}
+     \put(240,15){\makebox(0,0)[l]{$(\Box\ST) \land (\Box T(i) \lor 
+                                    \Box InNCS(i))$}}
+     \put(-15,15){\vector(1,0){10}}
+     \put(25,17){\vector(1,1){10}}
+     \put(25,13){\vector(1,-1){10}}
+     \put(110,30){\vector(1,0){10}} %130
+     \put(110,0){\vector(1,0){10}}
+     \put(110,7){\vector(3,4){10}}
+     \put(225,28){\vector(1,-1){10}}
+     \put(225,2){\vector(1,1){10}}
+     \end{picture}\\
+The result follows from this,
+since 
+ \tlabox{\A i \in Proc : ST ~> []P(i)} implies
+\tlabox{ST ~> \A i \in Proc : []P(i)} for any $P(i)$ because
+$Proc$ is a finite set.
+\end{proof}
+\end{proof}
+
+\vspace{5pt}
+D\textsc{efine}: 
+  $\begin{noj3}
+   Never(i) & \deq & []Trying(i) /\ []~x[i] \V{.2}
+   Always(i) & \deq & []Trying(i) /\ []x[i] \V{.2}
+   Blinking(i) & \deq & []Trying(i) /\ []<>x[i] /\ []<>~x[i] 
+   \end{noj3}$
+
+\vspace{10pt}
+
+\step{3}{$[]SomeTrying ~> 
+         \begin{conj}
+             []SomeTrying \\
+       \begin{noj}
+       \A i \in Procs: \\ \s{1}
+          []InNCS(i) \/ Never(i) \/ Always(i) \/ Blinking(i) 
+       \end{noj}
+             \end{conj}$}
+\begin{proof}
+\pf\ By step~\stepref{2a} and the tautology:\V{.4}
+     \s{2}$\TRUE \;~>\; []F \/ []~F \/ ([]<>F /\ []<>~F)$\V{.4}
+which asserts that either $F$ is eventually forever true or
+forever false, or else it is infinitely often true and
+infinitely often false.
+\end{proof}
+\step{4}{\sassume{%
+    $\begin{conj}
+      []SomeTrying \\
+\begin{noj}
+       \A i \in Procs: \\ \s{1}
+          []InNCS(i) \/ Never(i) \/ Always(i) \/ Blinking(i) 
+       \end{noj}
+    \end{conj}$}
+    \prove{$\FALSE$}}
+\begin{proof}
+\pf\ By step~\stepref{3}, this provides the desired contradiction.
+\end{proof}
+\step{5}{$\A i \in Proc : ~Blinking(i)$}
+\begin{proof}
+\pf\ We assume $Blinking(j)$ is true for some $j$ and obtain
+a contradiction.  Let $i$ be the smallest such $j$.
+By 
+   $[]Trying(i) /\ []<>~x[i]$, 
+process~$i$ must eventually execute $e3$, find $x[other]=\TRUE$, and
+reach $e5$, which  by $LInv$ implies $i>other$.  Hence $Blinking(other)$ is false
+(because $i$ is the smallest $j$ with $Blinking(j)$ true)
+and $x[other]=\TRUE$ implies $Never(other)$ is false.  Therefore, the
+step~\stepref{4} assumption implies that $Always(other)$ is true, which
+implies $[]x[other]$.
+This implies that $i$ must stay forever at $e5$, making $[]~x[i]$ true.  
+This is
+a contradiction because $Blinking(i)$ implies $[]<>x[i]$.
+\end{proof}
+
+\step{6}{$~\,(\E i \in Procs: []Trying(i) /\ []x[i])$}
+\begin{proof}
+\pf\ Let $S$ be the set of processes $i$ such that 
+  $[]Trying(i) /\ []x[i]$ holds.  We assume
+$S$ is nonempty and obtain a contradiction.  Let $i$ be the smallest
+element in $S$.  By 
+  $[]Trying(i) /\ []x[i]$, 
+process~$i$ must eventually reach $e6$ and remain there forever,
+with $other > i$, so $other$ is not in $S$.
+By step~\stepref{5} and the step~\stepref{4} assumption, this implies
+$[]~x[other]$, so $i$ must eventually execute $e6$ and reach $e2$,
+which is a contradiction.
+\end{proof}
+
+\step{7}{$~\,(\E i \in Procs: []Trying(i) /\ []~x[i])$}
+\begin{proof}
+\pf\ We assume that there is an $i$ such that 
+  $[]Trying(i) /\ []~x[i]$ holds and obtain a contradiction.  
+The assumption implies that $i$ eventually reaches and remains forever
+at $e5$.  However, steps \stepref{5} and \stepref{6} and the
+step~\stepref{4} assumption imply that $[]~x[j]$ holds for all
+processes $j$, so fairness implies that process $i$ cannot remain
+forever at $e5$, which is the required contradiction.
+\end{proof}
+
+\qedstep
+\begin{proof}
+\pf\ Steps \stepref{5}--\stepref{7} and the second conjunct of
+the step~\stepref{4} assumption imply
+ $\A\,i\in Procs : []InNCS(i)$,
+which is a contradiction because the step~\stepref{4} assumption 
+also implies $[]SomeTrying$.
+\end{proof}
+
+
+
+\end{proof}
+
+\end{document}

@@ -1,0 +1,71 @@
+%  THE \graphpaper COMMAND
+%
+% \graphpaper[N](X,Y)(DX, DY)
+%    Makes a grid with left-hand corner at (X,Y), extending (DX, DY) 
+%    units in the X and Y directions, where the lines are N units
+%    apart.  Every fifth line is thick and is numbered.
+%    The default value of N is 10.  The arguments must all be integers.
+%  
+%  First, we define three counters.  The first two are defined
+%  as raw TeX counters since multiplication and division must be
+%  performed in them. 
+\newcount\@gridx
+\newcount\@gridy
+\newcounter{@grid}
+%
+% Next we define the following commands to draw vertical and horizontal
+% grids.  The ``nonum'' commands just draw the grids; the other commands
+% also print numbers.  All the arguments must be integers.
+%
+%   VERTICAL GRIDS
+%   \@vgrid(xpos,ypos){xincrement}{number-of-lines}{length-of-lines}
+%   \@nonumvgrid(xpos,ypos){xincrement}{number-of-lines}{length-of-lines}
+%     
+%   HORIZONTAL GRIDS
+%     \@hgrid(xpos,ypos){yincrement}{number-of-lines}{length-of-lines}
+%     \@nonumhgrid same as \@hgrid but no numbers drawn
+% 
+\def\@vgrid(#1,#2)#3#4#5{\setcounter{@grid}{#1}%
+  \multiput(#1,#2)(#3,0){#4}{\line(0,1){#5}}%
+  \multiput(#1,#2)(#3,0){#4}{\@vgridnumber{#3}}}
+
+\def\@vgridnumber#1{\makebox(0,0)[t]{\shortstack{\rule{0pt}{10pt}\\%
+  \arabic{@grid}}}\addtocounter{@grid}{#1}}
+
+\def\@nonumvgrid(#1,#2)#3#4#5{\multiput(#1,#2)(#3,0){#4}{\line(0,1){#5}}}
+
+\def\@hgrid(#1,#2)#3#4#5{\setcounter{@grid}{#2}%
+  \multiput(#1,#2)(0,#3){#4}{\line(1,0){#5}}%
+  \multiput(#1,#2)(0,#3){#4}{\@hgridnumber{#3}}}
+
+\def\@hgridnumber#1{\makebox(0,0)[r]{\arabic{@grid}\hspace{10pt}}%
+  \addtocounter{@grid}{#1}}
+
+\def\@nonumhgrid(#1,#2)#3#4#5{\multiput(#1,#2)(0,#3){#4}{\line(1,0){#5}}}
+
+% Finally, \graphpaper is defined in a straightforward way in terms of the
+% commands above.
+
+\newcommand\graphpaper[1][10]{\@grid{#1}}
+
+\def\@grid#1(#2,#3)(#4,#5){%
+\@gridx=#4\relax
+\divide\@gridx #1\relax
+\advance\@gridx1\relax
+{\thinlines\@nonumvgrid(#2,#3){#1}{\@gridx}{#5}
+\@gridx=#4\relax
+\divide\@gridx5\relax
+\divide\@gridx #1\relax
+\advance\@gridx1\relax
+\@gridy=5
+\multiply\@gridy #1\relax
+\thicklines\@vgrid(#2,#3){\@gridy}{\@gridx}{#5}
+\@gridx=#5\relax
+\divide\@gridx #1\relax
+\advance\@gridx1\relax
+\thinlines\@nonumhgrid(#2,#3){#1}{\@gridx}{#4}
+\@gridx=#5\relax
+\divide\@gridx5\relax
+\divide\@gridx #1\relax
+\advance\@gridx1\relax
+\thicklines\@hgrid(#2,#3){\@gridy}{\@gridx}{#4}}\ignorespaces}

@@ -1,0 +1,14 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{ASCII Text}
+\fixverbatim
+\begin{popup}
+\begin{verbatim*}
+cBar == IF \E i \in 1..(N-1) : ca[i] # ca[i-1]
+          THEN CHOOSE i \in 1..(N-1) : ca[i] # ca[i-1] 
+          ELSE 0
+
+CS == INSTANCE ClockSpec WITH c <- cBar
+\end{verbatim*}
+\end{popup}
+\makeasciipopup

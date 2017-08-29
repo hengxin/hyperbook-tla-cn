@@ -1,0 +1,36 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\makeindex
+\file{directed-graph}
+\pdftitle{Directed Graphs}
+\begin{popup}
+
+  \tindex{1}{directed graph}%
+  \ctindex{1}{graph!directed}{graph-directed}%
+  \vspace{-2\baselineskip}
+\subsection*{Directed Graphs}
+
+A directed graph $\mathcal{G}$ consists of a set of nodes and a set of
+edges, where each edge goes from one node (the source) to another node
+(the destination, possibly the same as the source).  There are
+two natural ways to define a
+  \tindex{1}{path}%
+path of a graph:
+\begin{itemize}
+\item A path $\pi$ of $\mathcal{G}$ is a nonempty (finite or infinite)
+sequence $s_{1}, s_{2}, \ldots$ of nodes of the graph such that there
+is an edge from $s_{i}$ to $s_{i+1}$, for each positive integer $i$
+less than the length of (the sequence) $\pi$.
+
+\item A path $\pi$ of $\mathcal{G}$ is a nonempty (finite or
+infinite) sequence $e_{1}, e_{2}, \ldots$ of edges of the graph such
+that the destination node of $e_{i}$ equals the source node of
+$e_{i+1}$, for each positive integer $i$ less than the length of (the
+sequence)~$\pi$.
+\end{itemize}
+People also describe a path informally as an alternating sequence of
+nodes and edges, but that would be a needlessly complicated way of
+defining it mathematically.
+
+\end{popup}
+\makepopup

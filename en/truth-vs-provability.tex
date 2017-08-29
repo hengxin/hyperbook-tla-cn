@@ -1,0 +1,42 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{Truth versus Provability}
+\file{truth-vs-provability}
+\makeindex
+
+\begin{popup}
+ \tindex{1}{truth}%
+ \tindex{1}{provability}%
+ \vspace{-2\baselineskip}%
+\subsection*{Truth versus Provability}
+
+I am conflating \emph{truth} and \emph{provability}, which are
+actually two separate concepts.  A formula is said to be provable iff
+it can be deduced from axioms.  For a temporal \tlaplus\ formula, this
+means that it can be proved using only the axioms and proof rules of
+\tlaplus.  In principle, calling something a theorem asserts that
+it is provable.
+
+\medskip
+
+Truth is a fuzzier notion; it is often taken to mean 
+   \tindex{1}{validity}%
+\emph{validity}.
+A formula is valid iff it is true for every possible interpretation of
+the axioms.  (A precise definition of \emph{interpretation} is beyond
+the scope of both this hyperbook and my expertise.)
+
+\medskip
+
+It is generally believed that, for the kinds of simple formulas of
+ordinary mathematics that occur in reasoning about systems,
+provability and validity are equivalent.  Since the semantics of
+\tlaplus\ is based on ordinary mathematics plus simple temporal logic,
+that should be true for all the \tlaplus\ formulas that occur in this
+hyperbook.  I will therefore continue to ignore the difference between
+provability and validity.  Whenever I assert that a formula is true, I
+will mean that it is both valid and provable.
+\end{popup}
+\makepopup
+
+

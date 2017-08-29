@@ -1,0 +1,50 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{Warning}
+\begin{popup}
+\subsection*{Warning}
+
+When you get accustomed to writing conjunctions and disjunctions as 
+lists like this, it's easy to forget that the last formula in the list
+``captures'' tokens in the expression to 
+the right of its $/\ $ or $\/ $--even if they occur on a separate line.
+For example,
+ \[ \begin{noj2}
+    /\ & A \\
+    /\ & B \\ 
+       & \s{1} => C
+    \end{noj2}
+\]
+means $A /\ (B =>C)$, not $(A /\ B) => C$.  You can write the latter expression
+in any of the following ways:
+ \[  
+    \begin{noj2}
+    & \begin{noj2}
+    /\ & A \\
+    /\ & B \\ 
+    \end{noj2} \\
+    => & C
+    \end{noj2}
+\s{3}
+    \begin{noj}
+    \begin{noj2}
+    /\ & A \\
+    /\ & B \\ 
+    \end{noj2} \\
+        => C
+    \end{noj}
+\s{3}
+   \begin{noj3}
+     (\!\! & /\ & A \\
+       & /\ & B\,\,) \\ 
+        && \s{1.5} => C
+     \end{noj3}
+\s{2.5}
+\begin{noj3}
+     (\!\!& /\ & A \\
+       & /\ & B\,\,) \, => \, C
+     \end{noj3}
+ \]
+\vspace*{0pt}
+\end{popup}
+\makepopup

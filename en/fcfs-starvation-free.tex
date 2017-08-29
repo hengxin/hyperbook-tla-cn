@@ -1,0 +1,118 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{Deadlock Free and FCFS Implies Starvation Free}
+
+\setpopup{53}
+
+\begin{document}
+\subsection*{Deadlock Free and FCFS Implies Starvation Free}
+
+We first formally define $FCFS$.
+\begin{display}
+\begin{tla}
+InNCS(p)   == pc[p] = "ncs"
+
+Waiting(p) == pc[p] = "wait"
+
+FCFS  == 
+   \A p, q \in Procs : 
+       [](Waiting(p)  /\  InNCS(q)  /\  []~InCS(p)  =>  []~InCS(q))
+\end{tla}
+\begin{tlatex}
+\@x{ InNCS ( p )\@s{8.2} \.{\defeq} pc [ p ] \.{=}\@w{ncs}}%
+\@pvspace{8.0pt}%
+\@x{ Waiting ( p )\@s{3.42} \.{\defeq} pc [ p ] \.{=}\@w{waiting}}%
+\@pvspace{8.0pt}%
+\@x{ FCFS\@s{4.1} \.{\defeq}}%
+\@x{\@s{12.29} \A\, p ,\, q \.{\in} Procs \.{:}}%
+ \@x{\@s{25.26} {\Box} ( Waiting ( p )\@s{4.1} \.{\land}\@s{4.1} InNCS ( q
+ )\@s{4.1} \.{\land}\@s{4.1} {\Box} {\lnot} InCS ( p )\@s{4.1}
+ \.{\implies}\@s{4.1} {\Box} {\lnot} InCS ( q ) )}%
+\end{tlatex}
+\end{display}
+We now state and prove the theorem.
+
+\bigskip
+
+%
+\noindent \textbf{Theorem \ } $DeadlockFree /\ FCFS \;=>\; StarvationFree$
+
+\medskip
+%\begin{display}
+\pflongindent
+\pflongnumbers
+\beforePfSpace{0pt,.2em}
+\afterPfSpace{0pt, .5em}
+\interStepSpace{.5em}
+\begin{proof}
+\step{1}{\sassume{$p \in Procs$, $FCFS$,  $DeadlockFree$}
+         \sprove{$Trying(p) /\ []~InCS(p) \;~>\;\FALSE$}}
+\begin{proof}
+\pf\ By definition of $StarvationFree$ and simple temporal logic.
+\end{proof}
+
+\step{1a}{$Trying(p) /\ []~InCS(p) \;~>\; Waiting(p) /\ []~InCS(p)$}
+\begin{proof}
+\pf\ By fairness for process $p$.
+\end{proof}
+
+\step{2}{$Waiting(p) /\ []~InCS(p) \;~>\; [](Waiting(p) /\ ~InCS(p))$}
+\begin{proof}
+\pf\ The algorithm implies that $Waiting(p)$ can become false only
+by making $InCS(p)$ true.
+\end{proof}
+
+\step{3}{$\A q \in Procs :\: \{p\} : [](Waiting(p) /\ ~InCS(p)) ~> []~InCS(q)$}
+\begin{proof}
+   \step{3.1}{\sassume{$q \in Procs$, $q#p$, $[](Waiting(p) /\ ~InCS(p))$}
+              \sprove{$\TRUE ~> []~InCS(q)$}}
+   \begin{proof}
+   \pf\ By simple temporal reasoning.
+   \end{proof}
+
+   \step{3.2}{$\TRUE ~> ([]<>InCS(q)) \/ ([]~InCS(q))$}
+   \begin{proof}
+   \pf\ By the temporal logic tautology $[]<>F \/ <>[](~F)$.
+   \end{proof}
+
+   \step{3.3}{$[]<>InCS(q) ~> InNCS(q)$}
+   \begin{proof}
+   \pf\ The algorithm's code and fairness assumption imply 
+         $InCS(q) ~> InNCS(q)$.
+   \end{proof}
+
+   \step{3.4}{$InNCS(q) => []~InCS(q)$}
+   \begin{proof}
+   \pf\ By the step \stepref{3.1} assumption, which implies
+   $Waiting(p) /\ []~InCS(p)$, and $FCFS$.
+   \end{proof}
+
+   \qedstep
+   \begin{proof}
+   \pf\ By \stepref{3.2}--\stepref{3.4} and the Leads-To Induction Rule.
+   \end{proof}
+\end{proof}
+
+\step{4}{$Waiting(p) ~> \E q \in Procs : InCS(q)$}
+\begin{proof}
+\pf\ By $DeadlockFree$ (assumed in \stepref{1}).
+\end{proof} 
+
+\newpage
+
+\qedstep
+\begin{proof}
+\pf\ Steps \stepref{1a}--\stepref{4} and temporal logic yield:\V{.4}
+   \s{1}$
+    Trying(p) /\ []~InCS(p) \;~>\; 
+       \begin{conj}
+         []~InCS(p) \\
+         \A q \in Procs :\: \{p\} : []~InCS(q) \\
+         \E q \in Procs : InCS(q) \vs{.4} 
+       \end{conj}
+  $\\
+and the conjunction to the right of the $~>$ equals $\FALSE$.
+\end{proof}
+\end{proof}
+
+\end{document}

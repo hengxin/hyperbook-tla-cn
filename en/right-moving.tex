@@ -1,0 +1,82 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pfshortnumbers
+\pdftitle{Is This Construction Legal?}
+\begin{popup}
+\subsection*{Is This Construction Legal?}
+
+To construct $\mu$ from $\rho$, we may have to perform an infinite
+number of transformations.  Since we can't actually do that, we need
+to define $\mu$ more carefully and show that it is a behavior of
+$\mathcal{F}$.  The proof is not hard, but you may find it
+confusing if you have not studied infinite sequences in a math course.
+
+\medskip
+
+We say that an infinite sequence $\mu_{0}$, $\mu_{1}$, \ldots\ of
+behaviors \emph{converges} iff it satisfies the following condition:
+For every postive integer $p$, there exists a positive integer $q$
+such that every $\mu_{i}$ with $i>q$ has the same prefix of
+length~$p$.  If $\mu_{0}$, $\mu_{1}$, \ldots\ converges, then there is
+a unique behavior $\mu$ such that, for every positive integer $p$,
+there is a $q$ such that the $p$\tth\ state of $\mu$ is the $p$\tth\
+state of $\mu_{i}$ for all $i>q$.  In that case, we call $\mu$ the
+\emph{limit} of the sequence $\mu_{0}$, $\mu_{1}$, \ldots\,.
+
+\medskip
+
+We now inductively construct a (finite or infinite) sequence
+$\mu_{0}$, $\mu_{1}$, \ldots\ of behaviors as follows.  We start with
+$\mu_{0}=\rho$.  For every $j>0$, find the $j$\tth\ occurrence of an
+$r_{1}$ step in $\mu_{j-1}$.  If there is none, or if there is no
+later $r_{n}$ step, the sequence stops with $\mu_{j-1}$.  Otherwise,
+construct $\mu_{j}$ from $\mu_{j-1}$ by moving $r_{i}$ steps right
+(for $i<k$) or left (for $i>k$) so that the $j$\tth\ $r_{1}$ step is
+immediately followed by $r_{2}$, \ldots, $r_{n}$ steps.  This produces
+a finite or infinite sequence of behaviors $\mu_{i}$ that all satisfy
+$\mathcal{F}$.  There are three cases:
+
+\medskip
+\noindent
+%
+1. The sequence of $\mu_{0}$, $\mu_{1}$, \ldots\ is infinite.  In
+this case, the sequence converges and we define $\mu$ to be its limit.
+
+\medskip
+\noindent
+%
+2.  The sequence is finite and ends with $\mu_{p}$, and the last
+$r_{i}$ step of $\mu_{p}$ has $i=n$.  In that case, we let $\mu$ equal
+$\mu_{p}$.
+
+\medskip
+\noindent
+%
+3.  The sequence is finite and ends with $\mu_{p}$, and the last
+$r_{i}$ step of $\mu_{p}$ has $i<k$.  In this case, we define an
+infinite sequence $\nu_{1}$, $\nu_{2}$, \ldots\ of behaviors as
+follows.  Suppose that the last $r_{i}$ step is the $q$\tth\ step of
+$\mu_{p}$.  Define $\nu_{j}$ to be the behavior obtained from
+$\mu_{p}$ by moving the last $r_{1}$, $r_{2}$, \ldots\,, $r_{i}$ steps
+to the right past the $q+j$\tth\ step.  Each $\nu_{j}$ is a behavior
+of $\mathcal{F}$, and the sequence $\nu_{1}$, $\nu_{2}$, \ldots\ converges.
+Let $\mu$ be its limit.
+
+
+\medskip
+
+In each case, $\mu$ either satisfies $\mathcal{F}$ (case 2) or is the
+limit of a sequence of behaviors, each of which satisfies
+$\mathcal{F}$ (cases 1 and 3).  The following argument shows that if a
+sequence $\tau_{1}$, $\tau_{2}$, \ldots\ converges to the limit $\mu$
+and each $\tau_{i}$ is a behavior of $\mathcal{F}$, then $\mu$ is a
+behavior of $\mathcal{F}$.  The proof is by contradiction.  Suppose
+$\mu$ is not a behavior of $\mathcal{F}$.  Since $\mathcal{F}$ has the
+form $Init /\ [][Next]_{vars}$, either the initial state of $\mu$ does
+not satisfy $Init$ or some step of $\mu$ is not a $Next$ step.  By
+definition of limit, that initial state or step must be in infinitely
+many of the $\tau_{i}$.  This is impossible, since all the $\tau_{i}$
+are behaviors of $\mathcal{F}$, so $\mu$ is also a behavior of
+$\mathcal{F}$.
+\end{popup}
+\makepopup

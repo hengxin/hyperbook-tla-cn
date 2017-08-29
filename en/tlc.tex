@@ -1,0 +1,817 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{TLC}
+\file{tlc}
+\makeindex
+%\setcounter{section}{\principlestrack}
+\setcounter{section}{0}
+
+\newcommand{\sym}{\ensuremath{Sym}}
+%\newcommand{\tlc}[1]{\ensuremath{(\!(\!#1\!)\!)}}
+\newcommand{\tlc}[1]{\ensuremath{(\!(\s{-.08}#1\s{-.1})\!)}}
+\def\bad{\ensuremath{\,\bot\,}}
+\newcommand{\ec}[1]{\mbox{\ensuremath{[\![#1]\!]}}}
+\newcommand{\states}{\ensuremath{\mathcal{S}}}
+\newcommand{\smod}{\ensuremath{\states/\sym}}
+\newcommand{\rep}[1]{\ensuremath{\rho(#1)}}
+\newcommand{\values}{\ensuremath{\mathcal{V}}}
+\newcommand{\cng}{\approx}
+\newcommand{\quo}{\ensuremath{\states/\!\cng\,}}
+\newcommand{\For}{\ensuremath{\mathcal{F}}}
+\newcommand{\G}{\ensuremath{\mathcal{G}}}
+\newtheorem{theorem}{Theorem}
+
+\begin{document}
+
+\section{An Abstract View of TLC}
+
+TLC checks a model of a specification.  A model defines a countably
+infinite set \values\ of TLC values.  (The set \values\ can differ for
+different models because it depends on the set of 
+    \hyperref{http://tla.msr-inria.inria.fr/tlatoolbox/doc/model/model-values.html}{}{}{model values}
+introduced by the model.)  The specification declares a set of
+specification variables.  A model state is an assignment of a value in
+\values\ to each of those variables.  Let \states\ be the set of all
+model states.
+
+TLC evaluates a \tlaplus\ state predicate on a state.  Let $s|=I$.  be
+the (truth) value of a state predicate $I$ on state $s$.  TLC
+evaluates a \tlaplus\ action on a pair of states.  Let $<<s,t>>|=A$
+the value of action $A$ on state pair $<<s, t>>$.
+
+The model declares a specification of the form
+  \[ Spec == Init \ /\ \ [][Next]_{vars} \ /\ \ Fair
+  \]
+and declares certain properties of the specification for TLC to check
+by trying to find a counter-example.  Define
+  \[ SSpec == Init \ /\ \ [][Next]_{vars}\]
+For a safety property $Prop$, TLC tries to find a behavior (an
+infinite sequence of states) satisfying $SSpec$ that satisfies
+$~Prop$.  For a liveness property $Prop$, it tries to find a behavior
+of $SSpec$ that satisfies $Fair /\ ~Prop$.
+
+The maximal state predicates and actions in $Fair$ and in all the
+properties that TLC is to check are called the model's \emph{atoms}.
+Let a \emph{state label} be an assignment of truth values to all the
+model's state-predicate atoms, and let an \emph{action label} be an
+assignment of truth values to all the model's action atoms.  For any
+state $s$, let $\lambda(s)$ be the state label that assigns to each
+state-predicate atom $I$ the value $s|=I$; and let $\lambda(s,t)$ be
+the action label that assigns to each action atom $A$ the value
+$<<s,t>>|=A$.
+
+\subsection{The State Graph}
+
+
+Let $StConst$ and $ActConst$ be the model's state and action
+constraints---specified by the \textsf{State Constraint} and
+\textsf{Action Constraint} sections of the models \emph{Advanced
+Options} page, with default values $\TRUE$.  A graph whose nodes are
+states in \states\ and edges are pairs of states is called a
+\emph{state graph} for the model iff it satisfies the following
+conditions:
+\begin{enumerate}
+\item A state $s$ is in the graph only if $s|=StConst$.
+
+\item An edge $<<s,t>>$ is in the graph only if 
+ $<<s,t>>|= Next /\ ActConst$ 
+or $s=t$.\footnote{Note: TLC seems to add self-loops even if
+$ActConst$ implies $var'\neq var$.}
+
+\item Each state in the graph is reachable from an initial state,
+which is a state satisfying $s|=Init$.
+\end{enumerate}
+The \emph{complete} state graph is the maximal state graph, which may
+be finite or infinite.  The nodes in the complete state graph are the
+\emph{reachable} states of the model.  Define the \emph{depth} of a
+reachable state $s$ to be the length of the shortest path in the
+complete state graph from an initial state to $s$.
+
+A behavior of the model is an infinite path in the complete state
+graph.  We can determine if a behavior is a counterexample to a
+property by knowing the labels of each node and edge of the behavior;
+we don't need to know the states represented by the nodes.
+
+A state graph is any subgraph of the complete state graph that
+satisfies the third condition.  A node $s$ of a state graph \G\ is a
+\emph{sink} iff \G\ contains no edge $<<s,t>>$ with $s#t$.
+
+% A state graph \G\ is \emph{full} iff it satisfies the following
+% condition: for any node (states) $s$ in \G, either $s$ is a sink (is
+% the source of no non-looping edge in \G) or \G\ contains every
+% edge $<<s, t>>$ in the complete state graph .
+
+A state \emph{tree} is a state graph that is a tree, having a single
+initial state as its root.  A state \emph{forest} is a collection of
+disjoint (sharing no nodes) state trees.
+
+% Assume that each node in the complete state graph has only a finite
+% number of outgoing edges.  There are then obvious algorithms for
+% computing the complete state graph that eventually find every
+% reachable node and every edge joining reachable nodes.  (Of course,
+% the algorithms won't terminate if the complete state graph is
+% infinite.)  In the absence of symmetry, TLC essentially uses such an
+% algorithm to compute approximations to the complete state graph---it
+% uses multiple threads in an almost breadth-first search for reachable
+% states.
+
+\subsection{Symmetry Reduction}
+
+Symmetry reduction uses a group \sym\ of automorphisms of the set
+\states\ of model states.  (An automorphism of a set is a bijection
+from the set to itself, and \sym\ a group of automorphisms means
+that it contains the identity automorphism and for any $P$ in \sym,
+the inverse autmorphism $P^{-1}$ is also in \sym.)  Latter I'll discuss
+how \sym\ is specified by the model.  
+
+Because \sym\ is a group, it defines an equivalence relation $\cng$
+on \states\ by
+ \[ s \cng t == \E P \in \sym : P(s)= t
+ \]
+The quotient set \quo\ of all equivalence classes of states partitions
+\states.  Let \ec{s} be the equivalence class of $s$:
+ \[ \ec{s} == \{t\in\states:t\cng s\}
+ \]
+Define a state graph \G\ to be irredundant iff for any nodes (states)
+$s$ and $t$ of \G, if $s#t$ then $s\not\cng t$.  For an irredundant
+state graph \G, we define the \ec{\G} to be the smallest graph whose
+nodes are elements of \quo\ (equivalence classes of states) labeled
+with state labels and whose edges are labeled with action labels, such
+that:
+\begin{itemize}
+\item For each state $s$ of \G, \ec{\G} contains the node \ec{s}
+labeled with $\lambda(s)$ and the edge from \ec{s} to itself labeled
+$\lambda(s,s)$.  The node \ec{s} is an \emph{initial} node iff $s$ is
+an initial state.
+
+\item For each non-sink node $s$ in \G\ and each
+state $t$ with \ec{t} a node of \ec{\G} and $<<s,t>>$ an edge
+of the complete state graph, \G\ contains an edge from
+\ec{s} to \ec{t} labeled with $\lambda(s,t)$.
+\end{itemize}
+Note that for any states $s$ and $t$ in \G\, there can be multiple
+edges from \ec{s} to \ec{t}, each having a different label.
+
+If $\pi$ is a path $s_{1}$ , $s_{2}$, \ldots in the complete state
+graph, define \ec{\pi} to be the labeled path with nodes \ec{s_{1}},
+\ec{s_{2}}, \ldots such that each state \ec{s_{i}} is labeled with
+$\lambda(s_{i})$ and each edge $<<\ec{s_{i}},\,\ec{s_{i+1}}>>$ is
+labeled with $\lambda(s_{i},\,s_{i+1})$.
+
+
+
+
+\subsection{Symmetric Models} 
+
+
+A state predicate $I$ is \emph{symmetric} iff $s|=I$ equals $P(s)|=I$
+for all $s$ in \states\ and $P$ in \sym.  An action $A$ is
+\emph{symmetric} iff $<<s,t>>|=A$ equals $<<P(s),P(t)>>|=A$ for all
+$s$, $t$ in \states\ and $P$ in \sym.  We say that a model is symmetric
+iff $Init$, $Next$, $\UNCHANGED vars$, $StConst$, $ActConst$, and all
+its atoms are symmetric.
+
+\begin{theorem}
+Let \G\ be an irredundant state graph and $\Pi$ a (labeled) path in
+\ec{\G} starting at an initial node.  If the model is symmetric, then
+there exists a path $\pi$ in the complete state graph starting at an
+initial node such that $\Pi=\ec{\pi}$.  If $\Pi$ has a finite number
+of distinct nodes and \sym\ is a finite group, then $\pi$ has a finite
+number of distinct nodes.
+\end{theorem}
+\begin{proof}
+\pf\ We construct the graph $\pi$ equal to $s_{1}$, $s_{2}$, \ldots\
+inductively as follows.  
+\begin{itemize}
+\item Let $s_{1}$ be the initial state
+for which \ec{s_{1}} is the first node of $\Pi$.  State $s_{1}$
+exists by definition of an initial node of \ec{\G}.
+
+\item Assume we have constructed the required states $s_{1}$, \ldots,
+$s_{n}$.  Let $s$ be the state in \G\ such that $\ec{s_{n}}=\ec{s}$.
+By definition of \ec{\G}, there exists a state $t$ such that $<<s,t>>$
+is an edge in the complete state graph and the edge of $\Pi$ from
+$\ec{s_{n}}$ leads to $\ec{t}$ and has the label $\lambda(s,t)$.
+Choose $P$ in \sym\ so that $s_{n}=P(s)$ and let $s_{n+1}=P(t)$.
+Symmetry implies that $<<s_{n}, s_{n+1}>>$, which equals
+$<<P(s), P(t)>>$, is an edge in the complete state graph with
+label $\lambda(s,t)$.  From $s_{n+1}=P(t)$ we have $\ec{s_{n+1}}$
+equals \ec{t}, which is the next node of $\Pi$.  Symmetry implies
+that the label of that node equals $\lambda(s_{n+1})$.  
+\end{itemize}
+By induction, we see that \ec{\pi} equals $\Pi$.  If $\Pi$ has
+a finite number of distinct nodes, then it must pass through some
+node infinitely many times.  That node must equal \ec{s_{n}} for
+infinitely many values of $n$.  If \sym\ is finite, then there are
+only a finite number of distinct states in the equivalence
+class \ec{s_{n}}, so the path $\pi$ must end by looping through
+finitely many nodes.
+\end{proof}
+
+YYYYYYYYYYYYYYYY
+
+A model specifies a 
+
+
+Throughout this section, we
+assume a given model of a specification.  The model specifies values
+overriding of some definitions and the substitution of expressions for
+all the declared \textsc{constants}.  These overridings and substitutions
+may introduce A TLC model can introduce 
+  \hyperref{http://tla.msr-inria.inria.fr/tlatoolbox/doc/model/model-values.html}{}{}{model values}
+into expressions.  I assume that these overridings and substitutions
+have been performed in all expressions.  Therefore, declared constants
+no longer appear anywhere, but expressions may contain model values.
+
+
+
+
+
+
+
+
+\subsection{TLC Values}
+
+\newcommand{\eq}{\ensuremath{\approx}}
+\newcommand{\xeq}{\ensuremath{\not\approx}}
+
+
+The semantics of \tlaplus\ is based on ZF set theory.  It assumes that
+every expression written in terms of the primitive \tlaplus\ operators
+with no free identifiers has a \emph{value} that is a set.  (Here, we
+consider model values and declared constants and variables to be free
+identifiers).  Let an \emph{expressible} value be one that is the
+value of such an expression.  
+
+Two arbitrary expressions are equal if they have the same value for
+any values of their free identifiers such that:
+\begin{itemize}
+\item A model value does not equal any expressible
+value.\footnote{Non-expressible values exist because there are only
+countably many expressible values, but ZF allows uncountable sets.}
+
+
+\item An untyped model value is unequal to any other model value.
+
+\item A typed model value is unequal to any other model value
+of the same type.
+\end{itemize}
+For any expressions $e_{1}$ and $e_{2}$, we let $e_{1}\eq e_{2}$ mean
+that the semantics of \tlaplus\ implies $e_{1}=e_{2}$; and we let
+$e_{1}\xeq e_{1}$ mean that the semantics of \tlaplus\ implies
+$e_{1}\neq e_{2}$.
+
+Two expressions $e_{1}$ and $e_{2}$ with no free identifiers except
+model values are said to be \emph{comparable} iff $e_{1}\eq e_{2}$ or
+$e_{1}\xeq e_{1}$.  For example 1 and $"a"$ are not comparable, but
+$\{1, 2\}\xeq \{"a"\}$ because the semantics of \tlaplus\ imply that
+$1#2$, and two sets are unequal if they have different cardinalities.
+
+TLC does not handle unbounded quantifiers or unbounded
+\textsc{choose}.  It assumes a particular instantiation of the bounded
+\textsc{choose} operator.  That is, if we define $OneTwo$ by
+ \[ OneTwo == \CHOOSE x \in \{1,2,3 \} : x < 3
+ \]
+then TLC knows if $OneTwo$ equals $1$ or $2$.  Thus, we consider the
+value of the expression $OneTwo$ to be comparable with $1$ (as well as
+to every other integer).
+
+An \emph{elementary TLC expression} is defined to be any of the following:
+\begin{itemize}
+\item An \emph{atomic expression}, which is either a Boolean (\TRUE\
+or \FALSE), an integer contained in some finite range of integers, a
+string of length less than some maximum value, or a model value.
+
+\item A finite set of comparable elementary TLC expressions.
+
+\item A function $(d_{1}:>v_{1})@@ \ldots @@(d_{n}:>v_{n})$ where the
+$d_{i}$ and $v_{i}$ are elementary TLC expressions and the $d_{i}$ are
+all unequal to one another.  (The operators $:>$ and $@@$ are defined
+in the standard $TLC$ module.)
+\end{itemize}
+A \emph{TLC value} is one that can be represented as an elementary TLC
+expression.  
+
+\subsection{TLC Evaluation}
+
+For any constant expression $e$ containing no free identifiers except
+model values, we let \tlc{e} be the result computed by TLC when
+evaluating $e$ (under the given model).  This result is either an
+elementary TLC expression or the special symbol \bad, which indicates
+that TLC reports an error when it evaluates the expression.  We say
+that TLC \emph{can evaluate} an expression $e$ iff $\tlc{e}#\bad$.
+Note that \tlc{\,} maps syntactic expressions to syntactic
+expressions.  It is idempotent: $\tlc{\,\tlc{e}\,}= \tlc{e}$ for any
+expression $e$, where $\tlc{\bad}=\bad$.
+
+One relation between semantics and syntax that TLC is supposed to
+satisfy is the following soundness property:
+\begin{display}
+For any expressions $e_{1}$ and $e_{2}$ with no free identifiers other
+than model values, if $e_{1}=e_{2}$, then either
+$\tlc{e_{1}}=\tlc{e_{2}}$ or at least one of them equals~\bad.
+\end{display}
+% The rule for model values is that, for any expression $e$ and
+% any model value~$m$:  
+%  \[ \tlc{m=e}\; = \; \begin{noj}
+%                 \textsc{if} \ \tlc{e}= m \\
+%                  \s{1}\begin{noj2}
+%                         \textsc{then} & \TRUE \\
+%                         \textsc{else} & 
+%   \begin{noj}
+%     \textsc{if} \ \mbox{$m$ is untyped } \\
+%       \s{1} \begin{noj2}
+%             \textsc{then} & \FALSE \\
+%             \textsc{else} & 
+%                 \begin{noj}
+%                 \textsc{if} \ 
+%                        \mbox{\tlc{e} a model value of same type as $m$}\\
+%                  \s{1}\begin{noj2}
+%                        \textsc{then} & \FALSE \\
+%                        \textsc{else}   & \bad 
+%                       \end{noj2}
+%                 \end{noj}
+%             \end{noj2}
+% 
+%   \end{noj}
+%                       \end{noj2}
+%                 \end{noj}
+%  \]
+%
+
+% 
+% Whether or not TLC can evaluate an expression $e$ can be a function of
+% the order in which TLC evaluates the subexpressions of $e$.  In most
+% cases, TLC evaluates subexpressions ``from left to right''.  For
+% example, if $m$ is a model value, then $\tlc{\FALSE \land m}$ equals
+% \FALSE\ while $\tlc{m\land\FALSE}$ equals \bad.
+
+
+
+
+\subsection{Symmetry}
+
+A model can introduce model values by declaring a constant to be a
+model value, substituting a set of model values for a constant, and by
+using the \textsf{Model Values} section of the \emph{Advanced Options}
+page of the model.  The set of model values substituted for a constant
+can be declared to be a \emph{symmetry set}.  These symmetry
+declarations define a set \sym\ of permutations\footnote{A permulation
+of a set is
+ a 1-1 function from the set onto itself.}
+of the model values in symmetry sets---the set consisting of all
+permutations $P$ of these model values such that $P(m)$ is in the same
+symmetry set as $m$, for each model value $m$ in a symmetry set.  The
+set $\sym$ is a
+  \hyperref{https://en.wikipedia.org/wiki/Group_(mathematics)}{}{}{group} 
+whose multiplication operation $\cdot$ is function composition---that
+is, $P\cdot Q$ is the permutation defined by $P\cdot Q(m) = P(Q(m))$.
+If the model declares no symmetry sets, then \sym\ consists only
+of the identity permutation.
+
+Let the \emph{expansion} of an expression be the expression obtained
+from it by recursively expanding all definitions.  The expansion of an
+expression can contain built-in \tlaplus\ operators and constructors,
+model values, declared variables, bound identifiers (if the expression
+is a subexpression of a larger expression), and definition parameters
+(if it is inside the right-hand side of a definition).  Since the
+model substitutes expressions for them, declared constants cannot
+appear in the expansion (though they can be instantiated by model
+values of the same name).  
+
+For any $P$ in $\sym$, we extend $P$ to arbitrary expressions by
+defining $P(e)$ to be the expression obtained from the expansion of
+$e$ by replacing each model value $m$ with $P(m)$.  For
+example, if $P\in\sym$ and the $m_{i}$ are model values, then:
+  \[ \begin{noj}
+     P(\{x \in \{m_{1}, m_{2}, m_{3}\} : x # m_{1}\}) \V{.3}
+     \s{1} \begin{noj2}
+           = & \{x \in P(\{m_{1}, m_{2}, m_{3}\}) : P(x # m_{1})\} \V{.3}
+           = & \{x \in \{P(m_{1}), P(m_{2}), P(m_{3})\} : x # P(m_{1})\} 
+           \end{noj2}
+     \end{noj}
+ \]
+Note that this defines $P$ to be a mapping from expressions to
+expressions.  We also define $P(\bad)$ to equals \bad.
+
+\begin{sloppypar}
+For $P$ to be a useful mapping, we would expect
+${e_{1}}={e_{2}}$ to imply ${P(e_{1})}={P(e_{2})}$.
+However, it doesn't.  For example, if there is a symmetry set with
+more than one element, then there exists $P\in\sym$ and two distinct
+model values $m_{1}$ and $m_{2}$ such that $P(m_{1}) = m_{2}$,
+$P(m_{2})=m_{1}$, and $m_{1}$ equals $\CHOOSE x \in \{m_{1}, m_{2}\}:\TRUE$.
+%
+% TLC computes \tlc{m} to equal $m$ for any model value $m$.  
+Then
+${P(m_{1})}$ equals $m_{2}$, but
+ ${P(\CHOOSE x \in \{m_{1}, m_{2}\} : \TRUE)}$
+equals ${\CHOOSE x \in \{P(m_{1}), P(m_{2})\}}$,
+which equals $m_{1}$ (because $S=T$ implies $(\CHOOSE x \in S : \TRUE) =
+\CHOOSE x \in T: \TRUE$).
+\end{sloppypar}
+
+This problem occurs only with \textsc{choose}
+expressions.  We define an expression to be {Model-Choice-Free} (MCF)
+iff its expansion has no \textsc{choose} expression containing a model
+value.  The semantics of \tlaplus\ imply:
+\begin{display}
+\textbf{Observation 1 } If $e_{1}$ and $e_{2}$ are MCF, then
+${e_{1}=e_{2}}$ implies ${P(e_{1})}={P(e_{2})}$.
+\end{display}
+TLC appears to implement evaluation so that the following is true:
+\begin{display}
+\textbf{Observation 2 } TLC can evaluats an MCF expression $e$ 
+iff it can evaluate $P(e)$.
+\end{display}
+A defined operator is said to be MCF iff the expansion of its
+definition has no \textsc{choose} expression containing a model value
+or a definition parameter.  
+
+All the \tlaplus\ constructs can be viewed as syntactic sugar
+for built-in operators.  For example, we can view
+ $ [a |-> x, b |-> y+1]$
+as an ``abbreviation'' for $P_{a,b}(x, y+1)$, where $P_{a,b}$ is
+a built-in operator.  Constructs with bound variables are abbreviations
+for higher-order built-in operators.  For example,
+ $\{x \in S : e\}$
+is an abbreviation for
+ \mbox{$ SubsetOf(S, \textsc{lambda} \, x : e)
+ $}
+for a built-in operator $SubsetOf$.
+
+An ordinary operator is one that takes only expressions (and not
+operators) as arguments.  A higher-order operator is one that has at
+least one operator argument.  For any ordinary defined operator $Op$
+and $P$ in \sym, if $Op$ is defined by
+ \[ Op(a_{1},\ldots, a_{n}) == e
+ \]
+then we define the operator $P(Op)$ by
+  \[ P(Op)(a_{1},\ldots, a_{n}) == P(e)
+  \]
+An operator $Op$ is said to be \emph{symmetric} iff
+ $\tlc{P(Op(e_{1},\ldots, e_{n}))}$ equals 
+\linebreak
+ $\tlc{Op(P(e_{1}),\ldots, P(e_{n}))}$ 
+for any $P\in\sym$ and MCF expressions or operators $e_{i}$.  Since an
+expression is an operator with no arguments, this means that an
+expression $e$ is symmetric iff $P(e)=e$.
+
+All the built-in \tlaplus\ operators and constructs are symmetric
+except for \textsc{choose}.  For example, the set constructor
+operator $SubsetOf$
+is symmetric
+because, for any MCF expression $S$, MCF operator $Q$
+and $P$ in \sym:
+ \[ \begin{noj}
+    P(SubsetOf(S, Q)) %\V{.3}
+     \s{.4}
+     \begin{noj2}
+      = & P(\{x \in S : Q(x)\}) \V{.3}
+       = & \{x \in P(S) : P(Q(x))\} \V{.3}
+       = & \{x \in P(S) : P(Q)(x)\} 
+        \s{1}\NOTLA\mbox{by definition of $P(Q)$, since $P(x)=x$\s{-10}}\V{.3}
+%       = & \{x \in P(S) : (\textsc{lambda}\; x : P(Q))(x)\} \V{.3}
+        = & SubsetOf(P(S), P(Q))
+     \end{noj2}
+    \end{noj}
+ \]
+% (Check this for a symmetry set $\{m_{1}, m_{2}, m_{3}\}$ with
+% $S \deq \{m_{1}, m_{2}\}$, $Q(x) \deq x # m_{2}$, and $P$
+% the permutation $m_{1}->m_{2}->m_{3}->m_{1}$.)
+%
+To see that \textsc{choose} is not
+symmetric, let $M$ be a symmetry set of model values containing at
+least two elements and let $P$ be a permutation of $M$ such that 
+$P(m)#m$ for all $m$ in $M$.  We then have:
+\begin{widedisplay}
+\begin{tabbing}
+$\CHOOSE m \in P(M) : P(\TRUE)$\V{.4}
+\s{1}\= $=$\s{.5}\= $\CHOOSE m \in M : \TRUE$ \s{2}
+            \= Since $P(M)=M$ and $P(\TRUE)=\TRUE$.\V{.4}
+\> $#$ \> $P(\CHOOSE m \in M : \TRUE)$ \> Since $P(m)#m$ for all $m\in M$.
+\end{tabbing}
+\end{widedisplay}
+Model values can appear in operators defined in the specification only
+through instantiation of constants.  If all declared constants are
+instantiated by symmetric expressions, then any operator defined in
+the specification in terms of MCF expressions and MCF operators is
+symmetric. 
+
+
+\subsection{Checking a Specification}
+
+\subsubsection{The Properties TLC Checks}
+
+The model declares a specification $Spec$, which
+is a temporal formula that must be equivalent to
+  \[ Init \; /\ \; [][Next]_{vars} \; /\ \; Fair \]
+where $Init$ is a state predicate, $Next$ is an action, $vars$ is a
+tuple of all declared \textsc{variables}, and $Fair$ is usually a fairness
+property.
+%\footnote{ 
+(Formula $Fair$ can be any formula not containing a conjunct that is a
+state predicate or a formula of the form $\Box[A]_{v}$.  If it's not a
+fairness property, then TLC may not do what you expect it to.)
+% } 
+
+The model declares certain properties that are to be checked.  We
+expect checking a property $Prop$ to check the truth of the formula
+$Spec=>Prop$.  Here's what it actually does.  Let the \emph{safety
+specification} $SSpec$ equal
+ $Init /\ [][Next]_{vars}$.
+TLC splits each property to be checked into the conjunction of basic
+properties, which it checks separately.  There are four kinds of basic
+properties that TLC can check:
+\begin{description}
+\item[initial predicate] A state predicate.
+
+\item[invariance] A formula $[]I$ for a state predicate $I$. 
+   
+\item[step simulation] A formula $[][A]_{v}$ for an action $A$ and a
+state expression $v$.
+
+\item[liveness] A temporal formula described below that is not one
+of the previous three.
+\end{description}
+An invariant can be specified either in the \textsf{Invariants}
+section or the \textsf{Properties} part of the \textsf{What to check?}
+section of the model's \emph{Model Overview} page.  The others are
+specified in the \textsf{Properties} part.
+
+The first three kinds of basic properties are safety properties.  TLC
+checks such a property $Proop$ by looking for a counterexample to
+$SSpec=>Prop$, which is a finite (prefix of a) behavior that satisfies
+$SSpec /\ ~Prop$.  If $Fair$ is not a fairness property, then there
+may be a such a counterexample even if $Spec=>Prop$ is true.
+
+TLC checks a basic liveness property $Prop$ by looking for a
+counterexample to $SSpec=>(Fair => Prop)$.  It can do this iff the
+formula $Fair=>Prop$, which is equivalent to
+ $Fair /\ ~Prop$,
+can be written as the conjunction of formulas, each of which is either
+one of the first three kinds of basic properties listed above, or else
+is the disjunction of conjunctions of the following kinds of formulas:
+\begin{itemize}
+\item A temporal formula containing no actions.
+
+\item A formula of the form $<>[][A]_{v}$ or $[]<>[A]_{v}$ for an
+action $A$ and a state expression $v$.
+\end{itemize}
+For example, if $Fair$ equals $\WF_{vars}(A)$ and
+$Prop$ equals $\WF_{v}(B)$ for actions $A$ and $B$ and a state
+expression $v$, then 
+ $Fair /\ ~Prop$
+equals
+ \[ ([]<>(~EA) \/ []<><<A>>_{vars}) /\ ~([]<>(~EB) \/ []<><<B>>_{v})
+ \]
+where $EA$ and $EB$ are the state predicates $\ENABLED <<A>>_{vars}$
+and $\ENABLED <<B>>_{v}$, respectively.  The tautologies $~[]<>F
+\equiv <>[]~F$ and
+ $~<<B>>_{v}\equiv[~B]_{v}$, together with propositional logic, imply that
+this formula equals
+  \[ \begin{disj}
+      []<>(~EA) /\ <>[]EB /\ <>[][~B]_{v} \V{.3}
+      []<><<A>>_{vars} /\ <>[]EB /\ <>[][~B]_{v}
+     \end{disj}
+ \]
+A counterexample to a property of class \emph{liveness} is an infinite
+behavior.
+
+The maximal state predicates and actions in a property are called its
+\emph{atoms}.  For example, $~EA$, $EB$, $<<A>>_{vars}$, and $[~B]_{v}$
+are the atoms of the property above.
+
+
+\subsubsection{The State Graph}
+
+A \emph{TLC state} is an assignment of a TLC value to each declared
+variable.  (Recall that a TLC value is one that can be expressed as an
+elementary TLC expression.)  Let \states\ be the set of all TLC states
+(for this model).  (This is a countable set.)  An \emph{initial} state
+is an element of \states\ that satisfies $Init$.
+
+
+Let $StConst$ and $ActConst$ be the model's
+state and action constraints---specified by the \textsf{State
+Constraint} and \textsf{Action Constraint} sections of the models
+\emph{Advanced Options} page, with default values $\TRUE$.  
+
+% A state is called \emph{constrained} iff it does not satisfy
+% $StConst$; and a pair $<<s, t>>$ of states is called
+% \emph{constrained} iff $<<s, t>>$ does not satisfy $ActConst$.
+
+A graph whose nodes are states in \states\ is called a \emph{state
+graph} for the model if it satisfies the following conditions:
+\begin{enumerate}
+\item A state $s$ is in the graph only if $s$ satisfies $StConst$.
+
+\item An edge $<<s, t>>$ is in the graph only if $<<s, t>>$ satisfies
+$Next /\ ActConst$ or $s=t$.\footnote{Note: TLC seems to add self-loops
+even if $ActConst$ implies $var'\neq var$.}
+
+\item Each state in the graph is reachable from an initial state.
+
+% \item For each non-constrained state $s$ in the graph, either
+% $$ has no outgoing edges or else the graph contains every outgoing edge
+% $<<s, t>>$ that satisfies $[Next]_{vars}$.
+\end{enumerate}
+The \emph{complete} state graph is the maximal state graph, which may
+be finite or infinite.  The nodes in the complete state graph are the
+\emph{reachable} states of the model.  (Because of the state and
+action constraints, there can be reachable states of $SSpec$ that are
+not reachable states of the model.)  A state graph is any subgraph of
+the complete state graph that satisfies condition 3.  A behavior of
+the model is an infinite path in the complete state graph.
+
+A \emph{state tree} is a state graph that is a tree whose root is an
+initial state.  A \emph{state forest} is a union of disjoint (no nodes
+in common) trees.
+
+Assume that each node in the complete state graph has only a finite
+number of outgoing edges.  There are then obvious algorithms for
+computing the complete state graph that eventually find every
+reachable node and every edge joining reachable nodes.  (Of course,
+the algorithms won't terminate if the complete state graph is
+infinite.)  In the absence of symmetry, TLC essentially uses such an
+algorithm to compute approximations to the complete state graph---it
+uses multiple threads in an almost breadth-first search for reachable
+states.
+
+\subsubsection{Labels and Behaviors}
+
+Let a \emph{state label} be an assignment of truth values to all the
+state-predicate atoms of the properties that TLC is checking; and let
+an \emph{action label} be an assignment of truth values to all the
+action atoms of the properties that TLC is checking.  For any state
+$s$, let $\lambda_{S}(s)$ be the state label that assigns to each
+state-predicate atom $I$ the (truth) value of $I$ on state $s$.
+Similarly, let $\lambda_{A}(s,t)$ be the action label that assigns to
+each action atom its value on $<<s, t>>$.
+
+TLC can tell if a property is violated on a model behavior just
+knowing the labels of the behavior's nodes and edges---without knowing
+the actual states.  TLC needs to know the states that the nodes
+represent only to report an error trace to the user.
+
+The first three kinds of properties can easily be checked as the state
+graph is being constructed.  A counterexample to a property of the
+fourth class is an infinite behavior.  For a finite state graph, this
+means that it is a ``lasso'': a path in the state graph starting at an
+intial state and ending in a cycle.
+\begin{question}
+I believe TLC does not use constrained edges or nodes to construct
+a counterexample to properties of class \emph{liveness}.  Is this
+true?
+\end{question}
+
+
+\subsubsection{Symmetry-State Graphs}
+
+For any model state $s$ and specification variable $v$, let $s.v$ be
+the value that $s$ assigns to $v$.  For any $P\in\sym$, let $P(s)$ be
+the state that assigns $P(s.v)$ to every variable $v$.  For any state
+$s$, let \ec{s} be the set $\{P(s):P\in\sym\}$.  Thus, \ec{s} is the
+equivalence class of $s$ in \states\ under the equivalence relation
+$\cng$ defined by
+  \[ s \cng t == \E P \in \sym : P(s)= t\]
+(This is an equivalence relation because \sym\ is a group.)  The set
+of all such equivalence classes is written \smod.
+
+For any $e$ in \smod, let \rep{e} to be some state in $e$.  That is,
+we assume:
+  \[ \A e \in \smod : e = \ec{\rep{e}}
+  \]
+This implies that, for any $s$ and $t$ in \states:
+  \[ (s\cng t) \ \equiv\ (\rep{\ec{s}} = \rep{\ec{t}})
+  \]
+For a state $s$, I will write \rep{s} as an abbreviation for
+\rep{\ec{s}}.  For any state $s$, let $\pi_{s}$ be an element
+of \sym\ such that $\pi_{s}(\rho(s))$
+mapping from \states\ to \sym\ having
+the following property:
+  \[ \A s \in \states : s = \pi(\rho(s))
+  \]
+(The existence of $\pi(t)$ for all states $t$ follows from the
+definition of $\rho$ and the fact that \sym\ is a group
+
+A \emph{labeled symmetry graph} is a graph with
+\begin{itemize}
+\item Each node $n$ is a record with the following components,
+for some state $s$ in \states.
+\begin{description}
+\item[$class$] Equals \ec{s}
+
+\item [$\Lambda$] Equals $\lambda(s)$.
+\end{description}
+The node $n$ is initial iff $s$ is initial, and it is constrained iff
+$s$ is constrained.
+
+\item Each edge $e$ is a record with the following components, 
+for some pair $<<s, t>>$ of 
+\begin{description}
+\item[$from$] An element of \smod.
+
+\item[$to$] An element of \smod.
+
+\item [$\Lambda$] A label
+
+\item[$\Pi$] An element of \sym.
+\end{description}
+
+
+
+are 4-tuples $<<e, f, \Lambda, \Pi$
+labeled by a labeling function $\Lambda$.
+\end{itemize}
+whose nodes 
+whose edges are pairs of elements in \smod\ labeled by
+a labeling function also called $\Lambda$ and a \emph{identifier}
+function $\Pi$ such that, with a subset of initial nodes
+and constrained nodes and edges
+\begin{itemize}
+\item[] xx
+\end{itemize}
+
+
+
+
+XXXXXXXXXXXXXX
+
+
+
+We now assume that $Init$, $[Next]_{vars}$, and all atoms of the
+properties being checked are symmetric.
+
+
+
+If $Init$ is
+symmetric, then $s$ is an initial state iff $P(s)$ is.  If $Next$ is
+symmetric, then a pair $<<s, t>>$ of states satisfies $Next$ iff
+$<<P(s), P(t)>>$ does.
+
+
+XXXXXXXXXXXXXXXX
+
+
+
+For any $e$ in \smod, we 
+define \rep{e} to be an arbitrarily chosen state in $e$:
+  \[ \rep{e} == \CHOOSE s \in \states : e = \ec{s}
+  \]
+Thus, for any $s$ and $t$ in \states, we have
+  \[ (s\cng t) \ \equiv\ (\rep{\ec{s}} = \rep{\ec{t}})
+  \]
+For a state $s$, I will write \rep{s} as an abbreviation for
+\rep{\ec{s}}.
+
+
+XXXXXXXXXXXXX
+
+   4. Any TLA temporal formula that is the conjunction of disjunctions
+      of the following kinds of formulas:
+     - One containing only temporal operators and state predicates.  
+      (Those predicates can be of the form ENABLED A for an arbitrary 
+      action A.)
+     - A formula of the form $[]<><<A>>_{v}$  or $<>[][A]_{vars}$ for some 
+       action $A$ and state expression $v$.
+
+XXXXXXXXXXXXXXXXXXXXXXX
+
+A \emph{behavior} of the safety spec is a sequence $s_{1}, s_{2},
+\ldots$ such that
+ \marginpar{$\Mmap{\ldots}$ is explained
+ in \rref{math}{temporallogic}{the section on temporal logic}}%
+$\Mmap{Init}(s_{1})$ and $\Mmap{[Next]_{vars}}(s_{i}, s_{i+1})$ are
+true for each $i$.  Here, we consider finite behaviors as well as
+infinite ones.  The states contained in the behaviors of the safety
+spec are called the \emph{reachable} states.
+
+
+XXXXXXXXXXXXXXXXX
+
+We also extend $P$ to a permutation on the set of all states by
+defining $P(s)$ to be the state assigning to each variable $x$ the
+value $P(\Mmap{s}(x))$, where $\Mmap{s}(x)$ is the value that state $s$
+assigns to $x$.  
+
+
+
+
+
+\end{document}
+
+
+A TLC model can introduce 
+  \hyperref{http://tla.msr-inria.inria.fr/tlatoolbox/doc/model/model-values.html}{}{}{model values},
+extending the class of values.  
+
+The rule for determining comparability
+is extended to handle model values by the following rules.
+\begin{itemize}
+\item An untyped model value is comparable with every value.  (It equals
+only itself.)
+
+\item A typed model value is comparable only to model values of the same
+type.
+\end{itemize}

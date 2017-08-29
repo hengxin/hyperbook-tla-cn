@@ -1,0 +1,4037 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+%%% Hack for showing index elements.  Suppresses writing
+%% of the idx file.
+%%
+%\let\mmath=\ensuremath
+%\def\icmd#1{\csname#1\endcsname}
+%\renewcommand{\tindex}[2]{\marginpar{\red #2 (#1)}}
+%\renewcommand{\ctindex}[3]{\marginpar{\red #2 (#1)}}
+
+
+\pdftitle{Math}
+\file{math}
+\makeindex
+%\usepackage{showidx}
+
+\setcounter{section}{\mathtrack}
+\begin{document}
+
+\renewcommand{\contentsname}{Math\protect\target{top}}
+\addtocounter{section}{-1}
+
+\showversions
+\tableofcontents
+\hideversions
+\vfill 
+\newpage
+\btarget{mathlogic}
+\section{Arithmetic and Logic} \xlabel{math:arithmetic}
+
+% \noindent {\Large\bf \tlatrack\ \ Logic\target{top}}
+
+% \vspace{-5em}
+
+\subsection[Arithmetic]{Arithmetic\tindex{1}{arithmetic}}
+\xlabel{math:arithmetic}
+
+Ordinary 
+  \tindex{1}{number}%
+numbers (such as 3421) and 
+  \tindex{1}{decimal fraction}%
+decimal fractions (such as 3.14) are
+built-in primitive \tlaplus\ symbols.  The standard arithmetic
+operations on integers are defined in the standard 
+  \ctindex{2}{Integers module@\mmath{Integers} module}{integers-module}%
+$Integers$ module:
+\begin{display}
+\begin{tabbing}
+$-$\s{1}\=\kill
+  \ctindex{1}{+2u@\mmath{+} (plus)}{+2u}%
+$+$ \> Addition. \V{.3}
+%
+   \ctindex{1}{+2p@\mmath{-} (minus)}{+2p}%
+$-$ \> Subtraction and unary minus. \V{.3}
+%
+  \ctindex{1}{+3k@\mmath{*} (multiplication)}{+3k}%
+$*$ \>
+  \tindex{1}{multiplication}%
+Multiplication. \V{.3}
+\verb|^| \>
+  \tindex{1}{exponentiation}%
+Exponentiation, where \,$a^{b}$\, is typed 
+  \ctindex{1}{+2b@\icmd{verb}/^/ (exponentiation)}{+2b}%
+\,\verb|a^b|\,.
+
+\end{tabbing}
+\end{display}
+The 
+module defines the usual inequality relations: 
+\begin{display}
+\begin{tabular}{@{}l@{\hspace{2em}}l}
+  \ctindex{1}{+4c@\mmath{<} (less than)}{+4c}%
+  $<$ \ (typed \,\verb|<|\,) &
+%
+  \ctindex{1}{+4g@\mmath{\icmd{leq}} (less than or equal)}{+4g}%
+$\leq$ \ (typed \,\verb|\leq|\, or \,\verb|=<|\,) \V{.4}
+%
+  \ctindex{1}{+5c@\mmath{>} (greater than)}{+5c}%
+$>$  \ (typed \,\verb|>|\,) &
+  \ctindex{1}{+5e@\mmath{\icmd{geq}} (greater than or equal)}{+5e}%
+$\geq$ \ (typed
+\,\verb|\geq|\, or \,\verb|>=|\,)
+\end{tabular}
+\end{display}
+The $Integers$ module also defines 
+\begin{display}
+\begin{tabbing}
+$Nat$\s{1}\= \kill
+\ctindex{2}{Int@\mmath{Int}}{Int}%
+$Int$ \> The set of all
+integers.\V{.3}
+%
+  \ctindex{2}{Nat@\mmath{Nat}}{Nat}%
+$Nat$ \> The set of all natural numbers (non-negative integers). \V{.3}
+%
+  \ctindex{2}{+3i@\mmath{\icmd{dd}} (integer interval)}{+3i}%
+$\dd$ \> $m\dd n$ is the set of integers from $m$ through $n$.  
+   More precisely:\\
+\> \s{2}$m\dd n == \{i \in Int : (m \leq i) /\ (i \leq n)\}$
+\end{tabbing}
+\end{display}
+The ordinary division operation 
+  \ctindex{1}{+2m@\mmath{/} (division)}{+2m}%
+\,$/$\, is not defined in the $Integers$
+module, since \,$a/b$\, need not be an integer.  Instead, the module
+defines the operators 
+\begin{display}
+\begin{tabbing}
+$\,\%\,$\s{1}\= \kill
+  \ctindex{1}{+2t@\mmath{\icmd{div}} (integer division)}{+2t}%
+$\div$ \> Integer division, where
+\,$n\div d$\, is
+the integer part of \,$n/d$\,.
+ \V{.3}
+  \ctindex{2}{+5w@\mmath{\%} (modulus)}{+5w}%
+  \tindex{2}{modulus operator}%
+$\,\%\,$ \>
+\target{math:modulus}%
+Modulus, where $n\,\%\,d$\, is the remainder when $n$ is
+divided by $d$\,. 
+\end{tabbing}
+\end{display}
+More precisely, these two operators are defined so that the following
+two conditions hold for any integer $n$ and positive integer $d$:
+  \[ n \,\%\, d \in 0\dd (d-1) \s{3} n = d * (n \div d) + (n \,\%\,d)
+  \]
+All these operators except for \,$\div$\,, \,$\,\%\,$\,, and \,$\dd$\, are
+defined so they have their usual meaning on real
+numbers---for example so that \,$.81^{.5}*2+.14$\, equals $1.94$.  The
+    \ctindex{1}{Reals module@\mmath{Reals} module}{reals-module}%
+$Reals$ module extends the $Integers$ module and also defines \,$/$\,
+(real division) and the set $Real$ of all real numbers.  However, TLC
+can handle neither $/$ nor numbers that are not integers.
+There is also a 
+    \ctindex{1}{Naturals module@\mmath{Naturals} module}{naturals-module}%
+$Naturals$ module that is the same as
+the $Integers$ module except it does not define unary minus.
+
+Mathematically sophisticated readers who are curious about how the
+operators of arithmetic are defined in \tlaplus\ can find out
+in Section~18.4 (page 344) of
+   \hyperref{http://research.microsoft.com/en-us/um/people/lamport/tla/book.html}{}{}{\emph{Specifying Systems}}.  (See the 
+  \hyperref{http://research.microsoft.com/en-us/um/people/lamport/tla/errata.pdf}{}{}{errata} for a correction to the definitions.)
+
+
+
+\subsection[Mathematical Logic]{Mathematical Logic%
+         \ctindex{1}{logic!mathematical}{logic-mathematical}}
+
+%\sref{main}{gabc}{This is an sref test.}
+% \pdfthread width 10pt height 15pt attr {Is this the text?} num 42
+In the beginning, numbers were modifiers.  People talked about two
+goats or three pigs.  Mathematics was born when numbers like
+\emph{two} and \emph{three} became nouns.
+%
+Operations like addition combine nouns to form a noun---for example:
+ \[
+\begin{array}{c}
+ \fbox{
+$
+\begin{array}{c}
+ \fbox{1}  \\ \mbox{\footnotesize noun}
+ \end{array} 
+\begin{array}{c}
++ \\ \mbox{\footnotesize\strut}
+\end{array}
+ \begin{array}{c}
+ \fbox{1} \\ \mbox{\footnotesize noun}
+ \end{array}
+$}
+\\
+\mbox{\footnotesize noun}
+\end{array}
+ \] 
+In the beginning, equations were sentences and \emph{equals} was a
+verb:
+ \[ \begin{array}{c}
+   \fbox{1+1} \\ \mbox{\footnotesize subject}
+   \end{array}
+   \begin{array}{c}
+   = \\ \mbox{\footnotesize \strut verb}
+   \end{array}
+   \begin{array}{c}
+   \fbox{2} \\ \mbox{\footnotesize object}
+   \end{array}
+ \] 
+In mathematical logic, equations are nouns and \emph{equals}
+is an operation, just like addition:
+ \[
+\begin{array}{c}
+ \fbox{
+$
+\begin{array}{c}
+ \fbox{1+1}  \\ \mbox{\footnotesize noun}
+ \end{array} 
+\begin{array}{c}
+= \\ \mbox{\footnotesize\strut}
+\end{array}
+ \begin{array}{c}
+ \fbox{2} \\ \mbox{\footnotesize noun}
+ \end{array}
+$}
+\\
+\mbox{\footnotesize noun}
+\end{array}
+ \] 
+Just as the noun \,$1+1$\, names the number 2, the noun \,$1+1=2$\, names the
+value 
+  \ctindex{1}{TRUE@\icmd{TRUE}}{TRUE}%
+$\TRUE$.  The noun \,$1+1=3$\, names the value 
+    \ctindex{1}{FALSE@\icmd{FALSE}}{FALSE}%
+$\FALSE$.
+
+The values $\TRUE$ and $\FALSE$ are called 
+  \tindex{1}{truth value}%
+  \ctindex{1}{value!truth}{value-truth}%
+\emph{truth values} or
+  \tindex{1}{Boolean}%
+\emph{Booleans}.  Truth values are to mathematical logic what numbers
+are to arithmetic.  Mathematical logic is simpler than arithmetic
+because there are just two truth values, while there are infinitely
+many numbers.
+
+\medskip
+
+The sentence \,1+1 \emph{equals} 2\, asserts the fact that the formula
+(noun) $\,1+1=2\,$ is equal to $\TRUE$.  Sometimes mathematicians
+assert this fact by writing 
+ \[|-\,1+1=2\, \]
+However, few mathematicians bother doing this; instead they write both
+the formula and the fact as $\,1+1=2\,$.  You have to figure out by
+context which they mean.
+
+Many people think of all mathematical expressions as sentences, reading
+$1+1$ as \emph{Add} 1 \emph{and} 1.  They think of $\,1+1=2\,$ as asserting
+\begin{quote}
+Adding 1 and 1 produces 2.
+\end{quote}
+This kind of operational thinking is a mental straight jacket that
+limits your ability to use mathematics.  It doesn't allow you to make
+proper sense of formulas like
+\begin{display}
+ $ 1 + 1/2 + 1/4 + 1/8 + \cdots \;=\; 2$%
+    \marginpop{logic-1}{Is this really a formula?}
+\end{display}
+Viewed operationally, this formula is an assertion about the result of
+performing infinitely many operations.  Trying to reason about what
+happens when you perform an infinite number of operations can get you
+in trouble.  
+
+
+
+\subsection[Propositional Logic]{Propositional Logic%
+  \ctindex{1}{logic!propositional}{logic-prop}%
+  \tindex{1}{propositional logic}%
+  \btarget{propositional}} 
+
+
+Propositional logic is the study of simple operations on Booleans
+(truth values), which are analogous to operations like addition and
+subtraction on numbers.  Because there are only two Booleans, \TRUE\
+and \FALSE, the operators of propositional logic are much simpler than
+their arithmetic cousins.  We will use five of them.
+
+\subsubsection{\protect\ensuremath{\land} and \protect\ensuremath{\lor}}%
+\label{sec:andor}
+
+The first two propositional logic operators we need are 
+  \ctindex{1}{+5j@\mmath{\icmd{land}} (conjunction)}{+5j}%
+\,$/\ $\, (typed
+\texttt{\s{.1}/\bs}\,), called 
+  \tindex{1}{conjunction}%
+\emph{conjunction} or 
+  \ctindex{1}{and (conjunction)}{and-conj}%
+\emph{and}, and
+  \ctindex{1}{+5m@\mmath{\icmd{lor}} (disjunction)}{+5m}%
+\,$\/ $\, (typed \texttt{\bs\s{.1}/}\,), called 
+  \tindex{1}{disjunction}%
+\emph{disjunction} or
+  \ctindex{1}{or (disjunction)}{or-disj}%
+\emph{or}.  The names \emph{and} and \emph{or} describe these
+operators fairly well.  For example, $F /\ G$ equals $\TRUE$
+\popref{iff}{iff} both $F$ and $G$ are true.  Thus, $\TRUE /\ \FALSE$
+equals $\FALSE$.  You can use TLC to check this.  
+\popref{open-new-spec}{Open a brand new
+spec} 
+in the
+  \hyperref{http://research.microsoft.com/en-us/um/people/lamport/tla/toolbox.html}{}{}{Toolbox}
+with a new module named $Calculate$, using the default spec name
+$Calculate$.  \popref{create-new-model}{Create a new model}, giving it
+any name.  The Toolbox will show the model's \textsf{Model Checking
+Results} page.  You can then type an expression for TLC to evaluate in
+the \textsf{Evaluate Constant Expression} section and
+\popref{run-tlc}{run TLC} to evaluate it.  Start by entering
+\begin{asciieqn}{logic-ascii-1}
+\TRUE \, /\ \, \FALSE
+\end{asciieqn}
+(Remember that you can click on the link in the right-hand margin to
+get a popup from which you can copy this expression.)  Running TLC
+shows that this expression's value is, indeed, $\FALSE$.  In this way,
+we could check---one at a time---the values of $F /\ G$ for all four
+choices of the Boolean values $F$ and $G$.  But let's do them all at
+once by entering the following expression.
+\begin{quote}
+\begin{notla}
+<< TRUE /\ TRUE, TRUE /\ FALSE, FALSE /\ TRUE, FALSE /\ FALSE >>
+\end{notla}
+\begin{tlatex}
+ \@x{ {\langle} {\TRUE} \.{\land} {\TRUE} ,\, {\TRUE} \.{\land} {\FALSE} ,\,
+ {\FALSE} \.{\land} {\TRUE} ,\, {\FALSE} \.{\land} {\FALSE} {\rangle}}%
+\ascii{logic-ascii-2}
+\end{tlatex}
+\end{quote}
+Angle 
+    \ctindex{2}{+4o@\mmath{\icmd{langle}e_{1}, \ldots , e_{n}\icmd{rangle}} (tuple)}{+4o}%
+  \tindex{2}{tuple}%
+brackets \,$<<$\, and \,$>>$\, enclose a tuple.  This expression is a
+4-tuple whose components are the four possible expressions of the
+form \,$F /\ G$\, when $F$ and $G$ are Booleans.
+
+Next, change the four instances of \,$/\ $\, in this expression to 
+ \,$\/ $\,.
+Observe that \,$\TRUE \,\/\, \TRUE$\, equals $\TRUE$.  A better English
+name for \,$\/ $\, would be \emph{and/or}, since in ordinary speech we
+generally take ``{A or B will happen}'' to exclude the possibility
+that both A and B occur.  However, we usually read \,$\/ $\, as \emph{or}
+because that's easier to say than \emph{and/or}.
+
+\medskip
+
+\noindent
+\textsf{\sref{main}{andor}{If this has been a detour, you may now want to 
+return to Section~\xref{main:one-bit:describing} of the Starting Track}.}
+
+\btarget{otherops}%
+\subsubsection{Other Propositional Operators}
+
+In addition to \,$/\ $\, and \,$\/ $\,, we use these three Boolean operators:
+% \begin{describe}{$\Rightarrow$}
+% \item[$\Rightarrow$] (typed \verb|=>|) implication, read as \emph{implies} 
+% \item[$\equiv$] (typed \verb|<=>| or \verb|\equiv|) equivalence, read as 
+% \emph{is equivalent to} .
+% \item[$\lnot$] (type \verb|~| [tilde]) negation, read as \emph{not}.
+% \end{describe}
+\begin{describe}{$\Rightarrow$}
+\item[$\Rightarrow$] Implication. 
+   \tindex{1}{implication}%
+   \ctindex{1}{+3ah@\mmath{\icmd{Rightarrow}} (implies)}{+3ah}%
+Typed \,\verb|=>|\, and 
+read as 
+   \tindex{1}{implies}%
+\emph{implies} 
+
+\item[$\equiv$] Equivalence.  
+   \tindex{1}{equivalence}%
+   \ctindex{1}{+3bj@\mmath{\icmd{equiv}} (equivalence)}{+3bj}%
+    \ctindex{1}{+3ai@\mmath{\icmd{Leftrightarrow}} (equivalence)}{+3ai}%
+Also written \,$\Leftrightarrow$\,. 
+Typed as \,\verb|\equiv|\, or \,\verb|<=>|\,
+and read as \emph{is equivalent to}.
+
+\item[$\lnot$] Negation. 
+   \tindex{1}{negation}%
+   \tindex{1}{not (negation)}%
+   \ctindex{1}{+2qj@\mmath{\icmd{lnot}} (negation)}{+2qj}%
+Typed \,\verb|~|\, %(that's a tilde) \ 
+and read as \emph{not}.
+\end{describe}
+The first two are binary (infix) operators; negation is a unary (prefix)
+operator.
+
+You can use the Toolbox's \textsf{Evaluate Constant Expression}
+feature to let TLC tell you what the definitions of these operators
+are, just as you did for
+\lref{subsubsection.\getrefnumber{sec:andor}}{\,$\land$\, and \,$\lor$\,}.
+For negation, you will find that \,$~\TRUE$\, equals $\FALSE$ and
+\,$~\FALSE$\, equals $\TRUE$.  For equivalence, you will find that
+\,$F\equiv G$\, equals true iff $F$ equals $G$,%
+ \marginpop{whyequiv}{Why write \,$\equiv$\, instead of \,$=$\,?}
+for any Boolean values $F$ and $G$.
+
+You may be surprised by the definition of \,$=>$\, (implies).  TLC reveals
+that \,$\FALSE => G$\, equals $\TRUE$ for both Boolean values of $G$.  Of
+the four possibilities, only \,$\TRUE=>\FALSE$\, equals $\FALSE$.  To
+understand why $=>$ means implication, consider the
+statement:
+\begin{quote}
+$n>5$ implies $n>3$
+\end{quote}
+This statement is true for all integers~$n$, so the formula
+\,$(n>5)=>(n>3)$\, should equal $\TRUE$ for all integers~$n$.
+Substituting 1 for $n$, the formula becomes \,$(1>5)=>(1>3)$\,.  Since
+\,$(1>5)$\, and \,$(1>3)$\, both equal $\FALSE$, this latter formula equals
+\,$\FALSE=>\FALSE$\,.  Hence, \,$\FALSE=>\FALSE$\, should equal $\TRUE$.
+Substituting other values for $n$ will convince you that the definition
+of \,$=>$\, is the right one.
+
+
+\medskip
+
+\noindent\sref{main}{otherops}{\textsf{If this has been a detour, you
+may now want to return to 
+Section~\xref{main:one-bit:other-ways} of the Starting Track.}}
+
+
+
+\btarget{predicate-logic}%
+\subsection[Predicate Logic]{Predicate Logic%
+    \tindex{1}{predicate logic}%
+  \ctindex{1}{logic!predicate}{logic-pred}%
+}
+
+Predicate logic extends propositional logic with two 
+operators called
+ \tindex{1}{quantifier}%
+\emph{quantifiers}.  The first is the \emph{universal} quantifier
+  \ctindex{1}{+7b@\mmath{\icmd{A}}}{+7b}%
+\,$\A$\,, typed \verb|\A| and read \emph{for all}.  The formula
+  \tlabox{\A\, x \in S : P(x)}
+is essentially the conjunction 
+  (\,$/\ $\,)
+of the formulas \,$P(x)$\, for all $x$ in $S$.  For example, the formula
+ \tlabox{\A \, i \in \{1,2,3\} : i^{2}>i}
+equals the formula
+ \[ (1^{2} > 1) \,/\ \, (2^{2} > 2) \,/\ \, (3^{2} > 3) 
+ \]
+which equals \FALSE. In general, 
+ \tlabox{\A\, x \in S : P(x)} is true iff
+\,$P(x)$\, is true for all elements $x$ in $S$.  For example, 
+ \tlabox{\A\, num \in Nat : num+1>num}
+is the (true) formula which asserts that \,$i+1>i$\, is true
+for all natural numbers $i$.
+
+The second quantifier of predicate logic is the \emph{existential}
+quantifier 
+  \ctindex{1}{+7d@\mmath{\icmd{E}}}{+7d}%
+\,$\E$\,, typed \verb|\E| and read \emph{there exists}.  It is the
+analog of \,$\A$\, for disjunction (\,$\/ $\,).  Thus,
+ \tlabox{\E\, i \in \{1,2,3\} : i^{2}>i}
+equals the formula
+ \[ (1^{2} > 1) \,\/ \, (2^{2} > 2) \,\/ \, (3^{2} > 3) 
+ \]
+which equals \TRUE. In general, 
+  \tlabox{\E\, x \in S : P(x)}
+is true iff \,$P(x)$\,
+is true for at least one element $x$ in $S$.  For example, 
+  \tlabox{\E\, id \in Int : id^{2}=9} 
+is the (true) formula which asserts that 
+there is some integer $n$ such that \,$n^{2}$\, equals~9.
+
+These two quantifiers are related by the following two 
+  \popref{tautology}{tautologies}.
+You should make sure that you understand why they are true.
+ \[ \begin{noj3}
+    ~ (\A\,x \in S : P(x)) & \;\equiv\; & \E\, x \in S : ~P(x)\V{.3}
+    ~ (\E\,x \in S : P(x)) & \;\equiv\; & \A\, x \in S : ~P(x)
+    \end{noj3}
+ \]
+These two quantifiers \,$\A$\, and \,$\E$\, are said to be
+  \tindex{1}{bounded quantification}%
+  \ctindex{1}{quantification!bounded}{quant-bounded}%
+\emph{bounded} because they are essentially conjunction and disjunction
+over formulas in some set~$S$.  Mathematicians also use 
+  \tindex{1}{unbounded quantification}%
+  \ctindex{1}{quantification!unbounded}{quant-unbounded}%
+unbounded versions of these operators, writing
+\tlabox{\A\,x : P(x)} and \tlabox{\E\,x : P(x)}.  These formulas assert that
+\,$P(x)$\, is true for all (\,$\A$\,) or for some (\,$\E$\,) values $x$.
+Make sure that you understand why bounded and unbounded quantification
+are related by the following tautologies.%
+ \[ \begin{noj3}
+    (\A\,x \in S : P(x)) & \;\equiv\; & (\A\, x : (x \in S) => P(x))\V{.3}
+    (\E\,x \in S : P(x)) & \;\equiv\; & (\E\, x : (x \in S) \,/\ \, P(x))
+    \end{noj3}
+ \]
+When writing specifications or algorithms, you will never have to use
+unbounded quantification.  Unbounded quantification is needed only to
+state some mathematical laws, such as \tlabox{\A\,x : x = x}.
+TLC can handle only quantification over a finite set.  Therefore, it cannot
+evaluate \tlabox{\E\, n \in Int : n^{2}=9} or
+  \tlabox{\A\,x : x = x}.
+
+\tlaplus\ allows some abbreviations for 
+\target{nested-quant}nested quantification.  For example:
+ \begin{display}
+ \begin{tabular}{@{}l@{\ \ }l@{\ \ }l}
+ \tlabox{\A\, x \in S, y \in T : P(x,y)} & means & 
+\tlabox{\A\, x \in S : \A\, y \in T : P(x,y)} \V{.5}
+ \tlabox{\E\, x,y,z \in S:P(x,y,z)}
+  & means & 
+ \tlabox{\E\, x\in S: \E\, y\in S : \E\, z\in S:P(x,y,z)}
+ \end{tabular}
+\end{display}
+There are two things about the syntax of quantifiers that may be surprising.
+The first is illustrated by the following syntactically incorrect definition:
+    \marginpar{\popref{quant-syntax}{Should it be
+   \tlabox{\A\,x:P} or \tlabox{\A\,x:P(x)}?}}
+ \[ Foo == \A\, x \in S : P \V{.2} \;\; /\ \;\;
+               \A\, x \in T : Q 
+ \]
+The \tlaplus\ parser will complain that the second $x$ is a multiply-defined
+symbol.  This is because the definition is parsed as
+ \[ Foo == \A\, x \in S : (P\, /\ \, \A\, x \in T : Q)
+ \]
+\tlaplus\ does not allow any symbol to be given a meaning if it
+already has one.  The first \,$\A$\, assigns a meaning to $x$ within a
+scope that includes the second \,$\A$\,.  Thus, the second \,$\A$\,
+assigns a meaning to $x$ where $x$ already has a meaning.
+
+A quantifier is treated like a prefix operator with the lowest
+possible precedence, so the scope of its bound identifier extends as
+far as it ``reasonably'' can.  The following are two correct versions
+of this definition.
+ \[ Foo == \begin{noj2}
+            /\    & \A\, x \in S : P \V{.2}
+            /\   & \A\, x \in T : Q 
+             \end{noj2} \s{4}
+    Foo == (\A\, x \in S : P) \,/\ \, (\A\, x \in T : Q )\s{-10}
+ \]
+The second possibly surprising aspect of quantification is that in the
+formula \tlabox{\A\,x\in S:P}, the expression $S$ does not lie within
+the scope of the bound identifier $x$.  Thus, $S$ may not contain the
+symbol $x$.
+
+% This section will eventually describe $\A\,x\in S : P(x)$ and
+% $\E\,x\in S : P(x)$ and their unbounded cousins,  as well as abbreviations
+% like $\A\, x, y \in S : P(x,y)$.  Until then, see Section 1.3 of
+%  \hyperref{http://research.microsoft.com/en-us/um/people/lamport/tla/book.html}{}{}{\emph{Specifying Systems}}.
+
+
+\medskip
+\noindent
+%
+\sref{main}{\xlink{main:euclid:gcd}}{\textsf{If this has been a
+detour, you may now want to return to Section~\xref{main:euclid:gcd}
+of the Starting Track.}}
+
+\btarget{choose}%
+\subsection[The {\sc choose} Operator]{The {\sc choose} Operator%
+  \ctindex{3}{choose@\icmd{textsc}{choose}}{choose}%
+}
+
+The \tlaplus\ \textsc{choose} operator is closely related to the
+existential quantifier \,$\E$\,.  The formula \tlabox{\E\,x\in S:P(x)}
+asserts that there is a value $x$ for which $P(x)$ is true.  If that
+assertion is true, then \tlabox{\CHOOSE x\in S : P(x)} equals such a
+value.  More precisely, \textsc{choose} is specified by the following
+axiom.\marginpar{\popref{choose-note}{The fine print.}}
+ \[ \mbox{\textbf{Choose Axiom} } \ 
+    (\E\, x\in S : P(x)) \; => \;
+      \begin{conj}
+      (\CHOOSE x\in S : P(x)) \in S \V{.2}
+      P(\CHOOSE x\in S : P(x)) 
+      \end{conj}
+ \]
+The most common use for the \textsc{choose} operator is to select a
+unique value that is specified by the property it satisfies.  For
+example, in
+  \rref{main}{\xlink{set-max}}{Section~\xref{set-max}} 
+we define the maximum of a set of numbers by using \textsc{choose} to
+select the largest element of the set.  TLC can evaluate
+  \tlabox{\CHOOSE x\in S:P(x)} only if $S$ is a finite set.
+
+Computer scientists often think that \textsc{choose} must be 
+    \ctindex{1}{choose@\icmd{textsc}{choose}!is deterministic}{ch-det}%
+    \ctindex{1}{determinism!of choose@of \icmd{textsc}{choose}}{det-ch}%
+    \tindex{2}{nondeterminism}%
+nondeterministic.  In mathematics, there is no such thing as a
+nondeterministic operator or a nondeterministic function.  If some
+expression equals 42 today, then it equaled 42 yesterday and it will
+still equal 42 next year.  The PlusCal statement
+ \[ v := \CHOOSE n \in 1\dd 10 : \TRUE \]
+and its \tlaplus\ translation
+ \[ v' = \CHOOSE n \in 1\dd 10 : \TRUE \]
+assign some value in $1\dd 10$ to $v$.  The semantics of \tlaplus\ do
+not specify which value in $1\dd 10$; but it is the same one every
+time.  If you want nondeterministic assignment, you can use the
+following PlusCal statement.
+\begin{display}
+\with\ ($n \in 1\dd 10$) \{ $v := n$ \}
+\end{display}
+This statement sets $v$ to a nondeterministically chosen number in
+$1\dd 10$ that may differ each time it is executed.  Its \tlaplus\
+translation is
+ \[ \E\, n \in 1\dd 10 : v' = n
+ \]
+If there is no element $x$ in $S$ satisfying $P(x)$, then we don't
+know anything about the value of \tlabox{\CHOOSE x\in S : P(x)}.
+For example, 
+ \tlabox{\CHOOSE n \in Int : n^2 = 2}
+could be any value.  TLC will report an error if it tries to evaluate
+such a \textsc{choose}.
+
+There is also an unbounded version of \textsc{choose} that corresponds
+to unbounded existential quantification.  Like unbounded
+quantification, it is not handled by the TLC model checker.  In
+writing specifications, it is used only in the following idiom, which
+defines $NotAnS$ to be an arbitrary value that is not an element of
+$S$.
+  \[ NotAnS == \CHOOSE x : x \notin S
+  \]
+For example, we might want the value of a variable $v$ to be either
+an integer or else some special value that indicates an error.
+We could define
+  \[ Error == \CHOOSE n : n \notin Int
+  \]
+and let $v$ satisfy the type invariant \tlabox{v \in Int \cup \{Error\}}.
+When creating a model for a specification with this definition,
+the Toolbox will by default override the definition 
+by letting $Error$ be a \popref{model-value}{model value}.
+
+
+\newpage
+
+\target{sets-intro}%
+\section{\puce Sets}
+
+This has not yet been written.  See Section 1.2 of
+  \hyperref{http://research.microsoft.com/en-us/um/people/lamport/tla/book.html}{}{}{\emph{Specifying Systems}}.
+
+\subsection{\puce An Introduction to Sets}
+This section will define $\{e_{1}, \ldots, e_{n}\}$ (including the
+empty set $\{\,\}$ and $\in$ (and \notin).
+
+\noindent\sref{main}{sets}{\textsf{If this has been a detour, you
+may now want to return to 
+Section~\xref{main:simple-sets-return} of the Starting Track.}}
+
+\btarget{simple-setops}%
+\subsection{\puce Simple Set Operators}
+
+Click on the operators to see their definitions:
+  \ctindex{1}{+2o@\mmath{\icmd{backslash}} (set difference)}{2oa}%
+\begin{display}
+\popref{NOTWRITTEN-POPUP}{$\cup$, $\cap$, $\subseteq$}
+\s{1} \popref{set-difference}{$\backslash$}
+\end{display}
+%
+% This section will define the operators $\cup$, $\cap$, $\subseteq$, 
+% and 
+See Section 1.2 of
+  \hyperref{http://research.microsoft.com/en-us/um/people/lamport/tla/book.html}{}{}{\emph{Specifying Systems}}.
+
+\bigskip
+
+The standard $FiniteSets$ module defines 
+  \target{cardinality}%
+  \ctindex{1}{Cardinality@\mmath{Cardinality}}{cardinality}%
+  $Cardinality(S)$ to equal the
+cardinality (the number of elements in) $S$, if $S$ is a finite set.
+The value of $Cardinality(S)$ is unspecified if $S$ is not a finite set.
+
+
+\medskip
+
+\noindent\sref{main}{gcd-detour-return}{\textsf{If this has been a detour, you
+may now want to return to 
+Section~\xref{main:gcd-operator} of the Starting Track.}}
+
+
+\btarget{set-constructors}
+\subsection{\puce Set Constructors}
+
+This section will define the constructs $\{x \in S : P(x)\}$
+and $\{e(x) : x \in S\}$.  Now, see Section 6.1 of
+  \hyperref{http://research.microsoft.com/en-us/um/people/lamport/tla/book.html}{}{}{\emph{Specifying Systems}}.
+
+\btarget{subset-union} 
+\subsection{{\sc subset} and {\sc union}}
+
+For any set $S$, the set of all subsets of $S$ is written
+  \ctindex{1}{SUBSET@\icmd{textsc}{subset}}{big-subset}%
+  \target{math:subset}%
+  \tlabox{\SUBSET S}.  For example:
+\tlabox{\SUBSET \{1, 2, 3\}} equals 
+ \[ \{\,\{\}, \  \{1\}, \  \{2\}, \ \{3\}, \  \{1, 2\}, \  \{1, 3\}, \  
+    \{2, 3\}, \  \{1, 2, 3\}\,\}
+\]
+Mathematicians call \tlabox{\SUBSET S} the 
+  \tindex{1}{power set}%
+\emph{power set} of $S$
+and write it 
+  \ctindex{1}{P@\mmath{\icmd{mathcal}{P}}}{P-powerset}%
+$\mathcal{P}(S)$ or $2^{S}$.  The latter notation comes
+from the fact that, if $S$ is
+a finite set $S$, then:
+  \[\lref{cardinality}{Cardinality}(\SUBSET S) \;=\;
+2^{Cardinality(S)} \]
+Note that the empty set has a single subset---namely, the empty set.
+Thus, $\SUBSET \{\,\}$ equals $\{\,\{\,\}\,\}$.
+\bigskip
+
+\noindent If $S$ is a set of sets (a set whose elements are sets),
+then
+  \ctindex{1}{UNION@\icmd{textsc}{union}}{big-union}%
+  \target{union}%
+  $\UNION S$
+is the union of all the elements of $S$.  Thus, $S$ is the set
+containing all the elements of elements of $S$.  In other words:
+ \[ (x \in \UNION S) \; \equiv \; (\E s \in S : x \in s) \]
+If $S$ equals the finite set
+ $\{s_{1}, s_{2}, \ldots, s_{n}\}$
+then \tlabox{\UNION S} equals
+  \[{s_{1} \,\cup\,  s_{2} \,\cup\,  \ldots \,\cup\,  s_{n}} \]
+Note that $\UNION \{\,\}$ equals $\{\,\}$.  Mathematicians usually
+write \textsc{union} as 
+  \ctindex{1}{+5na@\mmath{\icmd{bigcup}}|see{\icmd{textsc}{union}}}{+5na}%
+$\bigcup$\,.
+
+
+\subsection[\puce Collections too Big to Be Sets]{\puce Collections too Big to Be 
+   Sets%
+   \target{russell-paradox}}%
+\xlabel{math:russell-paradox}
+
+This will contain a discussion of Russell's paradox and what are
+sometimes called \emph{classes} in set theory.  See page 66 of
+   \hyperref{http://research.microsoft.com/en-us/um/people/lamport/tla/book.html}{}{}{\emph{Specifying Systems}}.
+
+\newpage
+
+\subsection[\puce Bags]{\puce Bags%
+  \tindex{1}{bag}%
+  \tindex{2}{multiset}%
+  \target{bags}%
+}
+
+This will contain a brief discussion of bags, also called multisets, and
+the standard $Bags$ module.
+See page~340 of
+   \hyperref{http://research.microsoft.com/en-us/um/people/lamport/tla/book.html}{}{}{\emph{Specifying Systems}}.
+
+  
+\section[Functions]{Functions%
+  \tindex{2}{function}%
+ \target{functions}%
+ }
+
+Functions are what programmers call 
+    \tindex{2}{array}%
+    \ctindex{2}{function!versus array}{fcn-vs-array}%
+arrays.  However, ordinary
+programming languages permit only a small, rather dull class of
+functions/arrays.  For example, they allow only finite arrays---what
+are known to mathematicians as functions with finite domains.  Some
+languages permit only arrays (functions) with index sets (domains) of
+the form $0\dd k$ for some integer $k$.
+
+
+We begin with a description of arbitrary functions.  We then
+discuss data types that, in \tlaplus, are special kinds of functions.
+These are tuples (also known as finite sequences and called \emph{lists}
+by programmers), records, and strings.
+
+% in Section 5.2 of
+%   \hyperref{http://research.microsoft.com/en-us/um/people/lamport/tla/book.html}{}{}{\emph{Specifying Systems}}.
+
+%
+\subsection[Functions and Their Domains]{Functions and Their Domains\target{fcn-domains}} \label{function-domains}\xlabel{math:function-domains}
+
+Mathematicians define a function to be a set of ordered pairs.  In
+practice, it is more convenient to consider ordered pairs and other
+tuples to be functions.
+% 
+% , as explained in
+%   \rref{math}{tuples}{Section~\xref{math:tuples} below}.
+% 
+\tlaplus\ therefore takes a function to be a primitive object, without
+specifying how it is defined in terms of sets.  
+
+A good way to learn about functions is to let TLC evaluate expressions
+containing them.  \popref{open-new-spec}{Open a new spec} in the
+Toolbox.  So we can use operations on integers for our examples,
+have the spec import the $Integers$ module by adding 
+ \[\EXTENDS Integers \]
+\popref{create-new-model}{Create a new model}, which you can use to
+\popref{evaluate-constant-expression}{have TLC evaluate expressions}.
+
+%\bigskip
+
+What programmers call the 
+  \tindex{1}{index set}%
+\emph{index set} of an array, mathematicians
+call the 
+    \tindex{2}{domain}%
+    \ctindex{2}{DOMAIN@\icmd{textsc}{domain}}{DOMAIN}%
+\emph{domain} of a function.  The domain of a function $f$ is
+written $\DOMAIN f$.  Since a 
+     \ctindex{1}{tuple!domain of}{tuple-domain}%
+tuple is a function, we can see what its
+domain is.  Let's have TLC show us what the domain of a triple is by
+having it evaluate:
+\begin{twocols}
+$\DOMAIN <<"a",\, "b",\, "c">>$
+\midcol
+\verb|DOMAIN <<"a", "b", "c">>|
+\end{twocols}
+It tells us that its domain is the set $1\dd3$ of integers from 1 to 
+through~3.  As you can guess, an $n$-tuple is a function whose domain
+is the set $1\dd n$.  
+
+What about a 0-tuple?  Have TLC show you what the domain of the 0-tuple
+$<<\,>>$ is.
+
+If $f$ is a function and $x$ is an element of $\DOMAIN f$,
+mathematicians write the value of $f$ applied to $x$ as $f(x)$.
+\tlaplus\ denotes function application with square brackets instead of
+parentheses, writing $f[x]$ instead of $f(x)$.  (It 
+ \marginpar{\popref{function-vs-operator}{What's the difference
+  between a function and an operator?}}
+reserves parentheses for operator application.)
+Have TLC evaluate the expression 
+ \[ <<"a",\, "b",\, "c">>[2] \]
+As you probably expected, it equals $"b"$.  If $\tau$ is an $n$-tuple,
+then $\tau[i]$ equals the $i$\tth\ element of $\tau$, for any $i$ in
+$1\dd n$.  Now have TLC evaluate
+ \[ <<"a",\, "b",\, "c">>[4]\]
+This produces the TLC error
+\begin{display}
+\begin{verbatim}
+Attempted to apply tuple
+<<"a", "b", "c">>
+to integer 4 which is out of domain.
+\end{verbatim}
+\end{display}
+For a function $f$, the value of $f[x]$ is unspecified if $x$ is
+not an element of the domain of $f$.  
+
+\btarget{writing-functions}%
+\subsection{Writing Functions} \xlabel{sec:writing-fcns}
+
+A tuple is a particular kind of function---namely, one whose domain is
+the set $1\dd n$ for some natural number $n$.  We will need to be able
+to write functions with arbitrary domains.  Mathematics does not
+provide a standard way of writing functions, so the \tlaplus\ notation
+for writing functions will mean nothing to you.  To illustrate the
+notation, I'll first describe how to use the \tlaplus\ notation to
+write a tuple.  Have TLC evaluate the following expression.%
+  \ctindex{1}{+4mh@\mmath{[x\icmd{in} S\icmd{mapsto}e]} (function constructor)}{+4mh}% 
+\begin{twocols}
+$[i \in 1\dd3 |-> i-7]$
+\midcol
+\verb=[i \in 1..3 |-> i - 7]=
+\end{twocols}
+It reports that this expression equals the triple 
+ $<<1\!-\!7,\, 2\!-\!7,\, 3\!-\!7>>$,
+which it writes as
+  $<<-6,\, -5,\, -4>>$.
+
+In general, the expression
+ $ [v \in S |-> e]$
+is the function with domain $S$ such that
+ $ [v \in S |-> e][x]
+ $
+equals the expression obtained from $e$ by substituting $x$ for $v$,
+for any $x$ in $S$\@.
+For example, use TLC to check that
+\begin{twocols}
+$[i \in \{2,\, 4,\, 6,\, 8\}\, |-> \, i - 42][4]$
+\midcol
+\verb=[i \in {2, 4, 6, 8} |-> i - 42][4]=
+\end{twocols}
+equals $4-42$ (which it writes as $-38$).
+
+The domain of a function does not have to be a finite set.  For example,
+the function $[i \in Nat \, |-> \, i - 42]$ has as domain the set
+$Nat$ of all natural numbers.  Use TLC to check that
+  $[i \in Nat \, |-> \, i - 42][88]$
+equals $88-42$, and that $-88$ is not in its domain.
+
+\bigskip
+
+Now, 
+  \target{at-at}%
+have TLC evaluate the (function-valued) expression 
+\begin{twocols}
+  $[i \in \{2,\, 4,\, 6,\, 8\}\, |-> \, i - 42]$
+\midcol
+\verb=[i \in {2, 4, 6, 8} |-> i - 42]=
+\end{twocols}
+TLC writes its value as%
+  \ctindex{1}{+5q@\mmath{\icmd{colongt}} (function constructor)}{+5q}%
+  \ctindex{1}{+6f@\mmath{\icmd{atat}} (function constructor)}{+6f}% 
+ \[(2 :> -40 \;@@\; 4 :> -38 \;@@\; 6 :> -36 \;@@\; 8 :> -34)\]
+In \tlaplus, the operator $:>$ has higher precedence (binds more
+tightly) than $@@$.  This expression therefore equals
+ \[ (2 :> -40) \;@@\; (4 :> -38) \;@@\; (6 :> -36) \;@@\; (8 :> -34)
+ \]
+In general, if $f$ is a function with finite domain 
+ $\{d_{1}, \ldots, d_{b}\}$
+and is not a special kind of function like a tuple, then TLC
+prints it as
+ \[ (d_{1} :> f[d_{1}] \;\;@@\;\; \ldots 
+    \;\;@@\;\; d_{n} :> f[d_{n}])
+ \]
+The operators $:>$ and $@@$ are defined in the standard $TLC$ module.
+Import that module by adding it to the \textsc{extends} statement.
+(Don't forget the comma between \texttt{Integers} and \texttt{TLC}.)
+Save the module and have TLC evaluate
+\begin{twocols}
+$(1 :> "a"  \; @@  \; 2 :> "b"  \; @@  \; 3 :> "c")$
+\midcol
+\verb|(1 :> "a"  @@  2 :> "b"  @@  3 :> "c")|
+\end{twocols}
+It prints this function as the tuple $<<"a", "b", "c">>$.  Here is how
+the $TLC$ module defines the operators $:>$ and $@@$:
+
+
+\begin{widedisplay}
+\begin{notla}
+d  :> e  == [x \in {d} |-> e]
+
+f @@ g == [x \in (DOMAIN f) \cup (DOMAIN g) |-> IF x \in DOMAIN f THEN f[x] ELSE g[x]]
+\end{notla}
+\begin{tlatex}
+ \@x{ d\@s{4.1} \.{\colongt} e\@s{4.1} \.{\defeq} [ x \.{\in} \{ d \}
+ \.{\mapsto} e ]}%
+\par\vspace{8.0pt}%
+ \@x{ f \.{\,@@\,} g \.{\defeq} [ x \.{\in} ( {\DOMAIN} f ) \.{\cup} (
+ {\DOMAIN} g ) \.{\mapsto} {\IF} x \.{\in} {\DOMAIN} f \.{\THEN} f [ x ]
+ \.{\ELSE} g [ x ] ]}%
+\end{tlatex}
+\end{widedisplay}
+
+\vspace{0pt} %% Another mysterious case when adding 0 space adds space.
+
+%\smallskip
+
+
+\begin{question}
+Define the function $F$ by
+ \[ F == <<"a",\, "b",\, "c">> 
+      \;@@\; (2 :> -3 \;@@\; 4 :> <<1, "d">> \;@@\; 6 :> 37)
+ \]
+Determine the values of the following expressions, and then use
+TLC to check your answers.
+ \[\DOMAIN F \s{2.5}
+F[1] \s{2.5} F[2] \s{2.5} F[4] \s{2.5} F[5]
+\]
+\end{question}
+
+\medskip
+\noindent
+%
+You can define a symbol $f$ to 
+  \ctindex{1}{function!definition of}{fcn-def}%
+equal a function in the obvious way---for example, writing: 
+\begin{twocols}
+$f == [i \in 1\dd5 |-> i^2]$
+\midcol
+\verb@f == [i \in 1..5 |-> i^2]@
+\end{twocols}
+\tlaplus\ also provides a special syntax for defining a symbol to
+equal a function.  For example, the following defines $g$ to equal
+the same function as $f$ above.
+\begin{twocols}
+$g[i \in 1\dd 5] == i^2$
+\midcol
+\verb|g[i \in 1..5] == i^2|
+\end{twocols}
+Add these two definitions to the module and then use TLC
+to check that $f=g$ equals $\TRUE$.
+
+\bigskip
+
+The semantics of \tlaplus\ does not say what a function is---just as
+it does not say what a number is.  All it tells us about functions is
+that two functions $f$ and $g$ are equal if they have the same domain
+and $f[x]$ equals $g[x]$ for all $x$ in that domain.
+
+\pause
+
+\noindent%
+%
+So far, we have discussed functions 
+  \ctindex{1}{function!of multiple arguments}{fcn-mult-args}%
+of a single argument.
+Mathematicians also use 
+\target{fcn-mult-arguments}functions of multiple arguments.  In \tlaplus,
+a function of $n$ arguments, where $n>1$, is equivalent to a function
+whose domain is a set of $n$-tuples.  For example, $f[a,\, b]$ is
+shorthand for $f[<<a,\,b>>]$.  Here are four ways to define a function
+$f$ with domain $Nat \X Int$%
+  \marginpar{$\X$ is defined
+  in \sref{math}{\xlink{math:tuples}}{Section~\xref{math:tuples}}}
+such that $F[a, b] = a + b^2$ for all 
+$a\in Nat$ and $b \in Int$.
+\begin{display}
+$f == [a \in Nat,\, b \in Int |-> a + b^2]$ \V{.3}
+$f== [u \in Nat \X Int |-> u[1] + u[2]^2]$\V{.3}
+$f [a \in Nat,\, b \in Int] ==  a + b^2$ \V{.3}
+$f[u \in Nat \X Int] == u[1] + u[2]^2$
+\end{display}
+\tlaplus\ provides some abbreviations for writing functions of
+multiple arguments that are similar to the ones for
+\lref{nested-quant}{nested quantification}.  For example, the following
+two expressions are equivalent.
+\[ \begin{noj}
+   [x \in Nat,\, y, z \in Int |-> x - (2*y+z)] \V{.2}
+   [x \in nat,\, y \in Int, z \in Int |-> x - (2*y+z)]
+   \end{noj}\]
+
+\subsection[Sets of Functions]{Sets of Functions%
+  \ctindex{1}{functions, set of}{fcns-set-of}%
+  \ctindex{1}{set!of functions}{set-of-fcns}%
+%  \ctindex{2}{+2r@\mmath{\rightarrow} (set of functions)}{+2r}%
+  \ctindex{2}{+4mf@\mmath{[S\rightarrow T]} (set of functions)}{+4mf}
+  }\xlabel{sets-of-fcns}%
+
+
+The expression $[S -> T]$ is the set of all functions $f$ whose domain
+is $S$ such that $f[x]$ is in the set $T$ for all $x$ in $S$.  (The
+arrow $->$ is typed \verb|->|.)  This set corresponds roughly to what
+a programmer would call the set of all arrays of type $T$ indexed by
+$S$.  Use TLC to see what the following two sets of functions equal.
+\begin{twocols}
+$[\{2,\, 4\} -> \{"a", "b", "c"\}]$\V{.5}
+$[1\dd3 -> \{"a", "b"\}]$
+\midcol
+\verb|[{2, 4} -> {"a", "b", "c"}]|\V{.5}
+\verb|[1..3 -> {"a", "b"}] |
+\end{twocols}
+\begin{aquestion}{math-answer1}
+If the set $S$  has $m$ elements and the set $T$ has $n$ elements,
+how many elements does $[S -> T]$ contain?  Check your answer for
+$m=0$ and for $n=0$.
+\end{aquestion}
+
+\subsection[The {\rm\textsc{except}} Construct]{%
+  The {\rm\textsc{except}} Construct%
+   \ctindex{2}{except@\icmd{textsc}{except}}{except}%
+   %
+}\xlabel{math-except}
+
+% If you are interested only in PlusCal and do not intend to read the
+% \tlaplus\ track, you can \sref{math}{tuples}{skip to the
+% next section}.
+
+If you have done any programming, you've probably written an 
+\popref{math-assignment-statement}{assignment statement} such as
+\begin{display}
+\texttt{A[3] = 42}
+\end{display}
+With the \tlaplus\ notation that $A$ represents the original value of
+$A$ and $A'$ represents its new value, some people think that
+the effect of executing this assignment is represented by the formula
+ \[A'[3] = 42\]
+It's not, because this formula says nothing about the new value of any
+element of the array except $A[3]$.  For example, it says nothing
+about the new value of $A[2]$.
+
+
+A more sophisticated belief is that the assignment is represented by
+\begin{display}
+$ \A\, i \in \DOMAIN A : \;A'[i] \;=\; (\,\textsc{if}\; i = 3 \;\; 
+        \textsc{then}\; 42 \;\; \textsc{else}\; A[i]\,)$
+\end{display}
+However, this is not correct either because it does not prohibit the
+domain of $A$ from changing.  For example, the old value of $A$ could
+be a function whose domain is the set $Nat$ of natural numbers, and
+the new value could be a function with domain \tlabox{Nat \cup \{-7\}}.  We
+could conjoin to the formula above the requirement that $\DOMAIN A$ is
+unchanged, but that's getting pretty complicated---and
+\popref{math-fcn-change}{it's still not right}.
+
+
+
+To specify the meaning of the assignment statement, we must state
+explicitly what the value $A'$ equals.  When we realize that's what we
+have to do, it's fairly obvious that we can do it with the formula:
+ \[ A' \;=\;  [\,i \in \DOMAIN A \, |-> \, \textsc{if}\; i = 3 \;\; 
+        \textsc{then}\; 42 \;\; \textsc{else}\; A[i]\,]
+ \]
+This formula is correct, but it's a nuisance to have to write such a
+long formula to represent something as common as a simple assignment
+statement.  \tlaplus\ therefore allows us to write
+the right-hand side of this formula as:
+ \[ [A \EXCEPT ![3] = 42]
+ \]
+No one likes this notation.  People want to know what the $!$ means.
+It doesn't mean anything; it's just a piece of syntax.  The \tlaplus\
+\textsc{except} notation is terrible, but I don't know a better way to
+write the function $f$ that is identical to $A$ except that $f[3]$
+equals~42.  I've gotten used to it; in time you will too.
+
+\tlaplus\ allows some useful generalizations of the \textsc{except}
+notation.  The function $f$ that is identical to $A$ except that
+$f[3]=42$ and $f[6]=24$ can be written
+ \[ [A \EXCEPT ![3] = 42,\, ![6]=24]
+ \]
+In general,
+ \[ [A \EXCEPT ![i]=d,\, ![j] = e] \;\;=\;\;
+    [\,[A \EXCEPT ![i] = d] \, \EXCEPT ![j] = e\,]
+ \]
+You can guess the meaning of
+ \[ [A \EXCEPT ![i_{1}] = d_{1},\, \ldots , \, ![i_{n}] = d_{n}]
+ \]
+If $A[3]$ is a function, we can represent the assignment statement
+\verb|A[3][j] = "a"| by the formula
+ \[ A' = [A \EXCEPT ![3][j] = "a"]
+ \]
+If you think about it a bit, you'll see that:
+ \[ [A \EXCEPT ![i][j] = e] \; = \;
+    [\,A \EXCEPT ![i] = [A[i] \EXCEPT ![j] = e]\,]
+ \]
+
+\vspace{0pt}
+\begin{question}
+Figure out what the following expression equals:
+\[ [\,<<"a",\, "b",\, <<"c",\, <<"d",\, "e">> >> >> 
+  \EXCEPT ![1] = "X",\, ![3][2][1] = "Y"\,] \]
+Let TLC check your answer.
+\end{question}
+
+
+\subsubsection*{The @ Notation}
+When writing an expression of the form
+ \[ [A \EXCEPT ![i] = e] \]
+the expression $A[i]$ often appears as a subexpression of $e$.
+\tlaplus\ allows it to be abbreviated in $e$ as \,$@$\,.  For example,
+the formula
+ \[ A' = [A \EXCEPT ![i] = A[i]+1]\]
+can be written as
+\begin{twocols}
+$A' = [A \EXCEPT ![i] = @+1]$
+\midcol
+\verb|A' = [A \EXCEPT ![i] = @+1]|
+\end{twocols}
+Similarly, the following two expressions are equivalent:
+ \[ [A \EXCEPT ![i][j] = 2*A[i][j]]
+    \s{3}
+     [A \EXCEPT ![i][j] = 2*@]
+ \]
+The \,$@$\, notation doesn't save much space and is confusing to
+anyone not familiar with it.  I therefore recommend avoiding it unless
+it is used often and you are writing your specification for someone
+already familiar with \tlaplus.
+  
+  %  \vspace{-\baselineskip}%
+\subsection[Tuples]{Tuples and Finite Sequences\target{tuples}\tindex{3}{tuple}}
+\xlabel{math:tuples}
+
+In \sref{math}{fcn-domains}{Section~\ref{function-domains} above}, we
+explained that an $n$-tuple $t$ is a function whose domain is the set
+$1\dd n$ of natural numbers, where $t[n]$ is the $n$\tth\ component of
+$t$.  For example, $<<x+1,\, 42,\, "a">>[3]$ equals $"a"$.
+
+Sets of tuples can be written with the 
+  \target{math:cartesian}% used in the Records section
+  \ctindex{1}{Cartesian product (X)@Cartesian product (\mmath{\icmd{X}})}{cartesian-prod}%
+Cartesian product operator
+  \ctindex{1}{+2vh@\mmath{\icmd{X}} (Cartesian product)}{+2vh}%
+$\X$, typed as \verb|\X|.  For example,
+$Nat \X Int \X \{"a", "bc"\}$ is the set of all triples 
+$<<i, j, k>>$ where $i$ is a natural number, $j$ is an integer,
+and $k$ is either $"a"$ or $"bc"$.
+
+\begin{question}
+What do the following three sets equal?
+ \[ S \X T \X U  \s{2} (S \X T) \X U  \s{2} S \X (T \X U)
+ \]
+Check your answer by having TLC evaluate these three expressions 
+for particular sets $S$, $T$, and $U$.
+\end{question}
+
+Another name for a tuple is a 
+  \ctindex{2}{sequence!finite}{seq-finite}%
+  \ctindex{2}{tuple!same as sequence}{tuple-same-as-sequence}%
+\emph{finite sequence}.  Finite
+sequences are known to programmers as 
+  \tindex{1}{list}%
+lists.  Most programmers think
+of lists and tuples as having different types, and they will find it
+strange to learn that we consider them to be the same.  However, if
+you forget about the idiosyncracies of programming languages, lists
+and tuples are both just sequences of elements.
+
+The standard 
+    \target{math:sequences-module}%
+    \ctindex{2}{Sequences module@\mmath{Sequences} module}{sequences-module}%
+$Sequences$ module defines the following operations
+on finite sequences.  
+\begin{describe}{$Head(s)$}
+\item[$Seq(S)$] The 
+  \ctindex{2}{Seq@\mmath{Seq}}{Seq}%
+set of all sequences of elements of the set $S$.
+For example, $<<3,7>>$ is an element of $Seq(Nat)$.  Check that
+TLC can evaluate the following expressions (even though $Seq(Nat)$
+is an infinite set).
+ \[ <<3,7>> \in Seq(Nat) \s{2} <<3, -8>> \in Seq(Nat) \]
+
+\item[$Head(s)$] The 
+     \ctindex{1}{Head@\mmath{Head}}{Head}%
+     \target{head}%
+first element of sequence $s$.  For example,
+$Head(<<3,7>>)$ equals~3.
+
+\item[$Tail(s)$] The 
+     \ctindex{2}{Tail@\mmath{Tail}}{Tail}%
+tail of sequence $s$, which consists of $s$ with
+its first element removed.  For example, $Tail(<<3,7, "a">>)$ equals 
+$<<7, "a">>$.
+
+\item[$Append(s,e)$] The 
+     \ctindex{2}{Append@\mmath{Append}}{Append}%
+sequence obtained by appending element $e$ to
+the tail of sequence $s$.  For example, $Append(<<3,7>>, 3)$ equals
+$<<3,7,3>>$.
+
+\item [$s \circ t$] The 
+ \ctindex{1}{+3o@\mmath{\icmd{circ}} (sequence concatenation)}{+3o}%
+ \target{seq-concat}%
+sequence obtained by concatenating the
+sequences $s$ and $t$.  For example, $<<3,7>> \circ <<3>>$ equals
+$<<3,7,3>>$.  (We type $\circ$ as~\verb|\o|.)
+
+\item[$Len(s)$] The 
+    \ctindex{2}{Len@\mmath{Len}}{Len}%
+length of sequence $s$.  For example,
+$Len(<<3,7>>)$ equals~2.
+
+\item[$SubSeq(s,\,m,\,n)$] The 
+     \ctindex{1}{SubSeq@\mmath{SubSeq}}{SubSeq}%
+subsequence
+ $<<s[m],\,s[m+1],\,\dots,\,s[n]>>$ 
+consisting of the $m^{\mathrm{th}}$ through $n^{\mathrm{th}}$ elements
+of $s$.  It is undefined if $m<1$ or $n>Len(s)$, except that it equals
+the empty sequence if $m>n$.
+
+\item[$SelectSeq(s,\,Op)$] If 
+     \ctindex{1}{SelectSeq@\mmath{SelectSeq}}{SelectSeq}%
+$Op$ is an operator that takes a single
+argument, then this equals the subsequence of $s$ consisting of the
+elements $s[i]$ such that $Op(s[i])$ equals $\TRUE$.  For example, if
+$Op$ is defined by
+ \[ Op(n) == n > 0\]
+then \tlabox{SelectSeq(<<0,\, 1,\, -1,\, 2,\, -2>>)} equals
+ \tlabox{<<1,\, 2>>}.
+\end{describe}
+\begin{aquestion}{math-answer2}
+For what set $S$ is $Seq(S)$ a finite set?
+\end{aquestion}
+
+% The $Sequences$ module defines two more operators that are
+% more complicated and less often used.  See 
+%     \hyperref{http://research.microsoft.com/en-us/um/people/lamport/tla/book.html}{}{}{\emph{Section~18.1 
+%  (page 339) of Specifying Systems}}.
+% 
+
+
+\subsection[Records]{Records\target{records}\tindex{1}{record}}
+
+Mathematicians represent an object with several components as a tuple.
+For example, a mathematician might define a graph to be 
+a pair $<<N,\,E>>$, where $N$ is its set of nodes
+and $E$ is its set of edges.
+She would then use $N$ and $E$ to mean the sets of nodes and edges of
+a graph $G$.  If she were being completely rigorous and using the
+notation of \tlaplus, she would have to write $G[1]$ and $G[2]$
+instead of $N$ and~$E$.  (If she were restricted to ordinary
+mathematical notation, she would have no way to be rigorous.)  This
+would be inelegant but feasible.  However, if she defined a Turing
+machine $T$ to be a 7-tuple, it would be impossible to remember if its
+initial state was $T[4]$ or $T[5]$.
+
+Programming languages solve this problem by introducing   
+  \popref{records}{records}.  
+A graph $G$ can be a record with $nodes$ and $edges$ field, where
+$G.nodes$ and $G.edges$ are its sets of nodes and edges.  \tlaplus\
+represents a record mathematically as a function whose domain is a
+finite set of strings.  The record $G$ is represented as a function
+whose domain is \tlabox{\{"nodes",\,"edges"\}}.  \tlaplus\ defines
+$G.nodes$ and $G.edges$ to be abbreviations of $G["nodes"]$ and
+$G["edges"]$, respectively.  We adopt the terminology of programming
+languages, saying that $nodes$ and $edges$ are the
+  \ctindex{1}{field (of a record)}{field-of-record}%
+\emph{fields} of the record $G$.
+
+\tlaplus\ provides a 
+     \ctindex{1}{+2j@\mmath{\icmd{mapsto}} (record constructor)}{+2j}% 
+   \ctindex{1}{+4md@\mmath{[h_{1}\icmd{mapsto}e_{1},\,\ldots,\,h_{n}\icmd{mapsto}e_{n}]}  (record constructor)}{+4md}%
+special notation for writing records.  The record
+$r$ with fields $nodes$ and $edges$ such that $r.nodes$ equals $N$ and
+$r.edges$ equals $E$ is written as:
+\begin{twocols}
+$[nodes |-> N, \, edges |-> E]$
+\midcol
+\verb/[nodes |-> N, edges |-> E]/
+\end{twocols}
+It can also be written as \tlabox{[edges |-> E,\, nodes |-> N]}.
+(Because of how we represent a record as a function, there is no
+notion of ordering of the fields.)  
+
+\tlaplus\ also provides a notation for writing sets of records.
+The expression
+ \[ [h_{1}: S_{1},\, \ldots ,\, h_{n}: S_{n}]\]
+is the set of all records
+  \tlabox{[h_{1} |->  e_{1},\, \ldots ,\, h_{n} |-> e_{n}]}
+such that $e_{i}$ is in $S_{i}$, for all $i$ in $1\dd n$.  For example,
+ \[ [nodes : \{Nat\}, \, edges : \SUBSET (Nat \X Nat)]
+ \]
+is the set 
+  \marginpar{See the definitions of \lref{math:subset}{$\SUBSET$\s{-.3}}
+        and of \lref{math:cartesian}{$\X$}.}
+of all records $G$ such that $G.nodes$ equals $Nat$
+(the only element of $\{Nat\}$) and $G.edges$ 
+is a set of pairs of natural numbers (an element of 
+  \tlabox{\SUBSET (Nat \X Nat)}).
+
+\begin{aquestion}{rcd-answer}
+Write the set \tlabox{[a : A,\, b : B]} of records 
+using the notation for sets of functions described in
+ \lref{\xlink{sets-of-fcns}}{Section~\xref{sets-of-fcns}}.
+\end{aquestion}
+%
+The convention 
+  \ctindex{1}{except@\icmd{textsc}{except}!for records}{except-records}%
+of $.nodes$ being an abbreviation for $["nodes"]$
+extends to the \lref{\xlink{math-except}}{\textsc{except} construct
+described in Section~\xref{math-except}}.  Thus,
+ \[ [G \EXCEPT !.nodes = NN]\]
+is an abbreviation for
+  \[ [G \EXCEPT !["nodes"] = NN]\]
+which is the record that is the same as $G$ except that its $nodes$
+field equals $NN$.
+
+This record convention also extends to PlusCal assignment statements, so
+\tlabox{G.edges := EE} is equivalent to \tlabox{G["edges"] := EE},
+which sets the value of $G.edges$ to $EE$ and leaves the other fields
+of the variable $G$ unchanged.
+
+% See page 28 of
+%     \hyperref{http://research.microsoft.com/en-us/um/people/lamport/tla/book.html}{}{}{\emph{Specifying Systems}}.
+
+
+  \tindex{1}{string}%
+  \ctindex{1}{+2as@\icmd{verb}/""/ (double quote)}{+2as}% 
+  \ctindex{1}{+2at@\icmd{textsf}{``}\icmd{s}{.15}\mmath{\icmd{ldots}}\icmd{s}{.15}\icmd{textsf}{''} (string)}{+2at}%
+  \vspace{-\baselineskip}%
+\subsection[Strings]{Strings\target{strings}}\xlabel{math-strings}
+
+A string is sequence of characters enclosed in double quotes, such as
+\tlabox{"abcd"}, which is written as \,\verb|"abcd"|\,.  When writing
+specifications, you will almost always think of strings as an
+elementary data type, with no internal structure.  \tlaplus\ actually
+defines strings to be tuples (finite sequences) of characters, though
+it does not specify what a character is.  (The only way to represent
+the character $a$ in \tlaplus\ is as part of a string, such as
+$"abc"[1]$.)  However, TLC has limited knowledge of strings as
+functions.  About all that TLC can do with strings is to test if they
+are equal and evaluate the operators $\circ$ (sequence concatenation)
+and $Len$ (the length of a sequence) of the standard $Sequences$
+module.
+
+A \tlaplus\ string may contain the following characters
+\[ \NOTLA 
+    \begin{noj}
+    a\ \ b\ \ c\ \ d\ \ e\ \ f\ \ g\ \ h\ \ i\ \ j\ \ k\ \ l\ \ m\ \ n\ \ o\ \ p\ \ 
+       q\ \ r\ \ s\ \ t\ \ u\ \ v\ \ w\ \ x\ \ y\ \ z \vs{.2}\\
+    A\ \ B\ \ C\ \ D\ \ E\ \ F\ \ G\ \ H\ \ I\ \ J\ \ K\ \ L\ \ M\ \ N\ \ O\ \ P\ \ 
+    Q\ \ R\ \ S\ \ T\ \ U\ \ V\ \ W\ \ X\ \ Y\ \ Z \vs{.2}\\
+    0\ \ 1\ \ 2\ \ 3\ \ 4\ \ 5\ \ 6\ \ 7\ \ 8\ \ 9 \vs{.2}\\
+    \verb|~|\ \ @\ \ \#\ \ \$\ \ \%\ \ \verb|^|\ \ \&\ \ *\ \ ?\ \ -\ \ +\ \ =\ \ 
+    (\ \ )\ \ \{\ \ \}\ \ [\ \ ]\ \ <\ \ >\ \ |\ \ /\ \ ,\ \ .\ \ ?\ \ :\ \ ;\ \ 
+    \verb|`|\ \ \verb|'|\ \ 
+    \end{noj}
+ \]
+plus the following six special characters, each of which is typed as
+a \,\verb|\|\, (backslash) followed by a second character:
+\begin{widedisplay}
+\begin{tabular}{@{}ll@{\ }l@{\hspace{4em}}ll@{\hspace{4em}}ll@{}}
+    \verb|\"| & \verb|"| & (double quote)% "
+           & \verb|\t| & tab
+           & \verb|\f| & form feed
+\\
+    \verb|\\| & \verb|\| & (backslash) & \verb|\n| 
+    & line feed
+    & \verb|\r| & carriage return
+\end{tabular}
+\end{widedisplay}
+
+
+% All you need
+% to know is exactly what characters a string can contain
+% and how some of those characters (such as \verb|"|) % "
+% are represented in a string.  This is explained in Section 16.1.10
+% of
+%     \hyperref{http://research.microsoft.com/en-us/um/people/lamport/tla/book.html}{}{}{\emph{Specifying Systems}}.
+
+
+\newpage
+
+\section{Miscellaneous Constructs}
+
+\subsection{Conditional Constructs} \xlabel{math:conditional-constructs}
+
+\subsubsection{{\rm \textsc{if}\,/\,\textsc{then}\,/\,\textsc{else}}}
+
+An 
+    \ctindex{2}{if then else@\icmd{textsc}{if}\icmd{ldots}\icmd{textsc}{then}\icmd{ldots}\icmd{textsc}{else}}{if-then-else}%
+\textsc{if}\,/\,\textsc{then}\,/\,\textsc{else} 
+construct 
+has the obvious meaning:  the expression
+\begin{twocols}
+$\IF{x>0}\THEN x \LSE -x$
+\midcol
+\verb|IF x > 0 THEN x ELSE -x|
+\end{twocols}
+equals 
+ \marginpar{\popref{if-vs-if}{The \tlaplus\ \textsc{if} versus the PlusCal \textbf{if}.}}%
+$x$ if $x>0$ equals $\TRUE$, and it equals $-x$ if $x>0$ equals
+$\FALSE$.  If $x$ is a number, then this expression equals its
+absolute value.
+
+When a module is parsed, the \target{else-parsing}{\textsc{else}} is
+treated as if it were a prefix operator with the lowest possible
+precedence.  This means that as much of the text as possible that
+follows the \textsc{else} is considered to be part of the
+\textsc{else} expression.  An \textsc{else} clause is often terminated
+by the end of a definition or of a bulleted disjunction or conjunction
+in which it appears, as in:
+ \[ \begin{noj}
+    AbsoluteValue(x) == \IF{x>0}\THEN x \LSE -x \\
+    Sign(x) == \ldots
+    \end{noj}
+ \]
+or
+ \[  Foo == \begin{conj}
+            x' = \IF {y>0} \THEN x+1 \LSE x-1 \\
+            y' = x
+            \end{conj}
+ \]
+An \textsc{if}\,/\,\textsc{then}\,/\,\textsc{else} nested inside an
+outer \textsc{then} clause is often ended by the outer \textsc{else}.
+If you're not sure where the parser will think it ends, enclose an
+\textsc{if}\,/\,\textsc{then}\,/\,\textsc{else} in parentheses.
+
+\subsubsection[{\rm \textsc{case}}]{\rm \textsc{case}%
+ \ctindex{1}{case (expression)@\icmd{textsc}{case} (expression)}{case-expr}%
+ \target{case-expr}}
+The expression
+\begin{twocols}
+$\CASE p_{1} -> e_{1} \,[]\, \ldots \,[]\, p_{n} -> e_{n}$
+\midcol
+\verb|CASE| $p_{1}$ \verb|->| $e_{1}$ \verb|[]| \ldots
+  \verb|[]| $p_{n}$ \verb|->| $e_{n}$
+\end{twocols}
+equals $e_{i}$ for some $i$ for which $p_{i}$ equals $\TRUE$.  If no
+$p_{i}$ equals $\TRUE$, then the value of the expression is
+unspecified.  
+ \marginpar{\popref{case-vs-case}{{\rm \textsc{case}} expressions versus {\rm \textsc{case}}
+            proof steps.}}%
+If $p_{i}$ equals $\TRUE$ for more than one value of
+$i$, then the expression might equal any of the corresponding $e_{i}$;
+the semantics of \tlaplus\ do not specify which one.  (As in the case
+of \lref{choose}{\textsc{choose}}, there is no nondeterminism.)  A
+\textsc{case} expression in which more than one $p_{i}$ can be true is
+most often used when the value of the expression does not depend on
+which of the possible $e_{i}$ the expression equals in that case.  For
+example,
+ \[ \CASE x \geq 0 -> x \ [] \ x \leq 0 -> -x
+ \]
+equals $x$ if $x>0$ equals $\TRUE$, $-x$ if $x < 0$ equals $\TRUE$,
+and either $x$ or $-x$ if $x=0$ equals $\TRUE$---which in that case
+both equal 0.  Thus, this expression equals the absolute value of $x$,
+if $x$ is a number.
+
+The statement
+\begin{twocols}
+$\CASE p_{1} -> e_{1} \,[]\, \ldots \,[]\, p_{n} -> e_{n} \,[]\,
+ \ \mbox{\textsc{other}} \ -> e$ 
+\midcol
+\verb|CASE| $p_{1}$ \verb|->| $e_{1}$ \verb|[]| \ldots
+  \verb|[]| $p_{n}$ \verb|->| $e_{n}$ \verb|OTHER ->| $e$
+\end{twocols}
+equals $e$ if none of the $p_{i}$ equals $\TRUE$; otherwise it equals
+ \[ \CASE p_{1} -> e_{1} \,[]\, \ldots \,[]\, p_{n} -> e_{n}
+ \]
+As with an 
+ \lref{else-parsing}{\textsc{if}\,/\,\textsc{then}\,/\,\textsc{else}}, 
+as much text as possible following a \textsc{case} expression is
+considered to be part of that expression.
+
+
+\subsection[Definitions]{Definitions\tindex{1}{definition}}
+
+\subsubsection{Simple Operator Definitions}
+
+Despite the important role that definitions play in mathematicians,
+logicians have largely ignored them, and there is no standard formal
+notation for writing definitions.  In \tlaplus, a definition is simply
+an abbreviation.  There is no concept of an illegal definition; any
+syntactically correct definition defines something.
+
+The simplest form of definition defines an identifier to be an abbreviation
+for an expression.  For example,
+\begin{twocols}
+$id == a + b$
+\midcol
+\verb|id == a + b|
+\end{twocols}
+defines $id$ to be an abbreviation for the expression $a+b$.  Thus,
+$2*id$ equals the expression obtained from it by substituting $a+b$
+for $id$.  Here, substitution means semantic substitution rather
+than syntactic substitution, so $2*id$ equals $2*(a+b)$ rather than
+$2*a+b$.
+
+A defined operator is also an abbreviation.  For example,
+ \[Op(a) == b*a + c\]
+defines $Op(exp)$, for any expression $exp$, to be an abbreviation for
+the expression obtained by substituting $exp$ for $a$ in the expression
+$b*a+c$.  Again, that is semantic substitution, so $Op(2+2)$ equals
+$b*(2+2)+c$ and not $b*2+2+c$ .
+
+Semantic substitution is tricky in the presence of bound identifiers.
+For example, if $F$ is defined by
+ \[ F(x) == \E \, i \in S : x + 1 > i\]
+then $F(i)$ does \emph{not} equal
+ \tlabox{\E\, i \in S : i + 1 > i}.  To explicitly perform the semantic 
+substitution, we must replace the bound identifier $i$ by an
+identifier that is not defined or declared in the current context.
+For example, $F(i)$ equals the formula
+ \tlabox{\E\, ii \in S : i + 1 > ii}.
+
+\bigskip 
+
+\tlaplus\ provides a number of user-definable infix operators and a
+few user-definable postfix operators,
+\rref{summary}{user-definable}{all listed here}.  They are defined like
+this:
+\begin{twocols}
+$a \, +\s{-.3}+ \,\, b == (a + 2*b) \,\%\, N$
+\midcol
+\verb|a ++ b == (a + 2*b) % N|
+\end{twocols}
+How to type symbols with non-obvious \textsc{ascii} representations
+is \rref{summary}{ascii}{shown here}.
+
+\bigskip
+
+\tlaplus\ allows higher-order 
+  \ctindex{1}{operator!higher-order}{op-higher-order}%
+  \ctindex{1}{higher-order operator}{higher-order-op}%
+operators,\target{higher-order-operator}
+which are ones having operators as arguments.  For example,
+the standard $TLC$ module defines an operator 
+  \ctindex{1}{SortSeq@\mmath{SortSeq}}{sortseq}%
+  \target{sortseq}%
+$SortSeq$ so that if $s$
+is a sequence and $\prec$ is an operator, then $SortSeq(s, \prec)$
+equals a permutation of $s$ sorted according to
+$\prec$.  Thus,
+  \tlabox{SortSeq(<<1,\,5,\, 3>>,\,>)} equals $<<5, 3, 1>>$.
+The definition of $SortSeq$ has the form:
+\begin{twocols}
+\hspace*{\mathindent}$SortSeq(s,\,\, \_ \prec \_) == \ldots$
+\midcol
+\verb|SortSeq(s, _ \prec _) == |$\ldots$
+\end{twocols}
+It could also have been written
+\begin{twocols}
+\hspace*{\mathindent}$SortSeq(s, LT(\_,\,\_)) == \ldots$
+\midcol
+\verb|SortSeq(s, LT(_, _)) == |$\ldots$
+\end{twocols}
+This is the highest-order operator we can define.  \tlaplus\ does not
+allow a higher-order operator to be an argument of another operator.
+
+ % The right-hand side of a symbol's definition is not within the scope
+ % of that symbol's definition.  Therefore the symbol being defined can
+ % be used as a bound identifier within its definition, as in:
+ %  \[ Op(x) == \E Op \in S : Op > x
+ %  \]
+ % This is generally a confusing thing to do, the definition being much
+ % clearer when written as:
+ %   \[ Op(x) == \E i \in S : i > x
+ %   \]
+ % However, I find it natural to do it in the following idiom:
+ %   \[ s == \CHOOSE s \in S : \ldots
+ %   \]
+ % This comment applies only to ordinary definitions, not to the function
+ % definitions and recursive definitions described below.
+
+\subsubsection[Function Definitions]{Function Definitions%
+  \ctindex{1}{definition!function}{def-fcn}%
+  \ctindex{1}{function!definition}{fcn-def2}}
+  \xlabel{function-definitions}
+
+\tlaplus\ provides a special syntax for defining 
+  \lref{functions}{functions}.  The following
+two definitions are equivalent.
+ \[ \begin{noj}
+    Successor[i \in Nat] == i+1 \V{.2}
+    Successor == [i \in Nat |-> i+1]
+    \end{noj}
+ \]
+However, the definition syntax permits recursive 
+  \target{recursive-fcn-defs}%
+  \ctindex{1}{function!recursive definition of}{fcn-recursive-def-of}%
+  \ctindex{1}{recursive!function definition}{recursive-fcn-def}%
+function definitions,
+such as:
+ \[ factorial[n \in Nat] == \IF{n=0}\THEN 1 \LSE n * factorial[n-1]
+ \]
+This definition is equivalent to
+ \[ factorial == \CHOOSE f : 
+       f = [n \in Nat |-> \IF{n=0}\THEN 1 \LSE n * f[n-1]]
+ \]
+Function definitions for \lref{fcn-mult-arguments}{functions of
+multiple arguments} are written in the obvious way.
+
+
+You can write nonsensical recursive definitions, such as
+ \[ tcaf[n \in Nat] == n * tcaf[n+1] \target{tcaf}
+ \]
+This defines $tcaf$ to equal
+  \[ \CHOOSE f : 
+       f = [n \in Nat |-> n*f[n+1]]
+ \]
+This expression might equal
+  $ [n \in Nat |-> 0] $,
+since that function satisfies the \textsc{choose} formula that
+defines $tcaf$.
+Or, it might equal
+  $[n \in nat |-> \infty]$
+for some other value $\infty$.  Or, it might equal some other
+function.  The semantics of \tlaplus\ does not determine the
+value of $tcaf$.  However, we know it is a function with domain $Nat$
+because there is an $f$ satisfying the \textsc{choose} formula.
+
+% In computer science, it is customary for the meaning of a recursive
+% function definition to be a least fixed point, making the definition
+% illegal if there is no such fixed point.  
+
+There are no illegal definitions in \tlaplus, but a recursive
+definition might not define what you expect it to.  You should use a
+recursive function definition only when there is a unique function
+satisfying the \textsc{choose} formula, as is the case for
+$factorial$.
+
+
+\subsubsection[Recursive Operator Definitions]{Recursive Operator 
+  Definitions\target{recursive-op-defs}%
+    \ctindex{2}{operator!recursive definition of}{op-recursive-def-of}%
+    \ctindex{2}{recursive!operator definition}{recursive-op-def}}%
+    \xlabel{math:recursive-op}%
+
+
+With ordinary definitions, every symbol must be defined or declared
+before it is used.  A recursive function definition allows the
+function being defined to appear in its defining expression.  You can
+write recursive operator definitions by using the 
+  \ctindex{1}{RECURSIVE@\icmd{textsc}{recursive}}{recursive}%
+  \textsc{recursive}
+declaration.  For example, you can define a factorial operator by
+writing
+ \[\begin{noj}
+   \RECURSIVE FactorialOp(\_) \V{.2}
+   FactorialOp(n) == \IF{n=0}\THEN 1 \LSE n * FactorialOp(n-1)
+   \end{noj}
+ \]
+You can also write mutually recursive definitions.  For example, in
+ \[ \begin{noj}
+    \RECURSIVE F(\_, \_), G(\_) \V{.2}
+      H == \ldots \V{.2}
+      F(x, y) == \ldots \V{.2}
+      G(z) == \ldots
+    \end{noj}
+ \]
+$F$ and $G$ can appear on the right-hand side of all three
+definitions.  (Naturally, $H$ can appear on the right-hand side of the
+definitions of $F$ and $G$.)
+
+The meaning of recursive operator definitions is complicated and quite
+subtle.  For example, what does the following definition mean?
+ \[ X == \CHOOSE x : x # X
+ \]
+It defines $X$ to equal something, but certainly not to equal 
+ $\CHOOSE x : x # X$, which is a value that doesn't equal $X$.
+Recursive operator definitions were not allowed in the first version
+of \tlaplus\ because I didn't know how to define what they mean.
+(Georges
+ \ctindex{1}{Gonthier, Georges}{george-gonthier}%
+Gonthier helped figure out their meaning.)  
+
+All you need to
+know about a recursively defined operator $F$, and all you should
+depend upon, is this: For any value $v$, if the value of $F(v)$ can be
+computed by a finite number of ``expansions'' of the definition, then
+it equals that computed value.  Thus, $FactorialOp(7)$ equals
+$7*6*5*4*3*2*1*1$ (which equals 5040), but you should not care about
+the value of $FactorialOp(-3)$.  I would have to think hard to figure
+out whether or not it equals $-3*FactorialOp(-4)$.
+\begin{aquestion}{math-answer-fact}
+Define $IntFact$ by
+ \[ IntFact[n \in Int] == \IF{n=0}\THEN 1 \LSE n * IntFact[n-1]
+ \]
+Does $IntFact[-3]$ equal $-3*IntFact[-4]$?
+\end{aquestion}
+\bigskip
+%
+Unless what you want to define is a function, an inductive definition
+is usually more convenient to express with a recursive operator
+definition than a recursive function definition.  However,
+  \rref{proof}{tlaps}{TLAPS}
+does not yet handle recursive operator definitions, so you must use
+recursive function definitions.  You can turn a recursive operator
+definition into an ordinary definition by using a \textsc{let} with
+recursive function definitions.  For example, consider this
+recursive definition of the cardinality of a finite set:
+\begin{display}
+\begin{notla}
+RECURSIVE Cardinality(_)
+Cardinality(S) == 
+   IF S = {} THEN 0 
+             ELSE 1 + Cardinality(S \ {CHOOSE x \in S : TRUE})
+\end{notla}
+\begin{tlatex}
+\@x{ {\RECURSIVE} Cardinality ( \_ )}%
+\@x{ Cardinality ( S ) \.{\defeq}}%
+\@x{\@s{12.29} {\IF} S \.{=} \{ \} \.{\THEN} 0}%
+ \@x{\@s{54.60} \.{\ELSE} 1 \.{+} Cardinality ( S \.{\,\backslash\,} \{
+ {\CHOOSE} x \.{\in} S \.{:} {\TRUE} \} )}%
+\end{tlatex}
+\end{display}
+We can't define $Cardinality$ to be a function because its domain
+would have to be the ``set'' of all sets, 
+  \lref{russell-paradox}{which isn't a set}.
+However, we can write this definition as:
+\begin{widedisplay}
+\begin{notla}
+Cardinality(S) == 
+  LET C[T \in SUBSET S] == 
+          IF T = {} THEN 0
+                    ELSE 1 + C[T \ {CHOOSE x \in T : TRUE}]
+  IN C[S]
+\end{notla}
+\begin{tlatex}
+\@x{ Cardinality ( S ) \.{\defeq}\vs{.2}}%
+\@x{\@s{8.2} \.{\LET} C [ T \.{\in} {\SUBSET} S ] \.{\defeq}\vs{.2}}%
+\@x{\@s{48.47} {\IF} T \.{=} \{ \} \.{\THEN} 0\vs{.2}}%
+ \@x{\@s{92.44} \.{\ELSE} 1 \.{+} C [ T \.{\,\backslash\,} \{ {\CHOOSE} x
+ \.{\in} T \.{:} {\TRUE} \} ]\vs{.2}}%
+\@x{\@s{8.2} \.{\IN} C [ S ]}%
+\end{tlatex}
+\end{widedisplay}
+\tlaplus\ does not permit recursive definitions of 
+   \ctindex{3}{operator!higher-order}{op-higher-order}%
+   \ctindex{3}{higher-order operator}{higher-order-op}%
+\lref{higher-order-operator}{higher-order operators}.
+
+\subsubsection[Recursive Or Inductive?]{Recursive Or Inductive?%
+ \target{recursive-inductive}%
+ \ctindex{1}{recursive!versus inductive}{recursive-vs-inductive}%
+ \ctindex{2}{inductive definition}{inductive-def}%
+ \ctindex{1}{definition!inductive}{def-inductive}%
+}
+
+The terms \emph{recursive definition} and \emph{inductive definition}
+seem to be used interchangeably.  I will distinguish them as follows:
+\begin{itemize}
+
+\item A \emph{recursive} definition is one in which the symbol being defined
+appears in its definition.  
+
+\item An \emph{inductive} definition is one in which a function or
+operator is defined by (a) defining its value on its smallest
+arguments and (b) defining its value on any other argument in terms of
+its values on smaller arguments (for some appropriate definition of
+``small'').
+\end{itemize}
+An inductive definition is therefore a special case of a recursive
+one.  The definition of factorial for natural numbers is the classic
+example of an inductive definition.  The \lref{tcaf}{definition of
+$tcaf$} above is an example of a recursive definition that is not
+inductive.
+
+The recursive definitions used by mathematicians seem to all be
+inductive.  That's not true of computer scientists, who might write
+the following definition of the set of all finite sequences of
+integers:
+\begin{display}
+A finite sequence of integers is either the empty sequence or 
+equals the prepending of an integer to a finite sequence of 
+integers.
+\end{display}
+This informal definition is not inductive, and a mathematician would
+probably consider it to be incorrect because it is satisfied by both
+the set of all finite sequences and the set of all finite and infinite
+sequences.  Computer scientists generally define such a recursive
+definition in terms of a least fixed point, so it defines the smallest
+set satisfying the recursion relation---in this case, the set of
+finite sequences.  \tlaplus\ does not use a least fixed point
+semantics, so you should write only recursive definitions that are
+inductive.
+
+Mathematics is so expressive that recursion is needed much less often
+in \tlaplus\ than in most specification languages used by computer
+scientists.  For example, the set of all finite sequences of integers
+can be written in \tlaplus\ as:
+ \[ \UNION \{[1\dd n -> Int] : n \in Nat\} \]
+
+
+\subsection[The {\rm\textsc{let}\,/\,\textsc{in}} Construct]{The
+   {\rm\textsc{let}\,/\,\textsc{in}} Construct%
+  \target{let-in}%
+  \ctindex{1}{LET@\icmd{textsc}{let}}{let}}
+
+A specification is a formula.  In principle we can write it as a
+single large formula without using any definitions.  We make the
+formula easier to understand by decomposing it with the aid of
+definitions.  For example, we might decompose the definition of an
+operator $H$ by introducing operators $F$ and $G$.  If $F$ and $G$ are
+used only in the definition of $H$, the complete specification might
+be easier to understand by making the definitions of $F$ and $G$ local
+to the definition of $H$.  Local definitions are made with the
+\textsc{let}\,/\,\textsc{in} construct.
+
+A \textsc{let}\,/\,\textsc{in} construct is an expression, and it can
+appear as a subexpression of any expression.  However, it is most
+often used as the right-hand side of a definition, or as ``most of''
+the right-hand side of a definition.  For example, the definition
+of $H$ might have the form
+ \[ H(a, b) == \E\,i \in Nat : \mbox{\textsc{let}}\ \ldots \ 
+                               \mbox{\textsc{in}} \ \ldots
+ \]
+where the \textsc{let} clause is a list of definitions and the
+\textsc{in} clause is an expression in which the defined symbols can
+be used.  The symbols $a$, $b$, and $i$ can be used in both the
+definitions and the \textsc{in} clause.  Here is a simple, meaningless
+example:
+ \[ H(a, b) == \begin{noj}
+               \E i \in Nat : \\
+                 \s{1} \Let F(u) == u + i\\
+                            G == a*F(2)
+                       \In   G > F(b)
+                       \Ni
+               \end{noj}
+ \]
+It defines $H(x, y)$ to equal
+   $x*(2+i) > y+i$.
+
+\rref{math}{recursive-fcn-defs}{Recursive function definitions} and
+\rref{math}{recursive-op-defs}{recursive operator definitions} can appear in
+a \textsc{let} clause.  The \textsc{recursive} declaration is used the
+same way as in module-level definitions.
+
+\subsection[The {\rm\textsc{lambda}} Construct]{The
+   {\rm\textsc{lambda}} Construct%
+  \target{lambda}%
+  \ctindex{1}{LAMBDA@\icmd{textsc}{lambda}}{lambda}}
+
+A
+ \lref{higher-order-operator}{higher-order operator}
+takes an operator as an argument.  What can that argument be?  It
+can't be an expression, since the value of an expression is not an
+operator.  It can be the name of an already-defined operator; for
+example, we wrote
+ \tlabox{SortSeq(<<1,\,5,\, 3>>,\,>)}
+above, using the operator $>$ as an argument of the higher-order
+operator $SortSeq$.  We might want to apply $SortSeq$ to an operator
+that is not already defined.  One way is to define the operator locally
+using a  \textsc{let}\,/\,\textsc{in}, as in the expression
+   \[ \Let LT(x, y) == x[1] > y[1] \V{.2}
+      \In SortSeq(<< <<1, "a">>,\, <<5, "c">>,\, <<3, "x">> >>, \ LT >>
+      \Ni
+ \]
+which equals
+  \[ << <<5, "c">>,\, <<3, "x">> ,\, <<1, "a">> >>\]
+Another way is to write the operator as a \textsc{lambda} expression:
+  \[ SortSeq(<< <<1, "a">>,\, <<5, "c">>,\, <<3, "x">> >>, \ 
+             \LAMBDA  x,\, y : x[1] > y[1])
+  \]
+It should be obvious from this example how to write any ordinary
+operator as a \textsc{lambda} expression.  Higher-order operators
+cannot be written as \textsc{lambda} expressions.
+
+A \textsc{lambda} expression can appear only as an operator argument
+of a higher-order operator or as a substitution for a constant operator
+parameter in an \popref{UNWRITTEN-POPUP}{\textsc{instance} statement},
+as in:
+ \[ \INSTANCE M \WITH N <- 42, \ LT <- \LAMBDA  x,\, y : x[1] > y[1]
+ \]
+You cannot use a \textsc{lambda} expression as an operator anyplace
+else.  Even though it makes perfect sense, you can't write:
+ \[ (\LAMBDA  x,\, y : x[1] > y[1])\,(4,\, 2)
+     \s{3}\mbox{\red\sf This is illegal.}
+\]
+
+\newpage
+
+\target{temporallogic}%
+%try
+\section{Temporal Logic} \label{sec:temporal-logic}
+
+% \subsection{The Semantics of Temporal Formulas}
+
+  \ctindex{1}{temporal formula!semantics}{temporal-formula-semantics}%
+  \ctindex{1}{semantics!of temporal formula!}{semantics-temporal-formula}%
+%
+Temporal logic is not difficult, but it is different from the ordinary
+logic that we use most of the time.  That difference can lead to
+mistakes in reasoning.  It's therefore important that you understand
+temporal logic clearly---especially if you want to write temporal logic proofs.
+
+From the point of view of logic, mathematics is just a game of
+manipulating formulas.  We show that certain formulas are theorems by
+applying formal rules of reasoning---rules that are independent of
+what those formulas mean.  This hyperbook is about systems, not about
+logic.  To use math in studying systems, we must understand what our
+formulas mean.  The study of the meaning of formulas is called
+\emph{semantics}.  
+
+We can define something only in terms of something else.  In science
+and engineering, meaning is ultimately defined in terms of ordinary
+mathematics.  So, I will define the meaning of temporal logic formulas
+in terms of ordinary mathematical expressions.  (A formula is a
+Boolean-valued expression.)  Before getting to temporal logic, I will
+precisely define the meaning of the non-temporal expressions that we
+have been using.
+
+The expressions of ordinary math are what I have been calling
+\emph{constant expressions}---ones like
+  \,$ [\{0,1\} -> \mbox{\textsc{boolean}}] $\,.
+A constant expression can also contain unspecified constants.  In
+\tlaplus, such constants are introduced by \textsc{constant}
+statements and as bound identifiers.  For example, in the expression
+ \tlabox{\{ i \in Nat : i > 2  \}},
+the identifier $i$ is a constant in the subexpression $i>2$.
+%
+Unspecified constants are what mathematicians usually
+call variables.  (Temporal logicians call them \emph{rigid
+  \tindex{1}{rigid variable}%
+  \ctindex{1}{variable!rigid}{variable-rigid}%
+variables}.)
+
+The simplest non-constant expressions we have seen are \emph{state
+  \tindex{1}{state expression}%
+  \ctindex{1}{expression!state}{expression-state}%
+expressions} (often called state 
+  \tindex{1}{state function}%
+  \ctindex{1}{function!state}{function-state}%
+functions).  A state expression is
+like an ordinary mathematical expression except it can also contain
+(unprimed) variables---symbols that in \tlaplus\ are declared in
+\textsc{variable} statements.  (Temporal logicians call them
+\emph{flexible 
+    \tindex{1}{flexible variable}%
+    \ctindex{1}{variable!flexible}{variable-flexible}%
+variables}.)  If $pc$ is a variable and $i$ is a constant, then
+$pc[i]="cs"$ is a state expression.  (The string $"cs"$ is an ordinary
+mathematical value, just like the empty set $\{\}$ or the number~42.)
+A \emph{state 
+  \tindex{1}{state formula}%
+  \ctindex{1}{formula!state}{formula-state}%
+formula}, also called a 
+  \tindex{2}{state predicate}%
+\emph{state 
+predicate}, is a
+Boolean-valued state expression.
+
+The meaning of a state expression $E$ is a 
+  \popref{mappings}{mapping} $\Mmap{E}$% 
+   \ctindex{1}{+4lz@\icmd{Mmap}{\icmd{ldots}} (semantics)}{+4lz}
+from states to constant
+expressions.  I have written that a state is an assignment of values to
+variables.  More precisely, a state assigns a constant expression to
+every possible variable name.  We can consider a state $s$ to be a
+record with an infinite number of components---one for every variable
+name---that assigns to any variable $v$ the constant expression $s.v$.
+The meaning \Mmap{pc[i] = \tlastring{cs}} 
+of the state expression $pc[i] = "cs"$ is the mapping that
+assigns to each state $s$ the constant expression $(s.pc)[i] = "cs"$.
+%Let's write that constant expression
+ %  \ctindex{1}{+2i@\mmath{\icmd{vdash}}}{+2i}% 
+ % $s |- pc[i] = "cs"$.
+%  \M{s}{pc[i] = \tlastring{cs}}.
+In general, for any state expression $E$, we define \M{s}{E} to be
+the constant expression obtained by replacing every occurrence of
+every variable $v$ in $E$ by $s.v$.  
+
+% The meaning of $E$ is the mapping that assigns to any state $s$ the
+% constant expression \M{s}{E}.
+
+
+I have defined an action to be a formula that may contain both primed
+and unprimed variables.  More generally, let a \emph{transition
+        \tindex{1}{transition expression}%
+        \ctindex{1}{expression!transition}{expression-transition}%
+expression} be like an ordinary mathematical expression except that it
+may contain primed and unprimed variables.  The meaning 
+\Mmap{T}
+of a
+transition expression $T$ is the mapping that assigns to any pair
+$<<s, t>>$ of states the constant expression obtained from $T$ by, for
+each variable $v$, substituting $s.v$ for each unprimed occurrence of
+$v$ in $T$ and $t.v$ for each occurrence of $v'$ in $T$.  A state
+expression $E$ is a transition expression that contains no primed
+variables, so \M{\langle s, t\rangle}{E} equals \M{s}{E} for all states $s$ and
+$t$.  An 
+  \tindex{2}{action}%
+\emph{action} is a Boolean-valued transition expression.
+
+A temporal formula is one obtained by combining actions (and state
+predicates) with temporal operators and the ordinary operators of logic.
+Those ordinary operators of logic include unbounded quantification
+and bounded quantification over constant sets.  Thus,
+ $\A N \in S : F$
+ \marginpar{\tlaplus\ allows $S$ to be a state expression,
+            not just a constant expression, in $\A N \in S : F$;
+but we never write such a formula.}
+is a temporal formula if $S$ is a constant 
+expression and $F$ is a
+temporal formula.
+
+A 
+  \tindex{4}{behavior}%
+\emph{behavior} is an infinite sequence of states.  The meaning of a
+temporal formula $F$ is a mapping that assigns a Boolean-valued
+constant expression \M{\sigma}{F} to every behavior $\sigma$.  An
+action $A$ is considered to be a temporal formula such that if
+$\sigma$ equals the sequence $s_{1}$, $s_{2}$, \ldots\ of states, then
+\M{\sigma}{A} equals \M{\langle s_{1}, s_{2}\rangle}{A}.  Thus, \M{\sigma}{P}
+equals \M{s_{1}}{P} if $P$ is a state predicate.
+
+The meaning of the temporal operator $[]$ 
+  \ctindex{1}{+3v@\mmath{\icmd{Box}} (always)!semantics}{+3v-semantics}%
+is defined by letting
+\tlabox{\M{\sigma}{\Box F}} be true iff \M{\tau}{F} is true for all suffixes
+$\tau$ of $\sigma$.  More precisely, if $\sigma$ equals
+$s_{1}$, $s_{2}$, \ldots, let $\sigma^{+i}$ be the suffix
+$s_{i+1}$, $s_{i+2}$, \ldots\ of $\sigma$.  Then \M{\sigma}{\Box F}
+is defined to equal \,$\A\,i\in Nat: \M{\sigma^{+i}}{F}$\,.
+
+\begin{sloppypar}
+We have defined the temporal operator $<>$ by 
+  \ctindex{2}{+3x@\mmath{\icmd{Diamond}} (eventually)!semantics}{+3x-semantics}%
+letting $<>F$ equal
+$~[]~F$.  Since 
+ \,\tlabox{~\A\,i \in S: ~ \ldots}\, equals
+ \,\tlabox{\E\, i \in S : \ldots}\,,
+it follows that \tlabox{\M{\sigma}{\Diamond F}} equals 
+ \tlabox{\E\,i\in Nat: \M{\sigma^{+i}}{F}}\,.  That is, \M{\sigma}{\Diamond F} is
+true iff $F$ is true for some suffix of $\sigma$ (where a sequence is
+considered to be a suffix of itself).
+\end{sloppypar}
+
+The meanings of ordinary logical operators applied to temporal formulas 
+is obvious.  For example, \tlabox{\M{\sigma}{(F /\ G)}} is defined to equal
+\tlabox{\M{\sigma}{F} /\ \M{\sigma}{G}}.  Similarly,
+  \tlabox{\M{\sigma}{(\A\,i\in S : F_{i})}} equals
+  \tlabox{\A\,i\in S: \M{\sigma}{F_{i}}}, for any constant expression~$S$.
+
+
+\medskip
+
+I have said nothing about formulas containing user-defined symbols.
+The meaning of such a formula is the meaning of the formula obtained by
+expanding the definitions of all user-defined symbols.  It should be
+clear what this means in the absence of recursive definitions, so
+defined symbols can be removed by a finite number of expansions.
+ \lref{\xlink{function-definitions}}{Section
+         \xref{function-definitions}}
+describes the meaning of recursive function definitions, showing how
+they can be expanded.  The meaning of recursive operator definitions
+can be defined in a similar but considerably more complicated fashion.
+
+\subsection{Understanding Temporal Formulas}
+
+%
+Intuitively, a temporal formula $F$ is an assertion about a behavior.
+The formula $[]F$ asserts that $F$ is \emph{always} true, meaning that it
+is true for all the behavior's suffixes.  The formula $<>F$ asserts
+that $F$ is \emph{eventually} true, meaning that it is true for some
+suffix of the behavior.  (When discussing temporal logic, we take
+\emph{eventually} to include \emph{now}.)
+
+Here are some common temporal formulas.  You should think carefully
+about them until you find their meanings perfectly obvious.
+\begin{display}
+\begin{description}
+\item[$\Box\Diamond F$] True of a behavior $\sigma$ iff $F$ is true
+for infinitely many suffixes of $\sigma$.  We read $\Box\Diamond$ as
+\emph{infinitely 
+  \tindex{1}{infinitely often}%
+often}.
+
+\item[$\Diamond\Box F$] True of a behavior $\sigma$ iff $F$ is true
+for all suffixes of some suffix $\tau$ of $\sigma$.
+We read $<>[]$ as \emph{eventually 
+  \tindex{1}{eventually always}%
+always}.
+
+% \item[$F\leadsto G$] Defined \lref{1+2rq}{above}
+%    \ctindex{2}{+2rq@\mmath{\icmd{leadsto}} (leads to)}{+2rq}%
+% to equal $[](F => <>G)$.  It is true of a
+% behavior $\sigma$ iff, for every suffix $\tau$ of $\sigma$, if $F$ is
+% true for $\tau$ then $G$ is true for some suffix of $\tau$.  In other
+% words, it asserts that if $F$ ever becomes true, then $G$ will be true
+% then or later.  We read $~>$ as \emph{leads 
+%   \tindex{1}{leads to}%
+% to}.  It is typed \texttt{\raisebox{-.2em}{\tilde}>} 
+% in \tlaplus.
+\end{description}
+\end{display}
+%
+The following formulas are 
+  \popref{tautology}{tautologies},
+meaning that, for all temporal
+formulas $F$, $G$, $H$, and $F_{i}$, they are true for all behaviors.  You
+should convince yourself that they are, indeed, tautologies.  Note that
+$[]$ and $<>$ have higher precedence (bind more tightly) than
+$/\ $, and $\/ $, which have higher precedence than $=>$, $\equiv$, and $~>$.
+\begin{display}
+$~[]F \;\equiv\; <>~F$
+
+\medskip
+
+$~<>F \;\equiv\; []~F$
+
+\medskip
+
+
+$[][]F \;\equiv\; []F$ 
+
+\medskip
+$<><>F \;\equiv\; <>F$
+
+\medskip
+
+$[](F /\ G) \;\equiv\; ([]F) /\ ([]G)$\\
+\s{2}%
+More generally:  
+$[](\A\,i \in S: F_{i}) \;\equiv\; (\A\,i \in S: []F_{i})$\,,\\
+\s{2}for any constant expression $S$.
+
+\medskip
+
+$<>(F \/ G) \;\equiv\; (<>F) \/ (<>G)$\\
+\s{2}%
+More generally:  
+$<>(\E\,i \in S: F_{i}) \;\equiv\; (\E\,i \in S: <>F_{i})$\,,\\
+\s{2}for any constant expression $S$.
+\end{display}
+All such temporal logic tautologies can be proved from a small number
+of axioms and proof rules.  However, with practice, you should
+understand the temporal operators $[]$ and $<>$ well enough
+that whether or not simple formulas like these are tautologies becomes
+obvious.
+\begin{aquestion}{mutex-answer2}
+Which of the following formulas are tautologies?  Find counterexamples
+for those that aren't.
+\begin{display}
+\begin{tabular}{@{}l@{\ }ll@{\ }l}
+(a)& $<>[](F /\ G) \;\equiv\; (<>[]F) /\ (<>[]G)$ & 
+(f)& $[]<>(F /\ G) \;\equiv\; ([]<>F) /\ ([]<>G)$ \V{.4}
+%
+(b)& $<>[](F \/ G) \;\equiv\; (<>[]F) \/ (<>[]G)$ & 
+(g)& $[]<>(F \/ G) \;\equiv\; ([]<>F) \/ ([]<>G)$ \V{.4}
+%
+(c)& $([]F \,\equiv\, F) \;=>\; (F /\ []G \,\equiv\, [](F /\ G))$ &
+(h)& $(<>F \,\equiv\, F) \;=>\; (F \/ <>G \,\equiv\, <>(F \/ G))$
+\V{.4}
+%
+(d)& $(F~>G) \, \/ \, (F~>H) \;=>\; (F ~> G \/ H)$ &
+(i)& $(F~>G) \, /\ \, (F~>H) \;=>\; (F ~> G /\ H)$ \V{.4}
+%
+(e)& $(F~>G) \, /\ \, (G~>H) \;=>\; (F ~> H)$ &
+(j)& $(F /\ H ~> G) \;=>\; (F /\ []H ~> G /\ []H)$
+\end{tabular}
+\end{display}
+\end{aquestion}
+If you correctly answered this question, you should have no trouble
+understanding any of the temporal formulas that arise in reasoning
+about algorithms---assuming that you understand the state predicates
+and actions that occur in those formulas.
+
+Fortunately, there's an easy way to check if a temporal logic formula
+is a tautology: let \rref{proof}{tlaps}{the TLAPS prover} do it for
+you.  For example, you can check if 
+   $<>[](F /\ G) \;\equiv\; (<>[]F) /\ (<>[]G)$
+is a tautology by asking TLAPS to check:
+\begin{display}
+\begin{verbatim}
+THEOREM ASSUME TEMPORAL F, TEMPORAL G
+        PROVE  <>[](F /\ G) \equiv (<>[]F) /\ (<>[]G)
+BY PTL
+\end{verbatim}
+\end{display}
+The PTL backend prover will succeed in proving the theorem (coloring
+it green) only if the formula is a tautology.  If it fails, the
+formula is almost certainly not a tautology.
+
+\subsection{Proof Rules and Proofs}
+
+
+Now that you understand temporal formulas, we can examine
+theorems and their proofs. 
+%
+  \tindex{1}{proof rule}%
+A temporal formula is a 
+  \tindex{9}{theorem, temporal}%
+\emph{theorem} 
+  \marginpop{truth-vs-provability}{Truth versus provability.}
+iff it is true for all behaviors.  Let 
+       \ctindex{1}{+2i@\mmath{\icmd{vdash}}}{+2i}% 
+$|- F$ be the assertion that
+$F$ is a theorem, so $|-F$ can be informally defined to equal
+$\A\,\sigma:\M{\sigma}{F}$.  
+% In 
+% \rref{main}{\xlink{temporal-logic-reasoning}}{
+%                Section~\xref{temporal-logic-reasoning}}
+%I defined the proof rule
+The proof rule\target{rule:pr}
+  \[ \mbox{PR.}\;\;\proofrule{F_{1}, \ldots, F_{n}}{G}
+ \]
+asserts
+  $ (|-\! F_{1}) \, /\ \,\ldots\, /\ \, (|-\! F_{n}) \; => \; (|-\!G)
+  $\,.
+We often omit the commas when writing PR\@.  Also,
+to save space, I will sometimes write this proof rule as
+$F_{1},\ldots, F_{n} |- G$.
+
+
+
+Proof rules cannot be written in \tlaplus.  The theorem
+ \[ \begin{noj3}
+    \THEOREM \s{-.35}& \ASSUME\s{-.35} & F_{1}, \ldots, F_{n} \V{.2}
+             &  \PROVE & G
+    \end{noj3}
+ \]
+asserts \tlabox{|-(F_{1} /\ \ldots /\ F_{n}\,=>\,G)}\,,
+which is very different from Rule PR.
+%  $|-(F_{1} /\ \ldots /\ F_{n}\,=>\,G)$\,.
+A simple and striking example of the difference is provided by the
+proof rule $F|-[]F$.
+%
+This rule asserts that if $F$ is true for all behaviors, then so is
+$[]F$.  The rule is valid because $[]F$ asserts of a behavior $\sigma$
+that $F$ is true for all suffixes of $\sigma$, and every suffix of
+$\sigma$ is a behavior.  Therefore $[]F$ is true for every behavior if
+$F$ is true for all behaviors.  On the other hand, for a behavior
+$\sigma$, the formula $F=>[]F$ asserts \M{\sigma}{F \implies \Box F}, which is
+equivalent to $\M{\sigma}{F} => \M{\sigma}{\Box F}$.  Hence it asserts that
+if $F$ is true of $\sigma$, then it is true of all suffixes of
+$\sigma$.  This is clearly not true for an arbitrary formula $F$ and
+behavior $\sigma$, so $F => []F$ is not a tautology.  It is a
+theorem for certain formulas $F$, for example if $F$ equals $[](x=1)$.
+%
+\begin{aquestion}{tlp-answer1}
+Show that $[](x=1) => []([](x=1))$ is a theorem.
+\end{aquestion}
+%
+Temporal logic proof rules can be deduced from tautologies and a small
+number of basic proof rules.  For example, the proof rule $F|-[]F$ can
+be deduced from the proof rule $(F=>G)|-([]F => []G)$, the tautology
+$[]\,\TRUE$, and ordinary logic.  You should be able to determine if a
+simple proof rule is valid by translating it into a statement about
+behaviors.  
+
+When reasoning about temporal formulas, it is surprisingly easy to get
+into trouble by confusing proof rules with formulas---for example,
+confusing the rule $F|-[]F$ with the formula $F=>[]F$.  Here's a very
+blatant example of this.
+\begin{display}
+$\THEOREM Fallacy == (y=0) => [](y=0)$
+
+\smallskip
+\pf\ To prove $A=>B$, it suffices to assume $A$ and prove $B$.  Hence,
+it suffices to assume $y=0$ and prove $[](y=0)$.  From $y=0$ and
+the rule $F|-[]F$, we deduce $[](y=0)$.~\textsc{qed}
+\end{display}
+The theorem is clearly not correct, and the error in the proof becomes
+clear if we express all the statements explicitly in terms of
+assertions about behaviors.  However, the virtue of temporal logic is
+that it lets us reason about temporal formulas without having to
+translate those formulas into explicit assertions about behaviors.  To
+understand how to do that without making mistakes, we need to examine
+proofs more closely.
+
+A theorem 
+ \[ \THEOREM T \]
+asserts that the formula $T$ is true for all behaviors---that is, that
+$|-T$ is true.  We prove this theorem by showing that $T$ is true for
+some arbitrarily chosen behavior.  In other words, we prove
+\M{\sigma}{T} for some behavior $\sigma$.  Consider a hierarchically
+structured proof of the theorem.  The proof of the first top-level
+step can use only previously proved theorems, which are true for all
+behaviors $\sigma$.  Hence, the first top-level step must be true for
+every behavior $\sigma$.  Since subsequent top-level statements can
+use only previously-proved theorems or top-level statements, they too
+must be true for every behavior $\sigma$.  In other words, every
+top-level statement is itself a theorem.  Hence, we can apply the
+proof rule $F |- []F$ to every top-level statement $F$.
+
+Suppose that the theorem contains no \textsc{assume}/\textsc{prove}
+steps, including no \textsc{suffices}~\textsc{assume}/\textsc{prove}
+steps.  It's then easy to see that every step, not just the top-level
+ones, is proved assuming only formulas that are true for all
+behaviors, and hence every step is a theorem.  We can therefore
+apply the rule $F |- []F$ to the formula $F$ asserted by any step
+in the proof.
+
+The problem comes when a proof contains an
+\textsc{assume}/\textsc{prove}.  Here is the ``proof'' of theorem
+$Fallacy$ written more rigorously:
+\begin{display}
+\pflongnumbers
+\pflongindent
+\afterPfSpace{7pt}
+\beforePfSpace{1pt}
+\begin{proof}
+\step{1}{\sassume{$y=0$}\prove{$[](y=0)$}}
+\begin{proof}
+\pf\ Obvious.
+\end{proof}
+
+\qedstep
+\begin{proof}
+\pf\ By step~1 and the proof rule $F|-[]F$,  with 
+ % $F <- y=0$.
+$y=0$ substituted for $F$.
+\end{proof}
+\end{proof}
+\end{display}
+The theorem asserts that $\M{\sigma}{(y=0) => [](y=0)}$ is true for
+all behaviors $\sigma$.  The proof attempts to show that it is true
+for some particular arbitrary behavior $\sigma$.  The
+\textsc{suffices} statement asserts that to prove this, it suffices to
+assume $\M{\sigma}{y=0}$ is true and prove that $\M{\sigma}{[](y=0)}$.
+Thus, in the \textsc{q.e.d.} proof, we can assume only that
+$\M{\sigma}{y=0}$ is true for this particular behavior $\sigma$.
+However, the hypothesis of the proof rule $F|-[]F$ asserts that
+$\M{\tau}{F}$ is true for all behaviors $\tau$, not just that
+\M{\sigma}{F} is true.  Hence, that hypothesis is not satisfied for $F$
+equal to $y=0$, and the proof rule cannot be applied.
+
+In general, a formula $A$ asserted in an \textsc{assume} cannot be
+used to prove the hypothesis $F$ of a proof rule, because the
+\textsc{assume} asserts that $A$ is true for the particular behavior
+under consideration, and the hypothesis of the proof rule asserts that
+$F$ is true for all behaviors.  Since formulas proved without using
+any assumptions in an \textsc{assume} clause are true of all
+behaviors, they can be used as hypotheses of a proof rule.  We can
+therefore stay out of trouble by never doing any temporal reasoning
+within the scope of an assumption from 
+an 
+\textsc{assume}/\textsc{prove} or 
+\textsc{suffices}~\textsc{assume}/\textsc{prove} step.
+
+% 
+% The step 
+%  \[ \ASSUME A \s{1} \PROVE P \]
+% asserts of a behavior $\sigma$ that if $A$ is true of $\sigma$, then
+% $P$ is true of $\sigma$.  Steps in the proof of this
+% \textsc{assume}/\textsc{prove} step can use the assumption $A$.  Thus,
+% a step within that proof asserts formulas that are true only for those
+% particular behaviors $\sigma$ that satisfy $A$, not for all behaviors.
+% Hence, we cannot apply the rule $F|-[]F$ to a formula $F$ proved
+% inside an \textsc{assume}/\textsc{prove}, because that formula was not
+% proved for all behaviors.
+
+
+% This type of error arises when a proof contains a statement that is
+% true in a particular context, but we use it in a proof rule whose
+% hypotheses must be true regardless of context.  In the little false
+% proof above, the statement $y=0$ can be assumed true only in the
+% context of a proof that $y=0$ implies some formula.  However, it is
+% applied in the rule $F|-[]F$, whose assumption asserts that $F$ is true
+% regardless of context.
+% 
+% When we write rigorous structured proofs, a context is the scope of an
+% \textsc{assume}.  We can avoid the problem by not using any
+% temporal-logic proof rule in the scope of an assume---that is, neither
+% in the proof of an \textsc{assume}/\textsc{prove} step nor in the
+% proofs of steps following a \textsc{suffices~assume}/\textsc{prove}
+% step.  Every step not in the scope of an \textsc{assume} asserts a
+% formula that is true of all behaviors, so it can be used as a
+% hypothesis in any proof rule.
+
+While eschewing \textsc{assume}s permits us to use temporal proof
+rules freely, it's a Draconian restriction.  There are some formulas
+that can be \textsc{assume}d without causing problems.  For example, a
+constant formula in an \textsc{assume} is harmless.  Since it does not
+depend on the value of any variable, a constant formula is true of
+some single behavior iff it is true of every behavior.  We can use
+some non-constant formulas in \textsc{assume}s, but to see why
+requires introducing a different kind of proof rule.
+
+The temporal logic proof rules that we use do not require their
+hypotheses to be true for \emph{all} behaviors.  They require only
+that the hypotheses are \emph{always} true.  More precisely, to deduce
+that the conclusion is true for any behavior $\sigma$, they require
+only that their hypotheses be true for all suffixes of $\sigma$.  We
+we write such a rule as:\target{rule-TR}
+  \[ \mbox{TR.}\;\;\tlrule{F_{1}, \ldots, F_{n}}{G} 
+ \]
+This asserts that for any behavior $\sigma$, formula $G$ is true for
+$\sigma$ if $F_{1}$, \ldots, $F_{n}$ is true for all suffixes of $\sigma$.
+In other words, it asserts:
+\begin{widedisplay}
+ $ \A \,\sigma : (\A\, i \in Nat : \M{\sigma^{+i}}{F_{1}})
+    /\ \ldots /\ (\A \,i \in Nat : \M{\sigma^{+i}}{F_{n}}) \;=> \; 
+    \M{\sigma}{G}$
+\end{widedisplay}
+To save space, I sometimes write this rule as
+  \ctindex{1}{+2i1@\mmath{\icmd{vvdash}}}{+2i1}%
+$F_{1},\ldots, F_{n} ||- G$.\marginpar{The symbol $\vvdash$ and 
+$\vvdash$\\ rules are not standard terminology.}
+Rule TR is stronger than rule \lref{rule:pr}{PR}, since it makes a weaker 
+assumption about its hypotheses $F_{i}$.  I will call a rule having
+the form TR a 
+    \ctindex{1}{+2i1rule@\mmath{\icmd{vvdash}} rule}{+2i1rule}%
+    \ctindex{1}{rule!\mmath{\icmd{vvdash}}}{rule+2i1}%
+$||-$ rule.
+
+Instead of using the rule $F|-[]F$, we can use the stronger rule
+$F||-[]F$.  It asserts that, for any behavior $\sigma$, if $F$ is true
+for all prefixes of $\sigma$ then $[]F$ is true for $\sigma$.  It is
+valid by definition of $[]$.  In fact, rule TR is equivalent to%
+ \target{tr-implication}
+ \[ \mbox{TR_{=>}.} \ |- \; []F_{1} /\ \ldots /\ []F_{n} \;=>\; G
+ \]
+For example, $F||-[]F$ is really the trivial assertion $|- []F => []F$.
+The reason we write TR rather than TR$_{=>}$ is that there are rules
+in which some $[]F_{i}$ may not be a legal \tlaplus\ formula.
+For example, 
+ \[\tlrule{P=>P'}{P=>[]P}\]
+is a valid rule for any state predicate $P$.  However, $[](P=>P')$ is
+not a legal (syntactically correct) \tlaplus\ formula because an
+action (a non-temporal formula containing primes) $A$ can occur in a
+temporal formula only in a subexpression of the form $[][A]_{v}$ or
+$<><<A>>_{v}$.  This restriction is to ensure that you can't write
+temporal formulas that you shouldn't, and that there is no need for
+you to write.  However, all of our proof rules and all the reasoning
+we do here remain valid even if we do not place this restriction on
+our temporal formulas.  (Our rules and reasoning can be invalid
+only for formulas that contain a 
+\popref{variable-hiding}{$\EE$ or $\AA$ operator}.)
+
+Our \target{illegal-tla}%
+$||-$ rules make it unnecessary to write illegal formulas like
+$[](P=>P')$ when reasoning about specifications.  However, those
+formulas can be useful in understanding and reasoning about our proof
+rules.  I will therefore sometimes use them in the rest of
+Section~\ref{sec:temporal-logic}.  I will use a red $\red[]$ or
+$\red<>$ when the operator is applied illegally to an action formula,
+as in ${\red[]}(P=>P')$.
+
+Of course, TLAPS will only accept legal \tlaplus\ formulas.  However,
+if each $[]F_{i}$ is a \tlaplus\ formula, you can check that a rule of
+the form TR is valid by having TLAPS check if TR$_{\implies}$ is true.
+
+\begin{aquestion}{tlp-answer2}
+Prove the validity of the rule $({P=>P'})||-({P=>[]P})$ 
+for $P$ a state predicate.
+\end{aquestion}
+%
+If $[]G$ is a legal formula, then rule TR is equivalent to
+ \[ \mbox{TR_{[]}.}\;\;\tlrule{F_{1}, \ldots, F_{n}}{[]G}
+ \]
+Since $[]G=>G$ is a tautology, it's easy to see that TR$_{\Box}$
+implies TR. The proof that TR implies TR$_{\Box}$ is as follows.  To
+prove TR$_{\Box}$, we let $\sigma$ be any behavior, assume that each
+$F_{i}$ is true for every suffix of $\sigma$, and prove that $[]G$ is
+true for $\sigma$.  By definition of $[]$, we do this by showing that
+if $\tau$ is any suffix of $\sigma$, then $G$ is true for $\tau$.
+Since a suffix of a suffix is a suffix, every suffix of $\tau$ is a
+suffix of $\sigma$.  Hence, each $F_{i}$ is true for every suffix of
+$\tau$, which by TR implies that $G$ is true for $\tau$, completing
+the proof.  (If this is too confusing, write the proof in terms of
+\Mmap{G} and the \Mmap{F_{i}}.)
+
+When we write a proof of a temporal formula, we are proving that the
+formula is true for every particular behavior $\sigma$.  For every
+step not within the scope of an \textsc{assume}, or in the scope of
+only constant assumptions, this proves that the step is true for all
+behaviors.  If the step appears in the scope of a non-constant
+assumption $F$, then we have proved the step only for behaviors
+$\sigma$ for which $F$ is true.  If $F$ equals $[]G$ for some formula
+$G$, then the behaviors for which $F$ is true include all suffixes of
+$\sigma$.  Hence, if the only non-constant assumptions within whose
+scope a step appears are all of the form $[]G$, then the step is true
+for all suffixes of $\sigma$.  Any such step can be used as a
+hypothesis of a $||-$ rule, which by the reasoning that led to
+TR$_{\Box}$ shows that the conclusion is also true for all suffixes of
+$\sigma$.  Hence, our proofs remain sound even with
+\textsc{assume}/\textsc{proofs} as long as the only non-constant
+assumptions equal $[]G$ for some $G$, and the only temporal proof rules
+we use are $||-$ rules.
+
+Since $[][]G$ is equivalent to $G$, a formula $F$ equals $[]G$
+for some $G$ iff $F$ is equivalent to $[]F$.
+Such a formula is called a $[]$
+  \target{box-formula}%
+  \ctindex{1}{+3v formula@\mmath{\icmd{Box}} formula}{+3vformula}%
+  \ctindex{1}{formula!\mmath{\icmd{Box}}}{formula+3v}%
+\emph{formula}.  More precisely, $F$ is a $[]$ formula iff
+$|-(F\equiv[]F)$ is true.  Note that a constant formula is a $[]$
+formula.  Since all the rules we use for temporal reasoning are $||-$
+rules, we have seen that we can stay out of trouble by obeying the
+following rule when writing proofs:
+\begin{display}
+A proof step asserting a temporal logic formula can appear in
+the scope of an \textsc{assume} iff all the assumptions 
+of the \textsc{assume} are $[]$
+formulas.
+\end{display}
+Here are five simple rules for showing that a formula is a $[]$
+formula.
+\begin{itemize}
+\item A constant formula is a $[]$ formula.
+
+\item $[]F$, $[]<>F$, and $<>[]F$ are $[]$ formulas, for any formula $F$.
+
+\item The conjunction and disjunction of $[]$ formulas are $[]$ formulas.
+
+\item If $P(i)$ is a $[]$ formula for every $i$ in a constant set $S$,
+then \tlabox{\A i\in S : P(i)}
+and \tlabox{\E i\in S : P(i)}
+are $[]$ formulas.
+\end{itemize}
+These rules and the definitions of $\WF$ and $\SF$ given below imply
+that $\WF_{v}(A)$ and $\SF_{v}(A)$ are $[]$ formulas, for any $v$ and
+$A$.
+
+
+Since $|-([]F => F)$ is a tautology, $F$ is a $[]$ formula if $|-(F
+=> []F)$ is true.  This observation will help you answer:
+\begin{question}
+Verify the five rules for $[]$ formulas given above.
+\end{question}
+%
+% As observed above, a temporal logic proof rule 
+%   \tlabox{F_{1}, \ldots, F_{n} |- G} 
+% is valid iff the truth of 
+%  \tlabox{\M{\tau}{F_{1}} /\ \ldots /\ \M{\tau}{F_{n}}} 
+% for all suffixes $\tau$ implies \M{\sigma}{G}.  This means that
+% the rule is valid if
+%   \tlabox{[]F_{1} /\ \ldots /\ []F_{n} => G}
+% is a tautology.  However, for some $F_{i}$, this formula will not be a legal
+% \tlaplus\ formula because it might not be 
+% \rref{main}{suttering-insensitivity}{insensitive to stuttering}.
+% For example, $P |- P'$ is a valid temporal logic proof rule, but
+% $[]P=>P'$ is not a legal \tlaplus\ formula.
+% If \tlabox{[]F_{1} /\ \ldots /\ []F_{n} => G} is a \tlaplus\ formula,
+% you can use TLAPS to check that 
+%   \tlabox{F_{1}, \ldots, F_{n} |- G} 
+% is a valid proof rule.
+
+\begin{question}
+Explain why $P |- P'$ is a valid proof rule, for any state predicate
+$P$, and why $[]P=>P'$ is not equivalent to any legal \tlaplus\ formula.
+\end{question}
+%
+
+\subsection{Rules for Proving Safety} \xlabel{math:proving-safety}
+
+The most fundamental safety property is invariance.
+The assertion that a state predicate $P$ is an invariant of a
+specification $Spec$ is expressed in temporal logic by the formula
+$Spec => []P$.  The formula is proved by finding an
+ \rref{main}{main:inductive-invariant}{inductive invariant}
+$Inv$ that implies $P$.  The proof is based on the following
+proof rule:%
+    \tindex{1}{INV1 (proof rule)}%  
+    \ctindex{1}{rule!INV1}{rule-inv1}%
+  \[\mbox{INV1:} \s{1} \tlrule{Inv /\ [Next]_{vars} => Inv'}%
+                      {Inv /\ [][Next]_{vars} => []Inv}
+    \target{INV1}
+ \]
+If $Spec$ equals $Init /\ [][Next]_{vars}$, possibly conjoined with a
+liveness property, then the proof looks like this:\pagebreak[2]
+\begin{display}
+\textsc{theorem:} $Spec => P$
+\begin{proof}
+\pflongnumbers
+\interStepSpace{.5em}
+\beforePfSpace{1em,.3em,.4em}
+\pflongindent
+\afterPfSpace{0em,.4em,.2em}
+\step{1}{$Init => Inv$}
+
+\step{2}{$Inv /\ [][Next]_{vars} => Inv'$}
+  \begin{proof}
+  \step{2.1}{It suffices to prove $Inv /\ Next=> Inv'$}
+   \begin{proof}
+   \pf\ $[Next]_{vars}$ equals $Next \/ \UNCHANGED vars$
+   and\V{.2}
+     \s{2}$Inv /\ \UNCHANGED vars => Inv'$\V{.2}
+   is obvious  because
+   the tuple $vars$ of variables contains all the variables that
+   occur in $Inv$.
+   \end{proof}
+   \s{1}$\vdots$
+  \end{proof}
+
+\step{3}{$Inv => P$}
+
+\qedstep
+\begin{proof}
+\pf\ By the definition of $Spec$, 
+     steps 1--3, and rule INV1.
+\end{proof}
+\end{proof}
+\end{display}
+Here is a more complete proof of the {Q.E.D.} step, which we would 
+normally not bother to write.
+\begin{display}
+\pflongnumbers
+\afterPfSpace{.5em}
+\beforePfSpace{.2em}
+\pflongindent
+\begin{proof}
+\nostep{1} \nostep{2} \nostep{3}
+\qedstep
+\begin{proof}
+\step{4.1}{$Inv /\ [][Next]_{vars} => []Inv$}
+\begin{proof}
+\pf\ By step~\stepref{2} and rule INV1.
+\end{proof}
+\step{4.2}{$Init /\ [][Next]_{vars} => []Inv$}
+\begin{proof}
+\pf\ By steps \stepref{1} and \stepref{4.1}.
+\end{proof}
+\step{4.3}{$[]Inv => []P$}
+\begin{proof}
+\pf\ By step \stepref{3} and the proof rule $(F=>G)|-([]F => []G)$.
+\end{proof}
+\qedstep
+\begin{proof}
+\pf\ By \stepref{4.1}--\stepref{4.3} and the definition of $Spec$.
+\end{proof}
+\end{proof}
+\end{proof}
+\end{display}
+The other kind of safety property that we prove is that
+one specification implements the safety part of another
+specification under a refinement mapping.  As explained in
+\rref{main}{\xlink{main:tl-refinement}}{Section~\xref{main:tl-refinement}},
+such a property is expressed by a formula of the form:
+ \[ I /\ [][M]_{v} \; => \; J /\ [][N]_{w}
+ \]
+To prove it, we prove the following properties for a suitable
+invariant $Inv$
+ \[ \begin{noj}
+    I=>J \V{.3}
+    I /\ [][M]_{v} => []Inv \V{.3}
+    Inv \,/\ \,Inv' \,/\ \,[M]_{v} \,=>\, [N]_{w}
+    \end{noj}
+ \]
+and apply this proof rule:%
+    \tindex{1}{INV2 (proof rule)}%  
+    \ctindex{1}{rule!INV2}{rule-inv2}%
+  \[ \mbox{INV2:} \s{1} 
+      \tlrule{Inv \,/\ \,Inv' \,/\ \,[M]_{v} \,=>\, [N]_{w} }
+      {[]Inv \,/\ \,[][M]_{v} \,=>\, [][N]_{w}}
+  \]
+plus simple propositional reasoning.
+\begin{question}
+Show that rule INV2 is valid.
+\end{question}
+
+
+\subsection{Leads To} %\protect\ensuremath{\protect\leadsto} 
+
+\label{sec:leads-to}%
+The temporal operator  
+    \ctindex{2}{+2rq@\mmath{\icmd{leadsto}} (leads to)}{+2rq}%
+\,$~>$\,, read as
+\emph{leads
+  \tindex{1}{leads to}%
+to}, is defined by
+ \[  F ~> G == [](F => <>G)
+ \]
+Thus, $F~>G$ is true of a behavior $\sigma$ iff, for every suffix
+$\tau$ of $\sigma$, if $F$ is true for $\tau$ then $G$ is true for
+some suffix of $\tau$.  In other words, it asserts that if $F$ ever
+becomes true, then $G$ will be true then or later.  
+We type \,$~>$\, as \,\texttt{\raisebox{-.2em}{\tilde}>}\, in \tlaplus.
+
+The formula $F~>G$ is a liveness property, and the $~>$ operator is
+fundamental in reasoning about liveness.  A system satisfies a
+liveness property because the system's fairness property implies
+certain elementary leads-to properties---ones that assert that if $F$
+is true, then a system step must eventually occur that makes $G$ true.
+We will see how to prove such elementary leads-to properties below,
+when we examine fairness.  Here, we consider how to deduce leads-to
+properties from safety properties and other leads-to properties.
+
+Note that $F~>G$ is a $[]$ property, since by definition it is of the
+form $[]H$.  Also, the proof rule $H||-[]H$ and the tautology $G =>
+<>G$ imply the proof rule $(F=>G)||-(F~>G)$.
+
+\subsubsection{The Leads-To Induction Rule} 
+%
+ \tindex{1}{leads-to induction rule}%
+ \tindex{1}{induction, leads-to}%
+ \ctindex{1}{rule!leads-to induction}{rule-ltind}%
+
+The following tautology, which asserts the transitivity of~\,$~>$\,,
+allows us to deduce leads-to properties from simpler leads-to
+properties:
+%
+%\begin{equation} {\NOTLA \label{eq:fgh}}
+ \[ (F ~>G)\; /\ \; (G~>H)\; => \; (F ~> H) \]
+%\end{equation}
+%from (\ref{eq:fgh})
+By induction, we can generalize this to 
+% the 
+%  \[ (F_{n} ~> F_{n-1} ~> \ldots ~> F_{0}) \; => \; (F_{n} ~> F_{0})
+%  \]
+% This is an abbreviation for 
+  \[ (F_{n}~>F_{n-1}) \; /\ \; (F_{n-1}~>F_{n-2}) \; /\ \; \ldots \; /\ \; (F_{1} ~> F_{0})
+      \; => \; (F_{n} ~> F_{0})
+ \]
+We can further generalize this as follows.  Suppose we have a finite
+directed graph with no cycles that contains a single sink node.  Let's
+take it to be the following graph that has the sink $z$; we'll
+generalize later.
+% \begin{display}
+% \begin{picture}(0,128)(-10,-10)
+% %{\gray\graphpaper(0,0)(400,200)}
+% \put(0,100){\circle{20}}
+% \put(0,100){\makebox(0,0){$T$}}
+% \put(0,50){\circle{20}}
+% \put(0,50){\makebox(0,0){$U$}}
+% \put(0,0){\circle{20}}
+% \put(0,0){\makebox(0,0){$V$}}
+% %
+% \put(100,100){\circle{20}}
+% \put(100,100){\makebox(0,0){$W$}}
+% \put(100,50){\circle{20}}
+% \put(100,50){\makebox(0,0){$X$}}
+% \put(150,0){\circle{20}}
+% \put(150,0){\makebox(0,0){$Y$}}
+% \put(200,50){\circle{20}}
+% \put(200,50){\makebox(0,0){$Z$}}
+% %
+% %\put(8.8,54.4){\circle{2}}
+% \thicklines
+% \put(10,100){\vector(1,0){80}}
+% \put(10,50){\vector(1,0){80}}
+% \put(10,0){\vector(1,0){130}}
+% \put(110,50){\vector(1,0){80}}
+% %
+% \put(9,54.5){\vector(2,1){81.5}}
+% \put(9,4.5){\vector(2,1){81.5}}
+% \put(109,95.5){\vector(2,-1){81.5}}
+% \put(9.6,46.8){\vector(3,-1){130.5}}
+% \put(107.2,42.8){\vector(1,-1){35.6}}
+% \put(157.2,7.2){\vector(1,1){35.6}}%
+% \qbezier(9.9,103)(155,145)(192.4,64)
+% \put(195,59){\vector(1,-2){0}}
+% \end{picture}
+% \end{display}
+%
+\begin{display}
+\begin{picture}(0,128)(-10,-10)
+%{\gray\graphpaper(0,0)(400,200)}
+\put(0,100){\circle{20}}
+\put(0,100){\makebox(0,0){$t$}}
+\put(0,50){\circle{20}}
+\put(0,50){\makebox(0,0){$u$}}
+\put(0,0){\circle{20}}
+\put(0,0){\makebox(0,0){$v$}}
+%
+\put(100,100){\circle{20}}
+\put(100,100){\makebox(0,0){$w$}}
+\put(100,50){\circle{20}}
+\put(100,50){\makebox(0,0){$x$}}
+\put(150,0){\circle{20}}
+\put(150,0){\makebox(0,0){$y$}}
+\put(200,50){\circle{20}}
+\put(200,50){\makebox(0,0){$z$}}
+%
+%\put(8.8,54.4){\circle{2}}
+\thicklines
+\put(10,100){\vector(1,0){80}}
+\put(10,50){\vector(1,0){80}}
+\put(10,0){\vector(1,0){130}}
+\put(110,50){\vector(1,0){80}}
+%
+\put(9,54.5){\vector(2,1){81.5}}
+\put(9,4.5){\vector(2,1){81.5}}
+\put(109,95.5){\vector(2,-1){81.5}}
+\put(9.6,46.8){\vector(3,-1){130.5}}
+\put(107.2,42.8){\vector(1,-1){35.6}}
+\put(157.2,7.2){\vector(1,1){35.6}}%
+\qbezier(9.9,103)(155,145)(192.4,64)
+\put(195,59){\vector(1,-2){0}}
+\end{picture}
+\end{display}
+%
+Suppose that we start with a token on any of the nodes and move it
+according to the following rule: if the token is not on the sink node,
+then it must eventually move along one of the edges from its current
+node to another node.  For example, if the token is on node $x$, it
+must eventually move to node $y$ or node $z$.  Obviously, the token
+must eventually end up on the sink node.
+
+Now, let's assign to each node $n$ a formula $F_{n}$.  In the token
+game, let's interpret the token being on node $n$ to mean that $F_{n}$
+is true.  The rule about how tokens must move corresponds to the
+assumption that if $F_{n}$ is ever true, then $F_{q}$ must eventually
+become true for some node pointed to by an edge from $n$.  In other
+words, we assume that $F_{n}$ leads to the disjunction of all
+formulas $F_{q}$ for which there is an edge from $n$ to $q$.
+The conjunction of all those assumptions is the formula:
+ \[ (F_{t} ~> (F_{w} \/ F_{z})) \; /\ \; ( F_{u}~> (F_{w} \/ F_{x} \/ F_{y}))
+      \; /\ \; \ldots \; /\ \; (F_{y} ~> F_{z})
+ \]
+We observed that if the token is placed on any node, then it
+eventually reaches the sink node.  Therefore, if we start with at
+least one formula $F_{t}$ true, then eventually $F_{z}$ must be true.
+In other words, the formula we are assuming implies
+ \[ (F_{t} \/ F_{u} \/ \ldots \/ F_{z}) \,~> \, F_{z}
+ \]
+% To generalize all this, let's require that there is an edge from every
+% other node to the sink node.  This requirement weakens what we are
+% assuming.  In terms of the token game, our assumption is weaker
+% because having more nodes that the token can move to weakens the
+% assumption that it must move.  In terms of formulas, our assumption is
+% weaker because $G ~> H \/ K$ is weaker than (is implied by)
+%  $G ~> H$, for any formulas $G$, $H$, and $K$.
+% 
+ 
+A little thought shows that we can generalize this to any directed
+graph satisfying two conditions: (i)~it has no infinite path starting from
+any node (which implies that there are no cycles) and (ii)~it has a
+unique sink.  
+
+Given a graph with a set $\N$ of nodes, let's define the relation
+$\succ$ by letting $m\succ n$ be true iff there is an edge from $m$ to
+$n$.  Condition (i)~can then be expressed by the assertion that there
+is no ``infinite chain''
+ \[ n_{1} \succ n_{2} \succ n_{3} \succ \ldots
+ \]
+of elements in $\N$.  The relation $\succ$ is said to be
+  \tindex{2}{well-founded}%
+  \ctindex{2}{relation!well-founded}{rel-well-founded}%
+\popref{well-founded}{\emph{well-founded}} on the set $\N$ iff this condition holds.  
+%
+% The second condition asserts that there is a unique node $z$ such that
+% $z\succ n$ does not hold for any node $n$ of $\N$.  We call $z$ the
+% \emph{minimum element} of $\N$.  Thus, our two requirements can be
+% expressed as: $\succ$ is a well-founded relation on $\N$ with minimum
+% element $z$.
+%
+
+For any element $n$ of $\N$, define $\N\!_{n\,\succ}$ to be the
+set of all elements $m$ of $\N$ such that $n\succ m$.  Our token-game
+assumption is that, from any node $n$ other than $z$, the token eventually
+moves to some node in $\N\!_{n\,\succ}$.  The corresponding temporal
+property for node $n$ is 
+   $F_{n}~>(\E m \in \N\!_{n\,\succ} : F_{m})$.
+Our general rule states that, if this formula is true for all nodes
+other than $z$, then if there exists some node $n$ with $F_{n}$ true,
+eventually $F_{z}$ is true:
+\begin{display}
+\textbf{Leads-To Induction Rule } If $\succ$ is a well-founded
+relation on a set $\N$ and $z\in \N$, then:
+ \[ \begin{noj}
+    (\A \,n \in \N \,:\:\, \{z\} : 
+           F_{n}~>(\E\, m \in \N\!_{n\,\succ} : F_{m})) \\
+    \s{2}=> \\
+    ((\E \,n \in \N : F_{n}) ~> F_{z})
+    \end{noj}
+ \]
+\end{display}
+The assumption (ii) of our example, that $z$ is the unique sink node,
+has disappeared from the rule.  The reason is that if $n$ is a sink
+node, then $\N\!_{n\,\succ}$ is the empty set, so the hypothesis
+$F_{n}~>(\E\, m \in \N\!_{n\,\succ} : F_{m})$ is equivalent to
+$F_{n}~>\FALSE$.  The proof rule $(G=>H)|-(G~>H)$ implies that
+$\FALSE~>F_{z}$ is a tautology, so $F_{n}~>\FALSE$ implies
+$F_{n}~>F_{z}$.  There is thus an implicit edge from every sink node
+other than $z$ to node $z$.  Since we don't draw any edges leading out of
+$z$, adding these implicit edges produces a graph in which $z$ is the
+unique sink.  While the rule is valid for any $z$ in $\N$, it is
+always used with $z$ the minimum element of $\N$ under the ordering
+$\succ$.
+
+Of course, the graph has disappeared from the rule, being replaced by
+the well-founded relation $\succ$.  Also gone is the assumption that
+the graph is finite.  The rule is valid for infinite sets $\N$ as
+well.  The argument about the token game does not depend on having a
+finite number of nodes, only on there not being an infinite path
+having a first node.
+
+The most common example of a well-founded relation on an infinite set
+$\N$ with minimum element is the relation $>$ on the set $Nat$ of
+natural numbers, which has minimum element~0.  Another useful
+well-founded relation on an infinite set is 
+lexicographical 
+    \tindex{2}{lexicographical ordering}%
+   \ctindex{2}{order!lexicographic}{order-lexicographic}%
+ordering
+on the set of $k$-tuples of natural numbers, for some integer $k>0$.
+This ordering is defined by letting $<<a_{1}, \ldots \, a_{k}>> \succ
+<<b_{1}, \ldots \, b_{k}>>$ be true iff there is some $i$ in $1\dd k$
+such that $a_{i}> b_{i}$ and $a_{j} = b_{j}$ for all $j$ in
+$1\dd(i-1)$.  This is a well-founded ordering with minimum element
+$<<0, \ldots, 0>>$.
+
+\medskip
+
+When explaining a use of the Leads-To Induction Rule in a proof, it
+usually helps to draw the directed graph of the relation $\succ$ with
+the actual formulas $F_{n}$ as the nodes.  For example, here is the graph
+used in a proof of $T1 ~> \FALSE$.
+\begin{display}
+\begin{picture}(0,70)(0,0)
+%      {\gray\graphpaper(0,0)(300,200)}
+      \put(0,30){\makebox(0,0)[l]{$T1$}}
+      \put(40,30){\makebox(0,0)[l]{$\Box T1$}}
+      \put(160,60){\makebox(0,0)[t]{$T0$}}
+      \put(85,0){\makebox(0,0)[lb]{$\Box (T1 \land \lnot T0)$}}
+      \put(175,0){\makebox(0,0)[lb]{$\Box (T1 \land \lnot x[0])$}}
+      \put(257,30){\makebox(0,0)[l]{$\FALSE$}}
+      \thicklines
+      \put(18,30){\vector(1,0){17}}
+      \put(62,25){\vector(3,-2){20}}
+      \put(64,34){\vector(4,1){87}}
+      \put(150,6){\vector(1,0){20}}
+      \put(240,10){\vector(1,1){15}}
+      \put(170,55){\vector(4,-1){85}}
+      \end{picture}
+\end{display}
+The graph shows that $T1~>\FALSE$ follows from these formulas:
+ \[ \begin{noj2}
+    T1 \,~>\, []T1  & \Box (T1 \land \lnot T0) \,~>\, \Box (T1 \land \lnot x[0]) \V{.3}
+    T0 \,~>\, \FALSE    & \Box (T1 \land \lnot x[0]) \,~>\, \FALSE \V{.3}
+    []T1 \,~>\, T0 \, \/ \, \Box (T1 \land \lnot T0)\s{2} 
+    \end{noj2}
+ \]
+%
+I call such a graph a \emph{proof graph}.  It's clear that the token
+game, starting with the token on the $T1$ node, shows that these $~>$
+formulas imply $T1~>\FALSE$.  This follows from the Leads-To Induction
+Rule, the transitivity of $~>$, and the observation that for any
+$m\in\N$, the proof rule $(G=>H)|-(G~>H)$ implies $F_{m}~>(\E \,n \in
+\N : F_{n})$.
+
+\medskip
+
+The Leads-To Induction Rule was originally called the \emph{Lattice
+  \tindex{1}{lattice rule}%
+ \ctindex{1}{rule!lattice}{rule-lattice}%
+Rule}, which was a misleading name because the rule has nothing to do
+with what mathematicians call lattices.  The following question
+explains why I prefer to call it Leads-To Induction.
+\begin{question}
+The validity of the Leads-To Induction Rule depends only on the
+transitivity of $~>$.  Ordinary implication is also transitive.
+Therefore, the rule obtained from Leads-To Induction by replacing $~>$
+with $=>$ is also valid.  Show that the following substitutions then
+produce the rule for ordinary mathematical induction:
+ \[ F_{n} \;<-\; ~F_{n} \s{2} \N \;<-\; Nat \s{2} \succ \;\; <- \;\; > 
+   \s{2} z \;<-\; 0
+ \]
+\end{question}
+
+\begin{aquestion}{leads-to-induction}
+\sloppy
+Define a \tlaplus\ operator $LeadsToInduction$ so that
+ \[ LeadsToInduction(F,\, \N, \, \succ,\, z) \] 
+expresses the Leads-To Induction Rule, writing $F(n)$ instead of
+$F_{n}$ and $LTSet(\N,\,\succ)$ instead of $\N\!_{n\,\succ}$.  You
+should include the definition of $LTSet$ and of a well-founded
+relation with minimum element.
+\end{aquestion}
+
+% 
+% \subsubsection{The \protect\ensuremath{\implies} Implies 
+%      \protect\ensuremath{\leadsto} Rule}
+% 
+% 
+% An 
+%  \ctindex{1}{+3ahk@\mmath{\icmd{Rightarrow}} Implies 
+%    \mmath{\icmd{leadsto}} Rule}{+3ahk}%%
+% important rule for proving leads-to properties is
+%  \[ \mbox{$=>$ Implies $~>$ Rule:} \s{1}
+%   \proofrule{F => G}{F ~> G}\]
+% It is implied by the tautology
+%  $[](F => G) =>(F ~> G)$ and the proof rule $H|-[]H$.
+% Initutively, the $=>$ Implies $~>$ Rule is valid because $|-(F=>G)$
+% implies that if $F$ is true at any time then $G$ is true at that time,
+% which implies that $G$ is eventually true because ``eventually''
+% includes ``now''.
+% 
+% 
+% % 
+% % \[  \begin{noj}
+% %     [](F => G) \V{.4} \s{1}
+% %      \begin{noj3}
+% %       => & [](F => G) /\ [](G => <>G)\s{1} & \mbox{By $|-[](G => <>G)$} \V{.4}
+% %       => & []((F => G) /\ (G => <>G)) & \mbox{By $|-([]H /\ []J \equiv 
+% %                                                       [](H /\ J)$.} \V{.4}
+% %       => & [](F => <>G) & \mbox{By $(H => J) |- ([]H => []J)$.} \V{.4}
+% %      => &F ~> G & \mbox{By definition of $~>$.}
+% %     \end{noj3}
+% %     \end{noj}
+% % \]
+% 
+% This rule allows us to use implications in leads-to proof graphs.
+% For example, because
+%   $P => (P /\ Q) \/ (P /\ ~Q)$ 
+% is a tautology, the rule justifies the following proof graph, for arbitrary
+% formulas $P$ and $Q$.
+% \begin{display}
+% %\setlength{\unitlength}{.6pt}
+% \begin{picture}(0,70)(-10,-10)
+% %\put(50,50){\circle{20}}
+% \put(50,50){\makebox(0,0)[l]{$P \land Q$}}
+% %\put(0,25){\circle{20}}
+% \put(0,25){\makebox(0,0){$P$}}
+% %\put(50,0){\circle{20}}
+% \put(50,0){\makebox(0,0)[l]{$P \land ~Q$}}
+% \thicklines
+% \put(10.2,17.8){\vector(2,-1){32.6}}
+% \put(10.2,32.2){\vector(2,1){32.6}}%
+% \end{picture}
+% \end{display}
+% A common application of this rule is to use invariance properties in
+% liveness proofs.  When proving a liveness property about a program
+% with next-state action $Next$ and tuple $vars$ of variables, we reason
+% in a context containing the assumption $[][Next]_{vars}$, so we can
+% use \lref{INV1}{rule INV1} to prove $P /\ [Next]_{vars} => P'$ and
+% deduce $P => []P$.  From this and $=>$ implies $~>$, we infer
+% $P~>[]P$.
+% 
+% \begin{hquestion}{implies-implies}
+% Show that the $=>$ Implies $~>$ Rule is valid.
+% \end{hquestion}
+
+% When proving $~>$ formulas, $[]$ formulas are nice because 
+% ``they are true forever''.  More precisely, we can use
+% the following tautology: 
+%  \[ (P /\ []Q ~> R) \;=>\; (P /\ []Q ~> R /\ []Q) \]
+% This means that, when using the Leads-To Induction Rule, if some
+% $F_{n}$ equals $P /\ []Q$, then we can let $[]Q$ be a conjunct of
+% $F_{m}$ for all $m$ with $n\succ m$.
+
+% When we want to prove that a specification satisfies a liveness
+% property of the form $P~>Q$, the formulas $P$ and $Q$ are usually
+% state predicates.  The operator $~>$ was defined and used informally
+% for state predicates before the introduction of temporal logic into
+% computer science.  The Leads-To Induction rule was also used, with the
+% formulas $F_{n}$ being state predicates.  
+% 
+% The great advance provided by temporal logic was the power obtained by
+% letting the $F_{n}$ be temporal formulas---in particular, formulas of
+% the form $R /\ []S$, for state predicates $R$ and $S$.  The tautology
+%   \[ (R /\ []S ~> T) => (R /\ []S ~> T /\ []S)
+%   \]
+% by now should be obvious to you.  It means that, when using the
+% Leads-To Induction Rule, if some $F_{n}$ equals $R /\ []S$, then we
+% can let $[]S$ be a conjunct of $F_{m}$ for all $m$ with $n\succ m$.
+% We will see that this 
+
+\subsubsection{The \protect\ensuremath{\Box\leadsto} Rule}
+
+  \ctindex{1}{+3v+r2rule@\mmath{\icmd{Box}\icmd{leadsto}} rule}{+3v+r2rule}%
+  \ctindex{1}{rule!\mmath{\icmd{Box}\icmd{leadsto}}}{rule+3v+r2}%
+The formula $[]F /\ G~>H$ is true of a behavior $\sigma$ iff, for
+every suffixe $\tau$ of $\sigma$, if $[]F$ and $G$ are true of $\tau$,
+then $H$ is true of some suffix $\rho$ of $\tau$.  By definition of $[]$,
+if $[]F$ is true of $\tau$ then it is also true of its suffix $\rho$.
+Therefore, the following formula is a tautology.
+  \[([]F /\ G\,~>\,H)\;=>\;([]F /\ G\,~>\,[]F /\ H )\] 
+Suppose we're proving a formula $([]P /\ Q)~>R$ by Leads-To Induction using a
+graph having $[]P /\ Q$ as its only source node.  This tautology
+implies that we can let $[]P$ be a conjunct of all the formulas in the
+proof graph.  Instead of explicitly making it a conjunct, we can
+simply assume $[]P$ in the proof of $Q~>R$, usually employing this
+proof structure:
+\begin{display}
+$<<i>>j$. $([]P /\ Q)~>R$\V{.4}
+\s{1}$<<i+1>>1$. \textsc{Suffices }$\begin{noj2}
+                               \textsc{Assume:} & []P \\
+                                \textsc{Prove:} & Q ~> R
+                               \end{noj2}$
+\end{display} 
+The justification for the \textsc{Suffices} step is this proof rule:
+\begin{display}
+$[]~>$ Rule: $\tlrule{[]P \,=>\, (Q~>R)}{[]P /\ Q \,~>\, []P /\ R}$
+\end{display}
+For a short Leads-To Induction proof, we may not bother with this
+rule and just conjoin $[]P$ to the formulas in the proof graph.
+
+\begin{question}
+Prove the validity of the $[]~>$ Rule.  Show by an example that
+the corresponding implication
+ \[([]P => (Q~>R)) \; => \; ([]P /\ Q ~> []P /\ R)
+  \]
+is not a tautology.
+\end{question}
+\subsubsection{Proving \protect\ensuremath{\leadsto} Formulas by 
+   Contradiction}
+%
+ \tindex{1}{contradiction, proof by}%
+  \tindex{1}{proof!by contradiction}%
+\popref{pf-by-contradiction}{Proofs by contradiction} 
+are nice because they allow us to use an
+additional hypothesis---namely, the negation of the formula we are
+trying to prove.  This is a very strong hypothesis because, if what we
+are trying to prove is true, then the hypothesis is equivalent to
+\FALSE, which is the strongest possible hypothesis.
+
+A proof by contradiction of a \,$~>$\, formula is based on the
+tautology:
+ \[ F \,~>\, (G \,\/ \,(F /\ []~G))
+ \]
+This is a tautology because, at any point in an execution, either
+$G$ eventually becomes true or it is always false.  Hence, to
+prove $F~>G$, it suffices to prove that $(F /\ []~G)$ can never be
+true.  We do that by proving $(F /\ []~G)~>\FALSE$, since
+only $\FALSE$ can lead to $\FALSE$.  In other words, a proof
+by contradiction of $F~>G$ uses this tautology:
+ \[ ( (F /\ []~G) ~> \FALSE ) \; => \; (F ~> G)
+ \]
+To prove $(F /\ []~G) ~> \FALSE$, we often use the
+$[]~>$ Proof Rule, which implies that it suffices to assume 
+$[]~G$ and prove $F ~> \FALSE$.
+
+
+\medskip
+
+
+
+\noindent
+\textsf{\sref{principles}{tlaproof}{If this section on Temporal Logic
+has been a detour, you may now want to return to
+Section~\xref{more-formal-proof}.}}
+
+
+% \definecolor{rose}{rgb}{1,.95,.95}
+% \pagecolor{rose}
+
+\subsection{Fairness}%
+
+
+\tindex{1}{fairness}%
+The concept of weak fairness of an action was introduced informally
+in
+ \rref{main}{\xlink{sec:alt-liveness}}{Section~\xref{sec:alt-liveness}}
+and made more precise in 
+ \rref{main}{main:weak-fairness}{Section~\xref{fairness-revisited}}.
+We now formally define weak and strong fairness.  To do this,
+we must first introduce the $\ENABLED$ operator.
+
+
+\subsubsection{The {\rm\sc enabled} Operator}
+   \ctindex{1}{ENABLED@\textsc{enabled}}{ENABLED}%
+   \xlabel{sec-enabled}%
+\noindent
+%
+The \tlaplus\ primitive operator \textsc{enabled} is defined so
+that, for an action $A$, the formula $\ENABLED A$ is a state predicate
+asserting that $A$ is enabled.  Action $A$ is 
+    \ctindex{1}{action!enabled}{action-enabled}%
+    \tindex{2}{enabled}%
+enabled in a state $s$
+iff there exists a state $t$ such that $s->t$ is an $A$ step.  Thus,
+$\ENABLED A$ is defined semantically by:
+ \[ \M{s}{\ENABLED A} \,\;\equiv\,\; \E\, t : \M{\langle s,t\rangle}{A}
+ \]
+Suppose $A$ contains no user-defined operators, no \textsc{enabled}
+operator, and no 
+ \marginpar{\popref{cdot}{What is the $\,\cdot\,$ operator?}}%
+ \ctindex{2}{+3jj@\mmath{\icmd{cdot}} (action composition)}{+3jj}%
+ \tindex{2}{action composition operator}%
+ ``\,$\cdot$\,'' operator. 
+We can then construct $\ENABLED A$ as follows:
+\begin{itemize}
+\item Let $v_{1}$, \ldots, $v_{n}$ be all the distinct variables that
+occur primed in $A$, and 
+let 
+  $\widehat{v_{1}}$, \ldots, $\widehat{v_{n}}$ 
+be $n$ identifiers that do not occur in $A$.  
+
+\item Let $\widehat{A}$ be the
+formula obtained from $A$ by replacing each occurrence of $v_{i}'$ by
+$\widehat{v_{i}}$, for each variable $v_{i}$.  
+
+\item Then 
+$\ENABLED A$ is the formula 
+  $\E\, \widehat{v_{1}}, \ldots, \widehat{v_{n}} : \widehat{A}$\,.
+\end{itemize}
+For an arbitrary action $A$, let the \emph{full expansion} of $A$ be
+the action obtained by recursively expanding all definitions of
+user-defined symbols in $A$.  We can compute $\ENABLED A$ by applying
+the procedure above to the full expansion of $A$.  If there are nested
+\textsc{enabled} operators, the procedure is applied in a bottom-up
+fashion (constructing the innermost \textsc{enabled} formulas first).
+How to handle occurrences of the ``\,$\cdot$\,'' operator is left
+as an exercise for the reader.
+
+For an action $A$ defined as part of the definition of a next-state
+relation, $\ENABLED A$ can usually be computed using the following
+rules, where $A$, $B$, and the $A(i)$ are actions, $P$ is a state
+predicate, $exp$ is a state function (an expression with no
+primed variables), and $v$ is a variable.
+\begin{enumerate}
+\item[E1.] $\ENABLED (P /\ A) \;\;\equiv\;\;P\, /\ \, (\ENABLED A)$%
+  \target{enabled-rules}
+
+\item[E2.]  $\ENABLED (A \/ B) \;\;\equiv\;\;(\ENABLED A)\, \/ \,(\ENABLED B)$
+
+\item[E3.]  $\ENABLED (\E\, i \in exp : A(i))  \;\;\equiv\;\;   
+  \E\,i \in exp : \ENABLED A(i)$
+
+\item[E4.] If the full expansions of $A$ and $B$ have no primed variable
+in common, then\V{.2}
+\s{2}$\ENABLED (A /\ B) \;\;\equiv\;\;(\ENABLED A) \, /\ \, (\ENABLED B)$
+
+\item[E5.] $\ENABLED (v' = exp) \;\;\equiv\;\; \TRUE$
+
+\item[E6.] $\ENABLED (v' \in exp) \;\;\equiv\;\; exp # \{\}$
+\end{enumerate}
+For example, if $x$ and $y$ are variables, then:\vs{.2}
+\begin{widedisplay}
+$ \begin{noj}
+   \ENABLED ((x \subseteq \{y, y+1\}) /\ (x' = \{\}) /\ (y' \in x)) \V{.2}
+    \s{1}\begin{noj2}
+           \equiv\;\; 
+           (x \subseteq \{y, y+1\})\, /\ \, \ENABLED ((x' = \{\}) /\ (y' \in x))
+           & \mbox{by E1} \V{.2}
+          \equiv\;\; 
+           (x \subseteq \{y, y+1\}) \,
+               /\ \, \ENABLED (x' = \{\}) \, /\ \, \ENABLED (y' \in x)\;\;
+           & \mbox{by E4} \V{.2}
+           \equiv\;\; 
+           (x \subseteq \{y, y+1\}) /\ (x # \{\}) 
+           & \mbox{by E5 and E6}
+         \end{noj2}
+   \end{noj}$
+\end{widedisplay}
+Unfortunately, fairness involves not $\ENABLED A$ for such an action
+$A$, but rather $\ENABLED <<A>>_{v}$, where 
+  \ctindex{2}{+4n@\mmath{\icmd{langle}A\icmd{rangle}_{v}} (action operator)}{+4n}%
+$<<A>>_{v}$ is defined to
+equal $A /\ (v'#v)$ and $v$ is usually the tuple of all specification
+variables.  The rules above do not allow us to compute such an
+\textsc{enabled} expression.
+
+In some cases, the action $A$ does not permit stuttering steps, so
+$A$ and $<<A>>_{v}$ are equivalent.  If they are, then we can apply
+the proof rule
+\begin{enumerate}
+\item[] $(A\equiv B)\, |- \, ((\ENABLED A)\equiv(\ENABLED B))$
+\end{enumerate}
+%{\sloppypar\noindent 
+to deduce that $\ENABLED <<A>>_{v}$ equals the
+more easily computed formula $\ENABLED A$.  It's rarely the case that
+$A$ and $<<A>>_{v}$ are equivalent on all steps $s->t$.  However, they
+often are equivalent on steps $s->t$ in which $s$ satisfies a type
+invariant.  This rule and E1 implies that the following
+rule 
+is true for any actions $A$ and $B$ and any state predicate $P$.
+\begin{enumerate}
+\item[E7.]
+$(P => (A\equiv B)) |- (P => ((\ENABLED A)\equiv(\ENABLED B))$
+\end{enumerate}
+We most often apply this rule with $B$ equal to $<<A>>_{v}$ and $P$ an
+invariant that implies type-correctness.  Note that E7 is an ordinary
+proof rule, not a $||-$ rule.
+%}
+\begin{aquestion}{enabled-answer1} \label{enabled-answer1}
+Explain why the formula
+   \[(A\equiv B) \;=>\; ((\ENABLED A)\equiv(\ENABLED B))\]
+and the rule 
+  \[(A\equiv B)\, ||- \, ((\ENABLED A)\equiv(\ENABLED B))\]
+are not necessarily true.
+\end{aquestion}
+%
+
+
+
+\subsubsection{Weak Fairness}
+
+We saw in 
+ \rref{main}{main:weak-fairness}{Section~\xref{fairness-revisited}}
+  \tindex{2}{weak fairness}%
+  \tindex{3}{fairness!weak}%
+that the formula 
+  \ctindex{2}{WF@\icmd{WF}}{WF}%
+$\WF_{v}(A)$ asserts of a behavior $\sigma$ that $\sigma$ does not
+contain a suffix in which an $<<A>>_{v}$ step is always enabled but
+never occurs.  Since $<<A>>_{v}$ is defined to equal $A /\ (v'#v)$, if
+$v$ is the tuple of all variables in a system specification, then an
+$<<A>>_{v}$ step is a non-stuttering $A$ step.  Recall that $[A]_{v}$
+is defined to equal $A \/ (v'=v)$.
+This calculation
+ \[ \begin{noj4}
+    <<A>>_{v} & \equiv & A /\ (v'#v) & \mbox{by definition of $<<\dots>>_v$}
+\V{.3}
+              & \equiv & ~\, ~(A /\ (v'#v)) & 
+                   \mbox{because $~~F \equiv F$}\V{.3}
+              & \equiv & ~ (~A \/ (v' = v)) \s{.5}& 
+                  \mbox{because $~(F /\ G) \equiv (~F \/ ~G)$} \V{.3}
+              & \equiv & ~ [~A]_{v}& \mbox{by definition of $[\dots]_v$}
+    \end{noj4}
+ \]
+shows that the operators $<<\ldots>>_{v}$ and $[\dots]_{v}$ bear the
+same relation to each other that $<>$ and $[]$ do---that is,
+$<<A>>_{v} \equiv ~[~A]_{v}$ and $<>F \equiv ~[]~F$.  This relation is
+sometimes called \emph{duality}.  These two duality relations imply
+ \[ <><<A>>_{v}\equiv ~[][~A]_{v}
+ \]
+for any action $A$ and state expression $v$.
+
+We now express weak fairness in terms of temporal operators and
+\textsc{enabled}.  The formula $\WF_{v}(A)$ asserts of a behavior
+$\sigma$ that there is not a suffix $\tau$ of $\sigma$ such that
+$\ENABLED <<A>>_{v}$ is true in every state of $\tau$ and there is no
+$<<A>>_{v}$ step in $\tau$.  ``$\ENABLED <<A>>_{v}$ is true in every
+state of $\tau$'' is expressed by $\tau|-[](\ENABLED <<A>>_{v})$; and
+``there is no $<<A>>_{v}$ step in $\tau$'' is expressed by
+$\tau|-~<><<A>>_{v}$.  Therefore, $\WF_{v}(A)$ can be written as the
+following formula:
+ \[ ~ <>([](\ENABLED <<A>>_{v}) /\ ~<><<A>>_{v})
+ \]
+This formula probably looks inscrutable to you.  However, like all
+mathematical formulas, we can understand it a piece at a time.
+Moreover, we can use tautologies to simplify it as follows:
+\begin{widedisplay}
+\begin{tabbing}
+$~ <>([](\ENABLED <<A>>_{v}) /\ ~<><<A>>_{v})$ \V{.4}
+\s{1}\=\+ $\equiv$ \ \= \s{16} \= \kill
+$\equiv$ \> $[]~(([]\ENABLED <<A>>_{v}) /\ ~<><<A>>_{v})$ 
+   \> by $~<>F \equiv []~F$\V{.4}
+%
+$\equiv$ \> $[]((~[]\ENABLED <<A>>_{v}) \/ <><<A>>_{v})$ 
+   \> by $~(F /\ G) \equiv (~F \/ ~G)$ and $~~F \equiv F$\V{.4}
+%
+$\equiv$ \> $[](<>(~\ENABLED <<A>>_{v}) \/ <><<A>>_{v})$ 
+   \> by $~[]F\equiv <>~F$\V{.4}
+%
+$\equiv$ \> $[]<>((~\ENABLED <<A>>_{v}) \/ <<A>>_{v})$ 
+   \> by $<>F \/ <>G \equiv <>(F \/ G)$\V{.4}
+%
+$\equiv$ \> $[]<>(~\ENABLED <<A>>_{v}) \/ []<><<A>>_{v}$ 
+   \> by $[]<>(F \/ G) \equiv ([]<>F \/ []<>G) $
+\end{tabbing}
+\end{widedisplay}
+We can therefore define:
+ \[ \WF_{v}(A) == []<>~\ENABLED <<A>>_{v} \; \/ \; []<><<A>>_{v}
+ \]
+Thus, $\WF_{v}(A)$ asserts of a behavior that either
+$<<A>>_{v}$ is infinitely often disabled (not enabled), or
+there are infinitely many $<<A>>_{v}$ steps.
+
+\begin{question}
+Show that $\WF_{v}(A)$ is equivalent to each of the following two
+formulas:
+\[ \begin{noj}
+   <>[]\,(\ENABLED <<A>>_{v}) \; => \; []<><<A>>_{v} \V{.4}
+  ~ \,<>\,([](\ENABLED <<A>>_{v}) /\ [][~A]_{v})
+   \end{noj}
+\]
+\end{question}
+
+\subsubsection{Strong Fairness}
+
+The weak fairness formula $\WF_{v}(A)$ asserts of a behavior $\sigma$
+that $\sigma$ does not contain a suffix in which an $<<A>>_{v}$ step
+is always enabled but never occurs.  The corresponding strong 
+  \tindex{2}{strong fairness}%
+  \tindex{2}{fairness!strong}%
+fairness 
+formula 
+  \ctindex{2}{SF@\icmd{SF}}{SF}%
+$\SF_{v}(A)$ asserts of a behavior $\sigma$ that $\sigma$ does not
+contain a suffix in which an $<<A>>_{v}$ step is infinitely often
+enabled but never occurs.  Since \emph{always true} is stronger than
+(implies) \emph{infinitely often true}, the condition that something
+\emph{isn't} true infinitely often is stronger than its not being
+always true.  Hence, $\SF_{v}(A)$ implies $\WF_{v}(A)$, so strong
+fairness is stronger than weak fairness.  
+\emph{Doesn't contain a suffix satisfying $F$} is expressed in temporal 
+logic by $~<>F$, and \emph{infinitely often} is expressed as $[]<>$.
+Hence $\SF_{v}(A)$ can be written as
+ \[ ~<>([]<>(\ENABLED<<A>>_{v}) /\ ~<><<A>>_{v}
+ \]
+We can use tautologies to simplify this formula as follows:
+\begin{widedisplay}
+\begin{tabbing}
+$~ <>([]<>(\ENABLED <<A>>_{v}) /\ ~<><<A>>_{v})$ \V{.4}
+\s{1}\=\+ $\equiv$ \ \= \s{16} \= \kill
+$\equiv$ \> $[]~(([]<>\ENABLED <<A>>_{v}) /\ ~<><<A>>_{v})$ 
+   \> by $~<>F \equiv []~F$\V{.4}
+%
+$\equiv$ \> $[]((~[]<>\ENABLED <<A>>_{v}) \/ <><<A>>_{v})$ 
+   \> by $~(F /\ G) \equiv (~F \/ ~G)$ and $~~F \equiv F$\V{.4}
+%
+$\equiv$ \> $[](<>[](~\ENABLED <<A>>_{v}) \/ <><<A>>_{v})$ 
+   \> by $~[]<>F\equiv <>[]~F$\V{.4}
+%
+$\equiv$ \> $[]<>[](~\ENABLED <<A>>_{v}) \/ []<><<A>>_{v})$ 
+   \> by $[](<>F \/ <>G) \equiv []<>F \/ []<>G$\V{.4}
+%
+$\equiv$ \> $<>[](~\ENABLED <<A>>_{v}) \/ []<><<A>>_{v}$ 
+   \> by $<>[]<>F\equiv []<>F$
+\end{tabbing}
+\end{widedisplay}
+We can therefore define:
+ \[ \SF_{v}(A) == <>[]~\ENABLED <<A>>_{v} \; \/ \; []<><<A>>_{v}
+ \]
+Observe that replacing $<>[]~\ENABLED <<A>>_{v}$ by the weaker formula
+$[]<>~\ENABLED <<A>>_{v}$ in this formula yields the (weaker) formula
+$\WF_{v}(A)$.
+\begin{question}
+Show that the following formulas are all tautologies, for any
+temporal formulas $F$ and $G$:
+\begin{widedisplay}
+$ ~[]<>F\equiv <>[]~F 
+\s{1.5} <>[]<>F\equiv []<>F \s{1.5} <>[]F => []<>F
+\s{1.5} [](<>F \/ <>G) \equiv []<>F \/ []<>G
+$
+\end{widedisplay}
+\end{question}
+
+
+
+
+\subsubsection{Proving \protect\ensuremath{\leadsto} Properties with Fairness}
+
+Section~\ref{sec:leads-to} gives rules for deriving $~>$ from other
+$~>$ properties and safety properties.  However, except for the
+trivial rule $(F=>G)|-(F~>G)$ (which essentially says that something
+happening now happens eventually), it provides no rule for deriving
+$~>$ properties without starting from $~>$ properties.  Elementary
+$~>$ properties are derived from fairness assumptions.  
+
+To prove $P~>Q$ for state predicates $P$ and $Q$, we must show that if
+$P$ ever becomes true, then $Q$ will eventually becomes true.  We use
+$\WF_{v}(A)$ to prove this by contradiction by showing that if 
+$P$ is true and $Q$
+never becomes true, then an $<<A>>_{v}$ step must eventually make $Q$
+true.  This in turn follows from these three conditions:
+\begin{itemize}
+\item Once true, $P$ remains true until $Q$ becomes true.
+\item Any $<<A>>_{v}$ step starting in a state with $P$ true makes $Q$ true.
+\item If $P$ remains true forever, then an $<<A>>_{v}$ step 
+must eventually occur.  
+\end{itemize}
+Assuming a next-state action $\N$, so every step is a $[\N]_{v}$ step,
+the first two conditions are expressed as:
+ \[\begin{noj}
+   (1) P /\ [\N]_{v} => (P' \/ Q') \V{.2}
+   (2) P /\ <<A>>_{v} => Q'
+   \end{noj}
+ \]
+The third condition is implied by $\WF_{v}(A)$ and:
+ \[ (3) P => \ENABLED <<A>>_{v}
+ \]
+Since we assume every non-stuttering step is an $\N$ step, we can
+strengthen (2) by replacing $<<A>>_{v}$ with $<<\N /\ A>>_{v}$.  (In
+almost all applications, $\N /\ A$ will equal $A$.)  This gives us
+the following proof rule:%
+    \tindex{1}{WF1 (proof rule)}%  
+     \ctindex{1}{rule!WF1}{rule-wf1}%
+ \[  
+    \mbox{WF1.} \tlrule{P /\ [\N]_{v} => (P' \/ Q') \V{.2}
+   P /\ <<\N /\ A>>_{v} => Q'\V{.2} P => \ENABLED <<A>>_{v}}%
+  {[][\N]_{v} /\ \WF_{v}(A) => (P ~> Q)}
+ \]
+To apply this rule, we have to be able to prove its hypotheses.  We
+will seldom be able to prove the hypotheses without additional
+assumptions unless $P$ rules out states in which variables have values
+``of the wrong type''.  We could let $P$ have a conjunct $I$ that is
+an invariant asserting type-correctness and other useful properties.
+Instead, we usually apply WF1 in a proof in the scope of the
+assumption $[]I$, so we can assume $I$ and $I'$ in the proof of these
+hypotheses.  (Of course, $I'$ would be useful only in the proof of the
+first two.)
+
+% \begin{question}
+% Show that for any behavior $\sigma$, the conclusion of WF1 is true
+% for $\sigma$ if each of its three hypotheses is true for all suffixes
+% of $\sigma$.  Thus, we can apply rule WF1 if its three hypotheses
+% have been proved only under assumptions that are $[]$ formulas.
+% \end{question}
+
+\bigskip\noindent
+%
+There is an analogous rule to WF1 for strong fairness.  With the
+hypothesis $\SF_{v}(A)$, to deduce that an $<<A>>_{v}$ step eventually
+occurs, it suffices to show that $<<A>>_{v}$ is infinitely often
+enabled.  We can therefore weaken the third hypothesis of WF1 to obtain:%
+   \tindex{1}{SF1 (proof rule)}%  
+   \ctindex{1}{rule!SF1}{rule-sf1}%
+
+ \[ \mbox{SF1.}\ \ \tlrule{P /\ [\N]_{v} => (P' \/ Q') \V{.2}
+   P /\ <<\N /\ A>>_{v} => Q'\V{.2} []P /\ [][\N]_{v} => <>\ENABLED <<A>>_{v}}%
+  {[][\N]_{v} /\ \SF_{v}(A) => (P ~> Q)}
+ \]
+As with rule WF1, we usually need an assumption $[]I$ to
+prove the hypotheses, for a suitable invariant $I$.  We
+often need an additional assumption $[]F$ to prove the third
+hypothesis, for some temporal formula $F$.  Equivalently,
+we can use the following generalization of SF1.
+ \[ \mbox{SF1a.}\ \ \tlrule{P /\ [\N]_{v} => (P' \/ Q') \V{.2}
+   P /\ <<\N /\ A>>_{v} => Q'\V{.2} []P /\ [][\N]_{v} /\ []F => <>\ENABLED <<A>>_{v}}%
+  {[][\N]_{v} /\ \SF_{v}(A) /\ []F => (P ~> Q)}
+ \]
+\begin{hquestion}{fairness-answer1}
+Use semantic reasoning to show the soundness of rule SF1.
+\end{hquestion}
+
+
+\subsubsection{Proving Fairness} \xlabel{proving-fairness}
+
+As we saw in
+ \rref{main}{\xlink{main:tl-refinement}}{Section~\xref{main:tl-refinement}}, 
+to prove that a specification $Spec_{H}$ implements a specification
+$Spec_{A}$ under a refinement mapping, we must prove
+$Spec_{H}=>\overline{Spec_{A}}$, where $\overline{F}$ is the formula
+obtained from a formula $F$ by substituting, for each variable $x$ of
+$Spec_{A}$ the formula $\overline{x}$.  Formula $Spec_{A}$ usually has
+the form
+ $Init_{A} /\ [][Next_{A}]_{w} /\ \F$, 
+where $w$ is the tuple of all the specification's variables and $\F$ is
+the conjunction of fairness formulas.  In that case,
+$\overline{\strut Spec_{A}}$ equals
+  $\overline{\strut Init_{A}} /\ [][\overline{\strut Next_{A}}]_{\overline{w}} 
+     /\ \overline{\strut\F}$.
+We saw in 
+ \lref{\xlink{math:proving-safety}}{Section~\xref{math:proving-safety}}
+how to prove the $Spec_{H}$ implies 
+  $\overline{\strut Init_{A}} /\ [][\overline{\strut Next_{A}}]_{\overline{w}}$.
+We now see how to prove that it implies~$\overline{\strut \F}$.
+
+If $\F$ is the conjunction of fairness properties, then we can prove
+those properties one and a time.  We therefore need to know only how
+to prove $Spec_{H}=>\overline{\strut\F}$ when $\F$ is a weak or strong
+fairness formula.  We begin with weak fairness.  
+
+Recall that since barring a formula means substituting for its
+variables, barring distributes over most mathematical operators,
+including $\/ $, $~$, $[]$, and $<>$.  For example, $\overline{\strut []<>P}$
+equals $[]<>\overline{\strut P}$.  Since $\WF_{w}(B)$ equals
+ $[]<>~\ENABLED <<B>>_{w} \/ []<><<B>>_{w}$, this implies
+ \[ 
+   \overline{\strut\WF_{w}(B)} \;\;\equiv\;\; 
+    []<>~\overline{\strut\ENABLED <<\strut B>>_{w}} \, \/ \, 
+        []<><<\strut\overline{B}>>_{\overline{w}}
+ \]
+We 
+  \ctindex{1}{\textsc{enabled}!doesn't distribute over barring}%
+        {enabled!doesn't distribute}%
+cannot simplify this formula further 
+because\marginpar{\popref{wfbar}{Why not?}}
+   $\overline{\strut\ENABLED <<\strut B>>_{w}}$
+need not equal
+   $\ENABLED \overline{\strut<<B>>_{w}}$.
+
+The only mathematical operators you are likely to use that
+barring does not distribute over are \textsc{enabled} and the
+operators \WF\ and \SF\ defined in terms of it.  (The only other
+\tlaplus\ operator that barring doesn't distribute over is the
+ \ctindex{3}{+3jj@\mmath{\icmd{cdot}} (action composition)}{+3jj}%
+ \tindex{3}{action composition operator}%
+ \popref{cdot}{action composition operator ``$\cdot$''}%
+\,.)
+% \begin{aquestion}{enabled-answer2}
+% Find an action $A$ for which $\overline{\ENABLED A}$ does not equal
+% $\ENABLED \overline{A}$.
+% \end{aquestion}
+%
+
+\bigskip
+We now come to a rule for deducing $\overline{\strut\WF_{w}(B)}$ from a
+fairness property $\WF_{v}(A)$.  The complete rule, which is used in
+practice, is rather complicated.  We will approach it gradually,
+starting with this simple rule:
+ \[ \tlrule{
+      <<A>>_{v} /\ \overline{\strut\ENABLED <<B>>_{w}}\;=>\; 
+   <<\overline{B}>>_{\overline{w}} \V{.45}
+      \overline{\strut\ENABLED <<B>>_{w}} \;=>\; \ENABLED <<A>>_{v}
+     }
+    {\rule{0pt}{1.35em}\WF_{v}(A) \;=>\;\overline{\WF_{w}(B)}}     
+ \] 
+To show the soundness of this rule, as explained \lref{illegal-tla}{above},
+we use some illegal \tlaplus\ formulas to reason about a proof rule
+ $F_{1},\ldots, F_{n}||- G$
+as if it were $[]F_{1} /\ \ldots /\ []F_{n} => G$.  Here is the
+proof of soundness of this rule.
+\begin{display}
+\pflongnumbers
+\pflongindent
+\beforePfSpace{10pt, 2pt, 2pt}
+\afterPfSpace{10pt, 5pt, 5pt}
+\interStepSpace{15pt,5pt}
+
+\assume{$\begin{noj}
+  \mbox{A1. } {\red[]}(<<A>>_{v} /\  \overline{\strut\ENABLED <<B>>_{w}}
+ => <<\overline{B}>>_{\overline{w}}) \V{.3}
+   \mbox{A2. } [](\overline{\strut\ENABLED <<B>>_{w}} 
+                       => \ENABLED <<A>>_{v})
+          \end{noj}$}
+\prove{$\WF_{v}(A) \;=>\;\overline{\WF_{w}(B)}$}
+\begin{proof}
+\step{1}{\sassume{%
+   $\WF_{v}(A) \, /\ \, <>[]\overline{\strut\ENABLED <<B>>_{w}}$%
+\marginpar{Note that this assumption is a {$\Box$ formula}.}%
+}
+    \prove{$[]<><<\overline{B}>>_{\overline{w}}$}}
+\begin{proof}
+\pf\ By definition of $\WF$, the tautology $~[]<>~F \equiv <>[]F$,
+and propositional logic, $\WF_{v}(A) \,=>\,\overline{\WF_{w}(B)}$
+is equivalent to:\V{.4}
+  \s{2}$ \WF_{v}(A) \, /\ \, <>[]\overline{\strut\ENABLED <<B>>_{w}} \;=>\;
+     []<><<\overline{B}>>_{\overline{w}}$
+\end{proof}
+\step{2}{$<>[]\ENABLED <<A>>_{v}$}
+ \begin{proof}
+ \pf\ By step~\stepref{1}, assumption A2, and the rule\V{.2}
+   \s{2}$(F => G) ||- (<>[]F => <>[]G)$.
+ \end{proof}
+%
+\step{3}{$[]<><<A>>_{v}$}
+\begin{proof}
+\pf\ By step 2, since $\WF_{v}(A)$ is equivalent to\V{.2}
+ \s{2}$<>[]\ENABLED <<A>>_{v}\,=>\, []<><<A>>_{v}$.
+\end{proof}
+
+\step{4}{${\red []<>}(<<A>>_{v} /\ \overline{\strut\ENABLED <<B>>_{w}})$}
+\begin{proof}
+\pf\ By step 3 and the step 1 assumption, since $[]<>F /\ <>[]G$
+implies $[]<>(F /\ G)$.
+\end{proof}
+
+\qedstep
+\begin{proof}
+\pf\ By step~\stepref{4}, assumption~A1, and the rule\V{.2}
+ \s{2}$(F => G) ||- ([]<>F => []<>G)$.
+\end{proof}
+\end{proof}
+
+\end{display}
+%
+You should study this rule until you understand it intuitively.  We
+obtain the complete rule by incrementally modifying it.  We won't
+worry much about soundness of the intermediate rules; we will just prove
+that the complete rule is sound.
+
+The first change is to introduce a next-state action $\N$ and
+tuple $v$ of variables, so we can use $[][\N]_{v}$ to prove
+$\overline{\strut\WF_{w}(B)}$:
+ \[ \tlrule{
+      <<{\darkgreen \N \, /\ \, } A>>_{v}
+    /\ \overline{\strut\ENABLED <<B>>_{w}}
+ \;=>\; <<\overline{B}>>_{\overline{w}} \V{.25}
+      \overline{\strut\ENABLED <<B>>_{w}} \;=>\; \ENABLED <<A>>_{v}
+     }
+    {\rule{0pt}{1.25em}{\darkgreen [][\N]_{v} \,/\ \,} \WF_{v}(A) \;=>\;\overline{\WF_{w}(B)}}   
+ \]
+Soundness follows from soundness of the original rule because if
+$[][\N]_{v}$ is true of a behavior $\sigma$, then a step of $\sigma$
+is an $<<A>>_{v}$ step iff it is an $<<\N /\ A>>_{v}$ step.
+
+Next, we make a modification that by itself accomplishes nothing, but
+will allow further transformations.  We introduce a new action $C$
+that's stronger than $A$:
+  \[ \tlrule{
+      <<\N /\ C>>_{v} \;=>\; <<\overline{B}>>_{\overline{w}} \V{.25}
+      <<\N /\ A>>_{v} /\ \overline{\strut\ENABLED <<B>>_{w}} \;=>\; C \V{.25}
+      \overline{\strut\ENABLED <<B>>_{w}} \;=>\; \ENABLED <<A>>_{v}
+     }
+    {\rule{0pt}{1.25em}[][\N]_{v} /\ \WF_{v}(A) \;=>\;\overline{\WF_{w}(B)}}   
+ \]
+Soundness of this rule is obvious, since the first two hypotheses imply
+the first hypothesis of the previous rule.  
+
+From here on, we show the position of our successive rules within
+the complete rule, the parts to be added later shown in gray.
+% The next rule is obtained by strengthening the second hypothesis:
+%  \[\tlrule{
+%     <<\N /\ C>>_{v}  \;=>\; <<\overline{B}>>_{\overline{w}} \V{.45}
+%     {\gray P \,/\ \,P' \,\,/\ \,\,} <<\N /\ A>>_{v} 
+%        {\darkgreen \,\,/\ \,\, \overline{\strut\ENABLED <<B>>_{w}}} \;=>\; C \V{.45}
+%    {\gray P \,\,/\ \,\,} \overline{\strut\ENABLED <<B>>_{w}}\;=>\; 
+%         \ENABLED <<A>>_{v} \V{.45}
+%    \gray [][\N /\ ~C]_{v} \,/\ \,\WF_{v}(A)  
+%      \,/\ \,[]\overline{\strut\ENABLED <<B>>_{w}} 
+%         \;=>\; <>[]P }%
+%   {\rule{0pt}{1.3em}[][\N]_{v} \,/\ \,\WF_{v}(A) \;=>\; 
+%        \overline{\strut\WF_{w}(B)}}\]
+The next step is to strengthen the second and third hypotheses to make
+use of an invariant $P$, adding another hypothesis that proves the
+invariance of $P$.
+ \[\tlrule{
+    <<\N /\ C>>_{v}  \;=>\; <<\overline{B}>>_{\overline{w}} \V{.45}
+    {\darkgreen P \,/\ \,P' \,\,/\ \,\,} <<\N /\ A>>_{v} 
+       { \,\,/\ \,\, \overline{\strut\ENABLED <<B>>_{w}}} \;=>\; C \V{.45}
+   {\darkgreen P \,\,/\ \,\,} \overline{\strut\ENABLED <<B>>_{w}}\;=>\; 
+        \ENABLED <<A>>_{v} \V{.45}
+   \gray {\darkgreen [][\N /\ ~C]_{v}} \,/\ \,\WF_{v}(A)  
+     {\darkgreen \,\,/\ \,\,[]\overline{\strut\ENABLED <<B>>_{w}}} %{\,\,/\ \,\,[]F} 
+        {\darkgreen \,\;=>\;\,} <>{\darkgreen []P} }%
+  {\rule{0pt}{1.3em}[][\N]_{v} \,/\ \,\WF_{v}(A) %{\gray \,\,/\ \,\,[]F} 
+   \;=>\; 
+       \overline{\strut\WF_{w}(B)}}\]
+Finally, we weaken the fourth hypothesis because it's not necessary that
+$P$ be an invariant; we just need to show that $<>[]P$ is satisfied,
+which $\WF_{v}(A)$ can help us prove.  This yields our complete rule:%
+   \tindex{1}{WF2 (proof rule)}%  
+   \ctindex{1}{rule!WF2}{rule-wf2}%
+%
+ \[
+\mbox{WF2.}\ \ 
+\tlrule{
+    <<\N /\ C>>_{v}  \;=>\; <<\overline{B}>>_{\overline{w}} \V{.45}
+    {P \,/\ \,P' \,\,/\ \,\,} <<\N /\ A>>_{v} 
+       { \,\,/\ \,\, \overline{\strut\ENABLED <<B>>_{w}}} \;=>\; C \V{.45}
+   {P \,\,/\ \,\,} \overline{\strut\ENABLED <<B>>_{w}}\;=>\; 
+        \ENABLED <<A>>_{v} \V{.45}
+  \black  {\black [][\N /\ ~C]_{v}} {\black \,\,/\ \, \,\WF_{v}(A)} 
+     {\black \,\,/\ \,\,[]\overline{\strut\ENABLED <<B>>_{w}}} 
+     %{\,\,/\ \,\,[]F} 
+        {\black \,\;=>\;\,} {\black <>}[]P }%
+  {\rule{0pt}{1.3em}[][\N]_{v} \,/\ \,\WF_{v}(A) %{\gray \,\,/\ \,\,[]F} 
+     \;=>\; 
+       \overline{\strut\WF_{w}(B)}}\]
+\popref{wf2-proof}{Click here for the proof of rule WF2.}
+
+As with rule SF1, we often need an additional assumption $[]F$ 
+to prove the last hypothesis, for some temporal formula $F$.  We can
+similarly generalize WF2 to:%
+     \target{rule-wf2a}
+ \[
+\mbox{WF2a.}\ \ 
+\tlrule{
+    <<\N /\ C>>_{v}  \;=>\; <<\overline{B}>>_{\overline{w}} \V{.45}
+    {P \,/\ \,P' \,\,/\ \,\,} <<\N /\ A>>_{v} 
+       { \,\,/\ \,\, \overline{\strut\ENABLED <<B>>_{w}}} \;=>\; C \V{.45}
+   {P \,\,/\ \,\,} \overline{\strut\ENABLED <<B>>_{w}}\;=>\; 
+        \ENABLED <<A>>_{v} \V{.45}
+  \black  {\black [][\N /\ ~C]_{v}} {\black \,\,/\ \, \,\WF_{v}(A)} 
+     {\black \,\,/\ \,\,[]\overline{\strut\ENABLED <<B>>_{w}}} 
+     {\,\,/\ \,\,[]F} 
+        {\black \,\;=>\;\,} {\black <>}[]P }%
+  {\rule{0pt}{1.3em}[][\N]_{v} \,/\ \,\WF_{v}(A) \,/\ \, []F 
+     \;=>\; 
+       \overline{\strut\WF_{w}(B)}}\]
+
+\bigskip\noindent
+The analogous rule to WF2 for deducing \ov{\strut\SF_{w}(B)} from
+$\SF_{v}(A)$ is:   
+   \tindex{1}{SF2 (proof rule)}%  
+   \ctindex{1}{rule!SF2}{rule-sf2}%
+ \[ \mbox{SF2.}\ \ \tlrule{
+    <<\N /\ C>>_{v}  \;=>\; <<\overline{B}>>_{\overline{w}} \V{.45}
+    P \,/\ \,P' \,/\ \, <<\N /\ A>>_{v} 
+        \;=>\; C \V{.45}
+   P \,/\ \,\overline{\strut\ENABLED <<B>>_{w}}\;=>\; 
+        \ENABLED <<A>>_{v} \V{.45}
+   [][\N /\ ~C]_{v} \,/\ \,\SF_{v}(A) 
+     \,/\ \,[]<>\overline{\strut\ENABLED <<B>>_{w}}  % \,/\ \,[]F 
+    \;=>\; <>[]P }%
+  {\rule{0pt}{1.3em}[][\N]_{v} \,/\ \,\SF_{v}(A) % \,/\ \,[]F 
+  \;=>\; \overline{\strut\SF_{w}(B)}}
+ \]
+It's identical to WF2 except with SF replacing WF, with
+$[]<>\overline{\strut\ENABLED <<B>>_{w}}$ replacing the stronger
+condition $[]\overline{\strut\ENABLED <<B>>_{w}}$ in the fourth
+hypothesis, and with the stronger second hypothesis.  The proof of
+soundness is similar to that for WF2 and is left as an exercise for
+the motivated reader.  Just as we generalized WF2 to WF2a to make use
+of an assumption $[]F$, we can generalize SF2 to:
+ \[ \mbox{SF2a.}\ \ \tlrule{
+    <<\N /\ C>>_{v}  \;=>\; <<\overline{B}>>_{\overline{w}} \V{.45}
+    P \,/\ \,P' \,/\ \, <<\N /\ A>>_{v} 
+        \;=>\; C \V{.45}
+   P \,/\ \,\overline{\strut\ENABLED <<B>>_{w}}\;=>\; 
+        \ENABLED <<A>>_{v} \V{.45}
+   [][\N /\ ~C]_{v} \,/\ \,\SF_{v}(A) 
+     \,/\ \,[]<>\overline{\strut\ENABLED <<B>>_{w}}  \,/\ \,[]F 
+    \;=>\; <>[]P }%
+  {\rule{0pt}{1.3em}[][\N]_{v} \,/\ \,\SF_{v}(A) \,/\ \,[]F 
+  \;=>\; \overline{\strut\SF_{w}(B)}}
+ \]
+We now have rules to deduce 
+  \ov{\strut\WF_{w}(B)} from $\WF_{v}(A)$
+and \ov{\strut\SF_{w}(B)} from $\SF_{v}(A)$.
+This leaves two other deductions we might want to perform:
+\begin{itemize}
+\item Deducing \ov{\strut\WF_{w}(B)} from $\SF_{v}(A)$.
+
+\item Deducing \ov{\strut\SF_{w}(B)} from $\WF_{v}(A)$.
+\end{itemize}
+We can do the first by using SF2 to prove \ov{\strut\SF_{w}(B)}, which
+implies \ov{\strut\WF_{w}(B)}.  We can do the second if $\WF_{v}(A)$
+is equivalent to $\SF_{v}(A)$ so we can use SF2, or if
+\ov{\strut\SF_{w}(B)} is equivalent to \ov{\strut\WF_{w}(B)} so we can
+use WF2.  Let's first consider when $\WF_{v}(A)$ is equivalent to
+$\SF_{v}(A)$.
+
+We know that $\SF_{v}(A)$ implies $\WF_{v}(A)$, so to show them
+equivalent, it suffices to show $~\SF_{v}(A)$ implies $~\WF_{v}(A)$.
+Since $~[]<><<A>>_{v}\equiv<>{\red[]}~<<A>>_{v}$
+and $~<<A>>_{v}\equiv[~A]_{v}$, it follows from the definitions
+of WF and SF that:
+ \[  \begin{noj3}
+     ~ \,\WF_{v}(A) & \;\equiv\; & 
+             <>[]\ENABLED <<A>>_{v} \, /\ \, <>[][~A]_{v}\V{.3}
+     ~ \,\SF_{v}(A) & \;\equiv\; & 
+          []<>\ENABLED <<A>>_{v} \, /\ \, <>[][~A]_{v}
+     \end{noj3}
+ \]
+Consider a behavior $\sigma$ that satisfies $\SF_{v}(A)$.  It
+has a suffix $\tau$ that satisfies $[][~A]_{v}$ and $\ENABLED <<A>>_{v}$.
+If $\tau$ satisfies 
+  \[\ENABLED <<A>>_{v} \, /\ \, [][~A]_{v} \; => \; []\ENABLED <<A>>_{v}\]
+then it satisfies 
+  \[ []\ENABLED <<A>>_{v} \, /\ \, [][~A]_{v} \]
+which implies that $\sigma$ satisfies $~ \WF_{v}(A)$.  By this
+argument, we have derived the following rule:
+ \[ \tlrule{\ENABLED <<A>>_{v} \, /\ \, [][~A]_{v} \; => \; 
+             []\ENABLED <<A>>_{v}}
+     {\WF_{v}(A) \,\equiv\, \SF_{v}(A)}
+ \]
+We will apply this rule in a context in which we have a next-state
+action $\N$ and an invariant $I$.  Propositional logic shows
+that $|- [\N]_{v} /\ [~A]_{v} \equiv [\N /\ ~A]_{v}$, 
+   %    
+   %    And TLAPS verifies this by checking:
+   %    
+   %       THEOREM ASSUME NEW VARIABLE x, NEW ACTION N, NEW ACTION A
+   %               PROVE [N]_x /\ [~A]_x <=> [N /\ ~A]_x
+   %       OBVIOUS
+   %    
+which implies $|- [][\N]_{v} /\ [][~A]_{v} \equiv [][\N /\ ~A]_{v}$.  
+The proof rule above therefore implies
+ \[ \tlrule{\ENABLED <<A>>_{v} \, /\ \, []I \, /\ \, [][\N/\ ~A]_{v} \; => \; 
+             []\ENABLED <<A>>_{v}}
+     {[]I \, /\ \, [][\N]_{v} \; => \; (\WF_{v}(A) \,\equiv\,\SF_{v}(A))}
+ \] 
+Exactly the same reasoning used above proves the corresponding rule
+for \ov{\strut\SF_{w}(B)} and \ov{\strut\WF_{w}(B)}:
+ \[ \tlrule{\ov{\strut \ENABLED <<B>>_{w}} \, /\ \, 
+             [][~\ov{\strut B}]_{\ov{w}} \; => \; 
+             []\ov{\strut\ENABLED <<B>>_{w}}\vs{.3}}
+     {\raisebox{.6em}{\strut}\ov{\strut\WF_{v}(B)} 
+             \,\equiv\, \ov{\strut\SF_{v}(B)}}
+ \]
+We can use a next-state action $\N$ and invariant $I$ with the aid of
+this tautology:
+ \[
+   (\UNCHANGED v => \UNCHANGED \ov{w}) \;=>\;
+     ( [\N /\ ~\ov{B}]_{v} => [\N]_{v} /\ [~\ov{B}]_{\ov{w}})
+ \]
+      % Tautology checked by having TLAPS prove:
+      % 
+      %    THEOREM ASSUME NEW VARIABLE x, NEW ACTION N, NEW ACTION A,
+      %                   NEW VARIABLE y,
+      %                   UNCHANGED x => UNCHANGED y
+      %            PROVE  [N /\ ~A]_x => [N]_x /\ [~A]_y
+      %    OBVIOUS
+This tautology and the preceding proof rule imply the soundness of:
+ \[  \tlrule{\UNCHANGED v => \UNCHANGED \ov{w}\V{.3}
+     \ov{\strut \ENABLED <<B>>_{w}} \, /\ \, []I \, /\ \,
+             [][\N /\ ~\ov{\strut B}]_{\ov{w}} \; => \; 
+             []\ov{\strut\ENABLED <<B>>_{w}}\vs{.3}}{%
+    []I \, /\ \, [][\N]_{v} \; => \;
+    (\raisebox{.6em}{\strut}\ov{\strut\WF_{v}(B)} 
+             \,\equiv\, \ov{\strut\SF_{v}(B)})}
+\]  
+\bigskip\noindent
+%
+When using rule WF1, WF2, SF1, or SF2, I find it helpful to prove a
+step that corresponds to the rule's conclusion with a sequence of
+substeps that correspond to the rule's hypotheses followed by a
+\textsc{qed} step whose \textsc{by} clause mentions those substeps and
+the rule.  When writing a formal \tlaplus\ proof to be checked by
+TLAPS, there's no need to mention the rule (except perhaps in a
+comment) because the TLP backend will deduce the rule by
+itself.  I like to use local definitions that make it clear what
+formulas are being substituted for what identifiers in the rule.  For
+example, if I'm using rule SF2, I will define $P$ to equal the 
+formula to be substituted for $P$ in the rule.  Not only does this
+make it easier to understand the proof, but it ensures that I've
+substituted exactly the same formula for each instance of $P$.  The
+TLP backend will probably not be able to check the proof if I were to
+substitute 
+ $P_{1}/\ P_{2}$ 
+for $P$ in one hypothesis and 
+ $P_{2}/\ P_{1}$ 
+for it in another.  In fact, for complicated formulas, you may have
+to hide these local definitions for TLP to prove the \textsc{qed}
+step.
+
+
+
+  
+%try
+
+
+\end{document}
+\newpage 
+
+\subsubsection{One-Step \protect\ensuremath{\protect\leadsto} Properties}
+  \ctindex{1}{one-step \mmath{\icmd{leadsto}} property}{one-step}%
+A one-step $~>$ property $F~>G$ is one that holds
+because fairness of an action $A$ implies that whenever $F$ holds, a
+step of $A$ must eventually occur that makes $G$ true.  For example,
+consider this code from the one-bit protocol:
+\begin{display}
+\begin{tabbing}
+$r:$ \= \pwhile (\TRUE) \+\V{.2}
+  \s{1}\= \{ \= $e1$: \= \+ \kill
+  \{ \> \> \ldots\+ \V{.2}
+       $e1$: \> $x[self] := \TRUE$ ; \V{.2}
+       $e2$: \> \pif\ $(\,~x[1\!-\!self]\,)$ \{ $cs$: critical section \} \- \\
+
+  \}
+\end{tabbing}
+\end{display}
+Weak fairness implies that if a process is ever at $e1$, then
+it eventually reaches $e2$.  More precisely, for a process $i$, weak
+fairness of the process means that the algorithm's specification
+implies
+  $(pc[i]="e1")~>(pc[i]="e2")$.
+This is because the $pc[i]="e1"$ implies that the process's next-state
+action is enabled, and it must remain enabled at least until the
+action is executed.  Weak fairness then implies that the process's
+next-state action must eventually be executed, making $pc[i]="e2"$
+true.
+
+Weak fairness does not imply 
+  $(pc[i]="e2")~>(pc[i]="cs")$
+since executing the $e2$ action when $x[1-i]]$ is true sets $pc[i]$ to
+$"r"$.  In fact, weak fairness does not even imply
+ \[ (pc[i]="e2") /\ ~x[1-i] \; ~>\;(pc[i]="cs")
+ \]
+because $(pc[i]="e2") /\ ~x[1-i]$ could be true, then $x[1-i]$ could
+be set to \TRUE\ and remain forever equal to \TRUE. It would then be
+impossible for $pc[i]$ ever to equal $"cs"$, so the $~>$ property is
+false for such a behavior.  Even if $x[1-i]$ did not remain true
+forever, if process $1-i$ repeatedly set $x[1-i]$ false (in the
+``\ldots'' code) and repeatedly set it true, there would exist an
+execution in which $e2$ was always executed when $x[1-i]$ was true, so
+$pc[i]$ never equaled $"cs"$.  However, weak fairness does imply\target{boxx1i}
+  \[ (pc[i]="e2") /\ []~x[1-i] \; ~>\;(pc[i]="cs") 
+  \]
+If $(pc[i]="e2") /\ []~x[1-i]$ ever becomes true, then $x[1-i]$ is
+false and remains false forever.  Weak fairness then implies that
+process $i$ must take an $e2$ step when $x[1-i]$ is false, making
+$pc[i]="cs"$ true.  You will see later how, in the course of a proof,
+we can deduce that  $(pc[i]="e2") /\ []~x[1-i]$ becomes true.
+
+In the Principles track of this hyperbook, we will be content with
+informal proofs of these one-step $~>$ properties.  They can be
+deduced formally from weak fairness assumptions using a single TLA
+proof rule.  If you are curious about this rule, you can
+  \popref{rule-wf1}{read about it here}.
+
+
+
+
+\end{document}
+
+  
+Based on a response by Martin Abadi, I have decided to define
+recursion to be a syntactic concept and induction a semantic one.  A
+recursive definition is one in which the thing being defined appears
+in its definition.  An inductive definition is one in which one
+defines a function by (a) defining its value on its smallest arguments
+and (b) defining its value on any other argument in terms of its value
+on smaller arguments.  
+
+An inductive definition is thus a special case of a recursive one--for
+example here is a recursive definition that is not inductive.
+
+(*)     lairotcaf(n)  ==  if n = 0 then 1 else n * lairotcaf(n+1)
+
+Mathematicians seem to use only recursive definitions that are
+inductive.  Computer scientists do not.  For example, a computer
+scientist might write the following definition of the set of all
+finite sequences of integers:
+
+   A finite sequence of integers is either the empty sequence or 
+   equals an integer prepended to a finite sequence of integers.
+
+This definition is not inductive and is apparently incorrect because
+it is satisfied by both the set of all finite sequences and the set of
+all finite and infinite sequences.  However, computer scientists
+generally define the meaning of such a recursive definition so it
+defines the smallest set satisfying the statement.
+ 
+Some of you might be interested in the way TLA+ defines the meaning of
+recursive definitions.  It takes the approach that a definition is
+simply an abbreviation, so one never has to prove a theorem in order
+to make a definition.  For soundness, this implies that a recursive
+definition like (*) does not necessarily define lairotcaf(n) to equal
+the right-hand side of (*).  TLA+ defines the meaning of a recursive
+definition in an incomprehensible way that gives it the expected
+meaning if the definition is inductive.  For example, (*) defines
+lairotcaf(n) to equal (-1)^n * (-n)! for any non-positive integer n,
+since the definition is inductive for such an n.  (I lied about (*)
+not being an inductive definition.)  TLA+ also has a special syntax
+for recursive function definitions in which you must specify the
+function's domain.  (Think of a function as a set of ordered pairs.)
+It defines the function to be an abbreviation for a fairly simple
+expression.
+
+------------------------
+
+XXXXXXXXXXXX
+
+We show the soundness of this rule as follows.  First, since
+$\overline{\strut\WF_{w}(B)}$ equals
+ $[]<>~\ENABLED <<B>>_{w} \/ []<><<B>>_{w}$, the tautology
+$~[]<>~F \equiv <>[]F$ and simple logic allows us to rewrite the
+conclusion as 
+   \[\WF_{v}(A) /\ <>[]\ov{\ENABLED <<B>>_{w}} => []<><<\ov{B}>>_{\ov{w}}\]
+So, it suffices to to assume the rule's
+hypotheses and $\WF_{v}(A)$ and show that
+ $<>[]\overline{\ENABLED <<B>>_{w}}$ implies 
+ $[]<><<\overline{B}>>_{\overline{w}}$.  This is done as 
+follows:
+ \begin{widedisplay}
+ $ \begin{noj4}
+    <>[]\overline{\ENABLED <<B>>_{w}}\; & \;=>\; & 
+        <>[] \ENABLED <<A>>_{v} \;\; &
+     \mbox{By the rule's second hypothesis and the proof rule} \\
+  & & & (F => G) ||- (<>[]F => <>[]G)\,.
+\V{.3}
+   &  \;=>\; & []<><<A>>_{v} & \mbox{By $\WF_{v}(A)$.} \V{.3}
+   &  \;=>\; & []<><<\overline{B}>>_{\overline{w}} &
+     \mbox{By the rule's first hypothesis and the proof rule} \\
+  & & & (F => G) ||- ([]<>F => []<>G)\,.
+    \end{noj4}$
+ \end{widedisplay}

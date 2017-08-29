@@ -1,0 +1,39 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{Leads-To Induction}
+\begin{popup}
+%\begin{document}
+\subsection*{Leads-To Induction}
+
+\begin{tla}
+WellFounded(N, _\succ_)  ==  ~ \E ch \in b[Nat -> N] : \A i \in Nat : ch[i] \succ ch[i+1]
+
+LTSet(N, _\succ_, n)  ==  {m\in N : n \succ m}
+
+LeadsToInduction(F(_),  N,  _\succ_,  z)  ==
+  /\ WellFounded(N, \succ)
+  /\ \A n \in N \ {z} : F(n) ~> (\E m \in LTSet(N, \succ, n) : F(m))
+  => ((\E n \in N : F(n)) ~> F(z))
+\end{tla}
+\begin{tlatex}
+ \@x{ WellFounded ( N ,\, \_ \.{\succ} \_ )\@s{4.1} \.{\defeq}\@s{4.1} {\lnot}
+ \E\, ch \.{\in} b [ Nat \.{\rightarrow} N ] \.{:} \A\, i \.{\in} Nat \.{:}
+ ch [ i ] \.{\succ} ch [ i \.{+} 1 ]}%
+\@pvspace{8.0pt}%
+ \@x{ LTSet ( N ,\, \_ \.{\succ} \_ ,\, n )\@s{4.1} \.{\defeq}\@s{4.1} \{ m
+ \.{\in} N \.{:} n \.{\succ} m \}}%
+\@pvspace{8.0pt}%
+ \@x{ LeadsToInduction ( F ( \_ ) ,\,\@s{4.1} N ,\,\@s{4.1} \_ \.{\succ} \_
+ ,\,\@s{4.1} z )\@s{4.1} \.{\defeq}}%
+\@x{\@s{8.2} \.{\land} WellFounded ( N ,\, \.{\succ} )}%
+ \@x{\@s{8.2} \.{\land} \A\, n \.{\in} N \.{\,\backslash\,} \{ z \} \.{:} F (
+ n ) \.{\leadsto} ( \E\, m \.{\in} LTSet ( N ,\, \.{\succ} ,\, n ) \.{:} F (
+ m ) )}%
+ \@x{\@s{8.2} \.{\implies} ( ( \E\, n \.{\in} N \.{:} F ( n ) ) \.{\leadsto} F
+ ( z ) )}%
+\end{tlatex}
+
+
+%\end{document}
+\end{popup}
+\makepopup

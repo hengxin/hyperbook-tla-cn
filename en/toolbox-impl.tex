@@ -1,0 +1,79 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{Checking Implementation}
+\file{toolbox-impl}
+\makeindex
+\setwidepopup{42}{12}
+\newcommand{\ovsig}{\ovs{\rule{0pt}{1.25ex}\sigma}}%
+\begin{document}
+
+  \ctindex{1}{implementation!checking with TLC}{implementation-tlc}%
+  \ctindex{1}{TLC!checking implementation with}{tlc-implementation-checking}%
+  \vspace{-2\baselineskip}%
+\subsection*{Checking Implementation}
+
+Open module $PCalBoundedBuffer$ in the Toolbox and create a small
+model that substitutes $4$ for $N$ and a set of three
+\popref{model-value}{model values} for $Msg$.  (For example set $Msg$
+to $\{m1,\,m2,\,m_{}\}$ and choose the \textsf{Set of model values}
+option.)  Add the formula $C!Spec$ to the \textsf{Properties} list in
+the \textsf{What to check?} section of the \textsf{Model Overview}
+page of the model, and run TLC\@.  It should find no error.
+
+\medskip
+
+Now, let's introduce an error.  In the \textsf{Definition Override}
+section of the model's \textsf{Advanced Options} page, override the
+definition of $chBar$ with the following definition.
+\begin{twocols}[.47]
+\begin{notla}
+[i \in 1..(p (-) c) |-> 
+     IF p (-) c = N THEN buf[0]
+                    ELSE buf[(c + i - 1) % N]]
+\end{notla}
+\begin{tlatex}
+\@x{ [ i \.{\in} 1 \.{\dotdot} ( p \.{\ominus} c ) \.{\mapsto}}%
+\@x{\@s{15.06} {\IF} p \.{\ominus} c \.{=} N \.{\THEN} buf [ 0 ]}%
+ \@x{\@s{72.75} \.{\ELSE} buf [ ( c \.{+} i \.{-} 1 ) \.{\%}  N  ]
+ ]}%
+\end{tlatex}
+\midcol
+\begin{verbatim*}
+[i \in 1..(p (-) c) |-> 
+     IF p (-) c = N THEN buf[0]
+                    ELSE buf[(c + i - 1) % N]]
+\end{verbatim*}
+\end{twocols}
+This changes the definition of $chBar$ when $p\ominus c$ equals $N$,
+so it should introduce an error when the length of the sequence of
+sent messages reaches $N$, which can occur only after at least $N$ steps.
+
+\medskip
+
+Running TLC should now produce an error.  Clicking on the location of
+the error leads to the formula $[]\gssubvars{Next}$ in module
+$PCalBoundedChannel$, indicating that the bounded buffer specification
+does not satisfy the property $\ovs{\Box\gssubvars{Next}}$.  (Here
+and in the rest of this pop-up, $Next$ is the formula by that
+name in module $PCalBoundedChannel$.)
+
+
+\medskip 
+
+To see why that property is violated, use the trace 
+ \tindex{9}{trace explorer}%
+ \ctindex{9}{TLC!trace explorer}{tlc-trace-expl}%
+explorer to
+display the values of $chBar$ during the execution.  In the
+\textsf{Error-Trace Exploration} section of the \textsf{TLC Errors}
+window, use the \textsf{Add} button to enter the expression $chBar$.
+Click on the \textsf{Explore} button to run the trace explorer.  The
+behavior shown in the \textsf{Error-Trace} section should now show the
+value of $chBar$ in each state.  Let's call that behavior $\sigma$.
+The behavior \ovsig\ is defined to be the one whose $i$\tth\ state
+assigns to the variable $ch$ the value of $chBar$ in the $i$\tth\
+state of $\sigma$.  The formula $\ovs{\Box\gssubvars{Next}}$ is true
+of $\sigma$ iff $\Box\gssubvars{Next}$ is true of \ovsig, and
+$\Box\gssubvars{Next}$ is not true of \ovsig\ because the last step of
+\ovsig\ does not satisfy \gssubvars{Next}.
+\end{document}

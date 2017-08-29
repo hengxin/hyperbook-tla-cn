@@ -1,0 +1,86 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{The Bakery Algorithm is FCFS}
+
+\setpopup{53}
+
+\begin{document}
+\subsection*{The Bakery Algorithm is FCFS}
+
+\medskip
+%
+\noindent \textbf{Theorem \ } $Spec \;=>\; FCFS $
+
+\medskip
+
+%\begin{display}
+\pflongindent
+\pflongnumbers
+\beforePfSpace{0pt,.2em}
+\afterPfSpace{0pt, .5em}
+\interStepSpace{.5em}
+\begin{proof}
+\step{1}{\sassume{$[]Inv /\ [][Next]_{vars}$, \ $p \in Procs$, \
+                   $q \in Procs$}
+         \sprove{$Waiting(p) /\ InNCS(q) /\ []~InCS(p) => []~InCS(q)$}}
+\begin{proof} \sloppypar
+\pf\ By definition of $Spec$ and $FCFS$, the invariance of $Inv$ (the
+theorem \tlabox{Spec=>[]Inv}), and temporal logic.  We are using the proof
+rule 
+ \tlabox{(F => G)|- ([]F => []G)}, together with the observation that
+\tlabox{[]Inv /\ [][Next]_{vars}} is equivalent to 
+ \tlabox{[]([]Inv /\ [][Next]_{vars})}.
+\end{proof}
+
+\vspace{.25em}
+D\textsc{efine}: $WInv == Waiting(p) /\ Before(p, q)$
+
+\vspace{.75em}
+
+We prove that $[]Inv /\ []~InCS(p)$ implies\V{.3}
+ \s{2}$Waiting(p) /\ InNCS /\ [][Next]_{vars} \;=> \;[]~InCS(q)$\V{.3}
+by proving that $~InCS(q)$ is an invariant of the
+specification\V{.3}
+ \s{2}$(Waiting(p) /\ InNCS) \,/\ \,[][Next]_{vars}$\V{.3}
+using the
+inductive invariant $WInv$.  This is an ordinary invariance proof,
+except that because we are assuming $[]Inv /\ []~InCS(p)$, we can
+assume $Inv /\ Inv' /\ ~InCS(p) /\ ~InCS(p)'$ in our action reasoning.
+
+\vspace{.75em}
+
+\step{2}{$Inv /\ Waiting(p) /\ InNCS(q) \;=>\; WInv$}
+\begin{proof}
+\pf\ By definition of $WInv$, since $Inv /\ Waiting(p) /\ InNCS(q)$ 
+implies $(num[p] > 0) /\ (num[q]=0)$, which implies $Before(p,q)$.
+\end{proof}
+
+\step{3}{$Inv /\ ~InCS(p)' /\ WInv /\ [Next]_{vars} \;=>\; WInv'$}
+\begin{proof}
+\pf\ $~InCS(p)'$ implies that $p$ can't enter its critical section, so
+$[Next]_{vars} /\ Waiting(p)$ implies $Waiting(p)'$.  Since 
+$Inv /\ Waiting(p)$ imply $num[p]#0$,
+a $Next$ step can
+make $Before(p,q)$ false only by making $<<num'[q],q>> \prec <<num[p],p>>$
+true,
+which is impossible because an $enter(q)$ step sets $num'[q]>num[p]$.
+\end{proof}
+
+\step{4}{$Inv /\ WInv \;=>\; ~InCS(q)$}
+\begin{proof}
+\pf\ $Inv /\ InCS(q)$ implies $(num[q]#0) /\ Before(q, p)$, 
+which implies $~Before(p, q)$.
+\end{proof}
+
+\qedstep
+\begin{proof}
+\pf\ Step~\stepref{3} implies\V{.4} 
+  \s{1}$[]Inv /\ []~InCS(p) \;=>\; (WInv /\ [][Next]_{vars} => []WInv)$\V{.4}
+which by steps \stepref{2} and \stepref{4} and 
+the step~\stepref{1} assumptions proves\V{.4}
+ \s{1}$Waiting(p) /\ InNCS(q) /\ []~InCS(p);=>\; []~InCS(q)$
+\end{proof} 
+
+\end{proof}
+
+\end{document}

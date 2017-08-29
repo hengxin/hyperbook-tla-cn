@@ -1,0 +1,15 @@
+%% BAD ASCII
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{ASCII Text}
+\fixverbatim
+\begin{popup}
+\begin{verbatim*}
+Inv == /\ TypeOK
+       /\ \A i \in Procs : 
+             /\ (pc[i] \in {"e2", "e3", "e6", "cs"}) => x[i] 
+             /\ \A j \in Procs \ {i} :
+                   Past(i, j) => ~Past(j, i) /\ x[i]
+\end{verbatim*}
+\end{popup}
+\makeasciipopup

@@ -1,0 +1,40 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{Worker Threads}
+\file{worker-threads}
+\begin{popup}
+\subsection*{Worker Threads}
+
+TLC 
+  \tindex{1}{worker thread}%
+ \ctindex{1}{thread!worker}{thread-worker}%
+can run multiple threads to compute and check the set of reachable
+states in parallel.  You can choose how many such worker
+threads it should use in the model's \textsf{How to run?} section of
+the \textsf{Model Overview} page.  There is no point using more
+threads than your computer has physical processors (known these days
+as \emph{cores}).
+
+\medskip
+
+With a good Java runtime and good operating system support for
+multithreading, we have found that TLC will run almost $n$ times faster
+using $n$ cores, for $n$ up to~8.  With Oracle's Java runtime and
+Windows~7, using two worker threads speeds up TLC by a factor of about
+1.5 on this spec.
+
+\medskip
+
+TLC can run hundreds of threads using multiple networked computers.
+See the Toolbox's help pages to find out how to make it do that.
+
+\medskip
+
+TLC checks liveness properties by executing an algorithm on the state
+graph.  The number of threads TLC can use for this depends on the
+liveness property, but is usually quite small---often, just~1.
+Moreover, checking liveness slows down computation of the state graph.
+
+
+\end{popup}
+\makepopup

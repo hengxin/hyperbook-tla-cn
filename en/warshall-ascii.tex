@@ -1,0 +1,22 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{ASCII Text}
+\fixverbatim
+%\setpopup{15.2}
+\addtolength{\paperwidth}{80pt}
+\addtolength{\textwidth}{80pt}
+\begin{popup}
+\begin{verbatim*}
+Warshall(R) ==
+  LET NR == NodesOf(R)
+      RECURSIVE W(_)
+      W(L) == IF L = {} 
+                THEN R
+                ELSE LET n  == CHOOSE node \in L : TRUE
+                         WM == W(L \ {n})
+                     IN  WM \cup {rs \in NR \X NR : 
+                                   (<<rs[1], n>> \in WM) /\ (<<n, rs[2]>> \in WM)}
+  IN  W(NR)        
+\end{verbatim*}
+\end{popup}
+\makeasciipopup

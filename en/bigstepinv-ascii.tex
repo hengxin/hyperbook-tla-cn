@@ -1,0 +1,17 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{ASCII Text}
+\fixverbatim
+\addtolength{\textwidth}{3.5em}
+\begin{popup}
+\begin{verbatim*}
+Inv == /\ TypeOK
+       /\ \A p \in Procs : 
+             /\ (pc[p] \in {"wait", "cs", "exit"}) <=> (num[p] > 0) 
+             /\ \A q \in (Procs \ {p}) :
+                   \/ (pc[p] = "wait") /\ (q \notin unchecked[p])
+                   \/ pc[p] = "cs" 
+                   => Before(p, q)
+\end{verbatim*}
+\end{popup}
+\makeasciipopup

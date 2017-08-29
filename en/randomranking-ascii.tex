@@ -1,0 +1,14 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{ASCII Text}
+\addtolength{\textwidth}{20pt}
+\fixverbatim
+\begin{popup}
+\begin{verbatim*}
+RECURSIVE RandomRanking(_)
+RandomRanking(S) == IF S = {} THEN << >>
+                              ELSE LET e == RandomElement(S)
+                                   IN  <<e>> \o RandomRanking(S \ {e})
+\end{verbatim*}
+\end{popup}
+\makeasciipopup

@@ -1,0 +1,31 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\makeindex
+\file{free-symbols}
+\pdftitle{Free Symbols}
+\begin{popup}
+
+\tindex{1}{free symbol}%
+\ctindex{1}{symbol!free}{symbol-free}%
+\vspace{-2\baselineskip}%
+
+\subsection*{Free Symbols}
+
+
+A free symbol is any symbol appearing in a \tlaplus\ expression other
+than a bound symbol.  A bound symbol is one that is declared locally
+within the expression.  The symbols $v$ and $i$ are bound symbols in
+the following expressions:
+ \[ \begin{noj}
+    \E\, v \in Msg: buf' = [buf \EXCEPT ![p \,\%\, N] = v] \V{.4}
+    [i \in 1\dd (p \ominus c) |-> buf[(c \oplus (i - 1)) \,\%\, N]]
+    \end{noj}
+ \]
+Any symbol not bound in an expression or part of the syntax (like
+$|->$) is free in that expression.  For example, $1$, $\dd$\,, $p$,
+$\ominus$, and $c$ are the first 5 free symbols in the second
+expression.  (The symbol $\in$ is part of the syntax of the function
+construct $[i \in \ldots |-> \ldots\,]$\,.)
+
+\end{popup}
+\makepopup

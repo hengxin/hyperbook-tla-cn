@@ -1,0 +1,63 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{}
+\begin{popup}
+\subsection*{}
+\makeatletter
+
+\newcommand{\xcomment}[1]{\s{1}\begin{minipage}[t]{.9\textwidth}
+                         \rule{0pt}{10pt}\small #1                         
+                         \end{minipage}}
+\begin{tlatex}
+\@x{}\moduleLeftDash\@xx{ {\MODULE} Sequences}\moduleRightDash\@xx{}%
+\@x{ {\LOCAL} {\INSTANCE} Naturals}%
+\@x{\@s{8.2}}%
+\xcomment{Imports the definitions from $Naturals$, 
+  but doesn't export them.}
+\@pvspace{8.0pt}%
+ \@x{ Len ( s ) \.{\defeq} {\CHOOSE} n \.{\in} Nat \.{:} {\DOMAIN} s \.{=} ( 1
+ \.{\dotdot} n )}%
+\@pvspace{8.0pt}%
+ \@x{ s \.{\circ} t\@s{10.81} \.{\defeq} [ i \.{\in} 1 \.{\dotdot} ( Len ( s )
+ \.{+} Len ( t ) ) \.{\mapsto} {\IF} i \.{\leq} s \.{\THEN} s [ i ]}%
+\@x{\@s{214.57} \.{\ELSE} t [ i \.{-} Len ( s ) ] ]}%
+\@pvspace{8.0pt}%
+\@x{ Append ( s ,\, e ) \.{\defeq} s \.{\circ} {\langle} e {\rangle}}%
+\@pvspace{8.0pt}%
+ \@x{ Seq ( S ) \.{\defeq} {\UNION} \{ [ 1 \.{\dotdot} n \.{\rightarrow} S ]
+ \.{:} n \.{\in} Nat \}}%
+\@pvspace{8.0pt}%
+\@x{ Head ( s ) \.{\defeq} s [ 1 ]}%
+\@pvspace{8.0pt}%
+ \@x{ Tail ( s )\@s{4.62} \.{\defeq} {\CASE} s \.{\neq} {\langle} {\rangle}
+ \.{\rightarrow} [ i \.{\in} 1 \.{\dotdot} ( Len ( s ) \.{-} 1 ) \.{\mapsto}
+ s [ i \.{+} 1 ] ]}%
+\@x{\@s{8.2}}%
+%\@y{%
+\xcomment{The ``\textsc{case} $s \neq \langle\, \rangle \rightarrow$'' just ensures that 
+           Tail(s) is undefined if s is the empty sequence.}
+%}%
+\@xx{}%
+\@x{\@s{8.2}}%
+\@xx{}%
+\@pvspace{8.0pt}%
+ \@x{ SubSeq ( s ,\, m ,\, n ) \.{\defeq} [ i \.{\in} 1 \.{\dotdot} ( 1 \.{+}
+ n \.{-} m ) \.{\mapsto} s [ i \.{+} m \.{-} 1 ] ]}%
+\@x{\@s{8.2}}%
+\xcomment{The sequence $\langle[m], s[m+1], \dots , s[n]\rangle$.}
+\@pvspace{8.0pt}%
+\@x{ SelectSeq ( s ,\, test ( \_ ) ) \.{\defeq}}%
+\@x{\@s{8.2} \.{\LET} F [ i \.{\in} 0 \.{\dotdot} Len ( s ) ] \.{\defeq}}%
+\@x{\@s{39.23} {\IF} i \.{=} 0 \.{\THEN} {\langle} {\rangle}}%
+ \@x{\@s{73.81} \.{\ELSE} {\IF} test ( s [ i ] ) \.{\THEN} Append ( F [ i
+ \.{-} 1 ] ,\, s [ i ] )}%
+\@x{\@s{155.88} \.{\ELSE} F [ i \.{-} 1 ]}%
+\@x{\@s{8.2} \.{\IN} F [ Len ( s ) ]}%
+\@x{\@s{8.2}}
+\xcomment{The subsequence of $s$ consisting of all elements $s[i]$ such 
+     that $Test(s[i])$ is true.}
+\@x{}\bottombar\@xx{}%
+\end{tlatex}
+
+\end{popup}
+\makepopup

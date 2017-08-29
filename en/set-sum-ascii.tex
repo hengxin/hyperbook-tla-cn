@@ -1,0 +1,12 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{ASCII Text}
+\fixverbatim
+\begin{popup}
+\begin{verbatim*}
+SetSum(T) == IF T = {} THEN 0
+                       ELSE LET t == CHOOSE x \in T : TRUE
+                            IN  t + SetSum(T \ {t})
+\end{verbatim*}
+\end{popup}
+\makeasciipopup

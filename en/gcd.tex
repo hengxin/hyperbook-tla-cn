@@ -1,0 +1,61 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{Module GCD}
+%\begin{document}
+\begin{popup}
+
+\subsection*{Module GCD}
+
+\begin{notla}
+-------------------------------- MODULE GCD --------------------------------
+
+EXTENDS Integers, FiniteSets, TLAPS, NaturalsInduction
+
+Divides(p, n) == \E q \in Int : n = p * q
+
+DivisorsOf(n) == {p \in Int : Divides(p, n)}  
+
+SetMax(S) ==  CHOOSE i \in S : \A j \in S : i >= j
+  
+GCD(m, n) == SetMax(DivisorsOf(m) \cap DivisorsOf(n)) 
+
+THEOREM GCD1 == \A m \in Nat \ {0} : GCD(m, m) = m
+ 
+THEOREM GCD2 == \A m, n \in Nat \ {0} : GCD(m, n) = GCD(n, m)
+
+THEOREM GCD3 == \A m, n \in Nat \ {0} : 
+                     (n > m) => (GCD(m, n) = GCD(m, n-m))
+=============================================================================
+\end{notla}
+\begin{tlatex}
+\@x{}\moduleLeftDash\@xx{ {\MODULE} GCD}\moduleRightDash\@xx{}%
+\@pvspace{8.0pt}%
+\@x{ {\EXTENDS} Integers ,\, FiniteSets ,\, TLAPS ,\, NaturalsInduction}%
+\@pvspace{8.0pt}%
+ \@x{ Divides ( p ,\, n )\@s{3.88} \.{\defeq} \E\, q \.{\in} Int \.{:} n \.{=}
+ p \.{*} q}%
+\@pvspace{8.0pt}%
+ \@x{ DivisorsOf ( n ) \.{\defeq} \{ p \.{\in} Int \.{:} Divides ( p ,\, n )
+ \}}%
+\@pvspace{8.0pt}%
+ \@x{ SetMax ( S )\@s{4.54} \.{\defeq}\@s{4.1} {\CHOOSE} i \.{\in} S \.{:}
+ \A\, j \.{\in} S \.{:} i \.{\geq} j}%
+\@pvspace{8.0pt}%
+ \@x{ GCD ( m ,\, n ) \.{\defeq} SetMax ( DivisorsOf ( m ) \.{\cap} DivisorsOf
+ ( n ) )}%
+\@pvspace{8.0pt}%
+ \@x{ {\THEOREM} GCD1 \.{\defeq} \A\, m \.{\in} Nat \.{\,\backslash\,} \{ 0 \}
+ \.{:} GCD ( m ,\, m ) \.{=} m}%
+\@pvspace{8.0pt}%
+ \@x{ {\THEOREM} GCD2 \.{\defeq} \A\, m ,\, n\@s{1.87} \.{\in} Nat
+ \.{\,\backslash\,} \{ 0 \} \.{:} GCD ( m ,\, n ) \.{=} GCD ( n ,\, m )}%
+\@pvspace{8.0pt}%
+ \@x{ {\THEOREM} GCD3 \.{\defeq} \A\, m ,\, n\@s{1.87} \.{\in} Nat
+ \.{\,\backslash\,} \{ 0 \} \.{:}}%
+ \@x{\@s{114.35} ( n \.{>} m ) \.{\implies} ( GCD ( m ,\, n ) \.{=} GCD ( m
+ ,\, n \.{-} m ) )}%
+\@x{}\bottombar\@xx{}%
+\end{tlatex}
+%\end{document}
+\end{popup}
+\makepopup

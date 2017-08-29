@@ -1,0 +1,52 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\beforePfSpace{10pt,0pt}
+\afterPfSpace{0pt}
+\interStepSpace{0pt}
+\file{proofrule-vs-thm}
+\pdftitle{Answer}
+\begin{popup}
+$\THEOREM PRThm => \mbox{PR}$
+\begin{proof}
+\step{<1>1}{It suffices to assume $PRThm$ and prove PR.}\vspace{.2em}
+\begin{proof}
+\pf\ Obvious.
+\end{proof}
+
+\vspace{.5em}
+
+\step{<1>2}{It suffices to assume 
+$\A\, \sigma : F_{i}$ for each $i$
+and prove $\A\, \sigma : G$.} \vspace{.2em}
+\begin{proof}
+\pf\ By \stepref{<1>1} (which asserts that it suffices to prove PR)
+and the definition of PR.
+\end{proof}
+
+\vspace{.5em}
+
+\step{<1>3}{It suffices to assume $\tau$ is an arbitrary behavior
+and prove $G$ is true of $\tau$.}\vspace{.2em}
+\begin{proof}
+\pf\ By \stepref{<1>2}, since $\A\, \sigma : G$ means that $G$ is true
+of all behaviors $\sigma$.
+\end{proof}
+
+\vspace{.5em}
+
+\step{<1>4}{$F_{i}$ is true of  $\tau$, for all $i$.}\vspace{.2em}
+\begin{proof}
+\pf\ By \stepref{<1>2} (which allows us to assume $\A\, \sigma : F_{i}$).
+\end{proof}
+
+\vspace{.5em}
+
+\qedstep \vspace{.2em}
+\begin{proof}
+ \pf\ By \stepref{<1>3} it suffices to prove that $G$ is true
+of $\tau$, which follows from \stepref{<1>4} and the definition of $PRThm$
+(which we may assume by \stepref{<1>1}).
+\end{proof}
+\end{proof}
+\end{popup}
+\makepopup

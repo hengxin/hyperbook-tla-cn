@@ -1,0 +1,14 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{ASCII Text}
+\fixverbatim
+\begin{popup}
+\begin{verbatim*}
+Sortings(S) ==
+  LET D == 1..Cardinality(S)
+  IN { seq \in [D -> S] :
+        /\ S \subseteq {seq[i] : i \in D}
+        /\ \A i, j \in D : (i < j) => (seq[i].key =< seq[j].key) }
+\end{verbatim*}
+\end{popup}
+\makeasciipopup

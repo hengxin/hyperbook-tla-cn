@@ -1,0 +1,18 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{Answer}
+\begin{popup}
+\subsection*{Answer}
+
+Formula $Inv_{H}$ does not assert anything about the ``type'' of $pc$.
+We don't know what the value of an expression $[pc \EXCEPT \ldots]$ is
+if $pc$ is not a function, so we can't prove that an arbitrary
+$Next_{H}$ step preserves the truth of the last two conjuncts of
+$Inv_{H}$.  To obtain an inductive invariant, we must conjoin a formula
+asserting that $pc$ is a function whose domain contains 0 and 1.
+The simplest formula that works is:
+ \[ pc \in [\{0,1\} -> \{"p1", "p2", "c1", "c2"\}]
+ \]
+
+\end{popup}
+\makepopup

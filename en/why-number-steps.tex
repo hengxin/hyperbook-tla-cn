@@ -1,0 +1,17 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{Why number steps?} 
+\begin{popup}
+\subsection*{Why number steps?} 
+
+If we didn't name the two steps, then we wouldn't have to change the
+\textsc{qed} step's proof.  Unnamed steps are automatically used by
+the backend provers.  However, removing the names (labeling both steps
+by $<<1>>$) would cause the backend provers to use the irrelevant fact
+$Divides(m,m)$ (asserted by the first step) in the proof of the second
+step.  Giving the provers unnecessary facts makes it more difficult
+for them to find a proof.  We therefore usually give steps names so they
+are used only when we want them to be.  
+
+\end{popup}
+\makepopup

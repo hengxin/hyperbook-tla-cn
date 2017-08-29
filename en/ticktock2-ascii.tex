@@ -1,0 +1,21 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{ASCII Text}
+\fixverbatim
+\begin{popup}
+\begin{verbatim*}
+(*********************************************
+--algorithm TickTock2 {
+    variable b = 0 ;
+
+    process (TickTock \in {0, 1}) 
+      { t: while (TRUE)
+              { await b = self ;
+                b := (self + 1) % 2
+              }
+      }
+}
+ *********************************************)
+\end{verbatim*}
+\end{popup}
+\makeasciipopup

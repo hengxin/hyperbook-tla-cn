@@ -1,0 +1,149 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{User-Definable Operator Symbols}
+\setpopup{38.5}
+\file{user-definable-ops}
+
+\makeindex
+
+\newcommand{\notemark}[1]{\ensuremath{^{(#1)}}}
+\begin{document}
+
+\subsection*{User-Definable Operator Symbols%
+}
+
+ \ctindex{1}{symbol!user-definable}{symbol-user-def}%
+
+\vspace{-.5\baselineskip}%
+\noindent
+\textbf{Infix Operators}\\[.4em]
+\s{1}\begin{tabular}{@{}l@{\hspace{0em}}l@{\hspace{2em}}%
+                   l@{\hspace{0em}}l@{\hspace{2em}}%
+                   l@{\hspace{0em}}l@{\hspace{2em}}%
+                   l@{\hspace{0em}}l@{\hspace{2em}}%
+                   l@{\hspace{0em}}l@{\hspace{2em}}%
+                   l@{\hspace{0em}}l%
+                   @{}}
+$+$ & \notemark{1} &
+$-$ &\notemark{1} &
+$*$ & \notemark{1} &
+$/$ & \notemark{2} &
+$\circ$ \notemark{3} &&
+\small $++$ &
+\\[.1em]
+$\div$ & \notemark{1} & 
+$\%$ & \notemark{1} &
+\verb|^| & \notemark{1,4} &
+$\ldotp\ldotp$  & \notemark{1} &
+$\dots$ &&
+\small $--$ & 
+\\[.1em]
+$\oplus$ & \notemark{5} &
+$\ominus$ & \notemark{5} &
+$\otimes$ &&
+$\oslash$ &&
+$\odot$ & &
+$**$ &
+\\[.1em]
+$<$ & \notemark{1} &
+$>$ & \notemark{1} &
+$\leq$ & \notemark{1}  &
+$\geq$ & \notemark{1} & 
+$\sqcap$ &&
+\small $//$ &
+\\[.1em]
+$\prec$ & &
+$\succ$ &&
+$\preceq$ &&
+$\succeq$ &&
+$\sqcup$ &&
+\verb|^^| &
+\\[.1em]
+$\ll$ &&
+$\gg$ &&
+$<:$ &&
+$:>\;$ & \notemark{6}&
+\small $\&$ &&
+\small $\&\&$ &
+\\[.1em]
+$\sqsubset$ &&
+$\sqsupset$ &&
+$\sqsubseteq$ & \notemark{5}  &
+$\sqsupseteq$ &&
+$|$ &&
+$||$ &
+\\[.1em]
+$\subset$ &&
+$\supset$ &&
+&&
+$\supseteq$ &&
+$\star$ &&
+$\%\%$ &
+\\[.1em]
+$|-$ &&
+$\dashv$ & &
+$|=$ &&
+\notla$=\s{-.45}|$ &&
+$\bullet$ &&
+\small $\#\#$ &
+\\[.1em]
+$\sim$ & &
+$\simeq$ &&
+$\approx$ & &
+$\cong$ &&
+$\$$ & &
+$\$\$$ &
+\\[.1em]
+$:=$ &&
+$::=$ &&
+$\asymp$ & &
+$\doteq$ &&
+\small $??$ &&
+$!!$ &
+\\[.1em]
+$\propto$ &&
+$\wr$ &&
+$\uplus$ &&
+$\bigcirc$ &&
+$@@$ & \notemark{6}
+\\
+\end{tabular}
+
+\vspace{2\baselineskip}
+
+%
+%
+%
+
+
+\noindent
+\textbf{Postfix Operators} \notemark{7}\\[.4em]
+\s{1}\verb|^|$+$\s{2}%
+\verb|^|$*$ \s{2}%
+\verb|^|$\#$ 
+
+
+\vspace{2\baselineskip}
+
+\noindent
+\textbf{Prefix Operator}\\[.4em]
+\s{1}$-$\ \notemark{8}
+
+\noindent
+\rule{.2\textwidth}{.4pt}\\
+{\footnotesize\begin{tabular}[t]{@{}l@{\ }l}
+  (1)& Defined by the $Naturals$, $Integers$, and $Reals$ modules.\\[.1em]
+% \begin{minipage}[t]{.94\textwidth}
+%       \end{minipage}\\
+  (2)& Defined by the $Reals$ module.\\[.1em]
+  (3)& Defined by the $Sequences$ module.\\[.1em]
+  (4)& $x$\verb|^|$y$ is printed as $x^{y}$.\\[.1em]
+  (5) & Defined by the $Bags$ module.\\[.1em]
+  (6) & Defined by the $TLC$ module.\\[.1em]
+  (7) & $e$\verb|^|$+$ is printed as $e^{+}$\s{-.2}, and similarly for
+        \verb|^|$*$ and \verb|^|$\#$.\\[.1em]
+  (8) & Defined by the $Integers$ and $Reals$ modules.
+\end{tabular}}
+
+
+\end{document}

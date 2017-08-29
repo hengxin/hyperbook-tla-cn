@@ -1,0 +1,67 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\file{variable-hiding}
+\pdftitle{Hiding Variables in TLA}
+\makeindex
+\setpopup{12}
+\begin{document}
+%\begin{popup}
+\subsection*{\ctindex{1}{hiding variables}{variable-hiding}%
+\ctindex{1}{variable hiding}{variable-hiding}%
+%\ctindex{1}{+7c@\mmath{\icmd{AA}} (temporal universal quantification)}{+7c}%
+Hiding Variables in TLA}
+
+\setlength{\parindent}{1.5em}
+
+``$Spec$ with variable $b$ hidden'' is the formula that is satisfied
+by a behavior iff there is some way of assigning values to $b$ in the
+states of the behavior that makes $Spec$ true.  This formula says
+nothing about the actual values of $b$ in a behavior.  It is written
+as $\EE b\midcolon Spec$.  However, the TLC model checker cannot
+handle such a specification.  The TLAPS proof system does not now
+handle it but may in the future.  See
+\rref{topics}{\xlink{hide-variables}}{Section~\xref{hide-variables}}
+for more about variable hiding.
+
+\end{document}
+
+
+Such hiding is expressed mathematically by existential quantification.
+The formula \mbox{$\E\,x : P(x)$} means that there is some value that can be
+assigned to $x$ that makes $P(x)$ true.  It says nothing about the
+actual value of $x$; the formulas \mbox{$\E\,x : P(x)$} and 
+\mbox{$\E\,y: P(y)$} are
+equivalent.
+
+The formula ``$Spec$ with variable $b$ hidden'' is written in the TLA
+logic as \mbox{$\EE\,b : Spec$}.  The operator $\EE$ is temporal existential
+quantification.  It differs from the operator $\E$ of ordinary
+(non-temporal) logic because \mbox{$\EE\,b : Spec$} asserts not that there is
+a single value of $b$ that makes $Spec$ true, but rather a sequence of
+values---one for each state of the behavior.
+
+While the informal meaning of \mbox{$\EE\,b : Spec$} seems clear, it's not a
+legal \tlaplus\ formula.  The $\EE\,b$ introduces $b$ as a new, bound
+variable, which is illegal in \tlaplus\ because $b$ has already been
+declared in defining $Spec$.  The way mathematicians normally define
+the meaning of such a formula, \mbox{$\EE\,b : Spec$} is equivalent to
+$Spec$.  In \tlaplus, to write ``$Spec$ with $b$ hidden'', we need to
+define $Spec$ in a different module that gets imported with the
+\textsc{instance} statement introduced later.  
+
+\tlaplus\ also has a temporal univeral quantification operator
+$\AA$ that is defined to equal $~\EE~$.  
+
+Variable hiding, and the operators $\EE$ and $\AA$ are of mainly
+philosophical interest because model checking a specification that
+uses them is very expensive.  TLC does not handle any property that
+contains either of these operators.  The TLAPS proof system might
+some day handle them, but it doesn't now.
+
+
+
+
+\end{document}
+
+\end{popup}
+\makepopup

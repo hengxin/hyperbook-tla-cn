@@ -1,0 +1,20 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{Are buf[0] and buf[1] separate variables?}
+\setpopup{15.5}
+\begin{document}
+\subsection*{Are $buf[0]$ and $buf[1]$ separate variables?}
+
+Of course, the literal answer to this question is no.  They are two
+different expressions that involves the single variable $buf$.  The
+real question is, can we consider them to be separate variables in the
+context of the discussion in Section~\xref{modern-mutex}?  The
+answer depends on whether reading or writing $buf[i]$ affects the
+operation of reading or writing $buf[j]$, for $i#j$.  This in turn
+depends on how those operations are implemented.  In the obvious way
+of implementing $buf$ with an array, the two operations will be
+independent.  However, one can envision implementations in which
+this isn't the case---for example, if $buf$ were implemented as a 
+sparse array.
+\end{document}
+\makedocument

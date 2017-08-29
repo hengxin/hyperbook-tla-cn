@@ -1,0 +1,204 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{Proof of WF2}
+\newcommand{\NC}{\ensuremath{\langle\N\land C\rangle_{v}}}
+\newcommand{\B}{\ensuremath{\langle\ov{B}\rangle_{\ov{w}}}}
+\newcommand{\NA}{\ensuremath{\langle\N\land A\rangle_{v}}}
+%\newcommand{\EB}{\ensuremath{\ov{\ENABLED\langle{B}\rangle_{{w}}}}}
+\newcommand{\EB}{\ensuremath{EB}}
+\newcommand{\EA}{\ensuremath{\ENABLED\langle{A}\rangle_{{v}}}}
+\newcommand{\SNC}{\ensuremath{[\N\land\neg C]_{v}}}
+
+\pflongnumbers
+\pflongindent
+\beforePfSpace{10pt, 2pt, 2pt}
+\afterPfSpace{10pt, 5pt, 5pt}
+\interStepSpace{15pt,5pt}
+
+\begin{document}
+\subsection*{Soundness Proof of Rule WF2}
+
+% \mbox{WF2.}\ \ \tlrule{
+%     <<\N /\ C>>_{v}  \;=>\; <<\overline{B}>>_{\overline{w}} \V{.45}
+%     {\gray P \,/\ \,P' \,\,/\ \,\,} <<\N /\ A>>_{v} 
+%        {\red \,\,/\ \,\, \overline{\strut\ENABLED <<B>>_{w}}} \;=>\; C \V{.45}
+%    {\gray P \,\,/\ \,\,} \overline{\strut\ENABLED <<B>>_{w}}\;=>\; 
+%         \ENABLED <<A>>_{v} \V{.45}
+%    \gray [][\N /\ ~C]_{v} \,/\ \,\WF_{v}(A)  
+%      \,/\ \,[]\overline{\strut\ENABLED <<B>>_{w}} {\,\,/\ \,\,[]F} 
+%         \;=>\; <>[]P }%
+%   {\rule{0pt}{1.3em}[][\N]_{v} \,/\ \,\WF_{v}(A) 
+% {\gray \,\,/\ \,\,[]F} \;=>\; 
+%        \overline{\strut\WF_{w}(B)}}
+
+The proof uses the following tautologies, where $F$, $G$, and $H$
+are arbitrary temporal formulas.
+ \[ \begin{noj}
+    \mbox{T1. } [](F => G) \;=>\; [](<>F => <>G) \V{.5}
+    \mbox{T2. } [](F => G) \;=>\; []([]F =>[]G) \V{.5}
+    \mbox{T3. } [](F => G \/ H) \;=>\;[]([]F => []G \/ <>H)\V{.5}
+    \mbox{T4. } [](F /\ G => H) \;=>\; []([]F /\ []<>G => []<>H)
+    \end{noj}
+   % These tautologies checked by TLAPS with the following:
+   % 
+   %    THEOREM ASSUME NEW TEMPORAL F, NEW TEMPORAL G, NEW TEMPORAL H
+   %            PROVE  /\ [](F => G) => [](<>F => <>G) 
+   %                   /\ [](F => G) => []([]F =>[]G) 
+   %                   /\ [](F => G \/ H) => []([]F => []G \/ <>H)
+   %                   /\ [](F /\ G => H) => []([]F /\ []<>G => []<>H)
+   %    BY PTL
+ \]
+Here is an informal proof of T1.
+\begin{display}
+\begin{proof}
+\step{1}{\sassume{$\sigma$ a behavior all of whose suffixes
+                  satisfy $F => G$, and $\tau$ a suffix of $\sigma$}
+  \prove{$\tau$ satisfies $<>F => <>G$}}
+\begin{proof}
+\pf\ By simple logic and definition of $[]$.
+\end{proof}
+
+\step{2}{It suffices to show that if $\rho_{1}$ is a 
+suffix of $\tau$ satisfying $F$, then there is a suffix $\rho_{2}$
+of $\tau$ satisfying $G$.}
+  \begin{proof}
+  \pf\ By step~\stepref{1} and the definitions of $<>$ and $=>$.
+  \end{proof}
+
+\qedstep
+  \begin{proof}
+  \pf\ By step~2, since $\rho_{1}$ is also a suffix of $\sigma$,
+   so step~\stepref{1} implies that we can take $\rho_{2}$ to equal
+   $\rho_{1}$.
+  \end{proof}
+\end{proof}
+\end{display}
+Proofs of T2--T4 are left to the reader.
+%
+% Here's the rule:
+% \[ \tlrule{\NC => \B\V{.4}
+%   P /\ P' /\ \NA /\ \EB => C\V{.4}
+%   P /\ \EB => \EA \V{.4}
+%   []\SNC /\ \WF_{v}(A) /\ []\EB => <>[]P}
+% {\WF_{v}(A) => \ov{\WF_{w}(B)}}
+% \]
+%
+To save space in the proof of WF2, let's define
+ \[ EB == \ov{\ENABLED\langle{B}\rangle_{{w}}} \]
+Here is the statement of WF2 written in the form
+\rref{math}{tr-implication}{TR$_{\implies}$} as an illegal temporal formula,
+and expressed for convenience as an \textsc{assume}/\textsc{prove}:\vs{1}
+
+\assume{$\begin{noj}
+  \mbox{A1. }\, {\red[]}(\NC => \B) \V{.3}
+   \mbox{A2. }\, {\red[]}(P /\ P' /\ \NA /\ \EB => C)\V{.3}
+   \mbox{A3. }\, [](P /\ \EB => \EA  )\V{.3}
+   \mbox{A4. }\, []([]\SNC /\ \WF_{v}(A) /\ []\EB => <>[]P )
+          \end{noj}$}
+\prove{$[][\N]_{v} /\ \WF_{v}(A) \;=>\;\overline{\WF_{w}(B)}$\vs{1}}
+
+\noindent
+Here is its proof.  Note that all the assumptions in \textsc{assume}
+clauses are $[]$ formulas.
+\begin{proof}
+\step{1}{\sassume{%
+  \begin{enumerate}
+  \item $[][\N]_{v}$
+  \item $\WF_{v}(A)$
+  \item $<>[]\EB$
+  \end{enumerate}}%
+\prove{$<>\B$}
+}
+
+\begin{proof}
+\pf\ Since $\overline{\WF_{w}(B)}$ is
+equivalent to $<>[]\EB => []<>\B$\,\,, it suffices to prove
+$[]<>\B$ under these assumptions.  The result then follows 
+from the rule $F||-[]F$.
+\end{proof}
+\step{2}{$[][\N /\ ~C]_{v} \/ <>\NC$}
+  \begin{proof}
+  \step{2.1}{$[\N]_{v} \;=>\; \SNC \/ \NC$}
+    \begin{proof}
+    \pf\ This follows from the definitions of $[\ldots]_{v}$ and
+         $<<\ldots>>_{v}$ and the propositional logic tautology:\V{.3}
+         \s{2}$(U \/ V) \;=>\; ((U /\ ~W) \/ V) \, \/ \, (U /\ W /\ ~V) $
+         %    This tautology checked by TLAPS with
+         %    
+         %       THEOREM ASSUME NEW N, NEW C, NEW v
+         %               PROVE  (N \/ v) => 
+         %                         ((N /\ ~C) \/ v) \/ (N /\ C /\ (~v))
+         %       OBVIOUS
+    \end{proof}
+  \qedstep
+     \begin{proof}
+     By step \stepref{2.1}, T3, and the rule $F||-[]F$.
+     \end{proof}
+  \end{proof}
+\step{3}{$<>\NC => <>\B$}
+ \begin{proof}
+ \pf\ By T1 and assumption A1.
+ \end{proof}
+\step{4}{\assume{$[]\SNC$}\prove{$<>\B$}}
+ \begin{proof}
+ 
+ \step{4.1}{$[]\SNC /\ \WF_{v}(A) /\ <>[]\EB => <>[]P$}
+   \begin{proof}
+   \pf\ A4 and T1 imply\V{.3}
+    \s{1.5}$<>[]\SNC /\ <>\WF_{v}(A) /\ <>[]\EB => <><>[]P$\V{.3}
+    Step \stepref{4.1} follows from this and the tautologies
+    $F=><>F$ and $<><>F \equiv <>F$.
+   \end{proof}
+
+ \step{4.2}{$<>[]P$}
+  \begin{proof}
+  \pf\ By \stepref{4.1}, the steps \stepref{1} and \stepref{4} assumptions.
+  \end{proof}
+
+  \step{4.3}{<>[]\EA}
+   \begin{proof}
+   \pf\ From A3, using T1 and T2 and the tautology 
+         $<>[](F /\ G) \equiv <>[]F /\ <>[]G$, we obtain\V{.3}
+     \s{1.5}$<>[]P /\ <>[]\EB => <>[]\EA$\V{.3}
+    Step \stepref{4.3} follows from this, \stepref{4.2}, and assumption~3
+    of step~\stepref{1}.
+   \end{proof}
+  \step{4.4}{$[]<>\NA$}
+    \begin{proof}
+    \pf\ Step~\stepref{4.3}, assumption~2 of step~\stepref{1}, and
+    the definition of $\WF$ imply $[]<><<A>>_{v}$.  The result
+      follows from this by T4 and assumption~1 of step~\stepref{1},
+      since
+      $[N]_{v} /\ <<A>>_{v}$ implies $\NA$.
+    \end{proof}
+  \step{4.5}{$[]<>\NC$}
+    \begin{proof}
+       \step{4.5.1}{${\red[]}(P /\ P' /\ \NA /\ \EB =>\NC)$}
+          \begin{proof}
+          \pf\ By A2, since $\NA /\ C$ implies $\NC$ by definition
+           of $<<\ldots>>_{v}$.
+          \end{proof}
+       \step{4.5.2}{${<>\red[]}(P /\ P' /\ \EB) /\ []<>\NA =>[]<>\NC$}
+          \begin{proof}
+          \pf\ By \stepref{4.5.1} and T4
+          \end{proof}
+       \step{4.5.3}{${<>\red[]}(P /\ P') /\ <>[]\EB /\ []<>\NA =>[]<>\NC$}
+          \begin{proof}
+          \pf\ By \stepref{4.5.2} and the tautology 
+             $<>[](F /\ G) \equiv []<>F /\ []<>G$.
+          \end{proof}
+      \qedstep
+        \begin{proof}
+        \pf\ By \stepref{4.2}, \stepref{4.4}, \stepref{4.5.3}, assumption~3
+        of step~\stepref{1}, and the tautology $<>[]P => <>{\red[]}(P /\ P')$.
+        \end{proof}
+    \end{proof}
+
+ \end{proof}
+%
+\qedstep
+\begin{proof}
+\pf\ By steps~\stepref{2}, \stepref{3}, and \stepref{4}.
+\end{proof}
+\end{proof}
+\end{document}

@@ -1,0 +1,34 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{ASCII Text}
+\fixverbatim
+\begin{popup}
+\begin{verbatim*}
+-------------------- MODULE BoundedChannel -------------------
+EXTENDS Integers, Sequences
+
+CONSTANT Msg, N
+
+ASSUME N \in Nat \ {0}
+
+(*****************************************************************
+--algorithm BChan {
+   variable ch = << >>;
+   process (Send = "S") 
+    { s: while (TRUE) 
+          { await Len(ch) # N ;
+            with (v \in Msg) { ch := Append(ch, v) }
+          }
+    }
+   process (Rcv = "R") 
+    { r: while (TRUE) 
+          { await Len(ch) # 0 ;
+            ch := Tail(ch)
+          }
+    }
+}
+ ****************************************************************)
+==================================================================
+\end{verbatim*}
+\end{popup}
+\makeasciipopup

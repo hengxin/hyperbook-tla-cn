@@ -1,0 +1,29 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{Answer}
+\begin{popup}
+\subsection*{Answer}
+
+(c) This refinement mapping maps any behavior $\sigma$ of this bounded
+buffer algorithm to the behavior containing only stuttering steps that
+leave $ch$ equal to the empty sequence.
+
+\medskip
+
+(d) From the initial state, suppose the producer increments $p$.  At
+that point, the consumer can execute its \pwhile\ loop---implying by
+(ii) that, under the refinement mapping, the sending of a message has
+already occurred.  It is impossible to define such a refinement
+mapping that satisfies (i), since the producer has not yet chosen
+which message to put in the buffer.
+
+\medskip
+
+(e) Hint: Did you realize that part (d) is true only under the
+assumption that the set $Msg$ of messages contains at least two
+different elements?  Find a refinement mapping under which the 
+sender always sends the same message.  Use TLC to check your
+refinement mapping.
+
+\end{popup}
+\makepopup

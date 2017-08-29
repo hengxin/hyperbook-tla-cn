@@ -1,0 +1,12 @@
+\contentsline {section}{\numberline {18}Variable Hiding and Auxiliary Variables}{2}{section.18}
+\makeseclabel {hide-variables}
+\contentsline {section}{\numberline {19}\color {puce}Reduction}{4}{section.19}
+\makeseclabel {reduction-section}
+\contentsline {section}{\numberline {20}Debugging With TLC}{5}{section.20}
+\contentsline {subsection}{\numberline {20.1}Print Statements}{5}{subsection.20.1}
+\makeseclabel {print-statements}
+\contentsline {subsection}{\numberline {20.2}Having TLC Set and Read Values}{5}{subsection.20.2}
+\contentsline {subsection}{\numberline {20.3}Using LET}{7}{subsection.20.3}
+\makeseclabel {let-optimization}
+\contentsline {subsection}{\numberline {20.4}The Perils of Lazy Evaluation}{8}{subsection.20.4}
+\makeseclabel {lazy-evaluation}

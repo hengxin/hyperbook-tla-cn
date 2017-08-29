@@ -1,0 +1,37 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\setpopup{24}
+\makeindex
+\file{model-value}
+\pdftitle{Model Values}
+\begin{document}
+
+ \tindex{2}{model value}%
+ \ctindex{9}{value!model}{value-model}%
+ \vspace{-2\baselineskip}%
+\subsection*{Model Values} 
+
+An ordinary (untyped) model value is a special value that TLC
+considers to be different from any other value.  If $m$ is a model
+value, then TLC will obtain the value $\FALSE$ when it evaluate the
+expressions $m = "abc"$ and $m\in Int$.  In fact, only if $m$ is a
+model value will TLC evaluate $m\in Int$ and obtain the value
+$\FALSE$.  For example, it produces an error if it evaluates $"abc"\in
+Int$ because \popref{strings-vs-numbers}{the semantics of \tlaplus\ do
+not specify whether or not \tlastring{abc} is an integer}.
+
+\medskip \noindent
+%
+To learn more about model values, see the Toolbox's \emph{Model Values and
+Symmetry} help page.  To find that page, go to the \emph{Model value}
+subsection of the \emph{What is the model?} section of the \emph{Model
+Overview Page} help page.  That help page can be found from the help
+contents under
+\begin{display} \it
+\tlaplus\ Toolbox User's Guide\\
+\s{1}Model Checking \\
+\s{2}Creating a Model \\
+\s{3}Model Overview Page 
+\end{display}
+\end{document}
+% \makepopup

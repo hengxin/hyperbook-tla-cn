@@ -1,0 +1,23 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{Answer}
+\pflongnumbers
+\pflongindent
+\beforePfSpace{15pt, 3pt, 2pt}
+\afterPfSpace{10pt, 7pt, 5pt}
+\interStepSpace{.5pt}
+%\pfsidenumbers{0}{.8em}
+\begin{popup}
+\subsection*{Answer}
+The soundness of the rule follows by mathematical induction
+from the following observations:
+ \[ \begin{noj}
+    \M{\sigma}{P => []P} \;\; \equiv \;\;
+     (\M{\sigma_{1}}{P} => (\A i \in Nat : \M{\sigma_{1+i}}{P}) \V{.7}
+   \M{\sigma^{+i}}{P => P'} \;\; \equiv \;\;
+      \M{\sigma_{1+i}}{P} => \M{\sigma_{2+i}}{P}
+    \end{noj}
+ \]
+\mbox{}
+\end{popup}
+\makepopup

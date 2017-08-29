@@ -1,0 +1,89 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{Proof of Step 2.3}
+\pflongnumbers
+\pflongindent
+\beforePfSpace{0pt}
+\afterPfSpace{0pt}
+\interStepSpace{0pt}
+\begin{popup}
+\subsection*{Proof of Step 2.3}
+
+\begin{proof}
+\nostep{1}
+\nostep{2}
+\begin{proof}
+\nostep{2.1}
+\nostep{2.2}
+\step{2.3}{\assume{$j \in \{0, 1\} $}
+            \prove{$InCS(j)' \,\/ \, (pc'[j]="e2") \, =>\, x'[j]$}}
+
+\vspace{.61em}
+
+
+\begin{proof}
+{\commentcolor Remember that $Inv$, $i\in \{0,1\}$, and $e2(i)$ hold by the
+step~2 assumption.}
+
+\vspace{.41em}
+
+\step{2.3.1}{\case{$j#i$}}
+\vspace{.21em}
+\begin{proof}
+\pf\ The third conjunct of $Inv$ 
+and the \stepref{2.3} assumption
+imply $InCS(j) \,\/ \, (pc[j]="e2") \, =>\, x[j]$; and $e2(i)$
+and the case assumption imply that $InCS(j)$, $pc[j]$, and $x[j]$
+are unchanged.  
+\end{proof}
+
+\vspace{.41em}
+
+\step{2.3.2}{\case{$j=i$}}
+\vspace{.21em}
+\begin{proof}
+\step{2.3.2.1}{$pc[i]="e2"$}
+\vspace{.21em}
+\begin{proof}
+\pf\ By $e2(i)$, since $pc[i]="e2"$ is the enabling condition of action 
+$e2(i)$.
+\end{proof}
+\vspace{.41em}
+
+\step{2.3.2.2}{$x[i]$}
+\vspace{.21em}
+\begin{proof}
+\pf\ By \stepref{2.3.2.1}, the third conjunct of $Inv$, and $i\in \{0,1\}$.
+\end{proof}
+
+\vspace{.41em}
+
+\step{2.3.2.3}{$x'[i]$}
+\vspace{.21em}
+\begin{proof}
+\pf\ By \stepref{2.3.2.2} and $e2(i)$, which implies $x[i]$ is unchanged.
+\end{proof}
+
+\qedstep
+\vspace{.21em}
+\begin{proof}
+\pf\ \stepref{2.3.2.3} and the \stepref{2.3.2} case assumption
+imply $x'[j]$ (which implies $P => x'[j]$ for any $P$).
+\end{proof}
+
+\end{proof}
+
+\vspace{.41em}
+
+\qedstep
+\vspace{.21em}
+\begin{proof}
+\pf\ By \stepref{2.3.1} and \stepref{2.3.2}.  
+\end{proof}
+
+\end{proof}
+\end{proof}
+\end{proof}
+
+\end{popup}
+\makepopup

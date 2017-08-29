@@ -1,0 +1,22 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{Answer}
+\begin{popup}
+\subsection*{Answer}
+
+The non-zero values of $num[i]$ need to belong to a finite set $S$
+(not containing~0) with a relation $\ll$ such that:
+\begin{itemize}
+\item $\A s, t \in S : ~((s \ll t) /\ (t \ll s))$
+
+\item $\A s \in S : \E t \in S : s\ll t$.
+\end{itemize}
+Define $0\ll s$ to be true for all $s \in S$, and modify the bakery
+algorithm to use $\ll$ instead of $<$ to compare values of $num[i]$.
+One way to do this is to let $S$ equal $\{1,2,3\}$ and define:
+ \[ a \ll b == b = (a \% 3)+1
+ \]
+for $a$ and $b$ in $S$.
+
+\end{popup}
+\makepopup

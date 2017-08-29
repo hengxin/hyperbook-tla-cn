@@ -1,0 +1,39 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{The Bounded Buffer Algorithm}
+\begin{popup}
+\subsection*{The Bounded Buffer Algorithm}
+\begin{nopcal}
+--algorithm BChan {
+   variables in = Input, out = << >>, ch = << >> ;
+   process (Send = 0) {
+      s: while (TRUE) {
+           await Len(ch) # N ;
+           ch := Append(ch, IHead(in)) ;
+           in := ITail (in) } }
+   fair process (Rcv = 1) {
+      r: while (TRUE) {
+           await Len(ch) # 0 ;
+           out := Append(out, Head(ch)) ;
+           ch := Tail (ch) } } }
+\end{nopcal}
+\begin{tlatex}
+\@x{ {\p@mmalgorithm} BChan {\p@lbrace}}%
+ \@x{\@s{12.29} {\p@variables} in \.{=} Input ,\, out \.{=} {\langle}
+ {\rangle} ,\, ch \.{=} {\langle} {\rangle} {\p@semicolon}}%
+\@x{\@s{12.29} {\p@process} {\p@lparen} Send \.{=} 0 {\p@rparen} {\p@lbrace}}%
+ \@x{\@s{24.59} s\@s{.5}\textrm{:}\@s{3} {\p@while} {\p@lparen} {\TRUE}
+ {\p@rparen} {\p@lbrace}}%
+\@x{\@s{43.98} {\p@await} Len ( ch ) \.{\neq} N {\p@semicolon}}%
+\@x{\@s{43.98} ch \.{:=} Append ( ch ,\, IHead ( in ) ) {\p@semicolon}}%
+\@x{\@s{43.98} in\@s{1.02} \.{:=} ITail ( in ) {\p@rbrace} {\p@rbrace}}%
+ \@x{\@s{12.29} {\p@fair} {\p@process} {\p@lparen} Rcv \.{=} 1 {\p@rparen}
+ {\p@lbrace}}%
+ \@x{\@s{24.59} r\@s{.5}\textrm{:}\@s{3}\@s{1.09} {\p@while} {\p@lparen}
+ {\TRUE} {\p@rparen} {\p@lbrace}}%
+\@x{\@s{45.46} {\p@await} Len ( ch ) \.{\neq} 0 {\p@semicolon}}%
+\@x{\@s{45.46} out \.{:=} Append ( out ,\, Head ( ch ) ) {\p@semicolon}}%
+\@x{\@s{45.46} ch \.{:=} Tail ( ch ) {\p@rbrace} {\p@rbrace} {\p@rbrace}}%
+\end{tlatex}
+\end{popup}
+\makepopup

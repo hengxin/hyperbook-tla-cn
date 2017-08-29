@@ -1,0 +1,36 @@
+%% BAD ASCII
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{ASCII Text}
+\fixverbatim
+\addtolength{\textwidth}{100pt}
+\begin{popup}
+\begin{verbatim*}
+--algorithm OneBitMutex
+    { variable x = [i \in Procs |-> FALSE];              
+       fair process (p \in Procs) 
+         variables unchecked = {};
+                   other \in Procs ; 
+         { ncs:- while (TRUE) 
+                  { e1: x[self] := TRUE ;
+                        unchecked := Procs \ {self};
+                    e2: while (unchecked # {}) 
+                          {     with (i \in unchecked) { other := i } ;
+                                unchecked := unchecked \ {other};
+                            e3: if (x[other]) 
+                                 { if (self > other) 
+                                     { e4: x[self] := FALSE;
+                                       e5: await ~x[other];
+                                           goto e1;
+                                     }
+                                   else { e6: await ~x[other]; }
+                                 } ;
+                          } ;
+                    cs: skip;
+                    f:  x[self] := FALSE
+                  }
+         }
+    }
+\end{verbatim*}
+\end{popup}
+\makeasciipopup

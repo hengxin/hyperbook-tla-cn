@@ -1,0 +1,82 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{Module Alternation}
+\begin{popup}
+% \subsection*{}
+
+\begin{notla}
+---------------------------- MODULE Alternation ----------------------------
+EXTENDS Integers, Sequences
+
+Put(s) == Append(s, "widget")
+
+Get(s) == Tail(s)
+\end{notla}
+\begin{tlatex}
+\@x{}\moduleLeftDash\@xx{ {\MODULE} Alternation}\moduleRightDash\@xx{}%
+\@x{ {\EXTENDS} Integers ,\, Sequences}%
+\@pvspace{8.0pt}%
+\@x{ Put ( s )\@s{0.18} \.{\defeq} Append ( s ,\,\@w{widget} )}%
+\@pvspace{4.0pt}%
+\@x{ Get ( s ) \.{\defeq} Tail ( s )}%
+\end{tlatex}
+\V{.75}
+\verb|(*********************************************************| \V{-.75}
+\begin{nopcal}
+--algorithm Alternate {
+    variable b = 0 , box = << >> ;
+
+    process (Producer = 0) 
+      { p1: while (TRUE)
+              { await b = 0 ;
+                box := Put(box) ;
+                b := 1
+              }
+      }
+      
+    process (Consumer = 1)
+      { c1: while (TRUE)
+              { await b = 1 ;
+                box := Get(box) ;
+                b := 0
+              }
+      }
+}
+
+\end{nopcal}
+\begin{tlatex}
+\@x{ {\p@mmalgorithm} Alternate {\p@lbrace}\vs{.5}}%
+ \@x{\@s{16.4} {\p@variable} b \.{=} 0 ,\, box \.{=} {\langle}\, {\rangle}
+ {\p@semicolon}}%
+\@pvspace{4.0pt}%
+\@x{\@s{16.4} {\p@process} {\p@lparen} Producer \.{=} 0 {\p@rparen}}%
+ \@x{\@s{24.59} {\p@lbrace} p1\@s{.5}\textrm{:}\@s{3} {\p@while} {\p@lparen}
+ {\TRUE} {\p@rparen}}%
+\@x{\@s{59.40} {\p@lbrace} {\p@await} b \.{=} 0 {\p@semicolon}}%
+\@x{\@s{68.98} box \.{:=} Put ( box ) {\p@semicolon}}%
+\@x{\@s{68.98} b \.{:=} 1}%
+\@x{\@s{59.40} {\p@rbrace}}%
+\@x{\@s{24.59} {\p@rbrace}}%
+\@pvspace{8.0pt}%
+\@x{\@s{16.4} {\p@process} {\p@lparen} Consumer \.{=} 1 {\p@rparen}}%
+ \@x{\@s{24.59} {\p@lbrace} c1\@s{.5}\textrm{:}\@s{3} {\p@while} {\p@lparen}
+ {\TRUE} {\p@rparen}}%
+\@x{\@s{58.82} {\p@lbrace} {\p@await} b \.{=} 1 {\p@semicolon}}%
+\@x{\@s{68.40} box \.{:=} Get ( box ) {\p@semicolon}}%
+\@x{\@s{68.40} b \.{:=} 0}%
+\@x{\@s{58.82} {\p@rbrace}}%
+\@x{\@s{24.59} {\p@rbrace}}%
+\@x{ {\p@rbrace}}%
+\@pvspace{4.0pt}%
+\end{tlatex}
+\noindent
+\verb|*********************************************************)|\vs{.3} 
+
+\begin{notla}
+=============================================================================
+\end{notla}
+\begin{tlatex}
+\@x{}\bottombar\@xx{}%
+\end{tlatex}
+\end{popup}
+\makepopup

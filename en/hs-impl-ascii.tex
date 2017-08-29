@@ -1,0 +1,36 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{ASCII Text}
+\fixverbatim
+\begin{popup}
+\begin{verbatim*}
+EXTENDS Integers
+
+a (+) b == (a + b) % 2
+
+(***************************************************************
+--algorithm Handshake {
+
+    variable p = 0,  c = 0 ;
+
+    process (Producer = 0) 
+      { pe: while (TRUE)
+              {      await p = c ;
+                put: skip ;
+                px:  p := p (+) 1   }
+      }
+      
+   process (Consumer = 1)
+     { ce: while (TRUE)
+             {      await p # c ;
+               get: skip ;
+               cx:  c := c (+) 1   }
+     }
+}
+ ***************************************************************)
+
+Alt == INSTANCE AltSpec WITH b <- p (+) c
+=============================================================================
+\end{verbatim*}
+\end{popup}
+\makeasciipopup

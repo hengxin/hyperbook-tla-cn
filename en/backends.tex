@@ -1,0 +1,172 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\file{backends}
+\makeindex
+\pdftitle{The Backend Provers}
+
+\setpopup{53}
+\begin{document}
+\tindex{2}{back-end prover}%
+\ctindex{2}{prover!back-end}{prover-back-end}%
+
+\vspace{-2\baselineskip}%
+
+\subsection*{The Backend Provers}
+
+\vspace{-1.5\baselineskip}%
+  \ctindex{1}{SMT solver}{smt-solver}%
+  \ctindex{1}{solver, SMT}{solver-smt}%
+\subsubsection*{SMT Solvers}
+
+The backend provers that are the most useful are a class called SMT
+solvers.  TLAPS can use several different SMT solver backends; the
+default one used by the Toolbox is called 
+  \ctindex{1}{SMT@\mmath{SMT} (backend prover)}{SMT}%
+$SMT$\@.  By default, $SMT$
+is the first backend prover TLAPS calls.  The SMT solvers are much,
+much better than any other backend prover at arithmetical reasoning.
+They will all prove any valid formula about integers you are likely
+ever to write that contains only numbers, $+$, $-$, $<$, $\leq$, $>$
+$\geq$, $=$ and the operators of propositional logic---for example:
+ \[(m \geq 0) /\ (m \leq p) /\ (n \geq q) /\ (n \leq r) /\ (p+1 \leq q) => 
+    (m # n) \]
+for integers $m$, $n$, $p$, $q$, and $r$.  They're much better than
+you are at deciding if such a formula is true.  They also know that $m
+\in p\dd q$ is equivalent to $(p \leq m) /\ (m \leq q)$ if
+$m$, $p$, and $q$ are integers, so they're also good at reasoning
+about integer intervals.  However, they aren't very good at formulas
+involving $*$, $\%$, and $\div$.
+
+The default SMT solver is called $CVC3$, so by default $SMT$ and
+$CVC3$ are synonymous.  It is included in 
+  \hyperref{http://tla.msr-inria.inria.fr/tlaps/content/Download/Binaries.html}{}{}{the TLAPS distribution}.
+Other SMT solvers that you can download yourself and use as TLAPS
+backend provers are $Z3$, $Yices$, and \emph{veri\s{-.1}T}.
+
+% $Spass$ not ready to be mentioned.
+
+Most of the time, a proof obligation will be provable by one SMT
+solver iff it is proved by all of them.  However, they do vary in their
+ability to reason about multiplication.  Yices and Z3 prove
+ \[ \A m, n \in Int : m * (n - 1) = m*n - m \]
+but CVC3 does not.  Only Z3 proves 
+  \[ \A i \in Int, j \in Nat \ \{0\} :
+                   i \% j \in 0\dd(j-1)\]
+None of the SMT backends have built-in knowledge about $\div$.
+
+As this indicates, I currently find Z3 to work a little more often
+than the others.  It also seems to be the fastest.  It is not the
+default $SMT$ backend because it is not free for commercial users, so
+it can't be distributed with TLAPS\@.  However, you can download it
+yourself and make it the default.  The default SMT solver can be
+changed from the Toolbox's preference window reached by
+\textsf{File/Preferences/TLA+ Preferences/TLAPS/Additional
+Preferences}\@.  Instructions for how to do that are
+  \hyperref{http://tla.msr-inria.inria.fr/tlaps/content/Documentation/Tutorial/Tactics.html}{}{}{on this web page}.
+  
+
+% Setting the \textsf{SMT Solver} preference to
+% \begin{display}
+% \verb|z3 /smt2 `cygpath -w "$file"`|
+% \end{display}
+% works on windows, assuming that the directory containing the z3
+% program is on the search path.  
+
+\vspace{-\baselineskip}%
+  \ctindex{1}{Zenon@\mmath{Zenon} (backend prover)}{Zenon}%
+\subsubsection*{Zenon}
+
+$Zenon$ is the second backend prover called by default.  It knows
+nothing about numbers, but it knows about the built-in \tlaplus\
+operators and is good at general mathematical reasoning.  
+
+\vspace{-\baselineskip}%
+\ctindex{1}{Isabelle@\mmath{Isabelle} (backend prover)}{Isabelle}%
+\ctindex{1}{Isa@\mmath{Isa} (\icmd{textsc}{by} fact)}{Isa}%
+\subsubsection*{Isa}
+
+$Isa$ is short for Isabelle, the third backend prover that is called
+by default.  It can do most of what Zenon does and some things Zenon
+can't do, but it's slower.  I find it better than Zenon at reasoning
+about functions and records.  It's also better than Zenon for reasoning
+about higher-order operators---more reasoning that requires
+substituting operators in \textsc{assume}/\textsc{prove} facts in
+which the assumptions declare \textsc{new} operators.  Examples of
+such facts are the library's rules for proofs by induction.
+
+Isabelle knows a little bit about numbers, but isn't too
+good with them.  It can prove $2+2=4$ but times out trying to prove
+$20+20=40$.
+
+Isabelle uses methods, which you can specify with the
+$IsaM$ operator.  The standard method is called \emph{auto}, 
+  \ctindex{1}{auto@auto (Isabelle method)}{auto}%
+and the
+\textsc{by} ``fact'' $Isa$ is synonymous with $IsaM("auto")$.  Here
+are the other available methods, which can occasionally help.
+\begin{description}
+\item[\emph{blast}] 
+This method 
+  \ctindex{1}{blast@blast (Isabelle method)}{blast}%
+is somewhat better than \emph{auto} for reasoning
+about higher-order operators.
+
+\item[\emph{force}]
+This 
+ \ctindex{1}{force@force (Isabelle method)}{force}%
+method is similar to \emph{auto} but more aggressively
+tries instantiating quantifiers.
+\end{description}
+Experts in mechanical verification may have some idea what the
+following methods are good for.  The rest of us can try them for fun,
+or when we get desperate.
+\begin{description}
+\item[\emph{fast}] A 
+  \ctindex{1}{fast@fast (Isabelle method)}{fast}%  
+resolution-based prover.  
+
+\item[\emph{simp}] Is the part of \emph{auto} that does
+  \ctindex{1}{simp@simp (Isabelle method)}{simp}%  
+rewriting.  It is superseded by \emph{auto}
+except in borderline cases.
+\end{description}
+They have two variants: The 
+  \ctindex{1}{clarsimp@clarsimp (Isabelle method)}{clarsimp}%  
+\emph{clarsimp} method combines \emph{simp} with some basic
+proof rules such as reducing $A => B$ to 
+$\ASSUME A\; \PROVE B$.  The
+   \ctindex{1}{fastsimp@fastsimp (Isabelle method)}{fastsimp}%  
+\emph{fastsimp} method combines \emph{simp} with \emph{fast},
+which is very similar to \emph{auto}; it is unlikely to work
+if \emph{auto} doesn't.
+
+
+\vspace{-\baselineskip}%
+\ctindex{2}{PTL@\mmath{PTL} (backend prover)}{PTL}%
+\subsubsection*{PTL}
+
+$PTL$ stands for Propositional Temporal Logic.  It is synonymous with
+ \tindex{1}{LS4}%
+$LS4$, which is a backend prover that can prove temporal formulas that
+do not contain quantification over temporal formulas.  
+
+  \vspace{-\baselineskip}%
+  \tindex{1}{timeout, prover}%
+\subsubsection*{Giving a Prover More Time}
+
+When a backend prover fails by timing out, giving it more time seldom
+helps.  However, it occasionally does.  You can tell the $SMT$ backend to
+timeout only after 30 seconds with the \textsc{by} pseudo-fact
+$SMTT(30)$.  Similarly, $ZenonT(45)$ calls $Zenon$ with a timeout of
+45 seconds, and so on for the other backend provers.  By default, the
+backend provers all time out after 5 seconds except for \emph{Isabelle},
+which times out after 30 seconds.
+
+Increasing timeouts is most likely to help if you're using a slow
+machine.  In that case, you can use the \verb|--stretch| prover
+option to increase all timeouts by a factor.  
+Such advanced options and how to use them appear
+on 
+  \hyperref{http://tla.msr-inria.inria.fr/tlaps/content/Documentation/Tutorial/Advanced_options.html}{}{}{this web page}.
+
+\end{document}

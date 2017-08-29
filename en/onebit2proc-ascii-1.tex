@@ -1,0 +1,28 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{ASCII Text}
+\fixverbatim
+\addtolength{\textwidth}{2em}
+\begin{popup}
+\begin{verbatim*}
+----------------------- MODULE OneBit2Procs -----------------------
+EXTENDS Integers
+
+(******************************************************************
+--algorithm OneBit {
+   variable x = [i \in {0,1} |-> FALSE] ;
+   process (P \in {0,1})
+    { ncs: while (TRUE)
+             {      skip;
+               e1:  x[self] := TRUE ;
+               e2:  if (~x[1-self]) { cs: skip }
+                    else {goto e2} ;
+               f:   x[self] := FALSE
+             }
+    }
+ }
+ ******************************************************************)
+====================================================================
+\end{verbatim*}
+\end{popup}
+\makeasciipopup

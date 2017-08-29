@@ -1,0 +1,88 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{Euclid's Algorithm}
+%\begin{document}
+\begin{popup}
+\subsection*{Euclid's Algorithm}
+
+\begin{display}
+\begin{notla}
+----------------------------- MODULE PCalEuclid -----------------------------
+EXTENDS Integers, GCD
+
+CONSTANT M, N
+ASSUME /\ M \in Nat \ {0}
+       /\ N \in Nat \ {0}
+\end{notla}
+\begin{tlatex}
+\@x{}\moduleLeftDash\@xx{ {\MODULE} Euclid}\moduleRightDash\@xx{}%
+\@x{ {\EXTENDS} Integers ,\, GCD}%
+\@pvspace{8.0pt}%
+\@x{ {\CONSTANT} M ,\, N}%
+\@x{ {\ASSUME}\@s{0.1} \.{\land} M \.{\in} Nat \.{\,\backslash\,} \{ 0 \}}%
+\@x{\@s{38.34} \.{\land} N\@s{1.53} \.{\in} Nat \.{\,\backslash\,} \{ 0 \}}%
+\end{tlatex}
+
+\begin{nopcal}
+--algorithm Euclid {
+  variables x = M, y = N ;
+  {  while (x # y) { if (x < y) { y := y - x }
+                     else       { x := x - y }
+                   } 
+  }
+}
+\end{nopcal}
+\vspace{8pt}
+\begin{tlatex}
+\setboolean{shading}{true}
+\setboolean{pcalshading}{true}
+%\begin{lcom}{0.5}%
+\begin{cpar}{0}{F}{F}{0}{0}{}%
+**************************************************************************
+\end{cpar}%
+%\end{lcom}\vspace{-4pt}%
+\@x{ {\p@mmalgorithm} Euclid {\p@lbrace}}\vspace{-1pt}%
+\@x{\@s{8.2} {\p@variables} x\@s{4.41} \.{=} M ,\, y \.{=} N {\p@semicolon}}\vspace{-1pt}%
+ \@x{\@s{8.2} {\p@lbrace}\@s{4.1} {\p@while} {\p@lparen} x \.{\neq} y
+ {\p@rparen} {\p@lbrace} {\p@if} {\p@lparen} x \.{<} y {\p@rparen}
+ {\p@lbrace} y \.{:=} y\@s{0.10} \.{-} x {\p@rbrace}}\vspace{-1pt}%
+ \@x{\@s{107.01} {\p@else}\@s{24.59} {\p@lbrace} x\@s{9.09} \.{:=} x \.{-} y
+ {\p@rbrace}}\vspace{-1pt}%
+\@x{\@s{97.43} {\p@rbrace}}\vspace{-1pt}%
+\@x{\@s{8.2} {\p@rbrace}}\vspace{-1pt}%
+\@x{ {\p@rbrace}\vs{.3}}%\vspace{-1pt}%
+\setboolean{shading}{true}
+\setboolean{pcalshading}{true}
+%\begin{lcom}{0.5}%
+\begin{cpar}{0}{F}{F}{0}{0}{}%
+\strut**************************************************************************
+\end{cpar}%
+\end{tlatex}
+\vspace{8pt}
+\begin{notla}
+PartialCorrectness ==
+  (pc = "Done") => (x = y) /\ (x = GCD(M, N))
+
+TypeOK == /\ x \in Nat \ {0}
+          /\ y \in Nat \ {0}
+Inv == /\ TypeOK
+       /\ GCD(x, y) = GCD(M, N)
+       /\ (pc = "Done") => (x = y)
+=======================================================
+\end{notla}
+\begin{tlatex}
+\@x{ PartialCorrectness \.{\defeq}}%
+ \@x{\@s{8.2} ( pc \.{=}\@w{Done} ) \.{\implies} ( x \.{=} y ) \.{\land} ( x
+ \.{=} GCD ( M ,\, N ) )}%
+\@pvspace{8.0pt}%
+\@x{ TypeOK \.{\defeq} \.{\land} x \.{\in} Nat \.{\,\backslash\,} \{ 0 \}}%
+\@x{\@s{56.14} \.{\land} y\@s{0.10} \.{\in} Nat \.{\,\backslash\,} \{ 0 \}}%
+\@x{ Inv \.{\defeq} \.{\land} TypeOK}%
+\@x{\@s{34.04} \.{\land} GCD ( x ,\, y ) \.{=} GCD ( M ,\, N )}%
+\@x{\@s{34.04} \.{\land} ( pc \.{=}\@w{Done} ) \.{\implies} ( x \.{=} y )}%
+\@x{}\bottombar\@xx{}%
+\end{tlatex}
+\end{display}
+%\end{document}
+\end{popup}
+\makepopup

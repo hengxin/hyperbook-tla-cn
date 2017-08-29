@@ -1,0 +1,34 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\begin{popup}
+\pdftitle{The with Statement: Equals Versus In }
+\subsection*{The with Statement: Equals Versus In}
+
+Recall that in the $DieHard$ algorithm, we used
+the following \textbf{with} statement that has ``=''
+instead of ``$\!\in\!$'':
+\begin{display}
+\begin{nopcal}
+with (poured = Min (big + small, 5) - big) { ... }
+\end{nopcal}
+\begin{tlatex}
+ \@x{ {\p@with} {\p@lparen} poured \.{=} Min ( big \.{+} small ,\, 5 ) \.{-}
+ big {\p@rparen} {\p@lbrace} \.{\dots} {\p@rbrace}}%
+\end{tlatex}
+\end{display}
+This statement is equivalent to:
+\begin{display}
+\begin{nopcal}
+with (poured \in {Min (big + small, 5) - big}) { ... }
+\end{nopcal}
+\begin{tlatex}
+ \@x{ {\p@with} {\p@lparen} poured \.{\in} \{ Min ( big \.{+} small ,\, 5 )
+ \.{-} big \} {\p@rparen} {\p@lbrace} \.{\dots} {\p@rbrace}}%
+\end{tlatex}
+\end{display}
+Letting $poured$ equal an arbitrary element of a set containing just
+one element is equivalent of letting it equal that element.
+
+\end{popup}
+\makepopup
+

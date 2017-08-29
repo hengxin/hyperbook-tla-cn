@@ -1,0 +1,49 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{A Finer-Grained Bounded Buffer Algorithm}
+\file{pcal-bbuffer}
+\begin{popup}
+\begin{nopcal}
+   process (Producer = "P") 
+    { p1: while (TRUE) 
+           { await p (-) c # N ;
+      p2:    buf[p % N] := IHead(in);
+             in := ITail (in) ;
+      p3:    p := p (+) 1
+           }
+    }
+
+   fair process (Consumer = "C") 
+    { c1: while (TRUE) 
+           { await p # c ;
+      c2:    out := Append(out, buf[c % N]) ;
+      c3:    c := c (+) 1
+           }
+    }
+\end{nopcal}
+\begin{tlatex}
+\@x{\@s{12.29} {\p@process} {\p@lparen} Producer \.{=}\@w{P} {\p@rparen}}%
+ \@x{\@s{16.4} {\p@lbrace} p1\@s{.5}\textrm{:}\@s{3} {\p@while} {\p@lparen}
+ {\TRUE} {\p@rparen}}%
+ \@x{\@s{47.10} {\p@lbrace} {\p@await} p \.{\ominus} c \.{\neq} N
+ {\p@semicolon}}%
+ \@x{\@s{25.98} p2\@s{.5}\textrm{:}\@s{3}\@s{13.68} buf [ p \.{\%} N ] \.{:=}
+ IHead ( in ) {\p@semicolon}}%
+\@x{\@s{56.68} in \.{:=} ITail ( in ) {\p@semicolon}}%
+\@x{\@s{25.98} p3\@s{.5}\textrm{:}\@s{3}\@s{13.68} p \.{:=} p \.{\oplus} 1}%
+\@x{\@s{46.48} {\p@rbrace}}%
+\@x{\@s{16.4} {\p@rbrace}}%
+\@pvspace{8.0pt}%
+ \@x{\@s{12.29} {\p@fair} {\p@process} {\p@lparen} Consumer \.{=}\@w{C}
+ {\p@rparen}}%
+ \@x{\@s{16.4} {\p@lbrace} c1\@s{.5}\textrm{:}\@s{3} {\p@while} {\p@lparen}
+ {\TRUE} {\p@rparen}}%
+\@x{\@s{46.52} {\p@lbrace} {\p@await} p \.{\neq} c {\p@semicolon}}%
+ \@x{\@s{25.98} c2\@s{.5}\textrm{:}\@s{3}\@s{13.68} out \.{:=} Append ( out
+ ,\, buf [ c \.{\%} N ] ) {\p@semicolon}}%
+\@x{\@s{25.98} c3\@s{.5}\textrm{:}\@s{3}\@s{13.68} c \.{:=} c \.{\oplus} 1}%
+\@x{\@s{46.48} {\p@rbrace}}%
+\@x{\@s{16.4} {\p@rbrace}}%
+\end{tlatex}
+\end{popup}
+\makepopup

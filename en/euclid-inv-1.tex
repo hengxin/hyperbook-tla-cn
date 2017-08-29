@@ -1,0 +1,128 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{Proof of Theorem Induction}
+ \setlength{\oddsidemargin}{-1in}%
+ \addtolength{\oddsidemargin}{10pt}%
+ \setlength{\marginparsep}{0pt}%
+ \setlength{\marginparwidth}{0pt}%
+ \setlength{\paperwidth}{\textwidth}%
+ \addtolength{\paperwidth}{20pt}%
+% \addtolength{\paperwidth}{1in}%
+%  \settoheight{\paperheight}{\usebox\popupbox}%
+% \addtolength{\paperheight}{4.2em}%
+  \pagestyle{empty}%
+  \hypersetup{pdfmenubar=false} %% this removes the top menu bar
+  \hypersetup{pdftoolbar=false}  % this seems to do nothing
+%\setlength{\pfsep}{4pt}
+\begin{document}
+\noindent
+$\THEOREM Induction == Inv /\ Next => Inv'$
+\beforePfSpace{0pt}
+\afterPfSpace{0pt}
+\interStepSpace{0pt}
+\vspace{.4em}
+\begin{proof}
+\step{<1>0}{\sassume{$\begin{noj2}
+                      1. & Inv \\ 2. & Next
+                      \end{noj2}$}
+            \sprove {$Inv'$}}
+\begin{proof}
+\pf\ Obvious.
+\end{proof}
+\vspace{.9em}
+\step{<1>1}{\case{$\begin{conj}
+       x > y \\ x' = x - y \\ y'=y \end{conj}$}}
+  \begin{proof}
+\vspace{.2em}
+  \step{<2>1}{$TypeOK'$}
+\vspace{.1em}
+  \begin{proof}
+   \pf\ \stepref{<1>0}.1 and the definitions of $Inv$ and $TypeOK$ 
+   imply that $x$ and $y$ are in $Nat :\: \{0\}$.  By case assumption
+    \stepref{<1>1}, this implies that $x'$ and $y'$ are in $Nat :\: \{0\}$,
+   proving \stepref{<2>1}.
+   \end{proof}
+\vspace{.6em}
+  \step{<2>2}{$GCDInv'$}
+\vspace{.3em}
+  \begin{proof}
+     \step{<3>1}{$GCD(y', x') = GCD(y, x)$}
+   \vspace{.1em}
+     \begin{proof}
+     \pf\ \stepref{<1>0}.1 and the definitions of $Inv$ and $TypeOK$ 
+      imply that $x$ and $y$ are in $Nat :\: \{0\}$, so \stepref{<3>1}
+      follows from case assumption \stepref{<1>1} and GCD3 (substituting
+      $y$ for $m$ and $x$ for $n$).
+     \end{proof}
+   \vspace{.4em}
+     \step{<3>2}{$GCD(x', y') = GCD(x, y)$}
+   \vspace{.1em}
+      \begin{proof}
+     \pf\  \stepref{<1>0}.1, the definitions of $Inv$ and $TypeOK$, and
+      \stepref{<2>1} imply that $x$, $y$, $x'$, and $y'$ are in
+       $Nat :\: \{0\}$, so \stepref{<3>2} follows from \stepref{<3>1} and GCD2.
+      \end{proof}
+   \vspace{.4em}
+     \qedstep
+   \vspace{.1em}
+     \begin{proof}
+     \pf\ \stepref{<3>2}, \stepref{<1>0}.1, and the definitions of $Inv$ 
+    and $GCDInv$ imply \stepref{<2>2}.
+     \end{proof}
+  \end{proof}
+\vspace{.6em}
+  \qedstep
+   \begin{proof}
+   \pf\ By \stepref{<2>1}, \stepref{<2>2}, and definition of $Inv$.
+   \end{proof}
+  \end{proof}
+\vspace{.9em}
+ \step{<1>2}{\case{$\begin{conj}
+                    y > x  \\ y' = y - x \\ x'=x \end{conj}$}}
+\vspace{.2em}
+  \begin{proof}
+  \step{<2>1}{$TypeOK'$}
+\vspace{.2em}
+  \begin{proof}
+   \pf\ \stepref{<1>0}.1 and the definitions of $Inv$ and $TypeOK$ 
+   imply that $x$ and $y$ are in $Nat :\: \{0\}$.  By case assumption
+    \stepref{<1>2}, this implies that $x'$ and $y'$ are in $Nat :\: \{0\}$,
+   proving \stepref{<2>1}.
+   \end{proof}
+\vspace{.6em}
+  \step{<2>2}{$GCDInv'$}
+   \vspace{.3em}
+  \begin{proof}
+     \step{<3>1}{$GCD(x', y') = GCD(x, y)$}
+   \vspace{.1em}
+     \begin{proof}
+     \pf\ \stepref{<1>0}.1 and the definitions of $Inv$ and $TypeOK$ 
+      imply that $x$ and $y$ are in $Nat :\: \{0\}$, so \stepref{<3>1}
+      follows from case assumption \stepref{<1>2} and GCD3 (substituting
+      $x$ for $m$ and $y$ for $n$).
+     \end{proof}
+   \vspace{.4em}
+     \qedstep
+   \vspace{.1em}
+     \begin{proof}
+     \pf\ \stepref{<3>1}, \stepref{<1>0}.1, and the definitions of $Inv$ 
+    and $GCDInv$ imply \stepref{<2>2}.
+     \end{proof}
+  \end{proof}
+\vspace{.6em}
+  \qedstep
+\vspace{.1em}
+   \begin{proof}
+   \pf\ By \stepref{<2>1}, \stepref{<2>2}, and definition of $Inv$.
+   \end{proof}
+  \end{proof}
+\vspace{.9em}
+\qedstep
+\vspace{.1em}
+\begin{proof}
+\pf\ By \stepref{<1>0}.2 and the definition of $Next$, the cases
+\stepref{<1>1} and \stepref{<1>2} are exhaustive.
+\end{proof}
+\end{proof}
+\mbox{}\hfill \closebutton 
+\end{document}

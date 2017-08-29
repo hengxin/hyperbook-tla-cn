@@ -1,0 +1,27 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\makeindex
+\file{strings-vs-numbers}
+\pdftitle{Strings versus numbers}
+\begin{popup}
+
+  \ctindex{1}{string!unequal to number}{str-num}%
+  \ctindex{1}{number!unequal to string}{num-str}%
+  \vspace{-2\baselineskip}%
+\subsection*{Why Aren't Strings and Numbers Unequal?}
+It might seem natural to assume that a string is unequal to a number.
+However, my experience indicates that the meaning of a specification
+should not depend on whether or not a string and a number are equal.
+If determining the set of behaviors allowed by the spec requires
+evaluating the formula $"xyz"=0$, then there is probably an error in 
+a spec.
+
+\medskip
+
+In general, the semantics of \tlaplus\ do not determine that two
+values are unequal unless the laws of ordinary mathematics imply that
+they are.  This lets a tool like TLC catch ``type errors'' even though
+there is no notion of types in the simple mathematics on which
+\tlaplus\ is based.
+\end{popup}
+\makepopup

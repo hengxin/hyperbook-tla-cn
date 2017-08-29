@@ -1,0 +1,124 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+% \makeindex
+\file{bbuf-r2}
+\pdftitle{A Proof of R2 for the Bounded Buffer}
+%\newsetwidepopup{51}{11}
+\setpopup{53}
+%\pflongnumbers
+\beforePfSpace{5pt,2pt,2pt,4pt,2pt}
+\afterPfSpace{0pt,10pt,4pt,4pt,2pt}
+\interStepSpace{10pt,0pt,0pt,0pt,0pt}
+\newcommand{\chpr}{chBar'} % prime for
+\begin{document}
+
+\subsection*{A Partial Proof of R2 for the Bounded Buffer}
+
+$\THEOREM \;Inv /\ Inv' /\ Next => [C!Next]_{C!vars}$
+\begin{proof}
+\NOTLA\step{1}{\assume{$Inv$, $Inv'$, $Producer$}
+         \prove {$C!Send$}} \TLA
+  \begin{proof}
+  \step{1-1}{$Len(\ensuremath{chBar}) # N$}
+  \begin{proof}
+  \pf\ $TypeOK$ and the definition of \ensuremath{chBar} implies
+  $Len(\ensuremath{chBar}) = p \ominus c$, so \stepref{1-1} follows from
+  $Producer$.
+  \end{proof}
+  \step{1-2}{$\chpr = Append(\ensuremath{chBar}, IHead(in))$}
+   \begin{proof}
+   \step{121}{$(\ensuremath{chBar}\in Seq(Msgs)) /\ (Len(\ensuremath{chBar}) = p\ominus q )$}
+   \begin{proof}
+   \pf\ By $TypeOK$ and definition of $\ensuremath{chBar}$.
+   \end{proof}
+   \step{122}{$(\chpr\in Seq(Msgs))
+           /\ (Len(\chpr) = (p\ominus q)+1)$}
+    \begin{proof}
+    \step{1221}{$p'\ominus q' = (p\ominus q)+1$}
+    \begin{proof}
+     \step{12211}{$p'\ominus q'=(p\oplus 1)\ominus q$}
+      \begin{proof}
+      \pf\ By $Producer$.
+      \end{proof}
+     \step{12212}{$(p\oplus 1)\ominus q= (p\ominus q)\oplus 1$}
+      \begin{proof}
+      \pf\ By $TypeOK$ and the arithmetic properties of 
+        $\oplus$ and $\ominus$.
+      \end{proof}
+     \step{12213}{$(p\ominus q)\oplus 1 = (p\ominus q) + 1$}
+      \begin{proof}
+      \pf\ $p\ominus q < N$ by $Producer$, so
+      $(p\ominus q) + 1 < 2N$ (by the assumption on $N$).  By
+      definition of $\oplus$, this implies 
+             $(p\ominus q) + 1 = (p\ominus q)\oplus 1)$.
+      \end{proof}
+     \qedstep
+      \begin{proof}
+      \pf\ By \stepref{12211}, \stepref{12212}, and \stepref{12213}.
+      \end{proof}
+    \end{proof}
+    \qedstep
+       \begin{proof}
+       \pf\ By $Inv'$, the definition of \ensuremath{chBar}, and \stepref{1221}.
+       \end{proof}
+    \end{proof}
+   \step{123}{$\begin{conj}
+               \chpr[(p\ominus q)+1] = IHead(in)) \\ % \, /\ \,
+       \A i \in 1\dd (p\ominus q) : \chpr[i] = \ensuremath{chBar}[i]
+               \end{conj}$}
+     \begin{proof}
+     \step{1231}{The set $\{(c {\oplus} (i - 1)) \% N : 
+                    i \in 1\dd((p\ominus c)+1)\}$ contains $(p\ominus c)+1$
+                 distinct numbers.}
+       \begin{proof}
+       \pf\ By $TypeOK$ and Property BB, since $Producer$
+            implies $p\ominus c < N$, so $(p\ominus c)+1\leq N$.
+       \end{proof}
+     \step{1232}{$(c {\oplus} (i - 1)) \% N$ equals $p\%N$ for 
+                $i=(p \ominus c) + 1$}
+       \begin{proof}
+       \pf\ The arithmetical properties of $\oplus$ and $\ominus$
+        imply $c {\oplus} (p \ominus c) = p$.
+       \end{proof}
+     \qedstep
+       \begin{proof}
+       \pf\ By \stepref{1231}, \stepref{1232}, and the definition
+       of \ensuremath{chBar}, since $Producer$ and $TypeOK$ imply\V{.2}
+       \s{1}$\A j\in 0\dd(N-1): buf'[j] = \IF j=p\%N \THEN
+               IHead(in) \ELSE buf[j]\s{-5}$
+       \end{proof}
+     \end{proof}
+%    \step{124}{$\chpr[(p\ominus c)+1] = IHead(in)$}
+    \qedstep
+      \begin{proof}
+      \pf\ By \stepref{121}, \stepref{122}, and \stepref{123} .
+      \end{proof}
+   \end{proof}
+  \step{1-3}{$(in' = ITail(in))\,/\ \, (out'=out)$}
+    \begin{proof}
+    \pf\ By $Producer$.
+    \end{proof}
+  \qedstep
+    \begin{proof}
+    \pf\ By \stepref{1-1}, \stepref{1-2}, \stepref{1-3}, and the
+     definition of $Send$.
+    \end{proof}
+  \end{proof}
+%
+\step{2}{\assume{$Inv$, $Consumer$}
+         \prove {$C!Rcv$}}
+
+\begin{proof}
+\puce \pf\ Left as an exercise.
+\end{proof}
+%
+\qedstep
+%
+\begin{proof}
+\pf\ By \stepref{1}, \stepref{2}, and the definitions of $Next$
+and $C!Next$.
+\end{proof}
+\end{proof}
+
+
+\end{document}

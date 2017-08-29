@@ -1,0 +1,14 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{Answer}
+\begin{popup}
+\subsection*{Answer}
+
+TLC has no trouble with this initial predicate for the same reason
+it has no trouble with the initial predicate.
+   \[ (b=0)\, \/ \,((b=1) /\ (1=b))\]
+Since $(b=1) /\ (2=b)$ is equivalent to $\FALSE$, the initial
+predicate in the question is equivalent to $b=0$.  Hence, TLC finds
+only a single possible behavior.
+\end{popup}
+\makepopup

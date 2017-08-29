@@ -1,0 +1,13 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{ASCII Text}
+\fixverbatim
+\begin{popup}
+\begin{verbatim*}
+pBar == IF pc["P"] = "p3" THEN p (+) 1 ELSE p 
+cBar == IF pc["C"] = "c3" THEN c (+) 1 ELSE c
+
+B == INSTANCE NewBoundedBuffer WITH p <- pBar, c <- cBar
+\end{verbatim*}
+\end{popup}
+\makeasciipopup

@@ -1,0 +1,32 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{Proof by Contradiction}
+\file{pf-by-contradiction}
+\makeindex
+\begin{popup}
+\subsection*{Proof by Contradiction}
+
+The most familiar
+  \tindex{2}{proof!by contradiction}%
+  \tindex{2}{contradiction, proof by}%
+form of proof by contradiction is to prove a formula $F$ by assuming
+$~F$ and proving \FALSE. This reasoning is based on the tautology
+$(~F=>\FALSE)=>F$.  Another form of proof by contradiction is to prove
+$F$ by assuming $~F$ and proving $F$.  The soundness of this rule is a
+simple corollary of the soundness of the familiar proof by
+contradiction, since $F$ and the assumption $~F$ imply $\FALSE$.  This
+form of proof by contradiction also follows from the tautology
+$(~F=>F)=>F$.
+
+\bigskip
+
+\puce
+\noindent\textbf{Question } Verify the two tautologies 
+ \[(~F=>\FALSE)=>F \s{3} (~F=>F)=>F \]
+by expressing $=>$ in terms of other Boolean operators.
+
+
+
+
+\end{popup}
+\makepopup

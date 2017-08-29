@@ -1,0 +1,16 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{ASCII Text}
+\fixverbatim
+\begin{popup}
+\begin{verbatim*}
+seq ** iseq == [i \in (Nat \ {0}) |-> 
+                  IF i =< Len(seq) THEN seq[i]
+                                   ELSE iseq[i - Len(seq)]]
+
+Inv == /\ TypeOK
+       /\ (Len(ch) =< N) 
+       /\ Input = (out \o ch) ** in
+\end{verbatim*}
+\end{popup}
+\makeasciipopup

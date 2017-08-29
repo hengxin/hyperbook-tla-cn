@@ -1,0 +1,76 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{Proof}
+\newcommand{\cset}{\ensuremath{\mathcal{CW}}}
+\pflongnumbers
+\pflongindent
+\beforePfSpace{10pt, 5pt, 2pt}
+\afterPfSpace{10pt, 5pt, 2pt}
+\interStepSpace{10pt, 5pt, 2pt}
+\begin{popup}
+\textbf{C2.} $c\succeq^{+}d$ holds,
+for any elements $c$ and $d$ of $\cset$.
+\begin{proof}
+%%\setlength{\stepsep}{.35em}
+\step{1}{Let $c$ be an arbitrary element of $\cset$ and define
+\[D == \{d \in \cset :~(c\succeq^{+}d)\}\]
+It suffices to assume $D$ is nonempty and obtain a contradiction.}
+\begin{proof}
+\pf\ Obvious.
+\end{proof}
+
+\step{2}{$d\succ c$ holds, for all $d \in D$.}
+\begin{proof}
+\pf\ $~(c\succeq^{+}d)$ implies $~(c\succeq d)$ (because $c\succeq d$
+implies $c\succeq^{+}d$ by definition of the transitive closure), and
+$~(c\succeq d)$ equals $d \succ c$ by definition of $\succeq$.
+\end{proof}
+
+\step{3}{For all $d \in D$ and all $e \in \cset :\: D : d\succ e$.}
+
+\begin{proof}
+\step{3.1}{It suffices to assume $d\in D$, $e\in \cset :\: D$, and
+$~(d\succ e)$ and obtain a contradiction}
+\begin{proof}
+\pf\ Obvious.
+\end{proof}
+
+\step{3.2}{$c\succeq^{+}e$}
+\begin{proof}
+\pf\ By the assumption of 3.1, which implies $e\notin D$, and the
+definition of $D$.
+\end{proof}
+
+\step{3.3}{$e\succeq d$}
+\begin{proof}
+\pf\ By the assumption of 3.1, which asserts $~(d\succ e)$, and the
+definition of $succeq$.
+\end{proof}
+
+\qedstep
+\begin{proof}
+Steps 3.2 and 3.3 and the definition of the transitive closure
+imply $c\succeq^{+}d$, which by the definition of $D$ contradicts
+the step 3.1 assumption $d\in D$.
+\end{proof}
+
+\end{proof}
+
+\step{4}{$D$ is a dominating set.}
+\begin{proof}
+\pf\ We must prove that if $d\in D$, then $d\succ e$ for any candidate
+$e$ not in $D$.  If $e$ is not in $\cset$, this follows because $\cset$ is
+a dominating set.  If $e\in \cset$, then $e\in \cset:\: D$ and
+this follows from step~3.
+\end{proof}
+
+\qedstep
+\begin{proof}
+\pf\ $D$ is a subset of $\cset$ by definition.  It is a proper subset
+of $\cset$ because $c\in \cset$ by the step~1 assumption and step~2
+implies $c\notin D$.  Therefore, step~4 implies that $\cset$ is not
+the smallest dominating set, which is a contradiction.
+\end{proof}
+\end{proof}
+\end{popup}
+\makepopup

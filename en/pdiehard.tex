@@ -1,0 +1,76 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{}
+\begin{popup}
+\subsection*{Die Hard in PlusCal}
+
+\begin{nopcal}
+--algorithm DieHard  {
+  variables big = 0, small = 0;  
+  { while (TRUE) 
+      { either big := 5    \* fill the big jug
+        or     small := 3  \* fill the small jug
+        or     big := 0    \* empty the big jug
+        or     small := 0  \* empty the small jug
+        or     \* pour from small to big
+               with (poured = Min (big + small, 5) - big)
+                   { big   := big + poured ;                 
+                     small := small - poured }
+        or     \* pour from big to small
+               with (poured = Min (big + small, 3) - small)  
+                   { big   := big - poured ;                 
+                     small := small + poured }
+      }
+  }
+\end{nopcal}
+\begin{tlatex}
+\@x{ {\p@mmalgorithm} DieHard\@s{4.1} {\p@lbrace}}%
+\@x{\@s{8.2} {\p@variables} big \.{=} 0 ,\, small \.{=} 0 {\p@semicolon}}%
+\@x{\@s{8.2} {\p@lbrace} {\p@while} {\p@lparen} {\TRUE} {\p@rparen}}%
+\@x{\@s{25.98} {\p@lbrace} {\p@either} big \.{:=} 5\@s{14.98}}%
+\@y{%
+  \colorbox{gray}{fill the big jug}
+}%
+\@xx{}%
+\@x{\@s{35.56} {\p@or}\@s{18.84} small \.{:=} 3\@s{4.1}}%
+\@y{%
+  \colorbox{gray}{fill the small jug}
+}%
+\@xx{}%
+\@x{\@s{35.56} {\p@or}\@s{18.84} big \.{:=} 0\@s{14.98}}%
+\@y{%
+  \colorbox{gray}{empty the big jug}
+}%
+\@xx{}%
+\@x{\@s{35.56} {\p@or}\@s{18.84} small \.{:=} 0\@s{4.09}}%
+\@y{%
+  \colorbox{gray}{empty the small jug}
+}%
+\@xx{}%
+\@x{\@s{35.56} {\p@or}\@s{18.84}}%
+\@y{%
+  \s{-.8}\colorbox{gray}{pour from small to big}
+}%
+\@xx{}%
+ \@x{\@s{68.73} {\p@with} {\p@lparen} poured \.{=} Min ( big \.{+} small ,\, 5
+ ) \.{-} big {\p@rparen}}%
+ \@x{\@s{85.13} {\p@lbrace} big\@s{10.88} \.{:=} big \.{+} poured
+ {\p@semicolon}}%
+\@x{\@s{94.71} small \.{:=} small \.{-} poured {\p@rbrace}}%
+\@x{\@s{35.56} {\p@or}\@s{18.84}}%
+\@y{%
+  \s{-.8}\colorbox{gray}{pour from big to small}
+}%
+\@xx{}%
+ \@x{\@s{68.73} {\p@with} {\p@lparen} poured \.{=} Min ( big \.{+} small ,\, 3
+ ) \.{-} small {\p@rparen}}%
+ \@x{\@s{85.13} {\p@lbrace} big\@s{10.88} \.{:=} big \.{-} poured
+ {\p@semicolon}}%
+\@x{\@s{94.71} small \.{:=} small \.{+} poured {\p@rbrace}}%
+\@x{\@s{25.98} {\p@rbrace}}%
+\@x{\@s{8.2} {\p@rbrace}}%
+\end{tlatex}
+
+\end{popup}
+\makepopup
+

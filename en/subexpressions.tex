@@ -1,0 +1,430 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+%\pdffalse
+\makeindex
+
+%%% Hack for showing index elements.  
+%%
+% \let\mmath=\ensuremath
+% \def\icmd#1{\csname#1\endcsname}
+% \renewcommand{\tindex}[2]{\marginpar{\red #2 (#1)}}
+% \renewcommand{\ctindex}[3]{\marginpar{\red #2 (#1)}}
+\pdftitle{Subexpression Names}
+\title{Subexpression Names}
+\file{subexpressions}
+
+\setpopup{53}
+
+\newcommand{\tlatwo}{\mbox{TLA\hspace{-.05em}{\boldmath\ensuremath
+                        {^{+2}\s{-.08}}}}}
+
+\newcommand{\bangcolon}{\mbox{$!\s{-.1}:$}}
+% An ASSUME/PROVE: 1st argument is a sequence of lines separated by \\
+\newcommand{\ap}[2]{\begin{noj2}
+                    \ASSUME & \begin{noj}
+                              #1
+                              \end{noj}\\
+                    \PROVE & #2
+                    \end{noj2}}
+
+
+%\small
+\begin{document}
+
+\section*{Subexpression 
+   \ctindex{2}{subexpression names}{subexpression-names}%
+Names}
+
+
+
+
+\subsection*{Labels and 
+  \ctindex{1}{label, in subexpression name}{label-subexp}%
+Labeled Subexpression Names} \label{sec:labels}
+
+Any subexpression of a definition can be labeled.  The syntax
+of a labeled expression is%
+  \ctindex{1}{+5pjj@\mmath{::} (in subexpression name)}{+5pjj}%
+\begin{display}
+% $label$ \texttt{:\s{-.2}:} $expression$
+$label :: expression$
+\end{display}
+(The symbol ``$::$'' is typed ``\texttt{::}''.)
+The label applies to the largest possible expression that follows it.
+In other words, the end of the labeled expression is the same as the
+end of the expression that you would get by replacing the
+``$label::$'' with ``$\A\,x:$''.  However, the
+expression is illegal if removing the label would change the way the
+expression is parsed.  For example, 
+ \[ a + lab :: b * c\]
+is legal because it is parsed as $a+(lab::(b*c))$, which is how it would
+be parsed if the label $lab$ were not there.  However, 
+ \[ a * lab :: b + c\]
+is illegal because it would be parsed as $a*(lab::(b+c))$ and removing
+the label causes the expression to be parsed as $(a*b)+c$.
+
+Label parameters are required if labels occur within the scope of
+bound identifiers.  Here is an example.
+ \[ F(a) == \A\, b : 
+  \begin{noj}
+    l1(b) :: (a > 0) => \\ \s{4}
+      \begin{conj}
+       \ldots \\
+        l2 :: \E \, c : \begin{conj}
+                      \ldots \\
+                     \E \, d : l3(c, d) :: a-b > c-d
+                     \end{conj}
+      \end{conj}
+    \end{noj}
+ \]
+For this example, $F(A)!l1(B)!l2!l3(C,D)$ names the expression
+$A-B>C-D$.  Note how the parameters of each label are the bound
+identifiers introduced between it and the next outer-most label.
+Those identifiers can appear in any order.  For example, if the label
+$l3(c,d)$ were replaced by $l3(d,c)$, then $F(A)!l1(B)!l2!l3(C,D)$
+would name the expression $A-B>D-C$.
+
+In this example, a reference to the subexpression labeled by $l3(c,d)$
+from outside the definition of $F$, must specify the values of all the
+bound identifiers $a$, $b$, $c$, and $d$.  That's why labels must
+include the bound identifiers as parameters.  Also observe that to
+name a labeled subexpression, we have to name all the labeled
+subexpressions within which it lies.  We're not even allowed to
+eliminate the label $l2$, even though it is superfluous in this
+example.
+
+Label names do not conflict with operator names.  In this example, any
+one of the label names $l1$, $l2$, or $l3$ could be replaced by $F$.
+The rule for name conflict is the obvious one needed to guarantee that
+there's no ambiguity in a subexpression name (where we are not allowed
+to use the number of parameters to disambiguate).  Thus, we cannot
+label the first conjunct of the $\E\,c$ expression with $l3(c)$, but
+we could label it with $l1(c)$ or $l2(c)$.
+
+For subexpressions of the definition of an infix, postfix, or prefix
+operator, we use the ``nonfix'' form.  For example, a subexpression of
+the definition of $\&\&$ would have the form $\&\&(A, B)\,!\ldots$\,.
+
+We can also name subexpressions of definitions in instantiated modules.
+For example, if we have
+ \[ Ins(x) == \INSTANCE M \WITH \ldots
+ \]
+and $\nu$ is the name of any subexpression of a definition in module
+$M$, then $Ins(exp)!\nu$ is the name of the subexpression of the
+instantiated definition obtained when $exp$ is substituted for $x$.
+
+We call a subexpression name having one of the forms described here a
+\emph{labeled subexpression name}.  We include in this category the
+trivial case in which there is no label name, only the name of a
+defined operator---possibly in an instantiated module.  The precise
+definition is contained in the ``fine print'' below.  You probably
+don't want to read it.
+
+
+\subsubsection*{The Fine Print}
+
+\begin{small}
+Here is the general definition explained above with examples.  We say
+that label $lab1$ is the \emph{containing label} of $lab2$ iff
+(i)~$lab2$ lies within the expression labeled by $lab1$ and (ii)~if
+$lab2$ lies within the expression labeled by any other label, then
+$lab1$ also lies within that expression.
+
+We use the notation that $f(e_{1}, \ldots, e_{k})$ denotes $f$ when $k=0$.
+%
+A label $lab$ has the form $id(p_{1},\ldots,p_{k})$ where $id$ and the
+$p_{i}$ are identifiers, the $p_{i}$ are all distinct, and
+$\{p_{1},\ldots, p_{k}\}$ is the set of all bound identifiers $p_{i}$
+such that:
+\begin{itemize}
+\item Label $lab$ lies within the scope of $p_{i}$.  
+
+\item If $lab$ has a containing label $labc$, then the expression that
+introduces $p_{i}$ lies within the expression labeled by $labc$.
+\end{itemize}
+We call $id$ the \emph{name} of the label.  Two labels that either
+have no containing label or have the same containing label must have
+different names.
+
+
+A \emph{simple labeled subexpression name} of a module $M$ has the
+form 
+ \linebreak
+$prefix!labexp_{1}!\ldots!labexp_{n}$, where $prefix$ has the form
+$Op(e_{1}, \ldots, e_{k[0]})$, each $labexp_{i}$ has the form
+$id_{i}(e_{1}, \ldots, e_{k[i]})$, $Op$ and the $id_{i}$ are
+identifiers, and the $e_{j}$ are expressions.  It must satisfy:
+\begin{itemize}
+\item The definition 
+ \[ Op(p_{1}, \ldots, p_{k[0]}) == \ldots \]
+occurs at the top level (not inside a \textsc{let} or inner
+module) of $M$.
+
+\item $id_{1}$ must be the name of a label $lab_{1}$ in the definition
+of $Op$ that has no containing label.
+
+\item If $i>1$, then $id_{i}$ must be the identifier of a label $lab_{i}$
+whose containing label is $lab_{i-1}$.
+
+\item $k[i]$ must equal the number of parameters in $lab_{i}$, for
+each $i>0$.
+\end{itemize}
+This labeled subexpression name denotes the expression obtained from
+the expression labeled with $lab_{n}$ by substituting for each
+parameter of $Op$ and of each $lab_{i}$ the corresponding argument of
+$prefix$ and $labexp_{i}$, respectively.
+
+A \emph{labeled subexpression name} of a module $M$ is either a simple
+labeled subexpression name of $M$ or else has the form
+$\,Id(e_{1},\ldots, e_{k})\,!\,\lambda\,$ where there is a statement
+ \[ Id(e_{1}, \ldots, e_{k}) == \INSTANCE N \ldots
+ \]
+at the outermost level of $M$ and $\lambda$ is a labeled
+subexpression name of module $N$.
+\end{small}
+
+
+
+
+\subsection*{Positional Subexpression Names}
+
+Instead of using labels, we can name subexpressions of a definition by
+a sequence of \emph{positional selectors} that indicate the position
+of the subexpression in the parse tree.  Consider this example
+ \[ F(a) == \begin{conj}
+            \ldots \\
+            \ldots \\
+            Len(x[a]) > 0\\
+            \ldots 
+            \end{conj}
+ \]
+Here are how some of the subexpressions of this definition are
+named, where $A$ is an arbitrary expression:%
+  \ctindex{1}{+5tb@\mmath{"!} (in subexpression name)}{+5tb}% "
+\begin{itemize}
+\item $F(A)!3$ names $Len(x[A]) > 0$, the third conjunct of
+$F(A)$---that is, of the right-hand side of the definition with $A$
+substituted for $a$.  We think of this conjunct list as the
+application of a conjunction operator that takes four arguments, the
+third being $Len(x[A]) > 0$.
+
+\item $F(A)!3!1$ names $Len(x[A])$, the first argument of 
+$\,>\,$, the top-level operator of the expression $F(A)!3$
+
+\item $F(A)!3!1!1$ names $x[A]$, the first (and only) argument
+of the top-level operator of the expression $F(A)!3!1$.
+
+\item The naming of subexpressions of $x[A]$ is based on the
+realization that this expression represents the application
+of a function-application operator to the two arguments $x$ and $A$.
+Thus, $\,F(A)!3!1!1!1\,$ names $x$ and
+$\,F(A)!3!1!1!2\,$ names $A$
+\end{itemize}
+The positional selector ``$!<<$'' is always synonymous with $!1$, and
+``$!>>$'' is synonymous with $!2$ when selecting the second argument
+of an operator that takes two arguments.  Thus, instead of
+$\,F(A)!3!1!1!2\,$, we could write $\,F(A)!3!<<!<<!>>\,$ or
+$\,F(A)!3!<<!1!>>\,$ or $\,F(A)!3!1!<<!2\,$ or \ldots\,.  As usual,
+``$<<$'' is typed ``\texttt{<<}'' and ``$>>$'' is typed
+``\texttt{>>}''.
+
+The use of positional selectors to pick an argument of an operator is
+self-evident for most operators that do not introduce bound
+identifiers.  Here are the cases that are not obvious.
+\begin{itemize}
+\item In \s{.7} $[f \EXCEPT ![a] = g, ![b].c = h]$  \s{.7} we select 
+$f$ with $!1$,
+$g$ with $!2$, and
+$h$ with $!3$.
+No other subexpressions of the \textsc{except} construct can be named.
+
+\item $r.fld$ \s{.4} is an application of a record-field selector operator to
+the two arguments $r$ and $"fld"$, so $!1$ selects $r$.  (You can also
+use $!2$ to select $"fld"$, but there's no reason to name a simple
+string constant with a subexpression name.)
+
+\item In \s{.2} $[fld_{1} |-> val_{1},\, \ldots,\, fld_{n} |-> val_{n}]$ 
+\s{.2} and
+\s{.2}    $[fld_{1} : val_{1}, \, \ldots,\, fld_{n} : val_{n}]$ 
+  \linebreak
+the selector $!\,i$ names the subexpression $val_{i}$ for $i$ \in
+$1\dd n$.  The field names $fld_{i}$ cannot be selected.  (There is
+no point naming $fld_{i}$, since it's just a string constant.)
+
+\item In 
+ \s{.4} $\textsc{if} \; p \; \textsc{then}\;e \; \textsc{else}\; f$ \s{.4} 
+the selector $!1$ names $p$, the selector $!2$ names $e$, and the selector 
+$!3$ names $f$.
+
+\item In \s{.4}  
+ $\CASE p_{1} -> e_{1} \;[]\; \ldots \;[]\; p_{n} -> e_{n}$ \s{.4}  
+the selector $!i!1$ names $p_{i}$ and $!i!2$ names $e_{i}$.  If
+$p_{n}$ is the token \textsc{other}, then it cannot be named.
+
+\item In \s{.4}  $\WF_e(A)$ \s{.2} and \s{.2} $\SF_e(A)$ \s{.4}
+the selector $!1$ names $e$ and $!2$ names~$A$.
+
+\item In \s{.4}  $[A]_e$ \s{.2} and \s{.2} $<<A>>_e$ \s{.4}
+the selector $!1$ names $A$ and $!2$ names~$e$.
+
+
+\item In \s{.4} 
+  \textsc{let} \ldots \ \textsc{in} $e$ \s{.4} 
+the selector $!1$
+names $e$.  This is rather subtle because we are naming an expression
+that contains operators defined in the \textsc{let} clause that are
+not defined in the context in which the subexpression name appears.
+Consider this example
+\begin{display}
+$F == \textsc{let} \s{.4} G \deq 1 \s{.4} \textsc{in}  \s{.4} G+1$ \V{.2}
+$G == 22$\V{.2}
+$H == F!1$
+\end{display}
+The $F!1$ in the definition of $H$ names the expression $G+1$ in which
+$G$ has the meaning it acquires in the \textsc{let} definition.  Thus,
+$H$ is equal to 2, not to 23.  
+
+We will see below how to name subexpressions of \textsc{let}
+definitions, such as the first (local) definition of $G$ above.
+\end{itemize}
+I now describe selectors for subexpressions of constructs that
+introduce bound identifiers.  Consider this example:
+ \[ R == \E\, x \in S, \, y \in T : x + y  > 2 \]
+\begin{itemize}
+\item $R!(X, Y)$ names $X + Y  > 2$, for any expressions $X$ and $Y$.
+\item $R!1$ names $S$.
+\item $R!2$ names $T$.
+\end{itemize}
+In general, for any construct that introduces bound identifiers:
+\begin{itemize}
+\item $!(e_{1}, \ldots , e_{n})\,$ selects the body (the expression
+in which the bound identifiers may appear) with each expression $e_{i}$
+substituted for the $i^{\mathrm{th}}$ bound identifier.
+
+\item If the bound identifiers are given a range by an expression
+of the form ``$\in S$'', then $\,!i\,$ selects the $i^{\mathrm{th}}$ 
+such range $S$.
+\end{itemize}
+For example, in the expression
+ \[ [x, y \in S,\, z \in T |-> x+y+z]\]
+the selector $!1$ names $S$, the selector $!2$ names $T$, and
+the selector $!(X,Y,Z)$ names $X+Y+Z$.
+
+\bigskip
+
+Parentheses are ``invisible'' with respect to naming.  For example, it
+doesn't matter if $\nu$ names the subexpression $a+b$ or the
+subexpression $((a + b))$\,; in either case, $\;\nu!<<\;$ names~$a$.
+
+\bigskip
+
+We usually don't need to name the entire expression to the right
+of a ``$\deq$'' because the operator being defined names it.
+However, as observed in 
+ \rref{math}{\xlink{math:recursive-op}}{Section~\xref{math:recursive-op}}, 
+ this is not
+true for recursively defined operators.  If $Op$ is recursively
+defined by
+ \[ Op(p_{1}, \ldots, p_{k}) == exp\]
+then ``$Op(P_{1}, \ldots, P_{k})\,\bangcolon$'' names $exp$ with
+$P_{i}$ substituted for $p_{i}$, for each $i$ in $1\dd k$.
+
+\bigskip
+
+A \emph{positional subexpression name} consists of a labeled
+subexpression name (defined in Section~\ref{sec:labels} above)
+followed by a sequence of positional selectors.  For example, in
+ \[F(c) == a \; * \; lab:: (b+c*d) \]
+$F(7)!lab!>>$ names $7*d$.  Remember that a labeled subexpression need
+not contain labels---for example, $F(7)$ is a labeled subexpression
+name.
+
+\subsection*{Subexpressions of {\rm \textsc{let}} Definitions}
+
+If a positional subexpression name $\nu$ names a \textsc{let}/\textsc{in}
+expression and $Op$ is an operator defined in the \textsc{let} clause,
+then $\,\nu!Op(e_{1},\ldots, e_{n})\,$ is the name of the expression
+$Op(e_{1},\ldots, e_{n})$ interpreted in the context determined by
+$\nu$.  For example, in
+ \[ F(a) == \begin{conj}
+            \ldots \\ 
+            \begin{noj}
+            \textsc{let} \ G(b) == a+b \\
+            \textsc{in} \ \ \ldots
+            \end{noj}
+            \end{conj}
+ \]
+$F(A)!2!G(B)$ names the expression $G(B)$, where the definition of $G$
+is interpreted in a context in which $A$ is substituted for $a$.  This
+expression of course equals $A+B$.  (However, if $G$ were recursively
+defined, $F(A)!2!G(B)$ might not be so simply related to the
+expression to the right of the ``$\deq$'' in $G$'s definition.)  We
+can also name subexpressions of the definition of $G$.  For example,
+$\,F(A)!2!G(B)!>>\,$ names $B$.  The naming process can be continued all
+the way down, naming subexpressions of \textsc{let} definitions
+contained within \textsc{let} definitions contained within \ldots\,.
+
+\begin{sloppypar}
+If the \textsc{let}/\textsc{in} expression is labeled, then it can be
+named by a labeled subexpression name $\lambda$.  In that case,
+$\,\lambda!Op(e_{1},\ldots, e_{n})\,$ is a labeled subexpression name that
+names a subexpression of the \textsc{in} clause with label
+$Op(p_{1},\ldots, p_{n})$.  To refer to the operator $Op$ defined in
+the \textsc{let} clause, just add a ``$\bangcolon$'' to the end of $\lambda$,
+writing $\,\lambda\bangcolon!Op(e_{1},\ldots, e_{n})\,$.  In particular, if
+$H$ is defined to equal the \textsc{let}/\textsc{in} expression,
+then we write $\,H\bangcolon!Op(e_{1},\ldots, e_{n})\,$, even if
+$H$ is not recursively defined.
+\end{sloppypar}
+
+
+\subsection*{Subexpressions of an {\rm \textsc{assume}/\textsc{prove}}}
+\label{sec:subexpr-assume-prove}
+
+If we have
+ \[\THEOREM Id == \ASSUME A_{1}, \ldots, A_{n} \; \PROVE G \]
+then $Id$ is not an expression and cannot be used as one.  
+%
+%
+Subexpressions of an \textsc{assume}/\textsc{prove} can be named with
+labels or positionally, where $Id!i$ names $A_{i}$ if $1\leq i \leq
+n$, and $Id!n\!+\!1$ names $G$.  However, the assumptions can contain
+declarations like $\NEW C$, so it is possible to name a subexpression
+of an \textsc{assume}/\textsc{prove} that contains identifiers declared
+within the \textsc{assume}/\textsc{prove}.  Such a name can be used only
+within the scope of those declarations.  For example, consider
+ \[ \begin{noj}
+    \THEOREM T \;\deq\; \ap{x>0, \; \NEW C \in Nat, \; y>C}{x+y > C} \\
+    \s{1}\vdots\\
+    Foo \;\deq\; \ldots
+    \end{noj}\]
+%
+Then $T!1$ names the expression $x>0$, which can be used in the
+definition of $Foo$.  However, $T!3$ names the expression $y>C$ that
+contains the constant $C$, and the definition $Foo$ is not within the
+scope of the declaration of $C$, so $T!3$ cannot be used within the
+definition of $Foo$.  In fact, $T!3$ can be used only within the proof
+of $T$.  
+%
+
+
+
+
+\subsection*{Using Subexpression Names as Operators} \label{sec:op-subexps}
+
+Subexpression names can be used as operator names by replacing  every
+part of the form $\,!id(e_{1},\ldots, e_{n})\,$ by $!id$, and  every
+selector $\,!(e_{1},\ldots, e_{n})\,$ by $\,!@\,$.  For example,
+consider:
+\begin{display}
+$F(Op(\us, \us, \us)) == Op(1, 2, 3)$ \V{.2}
+$G == \A \, x : P  \subseteq \{ <<x, \,y\!+\!z>> : y \in S, \,z \in T\}$
+\end{display}
+Then $\,G!(X)!>>!(Y, Z)\,$ is the expression $\,<<X,\,Y\!\!+\!Z>>\,$, so
+$\,G!@!>>!@\,$ is the operator
+ \[ \LAMBDA x, \, y, \, z : <<x, \,y\!+\!z>>
+ \]
+and $\,F(G!@!>>!@)\,$ equals $\,<<1, \,2\!+\!3>>\,$.
+
+
+\end{document}

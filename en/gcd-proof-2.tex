@@ -1,0 +1,60 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+
+\pdftitle{A Better Proof of GCD3}
+\begin{popup}
+\subsection*{A Better Proof of GCD3}
+
+\begin{proof}
+\pflongnumbers
+\pflongindent
+\beforePfSpace{0pt}
+\afterPfSpace{0pt}
+\interStepSpace{0pt}
+\step{1}{
+         \sassume{$m$, $n$, and $d$ are integers}
+         \sprove{$d$ divides both $m$ and $n$ iff $d$ divides both 
+                $m$ and $n-m$}}
+% It suffices to assume that $m$, $n$, and $d$ are integers
+% and prove that $d$ divides both $m$ and $n$ iff % \popref{iff}{iff}
+% $d$ divides both $m$ and $n-m$.}
+\vspace{.201em}
+\begin{proof}
+%\pf\ By definition of the gcd.
+\pf\ Since the gcd of two numbers is the largest integer that
+divides both of them, it suffices to show that $m$ and $n$
+have the same common divisors as $m$ and $n-m$.
+\end{proof}
+
+\vspace{.6em}
+
+\step{2}{\assume{$d$ divides both $m$ and $n$} 
+         \prove{$d$ divides both $m$ and $n-m$}} \vspace{.201em}
+
+\begin{proof}
+\pf\ That $d$ divides $m$ follows by the assumptions; that it divides
+$n-m$ follows from the assumptions and Lemma~Div.
+\end{proof}
+
+\vspace{.6em}
+
+\step{3}{\assume{$d$ divides both $m$ and $n-m$}
+         \prove{$d$ divides both $m$ and $n$}} \vspace{.201em}
+\begin{proof}
+\pf\ That $d$ divides $m$ follows from the assumptions; that it divides
+$n$ follows from the assumptions, Lemma~Div, and the simple algebraic
+relation:
+ $n = m + (n-m)$.
+\end{proof}
+
+\vspace{.6em}
+
+\qedstep
+\vspace{.201em}
+\begin{proof}
+\pf\ By \stepref{1}, \stepref{2}, and \stepref{3}.
+\end{proof}
+\end{proof}
+
+\end{popup}
+\makepopup

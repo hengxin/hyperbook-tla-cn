@@ -1,0 +1,19 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{Answer}
+\begin{popup}
+\subsection*{Answer}
+There exists a function $f$  satisfying the formula
+  \[ f = [n \in Int |-> \IF{n=0}\THEN 1 \LSE n * f[n-1]]
+  \]
+For example, it is satisfied by the function
+ \[ [n \in Int |-> \IF{n\in Nat}\THEN FactorialOp(n) \LSE 0]
+ \]
+Hence, $IntFact$ is a function that satisfies this formula, so
+$IntFact[-3]$ equals $(-3)*IntFact[-4]$.  However, $-3*IntFact[-4]$
+equals $-(3*IntFact[-4])$ (by the operator precedence rules of
+\tlaplus).  Since we don't know if $IntFact[-4]$ is a number, we don't
+know if $(-3)*IntFact[-4]$ equals $-(3*IntFact[-4])$.  So, we don't
+know if $IntFact[-3]$ equals $-3*IntFact[-4]$.
+\end{popup}
+\makepopup

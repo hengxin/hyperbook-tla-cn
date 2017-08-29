@@ -1,0 +1,56 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{The EXCEPT Notation}
+\file{except-notation}
+\setpopup{53}
+\makeindex
+\begin{document}
+\subsection*{The \textsc{EXCEPT} Notation}
+  \ctindex{1}{+5t@\mmath{"!} (in \textsc{except})}{+5t}% "
+Don't try to make any sense of the \textsc{except} and the \,!\,.
+They are meaningless pieces of syntax.  Just remember that
+ \[ [fcn \EXCEPT ![a] = d] \]
+is the value that a function $fcn$ has after executing the assignment
+statement
+ \[fcn[a] := d \]
+(assuming that $a$ is in the domain of $fcn$).  Since assignments to
+arrays are common in algorithms, we need a simple way of writing
+this function.  Mathematics doesn't provide it, so I had to invent
+one.  
+\medskip
+
+The notation has some useful generalizations---for example, 
+  \[ [fcn \EXCEPT ![a][b] = d] \]
+is the value of $fcn$ after executing the assignment
+ \[ fcn[a][b] := d \]
+and
+  \[ [fcn \EXCEPT ![a] = d,\, ![b] = e] \]
+is the value of $fcn$ after executing the two assignment statements
+  \[ fcn[a] := d; \ fcn[b] := e \]
+You understand the notation if you understand that:
+ \[ \begin{noj}
+    [fcn \EXCEPT ![a] = d,\, ![b] = e] \;\; = \; \V{.2} \s{1.5}
+      [\,[fcn \EXCEPT ![a] = d] \EXCEPT ![b] = e]  \V{.6}
+    [fcn \EXCEPT ![a][b] = d] \;\; = \; \V{.2}\s{1.5}
+      [fcn \EXCEPT ![a] = [fcn[a] \EXCEPT ![b] = d]\,]
+    \end{noj}\]
+Records (also known as \emph{structs} in C) are represented in \tlaplus\
+as functions, and the value of record $R$ after executing $R.d := e$ is
+ \[ [R \EXCEPT !.d = e]\]
+These notations can be combined, as in 
+ \[ [ B \EXCEPT ![i].d[j] = e] \]
+
+\medskip
+
+The \textsc{except} notation looks weird, and no one likes
+it---including me.  However, I've found no alternative that I like
+better.  One can devise a more compact notation by replacing the
+``\textsc{except}'' with some punctuation, but I think that would make
+it even more obscure.  In time, you'll get used to it.
+
+\end{document}
+
+
+\vspace*{-2em}
+\end{popup}
+\makepopup

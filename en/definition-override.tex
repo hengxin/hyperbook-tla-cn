@@ -1,0 +1,38 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\makeindex
+\file{definition-override}
+\pdftitle{Definition override}
+\setpopup{23.5}
+\begin{document}
+  \ctindex{1}{overriding a definition in TLC}{overriding}%
+  \ctindex{1}{definition!overriding in TLC}{def-overriding}%
+  \ctindex{1}{TLC!overriding definition in}{TLC-overriding}%
+  \vspace{-2\baselineskip}%
+\subsection*{Overriding a definition in TLC}
+
+You can tell TLC to \emph{override} any of your specification's
+definitions, meaning that it replaces that definition with another one
+when checking a specification.  To do this, go to the
+\textsf{Definition Override} section of the model's \textsf{Advanced
+Options} page and click on \textsf{Add}.  Select the symbol whose
+definition you want to override and click \textsf{OK}.  Enter the new
+definition.  You will be able to enter only a definition with the same
+number of parameters (if any) as the original.  If the definition
+has no parameters, you can replace the defined symbol with
+a \popref{model-value}{model value} of the same name.
+
+
+\medskip
+ \noindent
+The same symbol may be defined in more than one module of your
+specification.  (This is possible only if at least one of those
+definitions is in a module that is 
+  \ctindex{1}{instantiation!overriding definitions with}{instantiation}%
+% \rref{main}{main:instance}{
+instantiated with renaming.)  Overriding applies only to a single one of those
+definitions.  If you want to override multiple definitions of the same
+symbol, you must override each one separately.  The menu with which
+you choose the definition to override will tell you the name of the
+module containing the definition if it is not the root module.
+\end{document}

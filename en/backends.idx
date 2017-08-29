@@ -1,0 +1,18 @@
+\indexentry{back-end prover|indexref{2}{backends}{2back-end prover}}{2}
+\indexentry{prover!back-end|indexref{2}{backends}{2prover-back-end}}{2}
+\indexentry{SMT solver|indexref{1}{backends}{1smt-solver}}{1}
+\indexentry{solver, SMT|indexref{1}{backends}{1solver-smt}}{1}
+\indexentry{SMT@\mmath {SMT} (backend prover)|indexref{1}{backends}{1SMT}}{1}
+\indexentry{Zenon@\mmath {Zenon} (backend prover)|indexref{1}{backends}{1Zenon}}{1}
+\indexentry{Isabelle@\mmath {Isabelle} (backend prover)|indexref{1}{backends}{1Isabelle}}{1}
+\indexentry{Isa@\mmath {Isa} (\icmd {textsc}{by} fact)|indexref{1}{backends}{1Isa}}{1}
+\indexentry{auto@auto (Isabelle method)|indexref{1}{backends}{1auto}}{1}
+\indexentry{blast@blast (Isabelle method)|indexref{1}{backends}{1blast}}{1}
+\indexentry{force@force (Isabelle method)|indexref{1}{backends}{1force}}{1}
+\indexentry{fast@fast (Isabelle method)|indexref{1}{backends}{1fast}}{1}
+\indexentry{simp@simp (Isabelle method)|indexref{1}{backends}{1simp}}{1}
+\indexentry{clarsimp@clarsimp (Isabelle method)|indexref{1}{backends}{1clarsimp}}{1}
+\indexentry{fastsimp@fastsimp (Isabelle method)|indexref{1}{backends}{1fastsimp}}{1}
+\indexentry{PTL@\mmath {PTL} (backend prover)|indexref{2}{backends}{2PTL}}{2}
+\indexentry{LS4|indexref{1}{backends}{1LS4}}{1}
+\indexentry{timeout, prover|indexref{1}{backends}{1timeout, prover}}{1}

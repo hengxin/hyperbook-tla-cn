@@ -1,0 +1,236 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{A Better Informal Proof of Deadlock Freedom}
+
+% \beforePfSpace{5pt, 2pt, 2pt}
+% \afterPfSpace{10pt, 5pt, 2pt}
+% \interStepSpace{10pt, 5pt, 2pt}
+\setpopup{53}
+
+\begin{document}
+\subsection*{A Better Informal Proof of Deadlock Freedom}
+
+
+\pfshortnumbers
+%\pflongindent
+\beforePfSpace{10pt, 5pt, 2pt}
+\afterPfSpace{10pt, 5pt, 5pt}
+\interStepSpace{.5pt}
+\pfsidenumbers{0}{.8em}
+\noindent
+\textbf{Theorem } The 2-process 1-bit algorithm satisfies $DeadlockFree$
+
+\smallskip
+
+\begin{proof}
+
+\DEFINE \ 
+ $ \begin{noj}
+   T0 == Trying(0) \\ %\V{.1}
+   T1 == Trying(1) \\ %\V{.1}
+   Success == InCS(0) \/ InCS(1) 
+   \end{noj}$
+
+\medskip
+
+% \step{0}{\sassume{$Spec$}\prove{$DeadlockFree$}}
+% \begin{proof}
+% \pf\ Obvious.
+% \end{proof}
+%
+% \medskip
+
+\step{1}{It suffices to assume $(T0 \/ T1) /\ []~Success$ is true
+         at some time $t_{1}$ and obtain a contradiction.}
+\begin{proof}
+ \pf\ By definition of deadlock freedom.
+\end{proof}
+\step{2}{\case{There is a time $t_{2}\geq t_{1}$ at which $T0$ is true.}}
+\begin{proof}
+%
+\step{2.1}{$[](pc[0] = "e2")$ is true at some time $t_{3}\geq t_{2}$.}
+  \begin{proof}
+  \pf\ Process~0 is never at $e3$ or $e4$, and $[]~Success$ (from
+  the step~\stepref{1} assumption) implies that 
+  $[]~InCS(0)$ is true at time $t_{2}$.
+  Therefore, $T0$ true at time $t_{2}$, the code, and fairness imply 
+  that process~0 eventually reaches $e2$ at some time $t_{3}\geq t_{2}$
+  and stays there forever.
+  \end{proof}
+
+\step{2.2}{$[]~x[1]$ is true at some time
+$t_{4}\geq t_{3}$.}
+ \begin{proof}
+%    \step{2.2.1}{\sassume{$[](pc[0] = "e2")$}
+%                 \prove{$\TRUE ~> []~x[1]$}}
+%     \begin{proof}
+%     \pf\ By the $[]~>$ Rule.
+%     \end{proof}
+   \step{2.2.2}{$([](pc[1] = "ncs") \/ []T1)$ is true at some time
+                $t_{5}\geq t_{3}$.}
+   \begin{proof}
+    \pf\ By $[]~Success$ (from the step~\stepref{1} assumption), process~1 
+    never reaches  $cs$. The code and fairness therefore imply that 
+    process~1 must eventually either reach and remain forever 
+     at $ncs$, or $T1$ must become true and remain true forever.
+   \end{proof}
+
+   \step{2.2.3}{\case{$[](pc[1] = "ncs")$ is true at time $t_{5}$.}}
+     \begin{proof}
+      \pf\ Since $x[1]$ equals $\FALSE$ when process~1 is at $ncs$,
+       the case assumption implies that $[]~x[1]$ is true at
+       time $t_{5}$. This proves \stepref{2.2}
+       for $t_{4}$ equal to $t_{5}$.
+     \end{proof}
+   \step{2.2.4}{\case{$[]T1$ is true at time $t_{5}$.}}
+     \begin{proof}
+     \pf\ Since $x[0]$ is true when process~0 is at $e2$,
+     \stepref{2.1} and $t_{5}\geq t_{3}$ implies $[]x[0]$ is true
+     at time $t_{5}$.  Thus, $[]T1$ (the case assumption), 
+     $[]~InCS(1)$ (by the step \stepref{1} assumption $[]~Success$),
+     the code, and fairness imply that
+      process~1 must at some time $t_{4}\geq t_{5}$ reach and remain
+      forever at $e4$ with $x[1]$ equal to \FALSE, proving \stepref{2.2}.
+     \end{proof}
+   \qedstep
+      \begin{proof}
+      \pf\ By \stepref{2.2.2}--\stepref{2.2.4}.
+%       By \stepref{2.2.1}--\stepref{2.2.4} and Leads-To Induction,
+%       with this proof graph: \\
+%       \s{2}\begin{picture}(0,65)(0,22)
+% %      {\gray\graphpaper(0,0)(300,200)}
+%       \put(0,50){\makebox(0,0)[l]{$\TRUE$}}
+%       \put(50,75){\makebox(0,0)[l]{$\Box (pc[1]=\tlastring{ncs})$}}
+%       \put(50,25){\makebox(0,0)[l]{$\Box T1$}}
+% %      \put(174,50){\makebox(0,0)[l]{$\Box \lnot x[1]$}}
+%       \put(149,50){\makebox(0,0)[l]{$\Box \lnot x[1]$}}
+%       \thicklines
+%       \put(25,55){\vector(3,2){20}}
+%       \put(25,45){\vector(3,-2){20}}
+%       \put(126,68){\vector(3,-2){20}}
+%       \put(74,28){\vector(4,1){72}}
+%       \end{picture}
+      \end{proof}  
+ \end{proof}
+
+\qedstep
+  \begin{proof}
+   \pf\ \stepref{2.1} and \stepref{2.2} imply that
+   $(pc[0] = "e2")$ and $[]~x[1]$ are true at time $t_{4}$.  The
+   code and fairness then imply that process~0 reaches $cs$ at some
+   time $t_{6}\geq t_{4}$.  Since $t_{4}\geq t_{1}$ by
+   \stepref{2.2}, \stepref{2.1}, and the \stepref{2} case assumption,
+   this contradicts the assumption $[]~Success$ of step \stepref{1}.
+  \end{proof}
+
+% \qedstep
+%   \begin{proof}
+%   \pf\ By \stepref{2.1}--\stepref{2.3} and Leads-To Induction,
+%    with this proof graph: \\
+%       \s{1}\begin{picture}(0,20)(0,0)
+% %      {\gray\graphpaper(0,0)(300,50)}
+%       \put(0,5){\makebox(0,0)[l]{$T0$}}
+%       \put(40,5){\makebox(0,0)[l]{$\Box (pc[0] = "e2")$}}
+%       \put(136,5){\makebox(0,0)[l]{$\Box ((pc[0] = "e2") \land \lnot x[1])$}}
+%       \put(274,5){\makebox(0,0)[l]{$\FALSE$}}
+%       \thicklines
+%       \put(18,5){\vector(1,0){15}}
+%       \put(115,5){\vector(1,0){15}}
+%       \put(253,5){\vector(1,0){15}}
+%       \end{picture}
+%   \end{proof}
+\end{proof}
+
+\step{3}{\case{$T1$ is true at time $t_{1}$.}}
+
+\begin{proof}
+\step{3.1}{$[]T1$ is true time $t_{1}$.}
+  \begin{proof}
+     \pf\ By the step~\stepref{1} assumption, $[]~InCS(1)$ 
+     (which is implied by $[]~Success$) is true
+     at time $t_{1}$.  From the code and the
+     step~\stepref{3} case assumption, this implies that
+     $[]T1$ is true at time $t_{1}$.
+  \end{proof}
+
+\step{3.2}{Either $[]~T0$ is true a time $t_{1}$,
+           or $T0$ is true at some time $t_{2} \geq t_{1}$.}
+   \begin{proof}
+   \pf\ Obviously, $[]~T0$ is false at time $t_{1}$ iff $T0$ is true
+    at some time $t_{2}\geq t_{1}$.
+   \end{proof}
+% $T1\;~>\;(T0 \,\/ \,[](T1 /\ ~T0))$}
+%   \begin{proof}
+%   \pf\ By the tautologies $F ~> (G \/ (F /\ []~G))$ and
+%        $[]F /\ []G \equiv [](F /\ G)$.
+%   \end{proof}
+
+\step{3.x}{\case{$[]~T0$ is true at time $t_{1}$}}
+\begin{proof}
+   \step{3.3}{There is some $t_{3} \geq  t_{1}$ such that
+               $[]~x[0]$ is true at time $t_{3}$.}
+     \begin{proof}
+     \pf\ By the code and fairness, $~T0$ true at time $t_{1}$ implies
+     that process~0 is at $ncs$ at some time $t_{3}\geq t_{1}$. 
+     The code and $~T0$ true at all times $t\geq t_{1}$ and the code 
+     imply that process~0 is at $ncs$ with $~x[0]$ true for all 
+     $t\geq t_{3}$.
+     \end{proof}
+   \step{3.4}{$[](T_{1} /\ ~x[0])$ is true at time $t_{3}$}
+     \begin{proof}
+     \pf\ By \stepref{3.3} and \stepref{3.1}.
+     \end{proof}
+
+   \qedstep
+     \begin{proof}
+      \pf\ Step \stepref{3.4}, the code, and fairness imply that process~1 
+      reaches $e2$ at some time $t_{4}\geq t_{3}$.   Step~\stepref{3.4}
+      implies $[]~x[0]$ is true at time $t_{4}$,
+      which by fairness implies that process~1 reaches its critical section at
+      some time $t_{5}>t_{4}$.  Since $t_{5}\geq t_{1}$, this contradicts
+      the assumption from step~\stepref{1} that $[]~Success$ is true 
+      at time $t_{1}$.
+     \end{proof}
+
+\end{proof}
+% \qedstep
+%   \begin{proof}
+%   \pf\ By \stepref{3.1}--\stepref{3.4}, step~\stepref{2}, 
+%    and Leads-To Induction,
+%    with this proof graph: \\
+%       \s{2}\begin{picture}(0,70)(0,0)
+% %      {\gray\graphpaper(0,0)(300,200)}
+%       \put(0,30){\makebox(0,0)[l]{$T1$}}
+%       \put(40,30){\makebox(0,0)[l]{$\Box T1$}}
+%       \put(160,60){\makebox(0,0)[t]{$T0$}}
+%       \put(85,0){\makebox(0,0)[lb]{$\Box (T1 \land \lnot T1)$}}
+%       \put(175,0){\makebox(0,0)[lb]{$\Box (T1 \land \lnot x[0])$}}
+%       \put(257,30){\makebox(0,0)[l]{$\FALSE$}}
+%       \thicklines
+%       \put(18,30){\vector(1,0){17}}
+%       \put(62,25){\vector(3,-2){20}}
+%       \put(64,34){\vector(4,1){87}}
+%       \put(150,6){\vector(1,0){20}}
+%       \put(240,10){\vector(1,1){15}}
+%       \put(170,55){\vector(4,-1){85}}
+%       \end{picture}
+%   \end{proof}
+% \end{proof}
+
+\step{3.y}{\case{$T0$ is true at time $t_{2}\geq t_{1}$}}
+  \begin{proof}
+  \pf\ By \stepref{2}.
+  \end{proof}
+\qedstep
+  \begin{proof}
+  \pf\ By \stepref{3.2}, \stepref{3.x}, and \stepref{3.y}.
+  \end{proof}  
+\end{proof}
+\qedstep
+\begin{proof}
+\pf\ By the step \stepref{1} assumption, \stepref{2} (letting
+$t_{2}$ equal $t_{1}$), and \stepref{3}.
+
+\end{proof}
+\end{proof}
+\end{document}

@@ -1,0 +1,65 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{Invariance Proof of Algorithm Euclid}
+\begin{popup}
+\subsection*{Invariance Proof of Algorithm \emph{Euclid}}
+
+\medskip
+
+\beforePfSpace{10pt, 5pt, 2pt}
+\afterPfSpace{10pt, 5pt, 5pt}
+\interStepSpace{.5pt}
+\pflongnumbers
+
+\THEOREM $PartialCorrectness$ is an invariant of algorithm $Euclid$.
+\vspace{-.2em}
+\begin{proof}
+\step{1}{$Init => Inv$}
+\begin{proof}
+\pf\ By the definitions of $Init$ and $Inv$, since $Init$ implies
+$x=M$, $y=N$, and $pc#"Done"$.
+\end{proof}
+\step{2}{$Inv \, /\ \,Next \, => \, Inv'$}
+\begin{proof}
+\step{2.1}{\case{$x=y$}}
+\begin{proof}
+\pf\ In this case, $Next$ implies $x=x'$ and $y=y'$, which imply
+$x'=y'$.  We then deduce $x'=GCD(M,N)$ from $Inv$ and $GCD1$, proving
+$Inv'$.
+\end{proof}
+
+\step{2.2}{\case{$x<y$}}
+\begin{proof}
+\pf\ In this case, $Next$ implies $x'=x$, and $y'=y-x$, which by the
+case assumption imply $GCD(x', y') = GCD(x, y-x)$.  This, $Inv$, and
+$GCD3$ imply $GCD(x',y') = GCD(x,y)$, and $Next$ implies
+$pc'="Lbl\_1"$, so $pc'#"Done"$.  Hence, $Inv'$ is true.
+\end{proof}
+
+\step{2.3}{\case{$x>y$}}
+\begin{proof}
+\pf\ This proof is similar to the proof of step~\stepref{2.2}, except
+that both $GCD2$ and $GCD3$ are needed to prove $GCD(x',y') = GCD(x,y)$.
+\end{proof}
+
+\qedstep
+\begin{proof}
+\pf\ By \stepref{2.1}, \stepref{2.2}, and \stepref{2.3}, since
+the three cases cover all possibilities.
+\end{proof}
+\end{proof}
+\step{3}{$Inv => PartialCorrectness$}
+\begin{proof}
+\pf\ It suffices to assume $Inv$ and $pc="Done"$ and prove $x=y$ and
+$x = GCD(M, N)$.  The proof of $x=y$ is trivial, and $x=GCD(M,N)$
+follows from $x=y$, the first conjunct of $Inv$, and $GCD1$.
+\end{proof}
+
+\qedstep
+\begin{proof}
+\pf\ By \stepref{1}, \stepref{2}, and \stepref{3} (which are conditions
+I1, I2, and I3).
+\end{proof}
+\end{proof}
+\end{popup}
+\makepopup

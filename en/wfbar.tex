@@ -1,0 +1,67 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{Instantiating Fairness}
+\file{wfbar}
+\begin{popup}
+\setlength{\parindent}{1em}
+\subsection*{Instantiating Fairness}
+
+
+The 
+  \ctindex{1}{ENABLED@\icmd{textsc}{enabled}}{enabled}
+formulas $\ov{\WF_{{vars_{A}}}({Consumer_{A}})}$ and
+$\WF_{\ov{vars_{A}}}(\ov{Consumer_{A}})$ need not be equivalent.  This is
+because 
+$\WF_{vars_{A}}(Consumer_{A})$ is defined in terms of the
+enabling of action $<<Consumer_{A}>>_{vars_{A}}$, and the 
+following two assertions need not be equivalent
+\begin{itemize}
+\item $\ov{<<Consumer_{A}>>_{vars_{A}} \mbox{ is enabled}}$
+
+\item $\ov{<<Consumer_{A}>>_{vars_{A}}}$ \ (which equals
+     ${<<\ov{Consumer_{A}}>>_{\ov{vars_{A}}}}$\,) \ 
+is enabled
+\end{itemize}
+More precisely, $\WF$ is defined in terms of the \textsc{enabled}
+operator, where $\ENABLED C$ is true in a state $s$ iff action $C$ is
+enabled in~$s$.  
+%
+The formula $\ov{\ENABLED C}$ is true in state $s$ iff action $C$ is
+enabled in state $\ov{s}$.  The formula $\ENABLED \ov{C}$ is true in
+state $s$ iff \ov{C} is enabled in state $s$, where \ov{C} is the
+action that is true of the transition $s -> t$ iff $C$ is true of
+$\ov{s} -> \ov{t}$.  The state predicates $\ov{\ENABLED C}$ and
+$\ENABLED \ov{C}$ are not necessarily equivalent.  If $\ov{\ENABLED
+<<Consumer_{A}>>_{vars_{A}}}$ is not equivalent to $\ENABLED
+\ov{<<Consumer_{A}>>_{vars_{A}}}$, then
+$\ov{\WF_{{vars_{A}}}({Consumer_{A}})}$ and
+$\WF_{\ov{vars_{A}}}(\ov{Consumer_{A}})$ are not equivalent.
+
+
+
+As an example, let $C$ be the action $x' # y'$, where $x$ and $y$ are
+variables.  Since for any state $s$ there is a state $t$ in which
+$x#y$, this action is always enabled.  Hence, $\ENABLED C$ equals
+$\TRUE$.  Since the expression $\TRUE$ does depend on any variables,
+$\ov{\TRUE}=\TRUE$ and hence $\ov{\ENABLED C} = \TRUE$ for any refinement
+mapping.  Now
+consider the refinement mapping defined by
+ \[ \ov{x} =  z \s{2} \ov{y} = z\]
+We have
+ \[ \begin{noj4}
+    \ov{C} & = & \ov{x' # y'} \s{1}& \mbox{By definition of $C$.} \V{.2}
+           & = & \ov{x}' # \ov{y}' & \mbox{By the meaning of $\ov{F}$
+for a formula $F$.}\V{.2}
+           & = & z' # z'  & \mbox{By definition of $\ov{x}$ and $\ov{y}$.}\V{.2}
+           & = & \FALSE & \mbox{No value is unequal to itself.}
+    \end{noj4}\]
+Therefore, $\ENABLED \ov{C}$ equals \,$\ENABLED \FALSE$\,, which equals
+$\FALSE$, so it is not equal to \,$\ov{\ENABLED C}$\,, which equals
+$\TRUE$.
+
+
+%
+
+
+\end{popup}
+\makepopup

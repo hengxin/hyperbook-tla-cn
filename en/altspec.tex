@@ -1,0 +1,53 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{Algorithm AltSpec}
+\begin{popup}
+\subsection*{Algorithm \emph{AltSpec}}
+
+\begin{nopcal}
+--algorithm AltSpec {
+
+    variable b = 0;
+
+    process (Producer = 0) 
+      { pe: while (TRUE)
+              {      await b = 0 ;
+                put: skip ;
+                px:  b := 1         }  
+      }
+      
+    process (Consumer = 1)
+      { ce: while (TRUE)
+              {      await b = 1 ;
+                get: skip ;
+                cx:  b := 0        }
+      }
+}
+\end{nopcal}
+\begin{tlatex}
+\@x{ {\p@mmalgorithm} AltSpec {\p@lbrace}}%
+\@pvspace{4.0pt}%
+\@x{\@s{16.4} {\p@variable} b \.{=} 0 {\p@semicolon}}%
+\@pvspace{4.0pt}%
+\@x{\@s{16.4} {\p@process} {\p@lparen} Producer \.{=} 0 {\p@rparen}}%
+ \@x{\@s{24.59} {\p@lbrace} pe\@s{.5}\textrm{:}\@s{3} {\p@while} {\p@lparen}
+ {\TRUE} {\p@rparen}}%
+\@x{\@s{58.61} {\p@lbrace}\@s{20.5} {\p@await} b \.{=} 0 {\p@semicolon}}%
+\@x{\@s{66.81} put\@s{.5}\textrm{:}\@s{3}\@s{0.85} {\p@skip} {\p@semicolon}}%
+ \@x{\@s{66.81} px\@s{.5}\textrm{:}\@s{3}\@s{4.65} b \.{:=} 1\@s{32.8}
+ {\p@rbrace}}%
+\@x{\@s{24.59} {\p@rbrace}}%
+\@pvspace{4.0pt}%
+\@x{\@s{16.4} {\p@process} {\p@lparen} Consumer \.{=} 1 {\p@rparen}}%
+ \@x{\@s{24.59} {\p@lbrace} ce\@s{.5}\textrm{:}\@s{3} {\p@while} {\p@lparen}
+ {\TRUE} {\p@rparen}}%
+\@x{\@s{58.10} {\p@lbrace}\@s{20.5} {\p@await} b \.{=} 1 {\p@semicolon}}%
+\@x{\@s{66.30} get\@s{.5}\textrm{:}\@s{3}\@s{2.13} {\p@skip} {\p@semicolon}}%
+ \@x{\@s{66.30} cx\@s{.5}\textrm{:}\@s{3}\@s{5.16} b \.{:=} 0\@s{28.7}
+ {\p@rbrace}}%
+\@x{\@s{24.59} {\p@rbrace}}%
+\@x{ {\p@rbrace}}%
+\end{tlatex}
+
+\end{popup}
+\makepopup

@@ -1,0 +1,39 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{Answer}
+\begin{popup}
+\subsection*{Answer}
+
+The formula is an action whose meaning is a Boolean-valued mapping on
+pairs of states.  It is true iff its meaning maps all pairs of states
+to \TRUE. Its meaning is computed as follows:%\vs{.3}
+\begin{display}
+$\begin{noj}
+\M{\langle s,t\rangle}{(A\equiv B) \;=>\; 
+     ((\ENABLED A)\equiv(\ENABLED B))} \V{.75}
+\s{1}\equiv\;\; 
+   (\M{\langle s,t\rangle}{A}\equiv \M{\langle s,t\rangle}{B}) \;=>\; 
+  \V{.3}\s{6}
+     (\M{\langle s,t\rangle}{\ENABLED A}\equiv 
+            \M{\langle s,t\rangle}{\ENABLED B})\V{.75}
+\s{1}\equiv\;\;\;  
+   (\M{\langle s,t\rangle}{A}\equiv \M{\langle s,t\rangle}{B}) \;=>\; 
+  \V{.3}\s{6}
+     ((\E t : \M{\langle s,t\rangle}{A})\equiv 
+            (\E t : \M{\langle s,t\rangle}{B}))
+   \end{noj}$
+\end{display}
+Note that in the last formula, the left-hand side depends on $t$ but
+the right-hand side doesn't.  Let $A$ be the action $\FALSE$ and find
+an action $B$ and states $s$ and $t$ such that 
+\M{\langle s,t\rangle}{B} equals \FALSE\ and 
+  $\E t : \M{\langle s,t\rangle}{B}$
+equals \TRUE.
+
+\bigskip
+
+To show that the rule isn't valid, you need to need to remember what it means
+for state predicates and actions to be true on a behavior and use the
+definition of $||-$.
+\end{popup}
+\makepopup

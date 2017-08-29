@@ -1,0 +1,219 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{A More Rigorous Proof of Deadlock Freedom}
+
+% \beforePfSpace{5pt, 2pt, 2pt}
+% \afterPfSpace{10pt, 5pt, 2pt}
+% \interStepSpace{10pt, 5pt, 2pt}
+
+
+\begin{document}
+\subsection*{A More Rigorous Proof of Deadlock Freedom}
+
+\vspace{.4em}
+
+\pflongnumbers
+\pflongindent
+%\pfshortnumbers
+\beforePfSpace{10pt, 5pt, 2pt}
+\afterPfSpace{10pt, 10pt, 5pt}
+\interStepSpace{.5pt}
+%\pfsidenumbers{0}{1em}
+\noindent
+\textbf{Theorem } $Spec => DeadlockFree$
+
+%\smallskip
+
+\begin{proof}
+
+\step{0}{$Spec => []LInv$}
+\begin{proof}
+\pf\ This is a standard invariance proof, which is omitted.
+\end{proof}
+
+\step{1}{\sassume{$[]LInv \, /\ \, [][Next]_{vars} \, /\ \, Fairness$}
+\prove{$DeadlockFree$}}
+\begin{proof}
+ \pf\ By \stepref{0} and the definition of $Spec$.
+% This is a standard proof by contradiction.
+\end{proof}
+
+\step{1a}{\sassume{$[]~Success$}\prove{$(T0 \/ T1) ~> \FALSE $}}
+\begin{proof}
+\pf\ This is a standard temporal proof by contradiction,
+since $DeadlockFree$ equals $(T0 \/ T1) ~> Success$.
+\end{proof}
+
+\step{2}{$T0 \;~>\; \FALSE$}
+\begin{proof}
+
+\step{2.1}{$T0$ $\;~>\;$ $[](pc[0] = "e2")$}
+  \begin{proof}
+  \pf\ Assumption $[]LInv$ implies process~0 is never at $e3$ or $e4$.  
+  Therefore, by the code 
+  \marginpar{``The code'' is shorthand for ``the step~2
+  % $\langle1\rangle2$ 
+assumptions $\Box[Next]_{vars}$ and 
+ $\Box LInv$''.}
+and assumption $Fairness$, we see that if $T0$ is true and
+  process~0 never reaches $cs$ (which is implied by the assumption 
+  $[]~Success$), then process~0 eventually reaches $e2$
+  and stays there forever.
+  \end{proof}
+
+\step{2.2}{$[](pc[0] = "e2")$ $\;~>\;$
+           $[]((pc[0] = "e2") /\ ~x[1])$.}
+ \begin{proof}
+   \step{2.2.1}{\sassume{$[](pc[0] = "e2")$}
+                \prove{$\TRUE ~> []~x[1]$}}
+    \begin{proof}
+    \pf\ By the $[]~>$ Rule.
+    \end{proof}
+   \step{2.2.2}{$\TRUE$ $\;~>\;$ 
+              $([](pc[1] = "ncs") \/ []T1)$.}
+   \begin{proof}
+    \pf\ The code and assumption $Fairness$ imply that if 
+     process~1 never reaches 
+     $cs$ (by the assumption $[]~Success)$, then eventually it 
+     must either reach 
+     and remain forever 
+     at $ncs$, or $T1$ must become true and remain true forever.
+   \end{proof}
+
+   \step{2.2.3}{$[](pc[1] = "ncs")$
+           $\;=>\;$ $[]~x[1]$.}
+     \begin{proof}
+      \pf\ $[]LInv$ implies $x[1]$ equals $\FALSE$ when process~1 is at $ncs$.
+     \end{proof}
+   \step{2.2.4}{$[]T1$ $\;~>\;$
+                $[]~x[1]$}
+     \begin{proof}
+     \pf\ $(pc[0] = "e2")$ implies $x[0]$, so the step \stepref{2.2.1}
+      assumption implies $[]x[0]$.  The code, $Fairness$,
+      $[] ~Success$, and $[]x[0]$ imply that $T1$
+      leads to process~1 reaching and remaining
+      forever at $e4$ with $x[1]$ equal to \FALSE.
+     \end{proof}
+   \qedstep
+      \begin{proof}
+      \pf\ 
+      By \stepref{2.2.1}--\stepref{2.2.4} and Leads-To Induction,
+      with this proof graph: \\
+      \s{2}\begin{picture}(0,65)(0,22)
+%      {\gray\graphpaper(0,0)(300,200)}
+      \put(0,50){\makebox(0,0)[l]{$\TRUE$}}
+      \put(50,75){\makebox(0,0)[l]{$\Box (pc[1]=\tlastring{ncs})$}}
+      \put(50,25){\makebox(0,0)[l]{$\Box T1$}}
+%      \put(174,50){\makebox(0,0)[l]{$\Box \lnot x[1]$}}
+      \put(149,50){\makebox(0,0)[l]{$\Box \lnot x[1]$}}
+      \thicklines
+      \put(25,55){\vector(3,2){20}}
+      \put(25,45){\vector(3,-2){20}}
+      \put(126,68){\vector(3,-2){20}}
+      \put(74,28){\vector(4,1){72}}
+      \end{picture}
+      \end{proof}  
+ \end{proof}
+
+
+\step{2.3}{$[]((pc[0] = "e2") /\ ~x[1])$ $\;~>\;$ \FALSE}
+  \begin{proof}
+   \pf\ The code and $Fairness$ imply that 
+   $(pc[0] = "e2") /\ []~x[1]$ leads
+   to process~0 reaching $cs$, contradicting $[]~Success$.
+  \end{proof}
+
+\qedstep
+  \begin{proof}
+  \pf\ By \stepref{2.1}--\stepref{2.3} and Leads-To Induction,
+   with this proof graph: \\
+      \s{1}\begin{picture}(0,20)(0,0)
+%      {\gray\graphpaper(0,0)(300,50)}
+      \put(0,5){\makebox(0,0)[l]{$T0$}}
+      \put(40,5){\makebox(0,0)[l]{$\Box (pc[0] = \tlastring{e2})$}}
+      \put(136,5){\makebox(0,0)[l]{$\Box ((pc[0] = \tlastring{e2}) \land \lnot x[1])$}}
+      \put(274,5){\makebox(0,0)[l]{$\FALSE$}}
+      \thicklines
+      \put(18,5){\vector(1,0){15}}
+      \put(115,5){\vector(1,0){15}}
+      \put(253,5){\vector(1,0){15}}
+      \end{picture}
+  \end{proof}
+\end{proof}
+
+\step{3}{$T1\;~>\; \FALSE$}
+\begin{proof}
+\step{3.1}{$T1 \;=>\; []T1$}
+  \begin{proof}
+     \pf\ From the code, we see that if $T1$ is true and 
+     process~1 never reaches $cs$ (which is implied by the assumption 
+     $[]~Success$), then $T1$ remains forever true.
+  \end{proof}
+
+\step{3.2}{$[]T1\;~>\;(T0 \,\/ \,[](T1 /\ ~T0))$}
+  \begin{proof}
+  \pf\ By the tautologies $F ~> (G \/ (F /\ []~G))$ and
+       $[]F /\ []G \equiv [](F /\ G)$.
+  \end{proof}
+
+\step{3.3}{$[](T1 /\ ~T0) \;~>\; [](T1 /\ ~x[0])$}
+  \begin{proof}
+  \pf\ By the code and $Fairness$, $[]~T0$ implies that eventually
+  process~0 is always at $ncs$, which implies that $x[0]$ always equals
+  \FALSE.
+  \end{proof}
+
+\step{3.4}{$[](T1 /\ ~x[0]) \;~>\; \FALSE$}
+  \begin{proof}
+  \pf\ The code, $Fairness$, and $[]~x[0]$ imply that process~1
+  eventually reaches $e2$.  Assumption $Fairness$ and $[]~x[0]$ then imply
+  that process~1 reaches $cs$, contradicting the assumption
+  $[]~Success$.
+  \end{proof}
+
+\qedstep
+  \begin{proof}
+  \pf\ By \stepref{3.1}--\stepref{3.4}, step~\stepref{2}, 
+   and Leads-To Induction,
+   with this proof graph: \\
+      \s{2}\begin{picture}(0,70)(0,0)
+%      {\gray\graphpaper(0,0)(300,200)}
+      \put(0,30){\makebox(0,0)[l]{$T1$}}
+      \put(40,30){\makebox(0,0)[l]{$\Box T1$}}
+      \put(160,60){\makebox(0,0)[t]{$T0$}}
+      \put(85,0){\makebox(0,0)[lb]{$\Box (T1 \land \lnot T0)$}}
+      \put(175,0){\makebox(0,0)[lb]{$\Box (T1 \land \lnot x[0])$}}
+      \put(257,30){\makebox(0,0)[l]{$\FALSE$}}
+      \thicklines
+      \put(18,30){\vector(1,0){17}}
+      \put(62,25){\vector(3,-2){20}}
+      \put(64,34){\vector(4,1){87}}
+      \put(150,6){\vector(1,0){20}}
+      \put(240,10){\vector(1,1){15}}
+      \put(170,55){\vector(4,-1){85}}
+      \end{picture}
+  \end{proof}
+\end{proof}
+
+% \pagebreak
+
+\qedstep
+\begin{proof}
+\pf\ By steps \stepref{1a}--\stepref{3} and Leads-To Induction, with
+this simple proof graph:\\
+      \s{2}\begin{picture}(0,65)(0,22)
+      \put(0,50){\makebox(0,0)[l]{$T0\lor T1$}}
+      \put(63,70){\makebox(0,0)[l]{$T0$}}
+      \put(63,30){\makebox(0,0)[l]{$T1$}}
+      \put(105,50){\makebox(0,0)[l]{$\FALSE$}}
+      \thicklines
+      \put(40,55){\vector(3,2){20}}
+      \put(40,45){\vector(3,-2){20}}
+      \put(80,68){\vector(3,-2){20}}  % 126
+      \put(80,30){\vector(3,2){20}}
+      \end{picture}
+
+\end{proof}
+\end{proof}
+
+\end{document}

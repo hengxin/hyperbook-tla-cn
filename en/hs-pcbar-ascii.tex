@@ -1,0 +1,14 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{ASCII Text}
+\fixverbatim
+\addtolength{\textwidth}{2em}
+\begin{popup}
+\begin{verbatim*}
+pcBar == [i \in {0, 1} |-> CASE i = 0 -> IF pc[0] = "pe1" THEN "pe"
+                                                          ELSE pc[0]
+                             [] i = i -> IF pc[1] = "ce1" THEN "ce"
+                                                          ELSE pc[1] ]
+\end{verbatim*}
+\end{popup}
+\makeasciipopup

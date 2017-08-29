@@ -1,0 +1,22 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{CHOOSE: The Fine Print}
+\begin{popup}
+\subsection*{{\sc choose}: The Fine Print}
+
+When reasoning formally about the \textsc{choose} operator, one discovers
+that we also need to assume that it satisfies this additional axiom:
+ \[ \begin{noj}
+    (\A\, x \in S : F(x) \equiv G(x)) \;=>\; \V{.2} \s{2}
+      ((\CHOOSE x \in S : F(x)) = (\CHOOSE x \in S : G(x)))
+    \end{noj}
+ \]
+The corresponding axiom for unbounded \textsc{choose} is:
+  \[ \begin{noj}
+    (\A\, x : F(x) \equiv G(x)) \;=>\; % \V{.2} \s{2}
+      ((\CHOOSE x : F(x)) = (\CHOOSE x : G(x)))
+    \end{noj}
+  \]
+
+\end{popup}
+\makepopup

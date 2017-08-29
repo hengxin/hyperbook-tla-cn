@@ -1,0 +1,62 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{Proof of Step 2.2}
+\pflongnumbers
+\pflongindent
+\beforePfSpace{5pt,12pt,5pt,0pt}
+\afterPfSpace{0pt}
+\interStepSpace{0pt}
+\begin{popup}
+\subsection*{Proof of Step 2.2}
+
+\begin{proof}
+\nostep{1}
+\nostep{2}
+\begin{proof}
+\nostep{2.1}
+\step{2.2}{$MutualExclusion'$}
+\begin{proof}
+\step{2.2.1}{It suffices to assume $InCS(i)'$ and prove $~InCS(1-i)'$.}
+% \sassume{$InCS(i)'$}
+% \prove{$~InCS(1-i)'$}
+\vspace{.21em}
+\begin{proof}
+\pf\ By definition of $MutualExclusion$.
+\end{proof}
+
+\vspace{.41em}
+
+\step{2.2.2}{$~x[1-i]$}
+\vspace{.21em}
+\begin{proof}
+\pf\ By the \stepref{2.2.1} assumption and $e2(i)$ (which holds by
+the step~\stepref{2} assumption), since an $e2(i)$ step puts process $i$
+in its critical section only if $~x[1-i]$ equals $\TRUE$.
+\end{proof}
+
+\vspace{.41em}
+
+\step{2.2.3}{$~InCS(1-i)$}
+\vspace{.21em}
+\begin{proof}
+\pf\ By \stepref{2.2.2} and $Inv /\ (i \in \{0,1\})$ (which holds by
+the step~\stepref{2} assumption), since the third conjunct of $Inv$ 
+together with $i \in \{0,1\}$ imply $InCS(1-i)=>x[1-i]$.
+\end{proof}
+
+\vspace{.41em}
+
+\qedstep
+\vspace{.21em}
+\begin{proof}
+\pf\ By \stepref{2.2.1}, \stepref{2.2.3}, and the step~\stepref{2}
+assumption, since $e2(i)$ implies that $pc[1-i]$ is unchanged and
+hence $InCS(1-i)$ equals $InCS(1-i)'$.
+\end{proof}
+
+\end{proof}
+\end{proof}
+\end{proof}
+
+\end{popup}
+\makepopup

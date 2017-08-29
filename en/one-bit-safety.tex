@@ -1,0 +1,24 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{}
+\begin{popup}
+The assertion that
+ $b\in\{0,1\}$
+is invariant is actually equivalent to our specification of the
+one-bit clock, since it implies that the only possible changes to $b$
+are from 0 to 1 and from 1 to 0.  This is not obvious, since the
+invariant allows steps that don't change the value of $b$ while the
+next-state relation does not.  If you follow the \tlaplus\ track,
+you will learn why our specification also allows steps that don't
+change $b$.  This is not important for the PlusCal track.
+
+
+\medskip
+
+It is true that the specification of a clock with more than two values
+(for example, a three-valued clock that allows $b$ to change only from
+0 to 1, from 1 to 2, and from 2 to 0) is not equivalent to any
+assertion of invariance.
+
+\end{popup}
+\makepopup

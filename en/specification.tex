@@ -1,0 +1,2395 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{Specification}
+\file{specification}
+\makeindex
+\setcounter{section}{\specificationtrack}
+
+% \makeatletter
+% \def\@getnum#1.#2@@@{#2}
+% \def\xgetref{\expandafter\@getnum\@currentHref @@@}
+% \newcommand{\targetlabel}[1]{\target{#1}\addtocontents{toc}{%
+%   \expandafter\protect\expandafter\maketargetlabel\expandafter{\@currentHref}{#1}}}
+% \makeatother
+
+\begin{document}
+
+\renewcommand{\contentsname}{The \emph{Specification} Track\protect\target{top}}
+\addtocounter{section}{-1}
+
+\showversions
+\tableofcontents
+\hideversions
+\vfill 
+\newpage
+\section{An Input/Output Specification}
+
+This hyperbook is mainly about systems.  We call something a
+\emph{system} when we are interested in its behavior---that is, what
+is happening while the system is operating or being executed.  These
+systems are also called 
+  \ctindex{1}{concurrent!system}{concurrent-system}%
+  \ctindex{1}{system!concurrent}{system-concurrent}%
+\emph{concurrent systems}, because we usually
+consider them to be composed of multiple components that may be doing
+things at the same time.  What this hyperbook calls a system has also
+been called a 
+  \ctindex{1}{reactive system}{reactive-system}%
+  \ctindex{1}{system!reactive}{system-reactive}%
+\emph{reactive system} because such systems usually
+interact with their environment throughout the course of their
+execution.
+
+Sometimes we are interested in conceptually simpler systems that
+interact with their environment only by taking an input when they are
+started and then producing an output and stopping.  We can specify
+such a system by an 
+  \ctindex{1}{specification!input/output (I/O)}{spec-io}%
+  \ctindex{1}{input/output (I/O) specification}{io-spec}%
+\emph{Input/Output Specification} (\emph{I/O Spec}
+for short) that describes the relation between its input and its
+output.
+
+An I/O Spec may consist of a function $F$ whose domain is the set of
+possible inputs, where $F[x]$ is the output that should be produced by
+the input $x$ in $\DOMAIN F$.  It may also be more convenient to write
+it as an
+  \popref{function-vs-operator}{operator} 
+$Op$ rather than a function, where $Op(x)$ is the output that should
+be produced by the possible input $x$.  If more than one possible
+output is permitted for a single input, then an I/O Spec consists of a
+relation.  The relation may be described by a set $R$ of ordered
+pairs, where $<<x, y>>$ is an element of $R$ iff $x$ is a legal input
+that allows $y$ as an output.  It may be more convenient to describe
+the relation by a Boolean-valued operator $Op$, where $Op(x,y)$ is
+true iff $y$ is an allowed output for input $x$.
+
+Often, the I/O system we are specifying takes as input an operation
+and a collection of arguments.  In that case, we may specify each
+possible operation separately.
+
+We can write I/O specifications as well as system specifications in
+\tlaplus.  I/O specs are chararcterized by not using variables.  The
+only parameters of an I/O spec are constants.  I/O specs are
+conceptually simpler than system specs, requiring only ordinary math
+without any temporal logic.  They provide a good way to familiarize
+yourself with ordinary math, without the complications of dealing with
+behaviors.  
+
+An I/O spec is ordinary math, which means that if you can explain it
+mathematically then you can easily write it in \tlaplus.  However, you
+might not be able to check the spec because TLC can't evaluate the
+math or can't evaluate it efficiently enough to check a large enough
+model.  In this section, I illustrate how to write an I/O spec that
+TLC can handle.  In effect, I will show you how to use \tlaplus\ as a
+programming language for mathematics.
+
+
+\subsection{The Example}
+
+The I/O spec described here is a real-life example.  I was a member of
+a committee that chooses the recipient of an award.  Before the
+committee meets, each member ranks the candidates, and these
+individual rankings are combined into a single ranking.  This combined
+ranking is meant to serve only as an indication of the committee
+members' views; it does not determine the recipient.  However, it
+inevitably influences the outcome.
+
+A few hundred years of research into elections has shown that there is
+no perfect method of choosing a winner.  A result known as 
+  \ctindex{1}{Arrow's theorem}{arrow-theorem}%
+Arrow's
+Theorem proves that no voting system can satisfy a small number of
+clearly desirable properties.  Reasonable systems can produce
+significantly different outcomes.  I decided that it would be better
+for the committee to use more than one system for ranking the
+candidates.
+
+The obvious thing to do would have been to write a little program to
+compute each ranking.  For some voting systems, computing a ranking
+can be tricky.  When faced with the task of writing a tricky piece of
+code, it's a good idea to first write and debug a PlusCal algorithm
+that computes the desired result and then hand-translate the PlusCal
+code into the programming language.  To get the PlusCal algorithm
+right, you can specify the ranking with a \tlaplus\ operator and have
+the algorithm compare the value it computes with the value of the
+operator.  You can then check the algorithm with TLC on a large
+collection of small instances.
+
+This is a procedure I use regularly when writing code that is at all
+tricky and that I want to be correct.  But, getting this program
+correct was not important enough to warrant spending that much time.
+Even if I didn't do it right, it would still have taken me more time
+to write the program than I felt like spending.  However, there are
+only about 10 members of the committee and about the same number of
+candidates.  This meant that TLC could compute the rankings directly
+from their high-level \tlaplus\ specifications.  This seemed like it
+would be easier and more fun than writing a program to do it, since I
+prefer writing \tlaplus\ specs to programming.  So, that's what I did.
+
+It turned out that the simplest, most obviously correct specifications
+could not be executed efficiently enough by TLC even on the
+committee's small elections.  The thing to do in such a case is to
+write two versions of some definitions: one that is simpler and more
+obviously correct, and another that TLC can evaluate more efficiently.
+You can then use TLC to check the equivalence of the two definitions
+on small examples.  I was confident enough in the correctness of the
+more efficient definitions not to bother doing this.  However, I will
+do it here to show you how.  It's what I would have done if getting
+the right result had been more important.
+
+The process of writing two versions of an operator's definition---a
+simpler version and one that TLC can evaluate more efficiently---tends
+to be more useful for system specifications than for I/O
+specifications.  You use the simpler definition to make sure that you
+are specifying the system you intend to, and then have TLC use the
+second definition for checking the specification.  The voting example
+will show how this sort of \tlaplus\ ``programming'' is done.
+
+\medskip
+
+I decided to specify two ranking systems, known as the Borda and
+Condorcet systems. The Borda system assigns a score to each candidate,
+and candidates are ranked by their score. I wanted the output of this
+system to be a list of candidates and their scores, sorted by score.
+This requires specifying sorting. The standard $TLC$ module defines a
+specfication of sorting that is implemented efficiently by TLC\@.
+However, the operator it defines is not exactly the one we need, and
+sorting provides a nice example of an I/O specification. So, let's
+specify it from scratch.
+
+\subsection[Sorting]{Sorting%
+  \tindex{1}{sorting}} \xlabel{sorting}
+
+We want to specify what it means to sort a set of elements.  For
+simplicity, let's assume that each element is a 
+ \rref{math}{records}{record} with a $key$
+component, and the elements are to be sorted in increasing order of
+their $key$ value.
+
+Sorting a set means arranging its elements in a list.  A sorting of a
+set $S$ is therefore a list of elements of $S$ that contains each
+element exactly once and is sorted according to the elements'
+$key$ values.  To describe this precisely, we must define:
+\begin{itemize}
+\item What a list of elements of $S$ is.
+\item What it means for such a list to contain each element of $S$
+exactly once.
+\item What it means for the list to be sorted according to 
+elements' $key$ values.
+\end{itemize}
+%
+The mathematical representation of a list is a 
+  \rref{math}{\xlink{math:tuples}}{finite sequence}, 
+also known as a tuple.  In \tlaplus, the sequence 
+  $<<e_{1}, \ldots, e_{n} >>$
+is defined to be the \rref{math}{functions}{function} $f$ with domain
+$1\dd n$ such that $f[i]$ equals $e_{i}$, for each $i$ in $1\dd n$.
+This sequence represents a list of elements of $S$ iff each $e_{i}$ is
+an element of $S$.  
+
+\tlaplus\ defines 
+  \tlabox{[1\dd n -> S]}
+to be the set of all functions $f$ with domain $1\dd n$ such that
+$f[i]$ is in $S$ for all $i$ in $1\dd n$.  Therefore,
+    \tlabox{[1\dd n -> S]}
+represents the set of all lists of length $n$ of elements in $S$.
+Such a list contains each element of $S$ exactly once iff $n$ equals
+the number of elements of $S$ and every element of $S$ appears in the
+list.  The standard $FiniteSets$ module defines $Cardinality(S)$ to be
+the \rref{math}{cardinality}{cardinality} of a finite set $S$.  
+A sequence $seq$ is therefore a
+sorting of $S$ iff it satisfies the following conditions:
+\begin{enumerate}
+\item $seq$ is an element of $[1\dd Cardinality(S) -> S]$
+
+\item Each element of $S$ equals $seq[i]$ for some $i$ in
+      $1\dd Cardinality(S)$.
+
+\item $seq$ is sorted, which means: For each $i$ and $j$ in
+$1\dd Cardinality(S)$, if $i<j$ then $seq[i]\leq seq[j]$.
+\end{enumerate}
+It is obvious how to write condition~1 as a mathematical formula.
+Conditions 2 and~3 are also easily expressed as formulas:
+\begin{enumerate}
+\item[S2.] $\A\, s \in S : \E\, i \in 1\dd Cardinality(S) : seq[i] = s$
+\item[S3.] $\A\, i, j \in 1\dd Cardinality(S) : 
+                 (i < j) => (seq[i].key \leq seq[j].key)$
+\end{enumerate}
+Since multiple elements of $S$ can contain the same $key$ value,
+there is no unique way to sort the elements of $S$.  We specify sorting
+by defining the set $Sortings(S)$ of all sortings of the elements
+of~$S$\@.  This set is the set of all elements $seq$
+of $[1\dd Cardinality(S) -> S]$ satisfying S2 and S3.  We write
+the set of all elements $x$ in a set $T$ satisfying a condition
+$P(x)$ as \tlabox{\{x \in T : P(x)\}}.  Therefore, we can define
+$Sorting(S)$ to equal
+ \[ \{ \begin{noj}
+       seq \in [1\dd Cardinality(S) -> S] : \V{.2}\s{1}
+       \begin{conj}
+       \A\, s \in S : \E\, i \in 1\dd Cardinality(S) : seq[i] = s \V{.2}
+       \A\, i, j \in 1\dd Cardinality(S) : 
+                 (i < j) => (seq[i].key \leq seq[j].key) \, \}
+       \end{conj}
+       \end{noj}
+ \]
+This is a perfectly fine definition of $Sortings(S)$, but we can express
+condition~2 in a different way that I find a little more elegant.  The
+set of all elements in the sequence $seq$ can be written as
+ \[ \{seq[i] : i \in 1\dd Cardinality(S)\}
+ \]
+In general, $\{f(x) : x \in T\}$ is the set of all elements of the form
+$f(x)$ for $x$ an element of the set $T$.  Condition 2 asserts that this
+set equals $S$, so it can be written as:
+\begin{enumerate}
+\item[S2a.] $S = \{seq[i] : i \in 1\dd Cardinality(S)\}$
+\end{enumerate}
+This condition is partially redundant.  Condition~1 implies that
+$seq[i]$ is in $S$, for all $i$ in $1\dd Cardinality(S)$,  which
+implies that $\{seq[i] : i \in 1\dd Cardinality(S)\}$ is a
+subset of $S$.  Therefore, the two sets are equal iff
+$S$ is a subset of $\{seq[i] : i \in 1\dd Cardinality(S)\}$.
+We can thus replace S2a by:
+\begin{enumerate}
+\item[S2b.] $S\subseteq\{seq[i] : i \in 1\dd Cardinality(S)\}$
+\end{enumerate}
+This leads to the definition:
+\begin{display}
+\begin{notla}
+Sortings(S) == 
+   {seq \in [1..Cardinality(S) -> S] :
+      /\ S \subseteq {seq[i] : i \in 1..Cardinality(S)}
+      /\ \A i, j \in 1..Cardinality(S) : (i < j) => (seq[i].key =< seq[j].key)}
+\end{notla}
+\begin{tlatex}
+\@x{ Sortings ( S ) \.{\defeq}\vs{.2}}%
+ \@x{\@s{12.29} \{ seq \.{\in} [ 1 \.{\dotdot} Cardinality ( S )
+ \.{\rightarrow} S ] \.{:}\vs{.2}}%
+ \@x{\@s{25.50} \.{\land} S \.{\subseteq} \{ seq [ i ] \.{:} i \.{\in} 1
+ \.{\dotdot} Cardinality ( S ) \}\vs{.2}}%
+ \@x{\@s{25.50} \.{\land} \A\, i ,\, j \.{\in} 1 \.{\dotdot} Cardinality ( S )
+ \.{:} ( i \.{<} j ) \.{\implies} ( seq [ i ] . key \.{\leq} seq [ j ] . key
+ ) \}}%
+\end{tlatex}
+\end{display}
+The expression $1\dd Cardinality(S)$ occurs three times in the
+definition.  We can use a 
+  \rref{math}{let-in}{\textsc{let}\,/\,\textsc{in}}
+construct to make the definition easier to read by locally defining an
+identifier to equal that expression.  Let's use the identifier
+$D$ (for \emph{domain}) and write:%
+\begin{display}
+\begin{notla}
+Sortings(S) ==
+  LET D == 1..Cardinality(S)
+  IN { seq \in [D -> S] :
+        /\ S \subseteq {seq[i] : i \in D}
+        /\ \A i, j \in D : (i < j) => (seq[i].key =< seq[j].key) }
+\end{notla}
+\begin{tlatex}
+\@x{ Sortings ( S ) \.{\defeq}\vs{.2}}%
+    \marginpar{\popref{sorting-ascii}{\textsc{asii} version}}%
+\@x{\@s{8.2} \.{\LET} D \.{\defeq} 1 \.{\dotdot} Cardinality ( S )\vs{.2}}%
+\@x{\@s{8.2} \.{\IN} \{ seq \.{\in} [ D \.{\rightarrow} S ] \.{:}\vs{.2}}%
+\@x{\@s{37.69} \.{\land} S \.{\subseteq} \{ seq [ i ] \.{:} i \.{\in} D \}\vs{.2}}%
+ \@x{\@s{37.69} \.{\land} \A\, i ,\, j \.{\in} D \.{:} ( i \.{<} j )
+ \.{\implies} ( seq [ i ] . key \.{\leq} seq [ j ] . key ) \}}%
+\end{tlatex}
+\end{display}
+Let's start creating our specification and test this definition.  In
+the Toolbox, \popref{open-new-spec}{open a new specification} named
+$CandidateRanking$.  We will need the standard modules $Integers$,
+$Sequences$, and $FiniteSets$ (for the definition of $Cardinality$),
+so begin the module with:
+\begin{twocols}
+$\EXTENDS Integers, \ Sequences, \ FiniteSets$
+\midcol
+\verb|EXTENDS Integers, Sequences, FiniteSets|
+\end{twocols}
+Now insert the definition of $Sortings(S)$.  Let's check the
+definition by evaluating the operator $Sortings$ with some arguments.
+First, \popref{create-new-model}{create a new model}.  The model will
+open on the \emph{Model Checking Results}.  We enter the expression we
+want to evaluate in the \emph{Expression} field of the
+\textsf{Evaluate Constant Expression} section.
+
+The argument of $Sortings$ should be a set of 
+  \rref{math}{records}{records} with $key$
+fields.  Let's start simply, with the set containing the a single
+element $[key |-> 42]$, which is a record with only a $key$ field
+having value $42$.  Enter the expression
+\begin{twocols}
+\s{2}$Sortings(\{[key |-> 42]\})$
+\midcol
+\verb/Sortings({[key |-> 42]})/
+\end{twocols}
+and \popref{run-tlc}{run TLC} to evaluate it.  TLC gives the value
+$\{<<[key |-> 42]>>\}$, a set containing the single sequence having
+that record as its one element.  
+\begin{question}
+What does $Sortings$ applied to the empty set of records equal?  Let
+TLC check your answer.
+\end{question}
+Let's test the definition on a more interesting set of records.
+To allow different records with the same $key$ value, the records
+must have at least one additional field.  We want to test our definitions
+on sets with different numbers of elements, so let's define
+$TestSet(n)$ to be the set of all records having a $key$ field in the
+set $1\dd n$ and a $val$ field in the set $\{"x",\,"y"\}$.  (There are
+$2n$ such records.)  
+\begin{twocols}
+$TestSet(n) == [key : 1\dd n, \ val : \{"x",\, "y"\}]$
+\midcol
+\verb|TestSet(n) == [key : 1..n, val : {"x", "y"}]|
+\end{twocols}
+Since this definition is just for testing, we don't want to make it
+part of our specification.  Instead, copy the definition into the
+\textsf{Additional Definitions} section of the model's
+\textsf{Advanced Options} page.  Now have TLC evaluate
+$Sortings(TestSet(3))$.  It reports a set of 8 sequences, including
+  \[ << \ \begin{noj}
+        [key |-> 1,\; val |-> "y"], \ 
+        [key |-> 1,\; val |-> "x"], \ 
+        [key |-> 2,\; val |-> "x"] \V{.2}
+        [key |-> 2,\; val |-> "y"], \ 
+        [key |-> 3,\; val |-> "y"], \ 
+        [key |-> 3,\; val |-> "x"] \ >>
+        \end{noj}
+ \]
+You can read TLC's output more easily by copying it (click on the
+\emph{Value} region and type \textsf{Control+A}) and pasting it
+into a text editor.
+
+TLC should have taken just a second or two to perform the evaluation.
+Now have it evaluate $Sorting(TestSet(4))$.  It probably takes about
+30 seconds.  Now try
+  $Sorting(TestSet(5))$.
+It will take TLC several hours.  (You can hit \emph{Cancel} if you get
+bored waiting.)  What's going on?
+
+To evaluate a set of the form $\{x \in T : P(x)\}$, TLC enumerates
+all the elements of $T$ and keeps only those elements $x$ satisfying
+$P(x)$.  The number of elements in a set of the form
+ $[D -> R]$
+is $Cardinality(D)^{Cardinality(R)}$.  The set $TestSet(n)$ contains
+$2n$ elements.  To evaluate $Sorting$ on it, TLC must enumerate a set
+of $2n^{2n}$ functions.  For $n=5$, that's 10 billion functions---600
+times more than for $n=4$.  Although it's not a large number of
+elements for computers these days, TLC is quite slow at such a task
+compared to a program written especially for that task.  For the $n=4$
+case, the 30 seconds it takes TLC to enumerate the 16.7 million
+functions to find the sortings of this 8-element set is perhaps 50
+times longer than it would take a hand-coded program to perform that
+same calculation.
+
+\bigskip
+
+For candidate ranking, we need to define an operator $SortSet$ so that
+$SortSet(S)$ is some single sorting of $S$.  The simplest way to
+define it is with the \rref{math}{choose}{\textsc{choose}} operator:
+ \[ SortSet(S) == \CHOOSE seq \in Sorting(S) : \TRUE
+ \]
+This defines $S$ to be an arbitrarily chosen element of $Sorted(S)$.
+While this definition is fine in principle, in practice it won't do.
+With this definition, computing $SortSet(S)$ requires computing
+$Sortings(S)$, which for a set of 10 candidates would take billions of
+years.  We need a definition that TLC can compute more efficiently.
+
+Here is the simplest practical algorithm I know for computing a
+sorting $seq$ of a set $S$: 
+\begin{itemize}
+\item Let $T$ equal $S$ and $i$  equal 1.
+
+\item While $T$ is nonempty:
+\begin{itemize}
+\item Set $seq[i]$ to be any element $x$ of $T$ with a minimal value
+      of $x.key$. 
+\item Increment $i$ by 1.
+
+\item Remove $x$ from the set $T$.
+\end{itemize}
+\end{itemize}
+It's easy to write this algorithm in PlusCal.  However, we're writing
+a definition, not an algorithm.  The value computed by an iterative
+computation like this can be defined 
+  \rref{math}{recursive-inductive}{inductively}.
+In \tlaplus, you describe the value inductively using a 
+  \rref{math}{recursive-op-defs}{recursive operator} or
+   \rref{math}{recursive-fcn-defs}{recursive function} 
+definition.  This will seem quite natural if you've used a functional
+programming language.
+
+We define $SortSet(S)$ inductively by:
+\begin{itemize}
+\item Defining $SortSet(\{\,\})$ to equal $<<\,>>$, the empty sequence.
+
+\item Defining $SortSet(S)$, for a nonempty set $S$, to equal the
+sequence that begins with an element $s$ of $S$ having a minimal value
+of $s.key$ and ends with $SortSet(S :\: \{s\})$, where
+$S :\: \{s\}$ is the set obtained from $S$ by removing the element $s$.
+\end{itemize}
+To write this definition in \tlaplus, we use 
+ \rref{math}{choose}{the \textsc{choose} operator} 
+as follows to describe an element of $S$ with minimal value of
+$s.key$:
+ \[ \CHOOSE ss \in S : \A\, t \in S : ss.key \leq t.key
+ \]
+The complete definition is as follows, where $\o$ is 
+  \rref{math}{seq-concat}{sequence concatenation}
+and~$\backslash$ is 
+\popref{set-difference}{the set-difference operator}:%
+ %\marginpar[-1.5]{\popref{sortset-ascii}{\textsc{ascii} version}}
+\begin{display}
+\begin{notla}
+RECURSIVE SortSet(_)
+SortSet(S) == 
+  IF S = {} THEN <<  >>
+            ELSE LET s == CHOOSE ss \in S : \A t \in S : ss.key =< t.key
+                 IN <<s>> \o SortSet(S \ {s})
+\end{notla}
+\begin{tlatex}
+\@x{ {\RECURSIVE} SortSet ( \_ )\vs{.2}}%
+  \marginpar{\popref{sortset-ascii}{\textsc{ascii} version}}%
+\@x{ SortSet ( S ) \.{\defeq}\vs{.2}}%
+\@x{\@s{8.2} {\IF} S \.{=} \{ \} \.{\THEN} {\langle}\@s{4.1} {\rangle}\vs{.2}}%
+ \@x{\@s{50.50} \.{\ELSE} \.{\LET} s \.{\defeq} {\CHOOSE} ss \.{\in} S \.{:}
+ \A\, t \.{\in} S \.{:} ss . key \.{\leq} t . key\vs{.2}}%
+ \@x{\@s{81.81} \.{\IN} {\langle} s {\rangle} \.{\circ} SortSet ( S
+ \.{\,\backslash\,} \{ s \} )}%
+\end{tlatex}
+\end{display}
+Since the definition of $SortSet$ is recursive, it is preceded by
+a \textsc{recursive} declaration.  
+
+Copy the definition of $SortSet$ into module $CandidateRanking$, and
+let's test it.  Have TLC evaluate $SortSet(TestSet(3))$.  It should
+give the value
+  \[ << \ \begin{noj}
+        [key |-> 1,\; val |-> "x"], \ 
+        [key |-> 1,\; val |-> "y"], \ 
+        [key |-> 2,\; val |-> "x"] \V{.2}
+        [key |-> 2,\; val |-> "y"], \ 
+        [key |-> 3,\; val |-> "x"], \ 
+        [key |-> 3,\; val |-> "y"] \ >>
+        \end{noj}
+ \]
+We can do better than just testing the definition of $SortSet$ on a 
+few individual arguments.  The value of $SortSet(S)$ is correct iff it
+is an element of $Sortings(S)$.  We can check that $SortSet(S)$ is
+correct for all sets $S$ in some set $\Sigma$ of sets by having TLC
+check that the following formula equals $\TRUE$:
+ \[  \A\,S \in \Sigma : SortSet(S) \in Sortings(S)
+ \]
+Try this for $\Sigma$ equal to the set of all subsets of 
+$TestSet(3)$.  Using the \tlaplus\
+   \rref{math}{math:subset}{\mbox{\textsc{subset}} operator}, this
+set is written $\SUBSET TestSet(3)$.  TLC quickly reports the value
+$\TRUE$.
+
+Checking it on all $2^{6}$ subsets of this 6-element set gives us
+quite a bit of confidence in the correctness of the definition of
+$SortSet$.  Just to be safe, let's check it on the larger set
+\tlabox{\SUBSET TestSet(4)}.  Just evaluating $Sortings$ on
+$TestSet(4)$
+  \tlabox{[key : 1\dd4,\ val : \{"x",\, "y"\}]}
+took 30 seconds, and now we must evaluate the expression
+$SortSet(S)\in Sortings(S)$ for all subsets $S$ of this set (which
+includes $TestSet(4)$ itself).  We expect this to take quite a bit of
+time, but let's start it and see what happens.
+
+Surprise! TLC reports the answer immediately.  Try it with
+$TestSet(5)$.  Still an immediate answer.  Try it on $TestSet(6)$,
+$TestSet(7)$, and so on until it starts taking more than a couple of
+seconds.  On my computer, only for $TestSet(9)$
+does it take 15 seconds.  This is a set with 18 elements.  To compute
+its set of sortings, TLC must enumerate a set containing $18^{18}$
+elements---a task that should take it billions of years.  What's going
+on?
+
+You should always be suspicious of success when using TLC, especially
+if it reports success more quickly than you expect.  You should make
+sure that TLC is checking what you think it is.  When TLC reports no
+error, it's a good idea to insert an error and make sure that TLC
+catches it.  For example, you can replace $\leq$ by $\geq$ in the
+definition of $SortSet$.  In this case, you will find that TLC really
+is checking the correctness of $SortSet$ as we expect it to.
+
+TLC is so fast because it is evaluating $SortSet(S) \in Sortings(S)$
+without computing the set $Sortings(S)$.  To compute all the
+elements of a set of the form $\{x \in T : P(x)\}$, TLC must enumerate
+the elements of $T$.  However, the expression
+   $e \in \{x \in T : P(x)\}$, 
+is equivalent to $(e \in T) /\ P(e)$, and TLC usually does not have to
+enumerate the elements of a set $T$ to determine if $e \in T$ is true.
+(Indeed, TLC can evaluate $e \in T$ for some infinite sets $T$ such as
+$Nat$.)  If $T$ is the set $TestSet(9)$, then $e \in T$ is true iff
+$e$ is a record with only $key$ and $val$ fields, $e.key$ is in $1\dd
+9$, and $e.val$ equals $"x"$ or $"y"$.  TLC can check this quickly, and
+the evaluation of $SortSet(S) \in Sortings(S)$ for each $S$ takes
+almost no time.  TLC takes 15 seconds to evaluate the entire formula
+because it must perform that evaluation for each of the $2^{18}$
+subsets $S$ of $TestSet(9)$.
+
+A little thought reveals that the time needed to compute $SortSet(S)$
+for an $n$-element set $S$ is on the order of $n^{2}$.  There are
+faster sorting algorithms.  However, a bit of testing shows that TLC
+can perform the computation essentially instantaneously for a
+$100$-element set, so this definition of $SortSet$ is good enough for
+us.
+
+\bigskip
+
+We have defined sorting a set of records according to their $key$
+values, which we have assumed to be integers.  We could just as easily
+have defined sorting of a set according to an arbitrary relation by
+using 
+   \ctindex{2}{operator!higher-order}{op-higher-order}%
+  \ctindex{2}{higher-order operator}{higher-order-op}%
+ \rref{math}{higher-order-operator}{higher-order operators}.
+
+Let's define an operator $GeneralSortings$ so that, if $KeyLeq$
+is defined by
+ \[ KeyLeq(s, t) == s.key \leq t.key
+ \]
+then $GeneralSortings(S, KeyLeq)$ equals $Sortings(S)$, for any set
+$S$.  This is easily done by modifying the definition of $Sortings$
+to be:
+\begin{widedisplay}
+\begin{notla}
+GeneralSortings(S, LEQ(_, _)) ==
+   LET D == 1..Cardinality(S)
+   IN { seq \in [D -> S] : /\ S \subseteq {seq[i] : i \in D}
+                           /\ \A i, j \in D : (i < j) => LEQ(seq[i], seq[j]) }
+\end{notla}
+\begin{tlatex}
+\@x{ GeneralSortings ( S ,\, LEQ ( \_ ,\, \_ ) ) \.{\defeq}\vs{.2}}%
+\@x{\@s{12.29} \.{\LET} D \.{\defeq} 1 \.{\dotdot} Cardinality ( S )\vs{.2}}%
+ \@x{\@s{12.29} \.{\IN} \{ seq \.{\in} [ D \.{\rightarrow} S ] \.{:} \.{\land}
+ S \.{\subseteq} \{ seq [ i ] \.{:} i \.{\in} D \}\vs{.2}}%
+ \@x{\@s{109.44} \.{\land} \A\, i ,\, j \.{\in} D \.{:} ( i \.{<} j )
+ \.{\implies} LEQ ( seq [ i ] ,\, seq [ j ] ) \}}%
+\end{tlatex}
+\end{widedisplay}
+Copy the \popref{generalsortings-ascii}{source of this definition}
+into the $CandidateRanking$ module and let's make sure that 
+$Sortings(S)$ does equal $GeneralSortings(S,\,KeyLeq)$, when $KeyLeq$
+is defined as above.  Check that this is true for all 
+subsets of $TestSet(3)$ by letting TLC evaluate:%
+\marginpar[-1.5]{\popref{generalsortings-ascii}{\textsc{ascii} version}}
+\begin{widedisplay}
+\begin{notla}
+LET KeyLeq(s, t) == s.key =< t.key
+IN \A S \in SUBSET TestSet(3) : Sortings(S) = GeneralSortings(S, KeyLeq)
+\end{notla}
+\begin{tlatex}
+\@x{ \.{\LET} KeyLeq ( s ,\, t ) \.{\defeq} s . key \.{\leq} t . key\vs{.2}}%
+ \@x{ \.{\IN} \A\, S \.{\in} {\SUBSET} TestSet ( 3 ) \.{:} Sortings ( S )
+ \.{=} GeneralSortings ( S ,\, KeyLeq )}%
+\end{tlatex}
+\end{widedisplay}
+We can also write this expression without explicitly defining $KeyLeq$
+by using a 
+   \ctindex{2}{LAMBDA@\icmd{textsc}{lambda}}{lambda}%
+\rref{math}{lambda}{\textsc{lambda} expression}:
+\begin{widedisplay}
+\begin{notla}
+\A S \in SUBSET TestSet(3) : 
+    Sortings(S) = GeneralSortings(S,  LAMBDA s, t : s.key =< t.key)
+\end{notla}
+\begin{tlatex}
+\@x{ \A\, S \.{\in} {\SUBSET} TestSet ( 3 ) \.{:}\vs{.2}}%
+ \@x{\@s{11.32} Sortings ( S ) \.{=} GeneralSortings ( S ,\,\@s{4.1} {\LAMBDA}
+ s ,\, t \.{:} s . key \.{\leq} t . key )}%
+\end{tlatex}
+\end{widedisplay}
+Either way we write it, TLC reports that its value is $\TRUE$.
+
+\begin{aquestion}{sorting-answer1}
+We generalized $Sortings$ to $GeneralSortings$ by giving it an operator
+argument.  Generalize $SortSet$ in the same way
+by defining an operator $GeneralSortSet$ in terms of 
+  \rref{math}{sortseq}{the $SortSeq$ operator}
+defined in the standard $TLC$ module.  Use TLC to check the
+correctness of your definition on all subsets of $TestSet(7)$.
+\end{aquestion}
+
+% We could also write the definition using an infix operator symbol 
+% such as $\,\preceq\,$ in
+% place of $LEQ$:
+% \begin{widedisplay}
+% \begin{tlatex}
+% \@x{ GeneralSortings ( S ,\, \_ \preceq\, \_ ) ) \.{\defeq}\vs{.2}}%
+% \@x{\@s{12.29} \.{\LET} D \.{\defeq} 1 \.{\dotdot} Cardinality ( S )\vs{.2}}%
+%  \@x{\@s{12.29} \.{\IN} \{ seq \.{\in} [ D \.{\rightarrow} S ] \.{:} \.{\land}
+%  S \.{\subseteq} \{ seq [ i ] \.{:} i \.{\in} D \}\vs{.2}}%
+%  \@x{\@s{109.44} \.{\land} \A\, i ,\, j \.{\in} D \.{:} ( i \.{<} j )
+%  \.{\implies} ( seq [ i ] \preceq seq [ j ] ) \}}%
+% \end{tlatex}
+% \end{widedisplay}
+
+
+\subsection{Votes}
+
+In both Borda and Condorcet elections, each voter ranks the candidates
+in order of preference.  To write the spec, I had to decide how to
+represent the voters' ballots.  The obvious way to represent a single
+voter's ballot is by a sequence whose $i$\tth\ element is the name of
+the candidate the voter ranks number~$i$.  An obvious way to represent
+all the votes is as a set of such sequences.  However, that's not
+right because two voters can cast identical ballots, and there is no
+concept of a set having ``two copies'' of an element.  Here are three
+reasonable ways to represent the collection of votes:
+\begin{itemize}
+\item With a set whose elements are
+records or tuples with one component being the ranking and the other
+identifying the voter (with a randomly chosen identification if the
+vote is to be anonymous).
+
+\item With a 
+  \rref{math}{bags}{bag (multiset)}
+ of rankings.
+
+\item With a sequence of rankings, arranged in an arbitrary order.
+\end{itemize}
+The first two methods are more elegant than the third, which imposes
+an unnecessary ordering on the rankings.  However, I decided to use the
+third because it's a little simpler.  
+
+Instead of making the collection of votes an argument of an operator
+that describes a voting scheme, it's more convenient to make it a
+parameter of the module.  Let's call it $Votes$ and add the following
+declaration to module $CandidateRanking$:
+\begin{twocols}
+\s{2}$\CONSTANT Votes$
+\midcol
+\verb|CONSTANT Votes|
+\end{twocols}
+We can declare the set of candidates also to be a parameter, but
+there's no need to; we can extract the set of candidates from the
+value of $Votes$.  Since $Votes$ is a sequence of rankings, and each
+ranking lists all the candidates, we can define the set $Cand$
+of all candidates to be the set of all candidate names in $Votes[1]$,
+the first voter's ranking.  That ranking is a sequence, its $i$\tth\
+element being $Votes[1][i]$.  The set of candidates is therefore the
+set
+ \[\{Votes[1][1],\ Votes[1][2],\ \ldots,\,\ Votes[1][Len(Votes[1])\} \]
+where $Len(s)$ is defined in 
+the $Sequences$ module to be the length of a sequence~$s$.
+We can write this set formally (without the ``$\ldots$'') as:%
+  \marginpar[-1.5]{\popref{candidates-ascii}{\textsc{ascii} version}}
+ \[ Cand == \{Votes[1][i] : i \in 1\dd Len(Votes[1])\} \]
+This uses the \tlaplus\ notation that $\{e(x) : x \in S\}$
+is the set of all elements of the form $e(x)$ for $x$ an element
+of the set $S$.
+
+When we have TLC evaluate the definition of a voting scheme to
+determine an outcome, we should check that $Votes$ is a correct
+collection of votes---namely, that it is a sequence of rankings of the
+candidates.  A ranking $r$ is a sequence containing every candidate
+exactly once, which is true iff the length of $r$ equals the number of
+candidates, and the set of all elements of $r$ is the set of all
+candidates.  Correctness of the collection of votes is therefore
+expressed by the following formula.
+\begin{display}
+\begin{notla}
+/\ Votes \in Seq(Seq(Cand))
+/\ \A j \in 1..Len(Votes) : 
+      /\ Len(Votes[j]) = Cardinality(Cand)
+      /\ {Votes[j][i] : i \in 1..Len(Votes[j])} = Cand
+\end{notla}
+\begin{tlatex}
+\@x{ \.{\land} Votes \.{\in} Seq ( Seq ( Cand ) )\vs{.2}}%
+\@x{ \.{\land} \A\, j \.{\in} 1 \.{\dotdot} Len ( Votes ) \.{:}\vs{.2}}%
+ \@x{\@s{18.33} \.{\land} Len ( Votes [ j ] ) \.{=} Cardinality ( Cand
+ )\vs{.2}}%
+ \@x{\@s{18.33} \.{\land} \{ Votes [ j ] [ i ] \.{:} i \.{\in} 1 \.{\dotdot}
+ Len ( Votes [ j ] ) \} \.{=} Cand}%
+\end{tlatex}
+\end{display}
+Make this an assumption of the spec by adding it as an 
+  \marginpar[2]{\popref{votes-assume-ascii}{\textsc{ascii} version of
+    \textsc{assume} statement}}%
+\textsc{assume} statement.  TLC checks a specification's assumptions,
+and it will report an error if this formula is not true for the value
+a model assigns to the constant parameter $Votes$.
+
+\begin{question} \targetlabel{quest:votes-model}
+\popref{create-new-model}{Create a new model} for the specification.
+In the \textsf{What is the model?} section of the \textsf{Model
+Overview} page, assign \popref{votes-set-incorrect-ascii}{this value}
+to $Votes$.  Run TLC on the model.  It will report that the
+assumption is false.  Add \rref{topics}{print-statements}{print
+statements} to the assumption to help locate the errors, and correct
+them.  (It will help to start by commenting out the first conjunct of
+the assumption.)
+\end{question}
+
+
+
+
+
+
+\subsection[The Borda Ranking]{The Borda Ranking%
+  \tindex{1}{Borda ranking}%
+   }
+
+In the Borda ranking, a candidate gets a score computed as follows
+from the rankings.  A ranking of $N$ candidates assigns to the
+first-ranked (highest-ranked) candidate $N-1$ points, to the the
+second-ranked candidate $N-2$ points, \ldots, assigning $0$ points to
+the last-ranked candidate.  The score of a candidate is the sum of the
+points assigned to him or her by all the rankings.
+
+Let $N$ be the number of candidates, let $V$ be the number of voters,
+and let $RankBy(c,\,i)$ be the ranking of candidate $c$ by the
+$i$\tth\ voter (which is a number in $1\dd V$).  The score of candidate
+$c$ is written mathematically as
+ \[ \NOTLA \sum_{i=1}^{V} \; N - RankBy(c,\,i)
+ \]
+It would be nice if we could define an operator $Sigma$ that allowed us
+to write this formula as
+ \[ Sigma(i,\,1,\,V,\, N - RankBy(c,\,i))
+ \] 
+However, the $i$ in the summation is a bound identifier, and \tlaplus\
+has no mechanism for defining an operator that takes a bound
+identifier as an argument.  Instead, we define an operator 
+that sums a sequence of numbers and apply it to the sequence:
+ \[ <<N - RankBy(c,\,1), \ N - RankBy(c,\,2), \ldots, \ 
+       N - RankBy(c,\,V)>>
+ \]
+%
+The standard way to write an inductive definition of an operator $Op$
+whose argument is a finite sequence is: 
+ \[ Op(s) == \If {s = <<  >>} \Then \ldots
+                             \Else \mbox{some function of 
+           \rref{math}{head}{$Head(s)$} and $Op($%
+            \rref{math}{head}{$Tail(s)$}$)$}
+             \Fi
+ \]
+Using this pattern, we define the operator $SumSeq$ that sums a 
+sequence of integers as follows:%
+  \marginpar[-1.5]{\popref{sumseq-ascii}{\textsc{ascii} version}}
+\begin{display}
+\begin{notla}
+RECURSIVE SumSeq(_)       
+SumSeq(s) == IF s = <<  >> THEN 0
+                           ELSE Head(s) + SumSeq(Tail(s))
+\end{notla}
+\begin{tlatex}
+\@x{ {\RECURSIVE} SumSeq ( \_ )}%
+ \@x{ SumSeq ( s ) \.{\defeq} {\IF} s \.{=} {\langle}\@s{4.1} {\rangle}
+ \.{\THEN} 0}%
+\@x{\@s{108.21} \.{\ELSE} Head ( s ) \.{+} SumSeq ( Tail ( s ) )}%
+\end{tlatex}
+\end{display}
+Add this definition to module $CandidateRanking$, and use TLC to check
+that it correctly sums a sequence of numbers.
+
+\begin{question}
+(a)~Define an operator $SumFcn$ so that if $f$ is an integer-valued
+function with a finite domain $\{d_{1}, \ldots, d_{n}\}$, then 
+$SumFcn(f)$ equals
+  $f[d_{1}] + \cdots + f[d_{n}]$.
+Use TLC to check that $SumFcn(s)$ equals $SumSeq(s)$ for 
+finite sequences $s$ of integers.  
+
+(b)~Define a higher-order operator $SumOp$ so that if $Op(d)$
+is an integer for all $d$ in the finite set $D$, then $SumOp(Op, D)$
+equals the the sum of $Op(d)$ for all $d$ in $D$.  
+\end{question}
+%
+The score of candidate $c$ is the sum of the sequence of numbers:
+ \[ <<N - RankBy(c,\,1), \ N - RankBy(c,\,2), \ \ldots, \ 
+       N - RankBy(c,\,V)>>
+ \]
+This is a sequence of length $V$ whose $i$\tth\ element is
+$N-RankBy(c,\,i)$.  Using
+ \rref{math}{writing-functions}{\tlaplus's notation for writing functions},
+we can write this sequence as:
+ \[ [i \in 1\dd V |-> N - RankBy(c,\,i)]
+ \]
+We can therefore define the score $Score(c)$ of candidate $c$ by
+ \[ Score(c) == SumSeq([i \in 1\dd V |-> N - RankBy(c,\, i)])
+ \]
+Before we can add this definition to the spec, we must define
+$RankBy$.  Remember that $RankBy(c,\,i)$ is the ranking (a number
+in $1\dd N$) that the $i$\tth\ vote assigns to candidate $c$.
+In other words, it is the value $r$ in $1\dd N$ such that
+the $r$\tth\ element of the $i$\tth\ vote is $c$.  We express
+``the value $r$ in $1\dd N$ such that \ldots'' with the
+\rref{math}{choose}{\textsc{choose} operator} as
+ \[ \CHOOSE r \in 1\dd N : \ldots
+ \]
+Thus, we define:
+ \[ RankBy(c, i) == \CHOOSE r \in 1\dd N : Votes[i][r] = c
+ \]
+We can represent the ranking of a candidate as a record with two
+fields: the name of the candidate and his or her score.  Let's put the
+name in the record's $name$ field and, because we want to sort the rankings,
+let's put the score in the record's $key$ field.  The set of rankings
+is the set of all elements
+ \[ [name |-> c, \ key |-> Score(c)]
+ \]
+with $c$ a candidate---a set we write
+ \[ \{[name |-> c, \ key |-> Score(c)] : c \in Cand \}
+ \]
+We can then define $Borda$ as follows to be the sequence of all
+elements in this set, sorted by score:
+ \[ Borda == SortSet(\{[name |-> c, \ key |-> Score(c)] : c \in Cand \})
+ \] 
+Add \popref{reverseborda-ascii}{these definitions} to the spec.
+Create a new model, copying and pasting 
+ \popref{votes-set-ascii}{this value}
+for the constant $Votes$.  (It is a corrected version of the value
+given in \lref{\xlink{quest:votes-model}}{Question~\xref{quest:votes-model}}.)  Have TLC compute the
+value of $Borda$.  It should produce something like:
+\begin{verbatim}
+   << [key |-> 9, name |-> "bacon"],
+      [key |-> 14, name |-> "boyle"],
+      [key |-> 18, name |-> "faust"],
+      [key |-> 19, name |-> "romeo"],
+      [key |-> 24, name |-> "green"],
+      [key |-> 44, name |-> "brown"],
+      [key |-> 48, name |-> "smith"],
+      [key |-> 48, name |-> "jones"] >>
+\end{verbatim}
+This is OK, but it would be better to sort the results with the highest
+ranking candidate first.  We could change the definition of $SortSet$
+to sort the elements in descending order of $key$.  However, let us
+instead change the name of this operator from $Borda$ to
+$ReverseBorda$ and define $Borda$ to be the sequence obtained by
+reversing the sequence $ReverseBorda$.  A little thought (or a little
+less thought and some experimenting with TLC) shows the
+correct definition to be:%
+  \marginpar[-1.5]{\popref{borda-ascii}{\textsc{ascii} version}}
+\[Borda == [i \in 1\dd N |-> ReverseBorda[N-i+1]]\]
+
+\begin{problem}
+In addition to seeing the total scores, the award committee for which
+I was doing this was used to seeing how many voters ranked each
+candidate first, second, etc.  Define an operator $BordaDetails$ that
+produces approximately the following output when evaluated with the
+value of $Votes$ used above, where the first line indicates that Jones
+was ranked first by 3 voters, second by 2 voters, etc.
+\begin{verbatim}
+   << <<48, "jones", 3, 2, 3, 0, 0, 0, 0, 0>>,
+      <<48, "smith", 5, 1, 0, 1, 1, 0, 0, 0>>,
+      <<44, "brown", 0, 4, 4, 0, 0, 0, 0, 0>>,
+      <<24, "green", 0, 1, 1, 2, 0, 2, 1, 1>>,
+      <<19, "romeo", 0, 0, 0, 2, 3, 1, 0, 2>>,
+      <<18, "faust", 0, 0, 0, 1, 1, 5, 1, 0>>,
+      <<14, "boyle", 0, 0, 0, 1, 2, 0, 4, 1>>,
+      <<9, "bacon", 0, 0, 0, 1, 1, 0, 2, 4>> >>
+\end{verbatim}
+\end{problem}
+
+\subsection[The Condorcet Ranking]{The Condorcet Ranking%
+   \tindex{1}{Condorcet ranking}%
+} \xlabel{condorcet-ranking}
+
+We say that a candidate $c$ \emph{dominates} a candidate $d$, and
+write $c\succ d$, iff $c#d$ and more voters prefer $c$ to $d$ than
+prefer $d$ to $c$.  In a Condorcet voting scheme, a candidate that
+dominates all other candidates is the winner.  However, there may not
+be any candidate that dominates all others.  An equal number of voters
+might prefer $c$ to $d$ as prefer $d$ to $c$, so neither $c\succ d$
+nor $d\succ c$ holds.  More interestingly, there could be three
+candidates $c$, $d$, and $e$ for whom $c\succ d$, $d\succ e$, and
+$e\succ c$ hold.
+
+Define a nonempty set $D$ of candidates to be a 
+  \tindex{1}{dominating set}%
+\emph{dominating set}
+iff every candidate in $D$ dominates every candidate not in $D$.
+Define the set of \emph{Condorcet winners} to be the smallest
+dominating set.  A Condorcet voting scheme is one in
+which the winner is some element of the set of Condorcet winners.
+There are various ways of choosing which element should win an
+election.  However, my goal was not to choose a winner but to help the
+committee make its decision.  Therefore, I wanted to determine the
+complete set of Condorcet winners.  For this set to exist, there must
+be a smallest dominating set; and it's not obvious that such a set
+always exists.  To show that it does, we must first prove:
+\begin{display}
+\textbf{C1.} If $D$ and $E$ are dominating sets, then $D\subseteq E$
+or $E \subseteq D$.\V{.5}
+%
+\popref{condorcet1-proof}{\textsc{Proof}}
+\end{display}
+The set of all candidates is a dominating set (assuming it is
+nonempty) and it is finite, so there is a finite, nonempty set of
+dominating sets.  Therefore, property C1 implies that there is
+a (unique) dominating set that is a subset of all other dominating
+sets.  We define the set of Condorcet winners to be this smallest
+dominating set.  It can be written mathematically as:
+\begin{display}
+\begin{notla}
+CHOOSE D \in SUBSET Cand : 
+  /\ IsDominatingSet(D)
+  /\ \A E \in SUBSET Cand : IsDominatingSet(E) => (D \subseteq E)
+\end{notla}
+\begin{tlatex}
+\@x{ {\CHOOSE} D \.{\in} {\SUBSET} Cand \.{:}\vs{.2}}%
+\@x{\@s{8.2} \.{\land} IsDominatingSet ( D )\vs{.2}}%
+ \@x{\@s{8.2} \.{\land} \A\, E \.{\in} {\SUBSET} Cand \.{:} IsDominatingSet (
+ E ) \.{\implies} ( D \.{\subseteq} E )}%
+\end{tlatex}
+\end{display}
+where $IsDominatingSet$ is defined by
+\begin{display}
+\begin{notla}
+IsDominatingSet(D) == /\ D # {}
+                      /\ \A d \in D : \A e \in Cand \ D : d \succ e
+\end{notla}
+\begin{tlatex}
+\@x{ IsDominatingSet ( D ) \.{\defeq} \.{\land} D \.{\neq} \{ \}\vs{.2}}%
+ \@x{\@s{108.84} \.{\land} \A\, d \.{\in} D \.{:} \A\, e \.{\in} Cand
+ \.{\,\backslash\,} D \.{:} d \.{\succ} e}%
+\end{tlatex}
+\end{display}
+Instead of just computing the set of Condorcet winners, I wanted a
+ranking of all the candidates.  To define this ranking, observe that
+the ballots cast for all the candidates define an election for any
+subset $C$ of the set of candidates.  The ballots of this election are
+obtained from the ballots $Votes[i]$ by simply removing all the
+candidates not in $C$.  I defined the \emph{Condorcet ranking} to be
+the sequence
+ $<<C_{1}, \ldots, C_{m}>>$
+of sets of candidates such that: 
+\begin{itemize}
+\item $C_{1}$ is the set of Condorcet winners of the election for
+        all candidates.
+
+\item $C_{2}$ is the set of Condorcet
+winners of the election for all candidates not in~$C_{1}$.
+
+% \item[] $C_{3}$ is the set of Condorcet winners of the election for
+% all candidates not in $C_{1} \cup C_{2}$.
+
+\item[] \s{2} $\vdots$
+
+\item $C_{m-1}$ is the set of Condorcet winners of the election for
+all candidates not in $C_{1} \cup C_{2}\cup \ldots \cup C_{m-2}$.
+
+\item Every candidate in 
+$C_{m}$ is a Condorcet winner in the election for all candidates
+in $C_{m}$, where $C_{m}$ is the set of
+all candidates not in
+        $C_{1}\cup\ldots\cup C_{m-1}$.
+\end{itemize}
+You should now be able to complete the definition of the Condorcet ranking
+yourself.
+\begin{aquestion}{condorcet-answer1} \targetlabel{condorcet-question1}
+Add to module $CandidateRanking$ the definitions of $\succ$ and
+$CondorcetRanking$, the Condorcet ranking.  Test them using
+\popref{votes-set-ascii}{this value} for the parameter $Votes$.  TLC should
+produce this Condorcet ranking.
+\begin{verbatim}
+   << {"smith"}, {"jones"}, {"brown"}, {"green"}, 
+      {"faust", "romeo"}, {"boyle"}, {"bacon"} >>
+\end{verbatim}
+\end{aquestion}
+Checking the definition on one example isn't very satisfactory.  Since
+this is the only definition we have for the Condorcet ranking, there
+is nothing to check it against.  The best we can do is to try it on
+examples and see if it produces the correct answer.  Typing values to
+substitute for the parameter $Votes$ would be tedious.  Instead, let's
+generate random values of $Votes$.  (Since we have to examine them to
+check the value of $CondorcetRanking$, we can try them one at a time.)
+
+The trick to generating random test data is to use the 
+  \ctindex{1}{RandomElement@\mmath{RandomElement}}{random-element}%
+  \marginpar{\popref{not-math}{Warning: $RandomElement$ is not mathematics.}}
+$RandomElement$
+operator from the $TLC$ module.  For a nonempty set $S$,
+$RandomElement(S)$ equals an arbitrary element of $S$.  If $S$ is
+finite, TLC computes its value by pseudo-randomly choosing an element
+of $S$, with each element chosen with the same probability.  Let's
+first define $RandomRanking(S)$ to be a randomly chosen single voter's
+ranking of the candidates in the set $S$.  Remember that a a ranking
+of candidates is a sequence containing each candidate exactly once.
+The definition is easy:
+\begin{display}
+\begin{notla}
+RECURSIVE RandomRanking(_)
+RandomRanking(S) == IF S = {} THEN << >>
+                              ELSE LET e == RandomElement(S)
+                                   IN <<e>> \o RandomRanking(S \ {e})
+\end{notla}
+\begin{tlatex}
+\@x{ {\RECURSIVE} RandomRanking ( \_ )\vs{.2}}\target{randomranking}%
+  \marginpar{\popref{randomranking-ascii}{\textsc{ascii} version}}
+ \@x{ RandomRanking ( S ) \.{\defeq} {\IF} S \.{=} \{ \} \.{\THEN} {\langle}
+ \, {\rangle}\vs{.2}}%
+\@x{\@s{148.00} \.{\ELSE} \.{\LET} e \.{\defeq} RandomElement ( S )\vs{.2}}%
+ \@x{\@s{179.31} \.{\IN} {\langle} e {\rangle} \.{\circ} RandomRanking ( S
+ \.{\,\backslash\,} \{ e \} )}%
+\end{tlatex}
+\end{display}
+The value of $Votes$ is a sequence of rankings, one from each voter.
+We can therefore define $RandomVotes(n,\,S)$ as follows to be a value
+of $Votes$ with $n$ voters and a set $S$ of candidates.
+\begin{display}
+ $RandomVotes(n, S) == [i \in 1\dd n |-> RandomRanking(S)]$%
+    \marginpar{\popref{randomvotes-ascii}{\textsc{ascii} version}}
+\end{display}
+Create a new TLC model for the $CandidateRanking$ spec and add these
+definitions to the \textsf{Additional Definitions} section of the
+model's \textsf{Advanced Options} page.  Have the model set $Votes$
+to $RandomVotes(4,\, \{"a",\,"b",\,"c",\,"d"\})$, and have TLC
+evaluate the pair
+  $<<Votes,\,CondorcetRanking>>$
+Verify that (unless you're very unlucky), each execution of TLC uses
+a different value of $Votes$.  Check a few of the results to make
+sure that they contain the correct Condorcet ranking.
+
+\bigskip
+
+The definition of the Condorcet ranking we have developed is the
+mathematically nicest one.  It's not very efficient since evaluating
+it requires TLC to examine each of the $2^{N}$ subset of $Cand$ for
+every level of recursion.  (Remember that $N$ is the number of
+candidates.)  But TLC can do it in a few seconds for $N=13$, which is
+good enough.
+
+However, this is not how I originally wrote the definition of the
+Condorcet ranking.  I wanted to execute the definition, not explain it
+to others.  So, I wrote a more algorithmic definition in terms of the
+transitive closure of a relation---in part because I had already
+written a definition of transitive closure in another specification.
+The transitive closure of a relation is a very useful mathematical
+concept in computer science, so let's define it.
+
+
+\subsection[Transitive Closure]{Transitive 
+  \tindex{1}{transitive closure}%
+Closure} \xlabel{transitive-closure}
+
+\subsubsection{A Mathematical Definition}
+
+The transitive closure $\succ^{\!+}$ of a relation $\succ$ is defined by
+letting $r \succ^{\!+}\! s$ hold iff there are values $t_{1}$, \ldots,
+$t_{n}$ such that
+ \[ r \succ t_{1} \succ \ \cdots \ \succ t_{n} \succ s
+ \]
+where this is an abbreviation for the formula
+ \[ (r \succ t_{1}) \, /\ \, (t_{1} \succ t_{2}) \, /\ \, \ldots \, /\ \, (t_{n} \succ s)
+ \]
+We allow the possibility $n=0$, in which case this formula becomes
+$r \succ s$, so we define $r \succ^{\!+}\!s$ to be true if
+$r \succ s$ is.  
+
+Mathematicians represent a 
+  \tindex{1}{relation}%
+relation as a set of ordered pairs, taking
+$r \succ s$ to be an abbreviation of $<<r, s>> \in \succ$.  In the
+syntax of \tlaplus, the symbol $\succ$ is the name of an infix
+operator, so it cannot be used as the name of a set.  Let's therefore
+switch to using letters like $R$ rather than symbols like $\succ$ as
+names of relations.  We can still use $r \,R \,s$ as an abbrevation,
+but we have to write this formula as $<<r, s>> \in R$ in an actual
+\tlaplus\ specification.
+
+To understand the transitive closure, it is perhaps best to think of a
+relation $R$ as a 
+  \ctindex{1}{graph!of a relation}{graph-relation}%
+  \popref{directed-graph}{directed graph}, 
+where we take $r\,R\,s$ to mean that there is an edge from node $r$ to
+node~$s$.  The transitive closure $R^{+}$ of $R$ is then the directed
+graph in which there is an edge from $r$ to $s$ iff there is a path
+from $r$ to $s$ in the graph $R$.  To define $R^{+}$ in this way, we
+need to define what a path in $R$ is.
+
+There are two natural ways to represent a path mathematically: as a
+sequence of its nodes or a sequence of its edges.  I tend to prefer
+the representation as a sequence of nodes.  So, let's first define the
+set $NodesOf(R)$ of nodes of a relation $R$.  A node of $R$ is an
+element $x$ such that $x\,R\,y$ or $y\,R\,x$ holds for some $y$, which
+means that $x$ is either the first or second element of some pair in
+$R$.  A pair $r$ is a sequence of length~2 whose two elements are
+$r[1]$ and $r[2]$.  Hence, we can define the set of nodes of $R$ by:
+ \[ NodesOf(R) == \{r[1] : r \in R\} \ \cup \ \{r[2] : r \in R\}
+ \]
+A path in $R$ is a sequence $p$ of nodes of $R$ such that there is an
+edge from each of its nodes to the next.  The $i$\tth\ node of $p$ is
+$p[i]$, so $p$ is a path iff $<<p[i], p[i+1]>>$ is in $R$, for all $i$ with
+$1\leq i < Len(p)$.  We want to restrict paths to ones with at least
+one edge, which means at least two nodes.  Hence, we can define
+the set $Paths(R)$ of all paths in $R$ by:
+\begin{display}
+\begin{notla}
+Paths(R) == { p \in Seq(NodesOf(R)) : 
+                /\ Len(p) > 1 
+                /\ \A i \in 1..(Len(p)-1) : <<p[i], p[i+1]>> \in R }
+\end{notla}
+\begin{tlatex}
+\@x{ Paths ( R ) \.{\defeq} \{ p \.{\in} Seq ( NodesOf ( R ) ) \.{:}\vs{.2}}%
+\@x{\@s{70.32} \.{\land} Len ( p ) \.{>} 1\vs{.2}}%
+ \@x{\@s{70.32} \.{\land} \A\, i \.{\in} 1 \.{\dotdot} ( Len ( p ) \.{-} 1 )
+ \.{:} {\langle} p [ i ] ,\, p [ i \.{+} 1 ] {\rangle} \.{\in} R \}}%
+\end{tlatex}
+\end{display}
+There is a path from one node in $R$ to another iff they are the first
+and last nodes in a path in $R$.  Hence, we define the transitive
+closure of $R$, which we write $TC(R)$, by:
+  \[ TC(R) == \{ <<p[1],\, p[Len(p)]>> : p \in Paths(R) \}\]
+This is a fine mathematical definition, but TLC can't evaluate it.  To
+evaluate $TC(R)$, TLC must calculate the set $Paths(R)$, which may be
+infinite.  (Even if it is finite, to compute its value TLC must
+compute the set $Seq(NodesOf(R))$, which is infinite if $R$ is
+nonempty.)
+
+To compute the transitive closure, we don't need to compute the set of
+all paths in $R$.  There is a path from one node to another in $R$ iff
+there is a path that contains each node at most once.  Hence, for a
+finite relation, it suffices to consider paths of length at most equal
+to the cardinality
+  \marginpar{\popref{isthiscorrect}{Is this correct?}}
+of the set of nodes.  A sequence of nodes of $R$ of length $j$ 
+is an element of the 
+ \rref{math}{\xlink{sets-of-fcns}}{set of functions} 
+$[1\dd j -> NodesOf(R)]$.  We can therefore define the set
+$PathsOfLen(R,\,j)$ of paths in $R$ of length $j$ by:
+\begin{display}
+\begin{notla}
+PathsOfLen(R, j) == { p \in [1..j -> NodesOf(R)] : 
+                       \A i \in 1..(j-1) : <<p[i], p[i+1]>> \in R }
+\end{notla}
+\begin{tlatex}
+ \@x{ PathsOfLen ( R ,\, j ) \.{\defeq} \{ p \.{\in} [ 1 \.{\dotdot} j
+ \.{\rightarrow} NodesOf ( R ) ] \.{:}\vs{.2}}%
+ \@x{\@s{105.97} \A\, i \.{\in} 1 \.{\dotdot} ( j \.{-} 1 ) \.{:} {\langle} p
+ [ i ] ,\, p [ i \.{+} 1 ] {\rangle} \.{\in} R \}}%
+\end{tlatex}
+\end{display}
+Let's next define $ShortPaths(R)$ to be all paths with length between
+$2$ and the cardinality of $NodesOf(R)$.  This is the set:
+ \[ PathsOfLen(R,\,2) \,\cup\, PathsOfLen(R,\,3) \,\cup\, \ldots \,\cup\,
+     PathsOfLen(R,\,Cardinality(NodesOf(R))) 
+ \]
+We can write this union of sets with 
+    \rref{math}{union}{the \textsc{union} operator},
+defining $ShortPaths$ by:
+\begin{widedisplay}
+ $ShortPaths(R) == 
+    \UNION \{PathsOfLen(R,\, j) : j \in 2\dd Cardinality(NodesOf(R))\}$
+\end{widedisplay}
+We can then define the transitive closure operator $TC$ as above,
+except using $ShortPaths$ instead of $Paths$.  Copy and paste
+\popref{tc-ascii}{these definitions} into the spec.  
+
+Let's check our definition of $TC$.  It's a good idea to start small.
+The smallest non-trivial example is a relation with 3 nodes, say the
+nodes 1, 2, and 3, whose graph is $1 -> 2 -> 3$.  The corresponding
+relation $R$ is $\{ <<1, 2>>, <<2, 3>>\}$.  Have TLC evaluate
+$TC$ applied to this set.  It should produce
+ \[ \{<<1, 2>>, \ <<1, 3>>, \ <<2, 3>>\}\]
+which is correct.  Now lets add the edge $3->1$ to the graph (adding
+$<<3, 1>>$ to the set).  TLC finds the transitive closure to be
+  \[ \{<<1, 2>>, \  <<1, 3>>, \  <<2, 1>>, \  <<2, 3>>, \  <<3, 1>>, 
+   \  <<3, 2>>\}
+ \]
+This is not right.  The graph has a path between every pair of nodes,
+so the transitive closure should contain all nine possible pairs, not
+just six.  Missing are the pairs $<<1,1>>$, $<<2, 2>>$, and $<<3, 3>>$.
+
+The problem is that our definition does not include long enough paths.
+If there is a path from any node $x$ to any \emph{different} node $y$,
+then there is a path from $x$ to $y$ in which each node appears at
+most once.  However, in a path from a node to itself, that node must
+appear twice.  Hence, we must also include paths of length
+$Cardinality(NodesOf(R))+1$ in $ShortPaths(R)$.  Correct the
+definition of $ShortPaths$ and check that TLC now computes the correct
+transitive closure.  Further checking will reveal no errors; the
+definition is now correct.
+
+\subsubsection{A Definition TLC Can Execute Faster} \xlabel{fast-tc}
+
+With the definition above, TLC can compute the transitive closure, but
+can TLC compute it fast enough?  To evalute it, TLC must compute the
+set of all paths in $R$ of length $Cardinality(NodesOf(R))+1$.  The
+number of paths of some length $j$ increases exponentially with $j$.
+A little experimentation reveals that with 8 nodes, TLC starts taking
+a long time.  (Even for some relations with only 7 nodes, the set
+$ShortPaths(R)$ can be too large for TLC to handle.)  Since there
+could be more than 8 candidates, we need a definition that TLC can
+compute more efficiently.
+
+Searching the Web reveals that the transitive closure of a relation
+$R$ is often defined to equal
+ \[ R \ \cup\  R \!\cdot\! R \ \cup\  R \!\cdot\! R \!\cdot\! R \ \cup\  \ldots
+ \]
+where $\cdot$ denotes 
+  \tindex{1}{composition of relations}%
+  \ctindex{1}{relation!composition}{relation-composition}%
+\emph{relation composition}.  The composition
+$R\!\cdot\!S$ of relations $R$ and $S$ is defined by letting
+$x\,R\!\cdot\! S\,y$ be true iff there is a $z$ such that $x\,R\,z$
+and $z\,S\,y$ hold.  Mathematicians often write $R^{n}$ for the composition
+  $R \cdot R \cdot\;\ldots\; \cdot R$ 
+of a relation $R$ with itself $n$ times.  With this notation, the
+transitive closure of $R$ is
+  \[ R^{1} \cup R^{2} \cup R^{3} \cup \ldots
+ \]
+For a finite relation $R$, we can stop after a finite number of terms,
+so the transitive closure equals
+ \[ R^{1} \cup R^{2} \cup \ldots \cup R^{k}
+ \]
+for a sufficiently large $k$.  A little throught reveals that
+we can take $k$ to be the number of nodes of $R$.  This leads immediately
+to a simple recursive definition of the transitive closure.  Let's
+write that definition.
+
+First, we must define relation composition.  \tlaplus\ does not
+provide $\cdot$ as a user-defined operator, so let's write $**$
+instead.  Since a relation is a set of ordered pairs, a mathematician
+might define $**$ by
+ \[ R *\!*\, S == \{ <<x, y>> \; : \; \E\,z \!:\! (<<x, z>> \in R) /\ (<<z, y>> \in S) \}
+ \]
+However, the right-hand side of this definition is not a legal
+\tlaplus\ expression.  \tlaplus\ provides two ways to write a set
+in terms of the conditions satisfied by its elements:
+ $\{x \in T : P(x)\}$  and $\{e(x) : x \in T\}$.
+Let's use the second way.  
+
+The definition above suggests that we want $T$ to be the set of all
+pairs of pairs of the form
+  $<<\,<<x, z>>,\; <<z, y>>\,>>$
+with $<<x, z>> \in R$ and $<<z, y>> \in S$.  That's the subset
+of   
+  \marginpar{\rref{math}{math:cartesian}{See the definition of $\X$.}}%
+$R\X S$ consisting of all pairs $<<r, s>>$ with $r[2]=s[1]$.  We can
+define that set $T$ by
+ \[ T == \{rs \in R\X S : rs[1][2] = rs[2][1] \}
+ \]
+For $R*\!*\, S$ to have the form $\{e(x) : x \in T\}$, what should $e$ be?
+If $rs$ equals $<<\,<<x, z>>,\; <<z, y>>\,>>$, then
+$<<x, y>>$ equals $<<rs[1][1],\,rs[2][2]>>$.  This leads to the
+following definition
+\begin{display}
+\begin{notla}
+R **  S == LET T == {rs \in R\X S : rs[1][2] = rs[2][1]}
+           IN {<<x[1][1], x[2][2]>> : x \in T}
+\end{notla}
+\begin{tlatex}
+ \@x{ R \.{\stst}\@s{4.1} S \.{\defeq} \.{\LET} T \.{\defeq} \{ rs \.{\in} R
+ \.{\times} S \.{:} rs [ 1 ] [ 2 ] \.{=} rs [ 2 ] [ 1 ] \}\vs{.2}}%
+   \marginpar{\popref{star-star-ascii}{\textsc{ascii} version}}
+ \@x{\@s{50.26} \.{\IN} \{ {\langle} x [ 1 ] [ 1 ] ,\, x [ 2 ] [ 2 ] {\rangle}
+ \.{:} x \.{\in} T \}}%
+\end{tlatex}
+\end{display}
+
+\begin{aquestion}{tc-answer1} \targetlabel{tc-question1} % \xlabel{tc-question1}
+Write an alternative definition of $**$ using a set construction
+of the form $\{x\in T: P(x)\}$.
+\end{aquestion}
+
+We can now define the transitive closure of $R$ to be 
+ \[ R \s{.4} \cup \s{.4}  R*\!*\,R \s{.4}  \cup \s{.4}  \ldots \s{.4}  
+     \cup \s{.4}  
+   \NOTLA \begin{array}[b]{@{}c@{}}
+           \makebox[0pt]{\footnotesize $Cardinality(NodesOf(R))$ times} \\
+          \overbrace{R *\!*\,\,\ldots\; *\!*\, R}
+          \end{array}
+ \]
+Calling the operator $SimpleTC$, we write it as:
+\begin{display}
+\begin{notla}
+SimpleTC(R) ==
+  LET RECURSIVE STC(_)
+      STC(n) == IF n = 1 THEN R
+                         ELSE STC(n-1) \cup STC(n-1) ** R
+  IN STC(Cardinality(NodesOf(R)))
+\end{notla}
+\begin{tlatex}
+\@x{ SimpleTC ( R ) \.{\defeq}\vs{.2}}%
+  \marginpar{\popref{simpletc-ascii}{\textsc{ascii} version}}%
+\@x{\@s{8.2} \.{\LET} {\RECURSIVE} STC ( \_ )\vs{.2}}%
+\@x{\@s{28.59} STC ( n ) \.{\defeq} {\IF} n \.{=} 1 \.{\THEN} R\vs{.2}}%
+ \@x{\@s{119.91} \.{\ELSE} STC ( n \.{-} 1 ) \;\.{\cup}\; STC ( n \.{-} 1 )
+ \.{\stst}\, R\vs{.2}}%
+\@x{\@s{8.2} \.{\IN} STC ( Cardinality ( NodesOf ( R ) ) )}%
+\end{tlatex}
+\end{display}
+Add this definition to module $CandidateRanking$.  Let's now test it
+by comparing it with the definition $TC$ of the transitive closure.  A
+relation is just a set of ordered pairs, so let's check it on all
+possible relations on a set of three elements by checking it on all
+subsets of $1\dd3 \,\X\, 1\dd3$.  Have TLC evaluate:
+\begin{widedisplay}
+\begin{twocols}
+\begin{notla}
+\A S \in SUBSET ((1..3)\X (1..3)) :
+     SimpleTC(S) = TC(S)
+\end{notla}
+\begin{tlatex}
+ \@x{ \A\, S \.{\in} {\SUBSET} ( ( 1 \.{\dotdot} 3 ) \.{\times} ( 1
+ \.{\dotdot} 3 ) ) \.{:}}%
+\@x{\@s{14.04} SimpleTC ( S ) \.{=} TC ( S )}%
+\end{tlatex}
+\midcol
+\begin{verbatim*}
+\A S \in SUBSET ((1..3)\X (1..3)) :
+     SimpleTC(S) = TC(S)
+\end{verbatim*}
+\end{twocols}
+\end{widedisplay}
+TLC reports the error:
+\begin{display}
+This was a Java StackOverflowError. It was probably the result
+of an incorrect recursive function definition that caused TLC to enter
+an infinite loop when trying to compute the function or its application
+to an element in its putative domain.
+\end{display}
+What's the problem?  On what value of $S$ is the definition failing?
+Let's add a
+  \rref{topics}{\xlink{print-statements}}{print statement}
+to find out.  Have TLC evaluate 
+\begin{display}
+\begin{notla}
+\A S \in SUBSET ((1..3)\X (1..3)) :
+     PrintT(S)  /\  SimpleTC(S) = TC(S)
+\end{notla}
+\begin{tlatex}
+ \@x{ \A\, S \.{\in} {\SUBSET} ( ( 1 \.{\dotdot} 3 ) \.{\times} ( 1
+ \.{\dotdot} 3 ) ) \.{:}\vs{.2}}%
+ \@x{\@s{14.04} PrintT ( S )\@s{4.1} \.{\land}\@s{4.1} SimpleTC ( S ) \.{=} TC
+ ( S )}%
+\end{tlatex}
+\end{display}
+The only value printed is $\{\,\}$.  (TLC prints the value twice
+because it re-evaluates the expression when determining its error
+message.)  When $S$ equals the empty set, $NodesOf(S)$ is the
+empty set, which has cardinality~0.  The evaluation of $STC(0)$
+never terminates.
+
+Modify the definition to check for the special case of the empty
+relation, whose transitive closure is the empty relation
+\begin{display}
+\begin{notla}
+SimpleTC(R) ==
+  LET RECURSIVE STC(_)
+      STC(n) == IF n = 1 THEN R
+                         ELSE STC(n-1) \cup STC(n-1) ** R
+  IN IF  R = {}  THEN  {}  ELSE  STC(Cardinality(NodesOf(R)))
+\end{notla}
+\begin{tlatex}
+\@x{ SimpleTC ( R ) \.{\defeq}\vs{.2}}%
+\@x{\@s{8.2} \.{\LET} {\RECURSIVE} STC ( \_ )\vs{.2}}%
+\@x{\@s{28.59} STC ( n ) \.{\defeq} {\IF} n \.{=} 1 \.{\THEN} R\vs{.2}}%
+ \@x{\@s{119.91} \.{\ELSE} STC ( n \.{-} 1 ) \.{\cup} STC ( n \.{-} 1 )
+ \.{\stst} R\vs{.2}}%
+ \@x{\@s{8.2} \.{\IN} {\IF}\@s{4.1} R \.{=} \{ \}\@s{4.1} \.{\THEN}\@s{4.1} \{
+ \}\@s{4.1} \.{\ELSE}\@s{4.1} STC ( Cardinality ( NodesOf ( R ) ) )}%
+\end{tlatex}
+\end{display}
+Have TLC again check that $SimpleTC$ equals $TC$ when applied to all
+subsets of $(1\dd3)\X(1\dd3)$.  This time, immediately TLC reports
+that they are equal.  It takes TLC a few minutes to check all subsets
+of $(1\dd4)\X(1\dd4)$.  There's no point trying it on the $2^{25}$
+subsets of $(1\dd5)\X(1\dd5)$, which would take more than $2^{9}$
+times as long.
+
+Although we haven't tried comparing these definitions on any relation
+with more than four nodes, we have tried it on \emph{all} relations
+with at most four nodes.  This kind of complete testing on small
+relations is much more effective at finding errors than is testing on
+randomly chosen large relations.  We can be quite confident that the
+two definitions are equivalent on finite relations.  Since the two
+definitions are so different, it's unlikely that we've made an error
+in formalizing the definition of transitive closure in \tlaplus.
+
+
+\subsubsection[Warshall's Algorithm]{Warshall's 
+  \tindex{1}{Warshall's algorithm}%
+  \tindex{1}{Floyd-Warshall algorithm}%
+Algorithm}
+
+Searching for \emph{transitive closure} on the Web reveals that the
+standard method of computing it is called \emph{Warshall's Algorithm}
+or sometimes the \emph{Floyd-Warshall Algorithm}.  The algorithm is
+usually described in code consisting of nested iterative loops.  It's
+easy to write such code as a PlusCal algorithm, but we want to define
+a \tlaplus\ operator $Warshall$ for which TLC evaluates $Warshall(R)$
+by executing Warshall's algorithm.  We could do it by directly
+translating the interative loops into a recursively defined operator.
+As a simple example of how that's done, consider this code for
+computing a value $v$.
+\begin{display}
+\begin{tabbing}
+$i := 1$ ;    \V{.2}
+$v := v0$ ;  \V{.2}
+\pwhile\ $(i \leq n)$ \= \{ 
+    \=\+\+ $v := F(v, i)$ ; \V{.2}
+       $i := i+1 $; \s{1}\}
+\end{tabbing}
+\end{display}
+The value $v$ it computes can be defined as follows (assuming $n>0$):
+% \begin{display}
+% \begin{notla}
+% v == LET vr[i \in Nat] == IF i = 1 THEN v1 ELSE F(vr[i-1], i)
+%      IN vr[n]
+% \end{notla}
+% \begin{tlatex}
+%  \@x{ v \.{\defeq} \.{\LET} vr [ i \.{\in} Nat ] \.{\defeq} {\IF} i \.{=} 0
+%  \.{\THEN} v0 \.{\ELSE} F ( vr [ i \.{-} 1 ] ,\, i )\vs{.2}}%
+% \@x{\@s{24.56} \.{\IN} vr [ n ]}%
+% \end{tlatex}
+% \end{display}
+% Note that $vr[i]$ is defined to be the value of $v$ computed by the
+% $i$\tth\ iteration of the code's loop.  We can also use a recursively
+% defined operator instead of a function:
+\begin{display}
+\begin{notla}
+v == LET RECURSIVE vr(_) 
+         vr(i) == IF i = 0 THEN v0 ELSE F(vr(i-1), i)
+     IN vr(n)
+\end{notla}
+\begin{tlatex}
+\@x{ v \.{\defeq} \.{\LET} {\RECURSIVE} vr ( \_ )\vs{.2}}%
+ \@x{\@s{44.96} vr ( i ) \.{\defeq} {\IF}\, i \.{=} 0 \,\.{\THEN}\, v0 \,\.{\ELSE}\s{-.2} F (
+ vr ( i \.{-} 1 ) ,\, i )\vs{.2}}%
+\@x{\@s{24.56} \.{\IN} vr ( n )}%
+\end{tlatex}
+\end{display}
+Note that $vr(i)$ is defined to be the value of $v$ computed by the
+$i$\tth\ iteration of the code's loop.  
+
+\newcommand{\NR}{\ensuremath{\mathcal{N}}}%
+\newcommand{\MR}{\ensuremath{\mathcal{M}}}%
+\newcommand{\LR}{\ensuremath{\mathcal{L}}}% 
+%
+Instead of trying to mimic a particular coding of an algorithm, it's
+best to first understand the algorithm and then express your
+understanding in a mathematical definition.  Let's return to our
+definition of the transitive closure in terms of the graph of a
+relation.  Let \NR\ be the set of nodes of a relation $R$.  The
+transitive closure $TC(R)$ of $R$ is the set of all pairs $<<r,s>>$ in
+$\NR\X\NR$ such that there is a path
+ \[r -> t_{1} -> \cdots -> t_{k}->s\]
+in $R$.  By eliminating loops, we can choose this path so that all the
+$t_{i}$ are distinct.  So, let's consider only such paths.  Let
+$W(\MR)$ be the set of all such pairs $<<r, s>>$ for which the path
+can be chosen with all the $t_{i}$ in \MR. Observe that $W(\NR)$
+equals $TC(R)$, and $W(\{\})$ equals $R$.  Warshall's algorithm
+computes $TC(R)$ by recursively computing $W(\NR)$.  The key
+observation is that for any node $n$ in \NR, the pair $<<r, s>>$ is in
+$W(\MR\cup\{n\})$ iff it is in $W(\MR)$ or there is a path
+   \[r -> t_{1} -> \cdots -> t_{j} -> n -> t_{j+1}-> \cdots t_{k}->s\]
+in $R$ with all the $t_{i}$ in $\MR$.  Thus, $<<r, s>>$ is in
+$W(\MR\cup\{n\})$ iff it is in $W(\MR)$ or else $<<r, n>>$ and
+$<<n,s>>$ are in $W(\MR)$.  In other words:
+ \[ W(\MR\cup\{n\}) \;=\; 
+   W(\MR) \;\cup\; \{ \begin{noj}
+                      rs \in \NR\X\NR : \\ \s{1}
+                      (<<rs[1],n>> \in W(\MR))
+                        /\ (<<n, rs[2]>> \in W(\MR)) \}
+                      \end{noj}
+ \]
+Substituting $\LR$ for $\MR\cup\{n\}$ in this relation, we get the
+following relation, where $n$ is any element of $\LR$:
+ \[ W(\LR) \;=\; 
+   W(\LR:\:\{n\}) \;\cup\; \{ \begin{noj}
+                              rs \in \NR\X\NR : \\ \s{1}
+                              (<<rs[1],n>> \in W(\LR:\:\{n\}))
+                                 /\ (<<n, rs[2]>> \in W(\LR:\:\{n\})) \}
+                              \end{noj}
+ \]
+Remembering that $W(\{\})$ equals $R$ and $W(\NR)$ equals $TC(R)$, this
+leads to the following definition of $Warshall$:%
+\begin{widedisplay}
+\begin{notla}
+Warshall(R) ==
+  LET NR == NodesOf(R)
+      RECURSIVE W(_)
+      W(L) == IF L = {} 
+                THEN R
+                ELSE LET n  == CHOOSE node \in L : TRUE
+                         WM == W(L \ {n})
+                     IN WM  \cup  {rs \in NR \X NR : 
+                                    (<<rs[1], n>> \in WM) /\ (<<n, rs[2]>> \in WM)}
+  IN W(NR)        
+\end{notla}
+\begin{tlatex}
+\@x{ Warshall ( R ) \.{\defeq}\vs{.2}}%
+% \marginpar{\popref{warshall-ascii}{\textsc{ascii} version}}%
+\@x{\@s{8.2} \.{\LET} NR \.{\defeq} NodesOf ( R )\vs{.2}}%
+\@x{\@s{28.59} {\RECURSIVE} W ( \_ )\vs{.2}}%
+\@x{\@s{28.59} W ( L ) \.{\defeq} {\IF} L \.{=} \{ \}\vs{.2}}%
+\@x{\@s{81.56} \.{\THEN} R\vs{.2}}%
+ \@x{\@s{81.56} \.{\ELSE} \.{\LET} n\@s{14.20} \.{\defeq} {\CHOOSE} node
+ \.{\in} L \.{:} {\TRUE}\vs{.2}}%
+\@x{\@s{133.27} WM \.{\defeq} W ( L \.{\,\backslash\,} \{ n \} )\vs{.2}}%
+ \@x{\@s{112.87} \.{\IN} WM\@s{4.1} \.{\cup}\@s{4.1} \{ rs \.{\in} NR
+ \.{\times} NR \.{:}\vs{.2}}%
+ \@x{\@s{182.27} ( {\langle} rs [ 1 ] ,\, n {\rangle} \.{\in} WM ) \.{\land} (
+ {\langle} n ,\, rs [ 2 ] {\rangle} \.{\in} WM ) \}\vs{.2}}%
+\@x{\@s{8.2} \.{\IN} W ( NR )\vs{.21}}%
+\end{tlatex}
+\end{widedisplay}
+Use
+ \marginpar[11.5]{\popref{warshall-ascii}{\textsc{ascii} version}}%
+TLC to check that the operators $Warshall$ and $SimpleTC$ are equivalent
+definitions of the transitive closure on all subsets of 
+$1\dd4\,\X\,1\dd4$, which it should do in a fraction of a minute.
+
+\begin{aquestion}{warshall-answer1}
+The time taken by Warshall's algorithm to compute the transitive
+closure of a relation with $n$ nodes is proportional to $n^{3}$.
+Use TLC to evaluate $Warshall$ on
+the relation with graph
+ \[ 0 -> 1 -> 2 -> \ldots -> n-1 -> 0 \]
+for different values of $n$.  How does the time taken by TLC vary with
+$n$?  Why?
+\end{aquestion}
+
+
+
+\newcommand{\cset}{\ensuremath{\mathcal{CW}}}
+\subsection{The Condorcet Ranking Revisited} 
+
+Let us return now to the problem of computing the Condorcet ranking,
+defined in 
+  \lref{\xlink{condorcet-ranking}}{Section~\xref{condorcet-ranking} above}.
+This requires computing the set of Condorcet winners of an election.
+Let $\succ$ be the domination relation, meaning that $c\succ d$ iff
+more voters prefer $c$ to $d$ than prefer $d$ to $c$.  Recall that a
+set $D$ of candidates is a \emph{dominating set} iff $c\succ d$ holds
+for any $c$ in $D$ and any candidate $d$ not in $D$.  The set \cset\
+of Condorcet winners is the smallest dominating set.
+
+Let $c$ be in $\cset$ and suppose $c\not\succ d$ for
+some candidate $d$.  By definition of a dominating set, this implies that
+$d$ is also in $\cset$.  Similarly, if $d\not\succ e$ for some candidate
+$e$, then $e$ is also in $\cset$.  Let $\succeq$ be the relation defined
+by letting $x\succeq y$ hold iff $~(y \succ x)$ holds.  Then
+$c\in \cset$ and $d\succeq c$ imply $d\in Cset$, and $e\succeq d$ 
+then implies $e\in \cset$.  A simple induction argument shows that
+if $\succeq^{+}$ is the transitive closure of the $\succeq$ relation,
+then $c\in \cset$ and $d\succeq^{+}c$ imply $d\in \cset$.
+
+The observation that $d\in \cset$ and $c\succeq^{+}d$ imply $c\in
+\cset$ suggests that the reason a candidate $c$ must be in $\cset$ is
+that $c\succeq^{+}d$ holds for some candidate $d$ that must be in
+$\cset$.  This line of thinking leads us eventually to the following
+property:
+
+% \bigskip
+% \noindent
+\begin{display}
+\textbf{C2.} $c\succeq^{+}d$ holds,
+for any elements $c$ and $d$ of $\cset$.\V{.5}
+%
+\popref{condorcet2-proof}{\textsc{Proof}}
+\end{display}
+It follows from the definition of $\succ$ that $c\succeq d$ holds iff
+either $c=d$ or the number of voters that prefer $c$ to $d$ is greater
+than or equal to the number of voters that prefer $d$ to $c$.
+Therefore, $c\succ d$ implies $c\succeq d$, as does $c=d$.
+
+Property C2 asserts that any candidate $c$ in $\cset$ satisfies
+$c\succeq^{+}d$ for all $d\in \cset$.  Because $\cset$ is a dominating
+set, $c\succ d$ for all candidates $d$ not in $\cset$.  Since $c\succ
+d$ implies $c\succeq d$, which implies $c\succeq^{+}d$, we see that
+every $c$ in $\cset$ satisfies $c\succeq^{+}d$ for all candidates $d$.
+We now show that this condition characterizes the elements of $\cset$.
+\begin{display}
+\textbf{C3.} $\cset = 
+      \{c \in Cand : \A d \in Cand: c\succeq^{+}d\}$\V{.5}
+%
+\popref{condorcet3-proof}{\textsc{Proof}}
+\end{display}
+It's easy to modify the definition $CondorcetRanking$
+of the Condorcet ranking that you
+wrote in
+ \lref{\xlink{condorcet-question1}}{Question~\xref{condorcet-question1}}
+to use the formula of C3 for the set of Condorcet winners.  The
+following defines $CRanking$ to be equivalent to $CondorcetRanking$.
+It assumes the definition of $\succ$ from the answer to
+Question~\xref{condorcet-question1}; $DomEq$ is the relation
+$\succeq$ and $DomEqPlus$ is its transitive closure computed using
+$SimpleTC$.
+\begin{display}
+\begin{notla}
+CRanking ==
+  LET DomEq == { r \in Cand \X Cand : ~(r[2] \succ r[1]) }
+      DomEqPlus == SimpleTC(DomEq)
+      CWinners(C) == {c \in C : \A d \in C : <<c, d>> \in DomEqPlus}
+      RECURSIVE CRanking(_)
+      CRanking(C) == IF C = {} THEN << >>
+                               ELSE LET CW == CWinners(C) 
+                                    IN <<CW>> \o CRanking(C \ CW)
+  IN CRanking(Cand) 
+\end{notla}
+\begin{tlatex}
+\@x{ CRanking \.{\defeq}\vs{.2}}%
+ \@x{\@s{8.2} \.{\LET} DomEq \.{\defeq} \{ r \.{\in} Cand \.{\times} Cand
+ \.{:} {\lnot} ( r [ 2 ] \.{\succ} r [ 1 ] ) \}\vs{.2}}%
+  \marginpar{\popref{cranking-ascii}{\textsc{ascii} version}}
+\@x{\@s{28.59} DomEqPlus \.{\defeq} SimpleTC ( DomEq )\vs{.2}}%
+ \@x{\@s{28.59} CWinners ( C ) \.{\defeq} \{ c \.{\in} C \.{:} \A\, d \.{\in}
+ C \.{:} {\langle} c ,\, d {\rangle} \.{\in} DomEqPlus \}\vs{.2}}%
+\@x{\@s{28.59} {\RECURSIVE} CRanking ( \_ )\vs{.2}}%
+ \@x{\@s{28.59} CRanking ( C ) \.{\defeq} {\IF} C \.{=} \{ \} \.{\THEN}
+ {\langle} {\rangle}\vs{.2}}%
+\@x{\@s{151.41} \.{\ELSE} \.{\LET} CW \.{\defeq} CWinners ( C )\vs{.2}}%
+ \@x{\@s{182.72} \.{\IN} {\langle} CW {\rangle} \.{\circ} CRanking ( C
+ \.{\,\backslash\,} CW )\vs{.2}}%
+\@x{\@s{8.2} \.{\IN} CRanking ( Cand )}%
+\end{tlatex}
+\end{display}
+Add this definition to module $CandidateRanking$.
+
+Now that we have two definitions of the Condorcet ranking, we can
+check them by comparing the two.  In module $CandidateRanking$, we
+have made their inputs (the collection of votes) the parameter
+$Votes$.  We can therefore compare the definitions of
+$CondorcetRanking$ and $CRanking$ on only one input for each run of
+TLC\@.  Had we instead made the votes an argument of the definitions,
+then it would have been easy to compare them on a set of inputs.
+
+By using the \tlaplus\
+   \ctindex{2}{instance@\icmd{textsc}{instance}}{instance}%
+\textsc{instance} construct, we can compare the two definitions on a
+set of inputs without without having to rewrite the definitions.  The
+statement
+ \[ \INSTANCE CandidateRankings \WITH Votes <- e \]
+in a module $M$ imports into $M$ all the definitions from the
+$CandidateRankings$ module, except with the expression $e$ substituted for
+$Votes$ in all those definitions.  For example, it defines $Borda$ in
+module $M$ to be the Borda ranking for the collection $e$ of votes.
+We can parameterize the imported definitions by instead using
+this form of \textsc{instance} statement:
+  \[ CR(vt) == \INSTANCE CandidateRanking \WITH Votes <- vt\]
+This defines 
+ \marginpar{\popref{bang-notation}{What does ``\,!\,'' mean?}}%
+ \ctindex{2}{+5t@\mmath{"!} (with instantiation)}{+5t} %"
+$CV(e)!Borda$ to be the definition of $Borda$ from 
+$CandidateRanking$ with $e$ substituted for $Votes$.  (It's a
+``deep'' substitution, meaning that the substitution is made as well
+in all the other definitions in $CandidateRanking$ on which the
+definition of $Borda$ depends.)  Of course, the same applies to all
+definitions in $CandidateRanking$, so $CV(e)!RankBy(c,i)$ equals the
+result of substituting $e$ for $Votes$ in $RankBy(c,i)$.
+
+Create a new specification with a root module named $CheckRankings$.
+We will need the operators of the $Integers$ and $Sequences$ modules,
+so import them with an \textsc{extends} statement.  Then add the
+parameterized \textsc{instance} statement above.
+
+As we have seen with our definitions of the transitive closure, a good
+way to check that two definitions are equivalent is to test them on
+all possible inputs of a certain size.  So, let's check them on all
+sets of $N$ candidates and $V$ voters.  Add a \textsc{constants}
+statement declaring $N$ and $V$ to be constant parameters.  (There is
+no name conflict with the definitions of $N$ and $V$ in module
+$CandidateRankings$, because those operators are renamed to $CV(\_)!N$
+and $CV(\_)!V$.)
+
+We now have to define the set of all values of $Votes$ with $N$
+candidates and $V$ voters.  Let's start by defining the set of all
+rankings of $N$ candidates by a single voter.  Such a ranking is a
+sequence of candidates containing each candidate exactly once.  From
+the discussion in  
+  \lref{\xlink{sorting}}{Section~\xref{sorting}}
+we can see that the set of all such rankings for an $N$-element set
+$Cand$ of candidates is:
+  \[ \{seq \in [1\dd N -> Cand] : 
+               Cand \subseteq \{seq[i] : i \in Cand\} \}
+  \]
+Since the identities of the candidates doesn't matter, we can let
+the set of candidates be $1\dd N$.  This leads to the definition:
+\begin{display}
+\begin{notla}
+VoterRankings == LET Cand == 1..N
+                 IN {seq \in [Cand -> Cand] : 
+                        Cand \subseteq {seq[i] : i \in Cand}}
+\end{notla}
+\begin{tlatex}
+\@x{ VoterRankings \.{\defeq} \.{\LET} Cand \.{\defeq} 1 \.{\dotdot} N\vs{.2}}%
+\@x{\@s{83.12} \.{\IN} \{ seq \.{\in} [ Cand \.{\rightarrow} Cand ] 
+    \.{:}}\vs{.2}%
+\@x{\@s{120.82} Cand \.{\subseteq} \{ seq [ i ] \.{:} i \.{\in} Cand \} \}}%
+\end{tlatex}
+\end{display}
+The set of all sequences of rankings by $V$ voters is then
+ \[AllVotes == [1\dd V -> VoterRankings] \]
+The assertion that our two definitions of the Condorcet rankings are
+equivalent is then
+expressed by the following assumption.
+ \[ \ASSUME \A v \in AllVotes : CR(v)!CondorcetRanking = CR(v)!CRanking \]
+Add \popref{voterrankings-ascii}{these definitions and this
+assumption} to module $CheckRankings$.  Create a model with 3
+candidates and 4 voters and run TLC on it.  TLC checks assumptions, so
+it will report an error if this assumptions is violated.  It should
+run for a couple of seconds and not report any error.  TLC can check
+the assumption for 4 candidates and 4 voters in about 15 minutes.
+However, with 5 candidates and 4 voters there are about 200 million
+values to check, which would take TLC days.  
+
+The checks for 4 or fewer candidates that TLC can do provide some
+confidence in the equivalence of the definitions.  However, there
+could be strange cases that occur only with more candidates or
+voters.  It would be nice to do some further checking.  We can't check
+all possible elections with more candidates and voters, but we can
+check randomly chosen ones.  Recall 
+  \lref{randomranking}{the definitions above of $RandomRanking$
+     and $RandomVotes$}, 
+where $RandomVotes(n, S)$ is a randomly chosen value of $Votes$ with
+$n$ voters and $S$ the set of candidates.  Add these definitions to
+module $CheckRanking$.  Also, add a declaration of a new constant
+$Trials$ that is the number of random values of $Votes$ to check.  The
+following strange definition is evaluated to be a set of (usually)
+$Trials$ randomly chosen values for $Votes$.%
+  \marginpar[-1.5]{\popref{setofrandomvotes}{\textsc{ascii} version}}
+ \[ SetOfRandomVotes == \{RandomVotes(V, \, 1\dd N) : x \in 1\dd Trials\}
+ \]
+This definition is strange because the set expression has the form
+ $\{e(x) : x \in S\}$
+where the value of $e(x)$ is independent of $x$.  Mathematically, this
+should define $SetOfRandomVotes$ to be a set consisting of one element
+(assuming  $Trials>0$).  However, because TLC evaluates the set expression by
+evaluating $RandomVotes(V, \, 1\dd N)$ for each value of $x$ in $1\dd
+Trials$, it obtains a set containing $Trial$ elements (unless two
+different executions of $RandomVotes(V, \, 1\dd N)$ happen to obtain
+the same value).  
+
+Add the definition of $SetOfRandomVotes$ and the following
+assumption to module $CheckRanking$:%
+  \marginpar{\popref{checksetofrandomvotes}{\textsc{ascii} version}}
+\begin{display}
+\begin{notla}
+ASSUME \A v \in SetOfRandomVotes : CR(v)!CondorcetRanking = CR(v)!CRanking
+\end{notla}
+\begin{tlatex}
+ \@x{ {\ASSUME} \A\, v \.{\in} SetOfRandomVotes \.{:} CR ( v ) {\bang}
+ CondorcetRanking \.{=} CR ( v ) {\bang} CRanking}%
+\end{tlatex}
+\end{display}
+Use TLC to check the equivalence of the two definitions of the
+Condorcet ranking for some values of $V$ and $N$.  First, set $Trial$
+to 1 to see how long it takes TLC to check equivalence for a single
+value of $Votes$.  For $V$ and $N$ equal to 10, it should take a
+couple of seconds per trial.  (Comment out the previous assumption
+before doing this, otherwise TLC will spend forever trying to check
+it.)
+
+\medskip
+
+After some amount of checking, we will decide that module
+$CandidateRanking$ is correct.  However, we are not done yet.  I am
+assuming we wrote the specification for someone to use.  It would be
+difficult for a user to understand the specification just from the
+formulas---especially if she were not used to reading \tlaplus\ specs.
+(It would also be difficult for us a year from now.)  We need to add
+comments to explain the spec.  Here is
+   \rref{CandidateRanking}{top}{what the module might look like} 
+after adding some comments.  It contains what I regard to be a fairly
+minimal set of comments, suitable for a reasonably sophisticated
+reader who is acquainted with \tlaplus.  The members of the committee
+for which I wrote my original specification were mathematically
+sophisticated but knew nothing of \tlaplus.  The comments that I wrote
+for them therefore explained all the \tlaplus\ notation whose meaning
+I felt they would not find obvious.
+
+
+\begin{problem}
+There is a more efficient method for computing the Condorcet ranking
+than by using property C3.  The sets of candidates that occur in the
+Condorcet ranking are the connected components of the graph of
+$\succeq$.  There are algorithms that compute the set of connected
+components of a graph in time approximately proportional to the sum of
+the number of nodes and the number of edges in the graph.  Look up
+these algorithms and use one as the basis for another definition of
+the Condorcet ranking.  (Needless to say, you should use TLC to check
+the equivalence of this definition with $CRanking$.)
+\end{problem}
+
+\begin{problem}
+Write a new specification that allows voters to indicate that they
+have no preference among certain candidates.  In other words, voters
+should be able to rank some sets of candidates as equivalent.  Choose
+a convenient method of representing the votes, and define the Borda
+and Condorcet rankings on this representation.
+\end{problem}
+
+% \bookmark
+
+\end{document}
+
+
+\subsection{Stuff for the Transitive Closure section}
+
+
+
+
+
+
+----------- MAKE THIS A PROBLEM
+Let's use the first way, which defines a subset of a set $T$,  rewriting
+the definition above to have the form
+ \[ R *\!*\, S == \{ rs \in T : \ldots \}
+ \]
+First, we observe that since $x$ is replacing $<<x, y>>$, we can
+replace $x$ and $y$ by $rs[1]$ and $rs[2]$.  Hence, the definition becomes
+  \[ R *\!*\, S == \{ rs \in T \; : \; 
+      \E\, z \!:\! (<<rs[1], z>> \in R) /\ (<<z, rs[2]>> \in S) \}
+ \]
+We now have to decide what the set $T$ should be.  A little thought
+reveals that the elements of $R*\!*\,S$ have to be pairs $<<r, s>>$ with
+$r$ a node of $R$ and $s$ a node of $S$.  Therefore, we can take
+$T$ to be the Cartesian product
+
+$NodesOf(R) \X  NodesOf(S)$, to obtain:
+\begin{display}
+\begin{notla}
+R ** S == { rs \in NodesOf(R) \X NodesOf(S) : 
+                   \E z : (<<rs[1], z>> \in R) /\ (<<z, rs[2]>> \in S) }
+\end{notla}
+\begin{tlatex}
+ \@x{ R \.{\stst}\, S \.{\defeq} \{ rs \.{\in} NodesOf ( R ) \.{\times} NodesOf
+ ( S ) \.{:}\vs{.2}}%
+ \@x{\@s{73.62} \E\, z \.{:} ( {\langle} rs [ 1 ] ,\, z {\rangle} \.{\in} R )
+ \.{\land} ( {\langle} z ,\, rs [ 2 ] {\rangle} \.{\in} S ) \}}%
+\end{tlatex}
+\end{display}  
+This is a legal \tlaplus\ definition, but TLC can't evaluate it
+because it contains the unbounded quantifier $\E z : \ldots$\,\,.  We need
+to restrict the range of the bound identifier $z$.  The body of the
+quantified expression is satisfied only if $z$ is an element of both
+$NodesOf(R)$ and $NodesOf(S)$.  So we could write this quantified expression
+in any of these ways:
+\begin{widedisplay}
+ $ \E z \in NodesOf(R) : \ldots \s{1}
+    \E z \in NodesOf(S) : \ldots \s{1}
+    \E z \in NodesOf(R) \cap NodesOf(S) : \ldots 
+ $
+\end{widedisplay}
+Although longer, I find the third to be a little clearer:%
+\begin{display}
+\begin{notla}
+R ** S == { rs \in NodesOf(R) \X NodesOf(S) : 
+              \E z \in NodesOf(R) \cap NodesOf(S) : 
+                  (<<rs[1], z>> \in R) /\ (<<z, rs[2]>> \in S) } 
+\end{notla}
+\begin{tlatex}
+ \@x{ R \.{\stst}\, S \.{\defeq} \{ rs \.{\in} NodesOf ( R ) \.{\times} NodesOf
+ ( S ) \.{:}\vs{.2}}%
+\@x{\@s{59.36} \E\, z \.{\in} NodesOf ( R ) \.{\cap} NodesOf ( S ) \.{:}\vs{.2}}%
+ \@x{\@s{70.68} ( {\langle} rs [ 1 ] ,\, z {\rangle} \.{\in} R ) \.{\land} (
+ {\langle} z ,\, rs [ 2 ] {\rangle} \.{\in} S ) \}}%
+\end{tlatex}
+\end{display}
+Let's consider how TLC evaluates this definition.  It first computes
+the Cartesian product $NodesOf(R) \X NodesOf(S)$, which requires
+computing $NodesOf(R)$ and $NodesOf(S)$.  Then for each element $rs$
+in the Cartesian product, it evalutes the expression $\E\,z \in
+\ldots$ to see if $rs$ is an element of $R*\!*\,S$.  That evaluation
+requires computing $NodesOf(R)\cap NodesOf(S)$, which requires knowing
+the sets $NodesOf(R)$ and $NodesOf(S)$.  TLC does not remember that it
+has already computed these sets, so it computes them again---for each
+value of $rs$.  TLC remembers the values of a definition that it has
+evaluated if that definition has no arguments.  TLC will compute
+$NodesOf(R)$ and $NodesOf(S)$ once when it computes $R*\!*\,S$ (for
+particular values of $R$ and $S$) if we rewrite this definition as follows:
+  \marginpar[-2]{\popref{rs1xxx}{\textsc{ascii} version}}
+\begin{display}
+\begin{notla}
+R ** S == LET NR == NodesOf(R)
+              NS == NodesOf(S)
+          IN {rs \in NR \X NS : 
+                 \E z \in NR \cap NS : (<<rs[1], z>> \in R) /\ (<<z, rs[2]>> \in S) }
+\end{notla}
+\begin{tlatex}
+\@x{ R \.{\stst}\, S \.{\defeq} \.{\LET} NR \.{\defeq} NodesOf ( R )\vs{.2}}%
+\@x{\@s{66.56} NS\@s{0.86} \.{\defeq} NodesOf ( S )\vs{.2}}%
+\@x{\@s{46.16} \,\.{\IN} \! \{ rs \.{\in} NR \.{\times} NS \.{:}\vs{.2}}%
+ \@x{\@s{80.69} \E\, z \.{\in} NR \.{\cap} NS \.{:} ( {\langle} rs [ 1 ] ,\, z
+ {\rangle} \.{\in} R ) \.{\land} ( {\langle} z ,\, rs [ 2 ] {\rangle} \.{\in}
+ S ) \}}%
+\end{tlatex}
+\end{display}
+
+
+
+
+Let's not worry about this optimization.  Instead, let's write an
+alternative definition by expressing $R*\!*\,S$ with the construct
+$\{e(x) : x \in T\}$.  To see how to do that, let's once again think
+of relation composition in terms of graphs.  The composition
+$R*\!*\,S$ consists of all pairs $<<r, s>>$ such that there is an edge
+$r->t$ in $R$ and an edge $t->s$ in $S$, for some node $t$.  Let
+$JoinedEdges$ be the set of all pairs of pairs of the form
+  $<<\,<<r, t>>,\, <<t, s>>\,>>$
+with $<<r, t>>$ in $R$ and $<<t, s>>$ in $S$.  Then \tlabox{R*\!*\,S} is the
+set
+ \[ \{ <<je[1][1],\, je[2][2]>> : je \in JoinedEdges \}
+ \]
+We can write the set $JoinedEdges$ as:
+ \[ \{ je \in R \X S : je[1][2] = je[2][1] \}
+ \]
+We can therefore define:%
+  \marginpar[-2]{\popref{rs2xxx}{\textsc{ascii} version}}
+\begin{display}
+\begin{notla}
+R ** S == LET JoinedEdges == { je \in R \X S : je[1][2] = je[2][1] }
+          IN { <<je[1][1], je[2][2]>> : je \in JoinedEdges }
+\end{notla}
+\begin{tlatex}
+ \@x{ R \.{\stst}\, S \.{\defeq} \.{\LET} JoinedEdges \.{\defeq} \{ je \.{\in} R
+ \.{\times} S \.{:} je [ 1 ] [ 2 ] \.{=} je [ 2 ] [ 1 ] \}\vs{.2}}%
+ \@x{\@s{46.16} \,\.{\IN} \{ {\langle} je [ 1 ] [ 1 ] ,\, je [ 2 ] [ 2 ]
+ {\rangle} \.{:} je \.{\in} JoinedEdges \}}%
+\end{tlatex}
+\end{display} 
+Let's check that the two definitions agree.  Copy both definitions
+into the spec, but give one of them another name---say $\%\%$.  A good
+way to check an operator on relations is to check it for all relations
+on some set $T$---that is for all subsets of $T\X T$\@.  Have TLC
+check that
+ \[ \A\, R, S \in \SUBSET (T \X T) : R*\!*\,S = R\,\%\%\,S\]
+is true for some sets $T$.  Start with $T$ a set containing two
+elements, which TLC should handle quickly.  Then try a set with three
+elements, which may take 10 or 20 seconds.  Since the number of
+subsets of a set $T$ increases exponentially with the cardinality of
+$T$, you will not be able to go much further.  However, checking all
+relations even of these small sets $T$ gives us confidence that the
+definitions are not incorrect on some corner case.
+
+Which of the two definitions should we use?  We will be applying the
+transitive closure operator to a preference relation on the set of
+candidates, so our relations will have a set of nodes of cardinality
+$N$.  Evaluating the first definition requires on the order of $N^{3}$
+operations.  Evaluating the second definition requires on the order
+of $Cardinality(R) * Cardinality(S)$ operations.  If the relations are
+very sparse (ordering relations among few of the candidates), then
+this can mean as few as about $N^{2}$ operations.  However, if the
+relations are very dense, then it could be on the order of $N^{4}$
+operations.  Let's keep both definitions (with different names) and
+decide later.
+
+% Note: with R(n) == 1..n \X 1..n
+%            Rel(n) == {<<i, (i+1)%n>> : i \in 0..(n-1)}
+% Here are the some times on SVC-LAMPORT-6, where && is the first and
+% ** the 2nd definition:
+% With **
+%  R(20) : 16
+%  Rel(40) : 1
+% With &&
+%  R(20) : 1
+%  Rel(12) : 4
+%  Rel(13) : 7
+%  Rel(14) : 16
+
+\medskip
+
+Let's now define $FTC$, an operator that is equivalent to the
+transitive closure operator $TC$ but can be evaluated more efficiently
+by TLC\@.  Letting $R^{k}$ be 
+  \[ \NOTLA \begin{array}{@{}c}
+             \mbox{\small $k$ copies of $R$} \\
+             \overbrace{R\!\cdot\!R \ \cdots \ R}
+            \end{array}\]
+we can write the transitive closure of $R$ as
+ \[ R \ \cup\  R^{2} \ \cup\  R^{3} \ \cup\  \ldots
+ \]
+Returning to the view of a relation as a directed graph, the $R^{k}$
+term represents the relations obtained by paths in $R$ having $k$
+edges and hence $k+1$ nodes.  For a finite relation $R$, the transative
+closure therefore equals 
+  \[ R \ \cup\  R^{2} \ \cup\  \ldots \ \cup \ R^{Cardinality(Nodes(R))}
+  \]
+
+
+
+
+\subsection{\puce A Cookbook}
+
+$\CONSTANT Ingredients$
+
+$MakeRecipe(S)$: if $S$ is a set of $<<ingredient, quantity>>$ pairs,
+then it makes the recipe whose only ingredients are the $i$ such that
+$<<i, n>>$ is in $S$ for some $n$.  If there is just a single such
+pair, then the recipe contains $n$ units of ingredient $i$.  What
+should it do if there are multiple such pairs: (a)~add the quantities,
+(b)~report an error?
+
+
+$AddRecipeTo(r, c)$: equals the cookbook obtained by adding recipe
+$r$ to cookbook $c$.
+
+$RemoveRecipeFrom(r, c)$: equals the cookbook obtained by removing
+recipe $r$ to cookbook $c$.  (What should it do if $r$ is not in $c$?)
+
+$RemoveIngredientFrom(i, c)$: equals the cookbook obtained from
+$c$ by removing ingredient $i$ (e.g., salt) from all recipes.
+
+$MultiplyRecipe(n, r)$: equals recipe $r$ except with all amounts muliplied
+by $n$.
+
+$ModifyRecipesBy(M(\_), c)$: the cookbook obtained from $c$ by
+replacing each recipe $r$ with $M(r)$.
+
+$RecipesContainingAll(I, c)$: the set of recipes in $c$ containing
+all the ingredients in $I$.
+
+$RecipesContainingAny(I, c)$: the set of recipes in $c$ containing any
+of the ingredients in $I$.
+
+$AmountOf(i, R)$: the amount of ingredient $i$ needed to make all the
+recipes in $R$.
+
+
+First let recipe be element of $[Ingredients -> Nat]$.
+
+Next implement with multisets.
+
+
+Exercise: add a name to all recipes.  Add extra argument to
+$MakeRecipe$, and add $FindRecipe(name, c)$, $NamesOf(R)$ to be the
+set of names of recipes in the set $R$, and modify $AddRecipeTo$ so it
+doesn't permit the same name for different recipes.
+
+\bigskip
+
+------------------------------------------------------------------
+
+Stuff from the Transitive Closure section
+
+
+
+Searching for \emph{transitive closure} on the Web reveals that there
+are simple algorithms that take time proportional to the cube of the
+number of nodes in the graph.  Those algorithms are based on the customary
+mathematical definition of the transitive closure:
+ \[ TC(R) == R \ \cup\  R \!\cdot\! R \ \cup\  R \!\cdot\! R \!\cdot\! R \ \cup\  \ldots
+ \]
+where $\cdot$ denotes the \emph{composition} of relations.
+Composition $R\!\cdot\!S$ of relations $R$ and $S$ is defined by
+letting $x\,R\!\cdot\! S\,y$ be true iff there is a $z$ such that
+$x\,R\,z$ and $z\,S\,y$ hold.  Let's now add the definition to the
+specification.  \tlaplus\ does not provide $\cdot$ as a user-defined
+operator, so let's use $**$ for relation composition.
+
+Since a relation is a set of ordered pairs, a mathematician might
+define $**$ by
+ \[ R *\!*\, S == \{ <<x, y>> \; : \; \E\,z \!:\! (<<x, z>> \in R) /\ (<<z, y>> \in S) \}
+ \]
+However, the right-hand side of this definition is not a legal
+\tlaplus\ expression.  \tlaplus\ provides two ways to write a set
+in terms of the conditions satisfied by its elements:
+ $\{x \in T : P(x)\}$  and $\{e(x) : x \in T\}$.
+Let's use the first way, which defines a subset of a set $T$,  rewriting
+the definition above to have the form
+ \[ R *\!*\, S == \{ rs \in T : \ldots \}
+ \]
+First, we observe that since $rs$ is replacing $<<x, y>>$, we can
+replace $x$ and $y$ by $rs[1]$ and $rs[2]$.  Hence, the definition becomes
+  \[ R *\!*\, S == \{ rs \in T \; : \; 
+      \E\, z \!:\! (<<rs[1], z>> \in R) /\ (<<z, rs[2]>> \in S) \}
+ \]
+We now have to decide what the set $T$ should be.  A little thought
+reveals that the elements of $R*\!*\,S$ have to be pairs $<<r, s>>$ with
+$r$ a node of $R$ and $s$ a node of $S$.  Therefore, we can take
+$T$ to be 
+  \marginpar{\rref{math}{math:cartesian}{See the definition of $\X$.}}
+$NodesOf(R) \X  NodesOf(S)$, to obtain:
+\begin{display}
+\begin{notla}
+R ** S == { rs \in NodesOf(R) \X NodesOf(S) : 
+                   \E z : (<<rs[1], z>> \in R) /\ (<<z, rs[2]>> \in S) }
+\end{notla}
+\begin{tlatex}
+ \@x{ R \.{\stst}\, S \.{\defeq} \{ rs \.{\in} NodesOf ( R ) \.{\times} NodesOf
+ ( S ) \.{:}\vs{.2}}%
+ \@x{\@s{73.62} \E\, z \.{:} ( {\langle} rs [ 1 ] ,\, z {\rangle} \.{\in} R )
+ \.{\land} ( {\langle} z ,\, rs [ 2 ] {\rangle} \.{\in} S ) \}}%
+\end{tlatex}
+\end{display}  
+This is a legal \tlaplus\ definition, but TLC can't evaluate it
+because it contains the unbounded quantifier $\E z : \ldots$\,\,.  We need
+to restrict the range of the bound identifier $z$.  The body of the
+quantified expression is satisfied only if $z$ is an element of both
+$NodesOf(R)$ and $NodesOf(S)$.  So we could write this quantified expression
+in any of these ways:
+\begin{widedisplay}
+ $ \E z \in NodesOf(R) : \ldots \s{1}
+    \E z \in NodesOf(S) : \ldots \s{1}
+    \E z \in NodesOf(R) \cap NodesOf(S) : \ldots 
+ $
+\end{widedisplay}
+Although longer, I find the third to be a little clearer:%
+\begin{display}
+\begin{notla}
+R ** S == { rs \in NodesOf(R) \X NodesOf(S) : 
+              \E z \in NodesOf(R) \cap NodesOf(S) : 
+                  (<<rs[1], z>> \in R) /\ (<<z, rs[2]>> \in S) } 
+\end{notla}
+\begin{tlatex}
+ \@x{ R \.{\stst}\, S \.{\defeq} \{ rs \.{\in} NodesOf ( R ) \.{\times} NodesOf
+ ( S ) \.{:}\vs{.2}}%
+\@x{\@s{59.36} \E\, z \.{\in} NodesOf ( R ) \.{\cap} NodesOf ( S ) \.{:}\vs{.2}}%
+ \@x{\@s{70.68} ( {\langle} rs [ 1 ] ,\, z {\rangle} \.{\in} R ) \.{\land} (
+ {\langle} z ,\, rs [ 2 ] {\rangle} \.{\in} S ) \}}%
+\end{tlatex}
+\end{display}
+Let's consider how TLC evaluates this definition.  It first computes
+the Cartesian product $NodesOf(R) \X NodesOf(S)$, which requires
+computing $NodesOf(R)$ and $NodesOf(S)$.  Then for each element $rs$
+in the Cartesian product, it evalutes the expression $\E\,z \in
+\ldots$ to see if $rs$ is an element of $R*\!*\,S$.  That evaluation
+requires computing $NodesOf(R)\cap NodesOf(S)$, which requires knowing
+the sets $NodesOf(R)$ and $NodesOf(S)$.  TLC does not remember that it
+has already computed these sets, so it computes them again---for each
+value of $rs$.  TLC remembers the values of a definition that it has
+evaluated if that definition has no arguments.  TLC will compute
+$NodesOf(R)$ and $NodesOf(S)$ once when it computes $R*\!*\,S$ (for
+particular values of $R$ and $S$) if we rewrite this definition as follows:
+  \marginpar[-2]{\popref{rs1xxx}{\textsc{ascii} version}}
+\begin{display}
+\begin{notla}
+R ** S == LET NR == NodesOf(R)
+              NS == NodesOf(S)
+          IN {rs \in NR \X NS : 
+                 \E z \in NR \cap NS : (<<rs[1], z>> \in R) /\ (<<z, rs[2]>> \in S) }
+\end{notla}
+\begin{tlatex}
+\@x{ R \.{\stst}\, S \.{\defeq} \.{\LET} NR \.{\defeq} NodesOf ( R )\vs{.2}}%
+\@x{\@s{66.56} NS\@s{0.86} \.{\defeq} NodesOf ( S )\vs{.2}}%
+\@x{\@s{46.16} \,\.{\IN} \! \{ rs \.{\in} NR \.{\times} NS \.{:}\vs{.2}}%
+ \@x{\@s{80.69} \E\, z \.{\in} NR \.{\cap} NS \.{:} ( {\langle} rs [ 1 ] ,\, z
+ {\rangle} \.{\in} R ) \.{\land} ( {\langle} z ,\, rs [ 2 ] {\rangle} \.{\in}
+ S ) \}}%
+\end{tlatex}
+\end{display}
+Let's not worry about this optimization.  Instead, let's write an
+alternative definition by expressing $R*\!*\,S$ with the construct
+$\{e(x) : x \in T\}$.  To see how to do that, let's once again think
+of relation composition in terms of graphs.  The composition
+$R*\!*\,S$ consists of all pairs $<<r, s>>$ such that there is an edge
+$r->t$ in $R$ and an edge $t->s$ in $S$, for some node $t$.  Let
+$JoinedEdges$ be the set of all pairs of pairs of the form
+  $<<\,<<r, t>>,\, <<t, s>>\,>>$
+with $<<r, t>>$ in $R$ and $<<t, s>>$ in $S$.  Then \tlabox{R*\!*\,S} is the
+set
+ \[ \{ <<je[1][1],\, je[2][2]>> : je \in JoinedEdges \}
+ \]
+We can write the set $JoinedEdges$ as:
+ \[ \{ je \in R \X S : je[1][2] = je[2][1] \}
+ \]
+We can therefore define:%
+  \marginpar[-2]{\popref{rs2xxx}{\textsc{ascii} version}}
+\begin{display}
+\begin{notla}
+R ** S == LET JoinedEdges == { je \in R \X S : je[1][2] = je[2][1] }
+          IN { <<je[1][1], je[2][2]>> : je \in JoinedEdges }
+\end{notla}
+\begin{tlatex}
+ \@x{ R \.{\stst}\, S \.{\defeq} \.{\LET} JoinedEdges \.{\defeq} \{ je \.{\in} R
+ \.{\times} S \.{:} je [ 1 ] [ 2 ] \.{=} je [ 2 ] [ 1 ] \}\vs{.2}}%
+ \@x{\@s{46.16} \,\.{\IN} \{ {\langle} je [ 1 ] [ 1 ] ,\, je [ 2 ] [ 2 ]
+ {\rangle} \.{:} je \.{\in} JoinedEdges \}}%
+\end{tlatex}
+\end{display} 
+Let's check that the two definitions agree.  Copy both definitions
+into the spec, but give one of them another name---say $\%\%$.  A good
+way to check an operator on relations is to check it for all relations
+on some set $T$---that is for all subsets of $T\X T$\@.  Have TLC
+check that
+ \[ \A\, R, S \in \SUBSET (T \X T) : R*\!*\,S = R\,\%\%\,S\]
+is true for some sets $T$.  Start with $T$ a set containing two
+elements, which TLC should handle quickly.  Then try a set with three
+elements, which may take 10 or 20 seconds.  Since the number of
+subsets of a set $T$ increases exponentially with the cardinality of
+$T$, you will not be able to go much further.  However, checking all
+relations even of these small sets $T$ gives us confidence that the
+definitions are not incorrect on some corner case.
+
+Which of the two definitions should we use?  We will be applying the
+transitive closure operator to a preference relation on the set of
+candidates, so our relations will have a set of nodes of cardinality
+$N$.  Evaluating the first definition requires on the order of $N^{3}$
+operations.  Evaluating the second definition requires on the order
+of $Cardinality(R) * Cardinality(S)$ operations.  If the relations are
+very sparse (ordering relations among few of the candidates), then
+this can mean as few as about $N^{2}$ operations.  However, if the
+relations are very dense, then it could be on the order of $N^{4}$
+operations.  Let's keep both definitions (with different names) and
+decide later.
+
+% Note: with R(n) == 1..n \X 1..n
+%            Rel(n) == {<<i, (i+1)%n>> : i \in 0..(n-1)}
+% Here are the some times on SVC-LAMPORT-6, where && is the first and
+% ** the 2nd definition:
+% With **
+%  R(20) : 16
+%  Rel(40) : 1
+% With &&
+%  R(20) : 1
+%  Rel(12) : 4
+%  Rel(13) : 7
+%  Rel(14) : 16
+
+\medskip
+
+Let's now define $FTC$, an operator that is equivalent to the
+transitive closure operator $TC$ but can be evaluated more efficiently
+by TLC\@.  Letting $R^{k}$ be 
+  \[ \NOTLA \begin{array}{@{}c}
+             \mbox{\small $k$ copies of $R$} \\
+             \overbrace{R\!\cdot\!R \ \cdots \ R}
+            \end{array}\]
+we can write the transitive closure of $R$ as
+ \[ R \ \cup\  R^{2} \ \cup\  R^{3} \ \cup\  \ldots
+ \]
+Returning to the view of a relation as a directed graph, the $R^{k}$
+term represents the relations obtained by paths in $R$ having $k$
+edges and hence $k+1$ nodes.  For a finite relation $R$, the transative
+closure therefore equals 
+  \[ R \ \cup\  R^{2} \ \cup\  \ldots \ \cup \ R^{Cardinality(Nodes(R))}
+  \]
+
+----------------- Condorcet Stuff
+
+
+
+In a \emph{Condorcet voting scheme}, a candidate that dominates all
+other candidates is the winner.  However, there may not be any
+candidate that dominates all others.  An election between $c$ and $d$
+could result in a tie, in which case neither $c\succ d$ nor $d\succ c$
+holds.  More interestingly, there can be three candidates $c$, $d$,
+and $e$ for whom $c\succ d$, $d\succ e$, and $e\succ c$ hold.  
+
+Let's define the \emph{Condorcet winners} to be the smallest set $C$
+of candidates such that every candidate in $C$ dominates every
+candidate not in $C$.  A Condorcet election scheme is one that always
+elects some Condorcet winner.  Let's not worry about picking a single
+winner; let's just see how to compute the set $C$ of Condorcet
+winners.
+
+Suppose candidate $c$ is in $C$.  Since $c$ must dominate every
+candidate not in $C$, if $c\not\succ d$, then $d$ must also be in $C$.
+Let's define the relation $\succeq$ by letting $c\succeq d$ equal
+$d\not\succ c$.  Note that $c\succeq d$ is true iff either (i)~$c\succ
+d$, (ii)~an election between $c$ and $d$ would result in a tie, or
+(iii)~$c$ equals $d$.
+
+
+However, I was not interested in
+picking a winner; I just wanted to show the committee who the
+Condorcet winners are.  
+
+More generally, what I wanted to compute is the sequence 
+$<<C_{1}, \ldots, C_{m}>>$ of sets of candidates such that $C_{1}$ is the set of
+Condorcet winners, $C_{2}$ is the set of Condorcet winners of an
+election among the candidates not in $C_{1}$, $C_{3}$ is the set of
+Condorcet winners of an election among the candidates not in
+$C_{1}\cup C_{2}$, etc.  
+
+
+
+YYYY
+Let $c\succeq d$ mean that either $c\succ d$, an election between $c$
+and $d$ would be a tie, or $c$ equals $d$.  Thus, $c\succeq d$ is
+equivalent to $~(d\succ c)$.
+
+The \emph{Condorcet winner} of an election is a candidate that dominates
+all other candidates.  A reasonable condition for an election scheme
+is that the Condorcet winner should be 
+
+
+
+We assume that
+
+We say that a candidate $c$ \emph{dominates} a candidate $d$, and
+write $c\succ d$, if a majority of the voters prefer $c$ to $d$.
+%
+% (Since voters don't prefer a candidate to herself, $c\succ c$ is false
+% for every candidate $c$.)  
+In a \emph{Condorcet ranking}, a candidate dominates all candidates
+ranked below her.
+
+In a Condorcet ranking, some candidates may need to be ranked the
+same.  If just as many voters prefer $c$ to $d$ as prefer $d$ to $c$,
+then neither $c\succ d$ nor $d\succ c$ holds, so $c$ and $d$ must be
+ranked the same.  More interestingly, there can be three candidates
+$c$, $d$, and $e$ for whom $c\succ d$, $d\succ e$, and $e\succ c$
+hold.  In this case, $c$, $d$, and $e$ must all have the same
+rankings.
+
+A Condorcet ranking is a sequence 
+   $<<C_{1}, \ldots, C_{m}>>$ 
+of sets of candidates such that
+\begin{enumerate}
+\item $C_{1} \cup \ldots \cup C_{m}$ equals the set of all candidates
+
+\item For all $i$ and $j$ in $1\dd m$, and for all candidates
+$c$ in $C_{i}$ and $d$ in $C_{j}$:
+if $i < j$, then $c\succ d$.
+\end{enumerate}
+However, these conditions are satisfied by the one-element sequence
+containing the set of all candidates.  We define the Condorcet ranking
+to be the finest such ranking---that is, the one with the smallest
+sets $C_{i}$.  We would like to strengthen condition 2 by require
+replacing the if/then with iff, so $c\succ d$ implies $i < j$.
+However, we can't do this.  Suppose $d \succ e$ and $e\succ c$ for
+some $e \in C_{k}$.  The strengthened condition would imply 
+$i< j$, $j < k$, and $k < i$, which is impossible.
+
+To see how to strengthen condition 2, let's define the relation
+$\succeq$ by letting $c \succeq d$ equal $\lnot(d \succ c)$, so $c
+\succeq d$ means that $d$ does not dominate $c$.  Since $A => B$ is
+equivalent to $~B => ~A$, we can rewrite the if/then of condition 2
+as: if $d\succeq c$ then $j\leq i$.
+
+If $c \succeq d$, then $$
+
+We obtain the finest ranking satisfying these
+conditions by replacing condition 2 with
+\begin{enumerate}
+\item[2$'$.] For all $i$ and $j$ in $1\dd k$, and for all candidates
+$c$ in $C_{i}$ and $d$ in $C_{j}$:
+\vspace{-.3\baselineskip}
+\begin{itemize}
+\item[] $c \succeq^{+} d$ iff $i\leq j$.
+\end{itemize}
+\end{enumerate}
+
+
+We want to
+compute the finest (most discriminating) Condorcet ranking.
+
+
+
+
+XXXXXXXXXXXXXXX
+
+, for all $i$ and $j$ in $1\dd k$, 
+every candidate $c$ in $C_{i}$ and $d$ in $C_{j}$:$$
+
+
+
+if they were the only two
+candidates.  
+
+A candidate who dominates every other candidate is called
+the \emph{Condorcet winner}.  In a Condorcet ranking, a Condorcet
+winner should be ranked before (above) every other candidate.
+
+An election need not have a Condorcet winner.  Let's write $c\succ d$
+to mean that $c$ dominates $d$,  so $c$ is a Condorcet winner iff
+$c\succ d$ for every other candidate $d$.  Since a two-candidate
+election can result in a tie, there can be candidates $c$ and $d$ for
+which neither $c\succ d$ nor $d\succ c$ holds.  More interestingly,
+there can be three candidates $c$, $d$, and $e$ for whom $c\succ d$,
+$d\succ e$, and $e\succ c$ hold.
+
+Let $c\succeq d$ mean that $c$ dominates $d$ or $c$ and $d$ would tie
+in a two-candidate election.  (We assume that a candidate would tie if
+running against herself, so $c\succeq c$ for every candidate $c$.)  A
+\emph{Condorcet ranking} is a sequence $<<C_{1}, \ldots, C_{k}>>$ of
+sets of candidates such that:
+\begin{enumerate}
+\item $C_{1} \cup \ldots \cup C_{$}k equals the set of candidates
+

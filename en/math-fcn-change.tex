@@ -1,0 +1,28 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{A Subtle Point}
+\begin{popup}
+\subsection*{A Subtle Point}
+
+The formula
+\begin{display}
+$\land\s{.5} \A\, i \in \DOMAIN A : \;A'[i] \;=\; (\,\textsc{if}\; i = 3 \;\; 
+        \textsc{then}\; 42 \;\; \textsc{else}\; A[i]\,)$\V{.5}
+$\land\s{.5} (\DOMAIN A') = (\DOMAIN A)$
+\end{display}
+does not imply that $A'$ is a function.  If $v$ is not a function,
+then the values of $\DOMAIN v$ and $v[x]$ for some number $x$ are not
+specified.  The semantics of \tlaplus\ does not rule out the
+possibility that this formula is satisfied if $A'$ equals $\sqrt{43}$.
+(The semantics also does not say whether or not $\sqrt{43}$ is a function.)  
+
+\vspace{.5\baselineskip}
+
+To turn this formula into a correct specification of the assignment
+statement, we have to add the requirement that $A'$ is a function.
+This requirement is expressed by the formula
+ \[ A' = [i \in \DOMAIN A' |-> A'[i]]
+ \]
+Can you see why?
+\end{popup}
+\makepopup

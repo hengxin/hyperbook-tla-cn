@@ -1,0 +1,27 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{Answer}
+\begin{popup}
+\subsection*{Answer}
+
+The weakest inductive invariant I found that is implied by
+$Init$ and implies $MutualExclusion$ is:
+\begin{display}
+\begin{notla}
+/\ TypeOK
+/\ MutualExclusion
+/\ pc[0] \notin {"e3", "e4"}
+/\ \A i \in {0,1} : InCS(i) \/ (pc[i] = "e2") => x[i]
+\end{notla}
+\begin{tlatex}
+\@x{ \.{\land} TypeOK}%
+\@x{ \.{\land} MutualExclusion}%
+\@x{ \.{\land} pc [ 0 ] \.{\notin} \{\@w{e3} ,\,\@w{e4} \}}%
+ \@x{ \.{\land} \A\, i \.{\in} \{ 0 ,\, 1 \} \.{:} InCS ( i ) \.{\lor} ( pc [
+ i ] \.{=}\@w{e2} ) \.{\implies} x [ i ]}%
+\end{tlatex}
+\end{display}
+
+
+\end{popup}
+\makepopup

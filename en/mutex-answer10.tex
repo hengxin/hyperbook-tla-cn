@@ -1,0 +1,14 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{Answer}
+\begin{popup}
+\subsection*{Answer}
+One example is a version of the big-step bakery algorithm in which the
+$enter$ step is replaced by one that sets $num[self]$ to one plus the maximum
+of all $num[p]$ with $p$ in $Procs$, where the invariant is
+ \[ \A p\in Procs : num[p] \in Nat
+ \]
+The invariant will be violated for any model with a finite set
+substituted for $Nat$.
+\end{popup}
+\makepopup

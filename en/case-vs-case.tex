@@ -1,0 +1,29 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\setpopup{13.5}
+\makeindex
+\file{case-vs-case}
+\pdftitle{CASE Statements versus CASE Expressions}
+\makeindex
+\begin{document}
+
+ \ctindex{3}{case (expression)@\icmd{textsc}{case} (expression)}{case-expr}%
+ \ctindex{2}{case (proof step)@\icmd{textsc}{case} (proof step)}{case-pf-step}%
+ \vspace{-2\baselineskip}%
+\subsection*{{\rm \textsc{case}} Statements versus 
+    {\rm \textsc{case}} Expressions} 
+
+Don't confuse the 
+ \rref{proof}{case-stmt}{\textsc{case} statement of a proof}
+with the 
+  \rref{math}{case-expr}{\tlaplus\ \textsc{case} expression}.
+A \textsc{case} that follows a step number in a proof is a
+\textsc{case} statement.  A \tlaplus\ \textsc{case} expression cannot
+be the assertion of a proof step.  If you wanted to assert
+a \textsc{case} expression as a proof step, you could write
+something like:
+  \[ <<4>>2.\ \TRUE = \CASE \ldots
+  \]
+However, it's highly unlikely that you'll ever want to do that.
+\end{document}
+% \makepopup

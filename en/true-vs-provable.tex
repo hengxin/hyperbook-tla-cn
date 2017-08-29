@@ -1,0 +1,31 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{True Formulas versus Theorems}
+\begin{popup}
+\setlength{\parindent}{1.5em}
+\subsection*{True Formulas versus Theorems}
+
+A \emph{theorem} is a formula that is provable in a logic.  A logic
+consists of a set of legal formulas (called well-formed formulas) and
+a collection of rules for proving that certain of those formulas are
+theorems.  There is a simple procedure for checking if a sequence of
+rule applications constitutes a proof of a formula, though one seldom
+writes such a low-level, detailed proof.
+
+Truth is a semantic concept.  A \emph{semantics} for a logic is a
+mapping $\Sigma$ from formulas of the logic to formulas of ``ordinary
+math'', where $\Sigma(F)$ is called the \emph{meaning} of the formula
+$F$ of the logic.  A formula $F$ is said to be \emph{true} iff its
+meaning $\Sigma(F)$ is a true formula of ordinary math.
+
+G\"{o}del showed that it's impossible to define formally what truth
+means for ordinary math.  However, for the formulas that we encounter
+when describing and reasoning about algorithms and systems, truth and
+provability turn out to be equivalent.  (This seems to be because the
+systems we study are ones that can be implemented by computers.)  I
+will therefore not make any attempt to distinguish between the two
+concepts in this hyperbook, and I will consider theorems and true
+formulas to be the same.
+
+\end{popup}
+\makepopup

@@ -1,0 +1,12 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{ASCII Text}
+\fixverbatim
+\begin{popup}
+\begin{verbatim*}
+RECURSIVE SumSeq(_)       
+SumSeq(s) == IF s = << >> THEN 0
+                          ELSE Head(s) + SumSeq(Tail(s))
+\end{verbatim*}
+\end{popup}
+\makeasciipopup

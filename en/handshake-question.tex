@@ -1,0 +1,33 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{Answer}
+\begin{popup}
+\subsection*{Answer}
+
+\vspace{.5em}
+
+% \newcommand{\hdskstate}[3]{\left[\!\begin{array}{l@{\,\,}c@{\,\,}c}
+%                         p & = & #1 \\ c & = & #2 \\ box & = & #3
+%                         \end{array}\!\right]}
+\newcommand{\hdskstate}[4]{%
+\begin{array}{c}
+\left[\!\begin{array}{l@{\,\,}c@{\,\,}c}
+                        p & = & #1 \\ c & = & #2 \\ box & = & #3
+                        \end{array}\!\right] \V{1.5}
+%       \rule{2em}{.6pt} \V{4}
+       p\oplus c = #4 \V{-1.7}
+\end{array}
+}
+ \[
+  \begin{noj}
+  \hdskstate{0}{0}{<<\,>>}{0} \;->\; \hdskstate{1}{0}{<<"widget">>}{1} \;->\; 
+  \hdskstate{1}{1}{<<\,>>}{0} \;->\; \V{5}
+    \s{2}\hdskstate{0}{1}{<<"widget">>}{1} \;->\; 
+   \hdskstate{0}{0}{<<\,>>}{0} \;->\; 
+            \cdots
+  \end{noj}
+ \]
+\mbox{}
+
+\end{popup}
+\makepopup

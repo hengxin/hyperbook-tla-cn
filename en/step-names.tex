@@ -1,0 +1,51 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\file{step-names}
+\makeindex
+\pdftitle{About Step Names}
+\begin{popup}
+\setlength{\parindent}{1em}
+  \tindex{1}{step name}%
+  \tindex{1}{name, step}%
+  \ctindex{2}{Renumber Proof (Toolbox command)@\icmd{textsf}{Renumber Proof} (Toolbox command)}{renumber-proof}%
+  \ctindex{2}{Goto Declaration (Toolbox command)@\icmd{textsf}{Goto Declaration} (Toolbox command)}{goto-declaration}%
+  \vspace{-2\baselineskip}
+\subsection*{About Step Names}
+
+A step name consists of a level number in angle brackets (like $<<2>>$)
+followed by any non-empty string of digits, letters, and underscores 
+(\verb|_| characters).  Naming steps with consecutive numbers is just
+a convention.  The period (``.'') following the step name is optional
+and is not part of the name.
+
+A proof can have hundreds or even thousands of steps, and it's
+hopeless to try to give them all meaningful names.  I find that a
+proof looks neater and is a little less forbidding when steps are
+numbered consecutively.  When writing a proof, we are always inserting
+steps and moving steps around, so we may insert a step named $<<3>>3b$
+or $<<3>>35$ between steps $<<3>>3$ and $<<3>>4$.  We can renumber
+those steps consecutively by placing the cursor on the step that they
+are proving (a level $<<2>>$ step in this example) and executing the
+\textsf{Renumber Proof (control+g control+r)} command.  The command
+works only if the module has not been modified since it was
+successfully parsed.
+
+Your proof may have a few important ``lemma'' steps that are used in
+places much later in the proof, so you'd like to give them names you
+can remember that don't get changed by the \textsf{Renumber Proof}
+command.  The \tlaplus\ \textsf{Module Editor} preferences page allows
+you to choose among several options for which steps get renumbered by
+the command.  For example, you can choose to have it renumber only
+step names that begin with a number.
+
+A step name is considered to be a (locally) defined symbol, so you can
+find a step from a use of its name with the \textsf{Goto Declaration
+(F3)} command or by holding down the \emph{control} key and
+left-clicking on the name.  You can also find all uses of the step by
+putting the cursor on the step name (where it appears in the step or
+on any use of the name) and executing the \textsf{Show Uses (F6)}
+command.
+
+
+\end{popup}
+\makepopup

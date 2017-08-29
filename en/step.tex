@@ -1,0 +1,20 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\makeindex
+\file{step}
+\pdftitle{steps}
+\begin{popup}
+
+  \tindex{3}{step}%
+  \tindex{3}{state}%
+  \tindex{1}{action}%
+   \vspace{-2\baselineskip}%
+\subsection*{Steps}
+Remember that a state is an assignment of values to variables, and a
+step is a pair of states.  An action is a formula that may contain
+primed and unprimed variables.  A step $s->t$ satisfies (or is allowed
+by) an action $A$ iff $A$ is true when its unprimed variables have the
+values assigned to them by state $s$ and its primed variables have the
+values assigned to them by state $t$.
+\end{popup}
+\makepopup

@@ -1,0 +1,92 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\makeindex
+\file{gcd-proof-3}
+\pdftitle{A Better Proof of GCD3 with Comments}
+\begin{popup}
+\subsection*{A Better Proof of GCD3 with Comments}
+
+\begin{proof}
+\pflongnumbers
+\pflongindent
+\beforePfSpace{0pt}
+\afterPfSpace{0pt}
+\interStepSpace{0pt}
+\step{1}{
+         \sassume{$m$, $n$, and $d$ are integers}
+         \sprove{$d$ divides both $m$ and $n$ iff $d$ divides both 
+                $m$ and $n-m$}
+     \commentcolor This step introduces the symbols $m$, $n$, and $d$, 
+            and it assumes them to be integers for the remainder of the 
+            proof.  
+           It asserts that to prove the desired result (GCD3), 
+            it suffices to
+            prove the statement of the \textsc{Prove} clause.  This 
+            statement becomes the goal of the proof.
+          }
+% It suffices to assume that $m$, $n$, and $d$ are integers
+% and prove that $d$ divides both $m$ and $n$ iff % \popref{iff}{iff}
+% $d$ divides both $m$ and $n-m$.}
+\vspace{.201em}
+\begin{proof}
+\pf\ Since the gcd of two numbers is the largest integer that
+divides both of them, it suffices to show that $m$ and $n$
+have the same common divisors as $m$ and $n-m$.\V{.2}
+ {\commentcolor We are implicitly also
+using the fact that to prove that an assertion is true for all positive
+integers $m$ and $n$, it suffices to introduce two new symbols $m$ and
+$n$, assume them to be positive integers, and then prove the assertion for
+those particular positive integers $m$ and $n$.  The $m$ and $n$ introduced in
+the \textsc{Assume} are logically different from the $m$ and $n$ in
+the statement of GCD3.  We could replace $m$ and $n$ throughout the
+proof by other symbols.  However, using the same symbols as in GCD3
+makes the proof easier to understand.}
+\end{proof}
+
+\vspace{.6em}
+
+\step{2}{\assume{$d$ divides both $m$ and $n$} 
+         \prove{$d$ divides both $m$ and $n-m$}
+  \commentcolor This step asserts that the \textsc{Assume} clause
+  implies the \textsc{Prove} clause.  \\ In the step's
+  proof, we assume that the \textsc{Assume} clause is true and we must
+  show that the \textsc{Prove} clause is true.
+} \vspace{.201em}
+
+\begin{proof}
+\pf\ That $d$ divides $m$ follows by the assumptions; that it divides
+$n-m$ follows from the assumptions and Lemma~Div.\\
+{\commentcolor The assumptions being used are the \textsc{Assume}
+clause of step~1 (that $m$ and $n$ are positive integers) and the \textsc{Assume}
+clause of the current step (step~2).}
+\end{proof}
+
+\vspace{.6em}
+
+\step{3}{\assume{$d$ divides both $m$ and $n-m$}
+         \prove{$d$ divides both $m$ and $n$}} \vspace{.201em}
+\begin{proof}
+\pf\ That $d$ divides $m$ follows by the assumptions; that it divides
+$n$ follows from the assumptions, Lemma~Div, and the simple
+algebraic relation:
+ $n = m + (n-m)$.
+\end{proof}
+
+\vspace{.6em}
+
+\step{4}{\textsc{Q.E.D.}\tindex{1}{Q.E.D.}\\
+\commentcolor \textsc{Q.E.D.} stands for the current goal of the proof,
+  which in this case is the \textsc{Prove} clause of step~1.}
+\vspace{.201em}
+\begin{proof}
+\pf\ By \stepref{1}, \stepref{2}, and \stepref{3}.\\
+{\commentcolor The current goal (the \textsc{Prove} clause
+of step~1) follows from steps 2 and 3.  Although step~1 is
+logically not part of the proof of the current goal, so it's
+not needed in the proof, mentioning it reminds the reader of 
+what the current goal is.}
+\end{proof}
+\end{proof}
+
+\end{popup}
+\makepopup

@@ -1,0 +1,50 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{ASCII Text}
+\fixverbatim
+\addtolength{\textwidth}{7em}
+\begin{popup}
+\begin{verbatim*}
+--------------------------- MODULE BigStepBakery ---------------------------
+EXTENDS Integers
+
+CONSTANT N
+ASSUME N \in Nat
+
+Procs == 1..N
+
+a \prec b == \/ a[1] < b[1]
+             \/ (a[1] = b[1]) /\ (a[2] < b[2])
+                
+(* 
+--algorithm BigStepBakery 
+{ variable num = [i \in Procs |-> 0] ;
+  process (pr \in Procs)
+    variable unchecked = {} ; 
+    { ncs: while (TRUE)             
+             { enter: with (i \in { j \in Nat : \A q \in Procs : j > num[q] })
+                        { num[self] := i } ;  
+                      unchecked := Procs \ {self} ;          
+               wait:  while (unchecked # {}) 
+                        { with (i \in unchecked) 
+                            { await \/ num[i] = 0
+                                    \/ <<num[self], self>> \prec <<num[i], i>> ;
+                              unchecked := unchecked \ {i} 
+                            }
+                        } ; 
+               cs:    skip ;   \* critical section 
+               exit:  num[self] := 0 
+             }
+    } 
+}    *)
+-----------------------------------------------------------------------------
+TypeOK == /\ num \in [Procs -> Nat]
+          /\ unchecked \in [Procs -> SUBSET Procs]
+          /\ pc \in [Procs -> {"ncs", "enter", "wait", "cs", "exit"}]
+          
+MutualExclusion == 
+  \A p, q \in Procs : (p # q) => ~((pc[p] = "cs") /\ (pc[q] = "cs"))
+=============================================================================
+\end{verbatim*}
+\end{popup}
+\makeasciipopup

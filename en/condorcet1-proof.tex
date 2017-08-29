@@ -1,0 +1,41 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{Proof}
+\newcommand{\cset}{\ensuremath{\mathcal{CW}}}
+\pflongnumbers
+\pflongindent
+\beforePfSpace{5pt, 2pt, 2pt}
+\afterPfSpace{10pt, 5pt, 2pt}
+\interStepSpace{10pt, 5pt, 2pt}
+
+\begin{popup}
+\textbf{C1.} If $D$ and $E$ are dominating sets, then $D\subseteq E$
+or $E \subseteq D$.
+\begin{proof}
+%%\setlength{\stepsep}{.35em}
+\step{1}{It suffices to assume $D\not\subseteq E$ and $E\not\subseteq D$
+         and obtain a contradiction.}
+\begin{proof}
+\pf\ Obvious.
+\end{proof}
+
+\step{2}{Pick $d\in D$ and $e\in E$ such that $d\notin E$ and $e\notin D$.}
+\begin{proof}
+\pf\ The step 1 assumption implies the existence of $d$ and $e$.
+\end{proof}
+
+\step{3}{$d \succ e$  and $e \succ d$}
+\begin{proof}
+\pf\ Step 2 asserts $d\in D$ and $e\notin D$, which imply $d\succ e$
+because $D$ is a dominating set.  Similarly, step~2 and $E$ a
+dominating set imply $e\succ d$.
+\end{proof}      
+
+\qedstep
+\begin{proof}
+\pf\ Step 3 and the definition of $\succ$ (which implies
+that $d\succ e$ and $e\succ d$ cannot both be true) yield the required contradiction.
+\end{proof}
+\end{proof}
+\end{popup}
+\makepopup

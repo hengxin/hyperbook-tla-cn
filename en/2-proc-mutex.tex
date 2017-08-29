@@ -1,0 +1,58 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{Two-Process One-Bit Algorithm}
+\begin{popup}
+\subsection*{The Two-Process One-Bit Algorithm}
+
+\vspace{.5em}
+
+\begin{nopcal}
+--algorithm OneBit {
+   variable x = [i \in {0,1} |-> FALSE] ;
+   fair process (P \in {0,1})
+    { ncs:- while (TRUE)
+              {     skip;
+                e1: x[self] := TRUE;
+                e2: if (~x[1-self]) { cs: skip }
+                    else { if (self = 0) { goto e2 }
+                           else { e3: x[1] := FALSE ;
+                                  e4: while (x[0]) { skip } ;
+                                      goto e1
+                                } 
+                          } ;
+               f:   x[self] := FALSE
+             }
+    }
+ }
+\end{nopcal}
+\begin{tlatex}
+\@x{ {\p@mmalgorithm} OneBit {\p@lbrace}}%
+ \@x{\@s{12.29} {\p@variable} x \.{=} [ i\@s{8.19} \.{\in} \{ 0 ,\, 1 \}
+ \.{\mapsto} {\FALSE} ] {\p@semicolon}}%
+ \@x{\@s{12.29} {\p@fair} {\p@process} {\p@lparen} P \.{\in} \{ 0 ,\, 1 \}
+ {\p@rparen}}%
+ \@x{\@s{16.4} {\p@lbrace} ncs\@s{.5}\textrm{:-}\@s{3} {\p@while} {\p@lparen}
+ {\TRUE} {\p@rparen}}%
+\@x{\@s{58.92} {\p@lbrace}\@s{16.4} {\p@skip} {\p@semicolon}}%
+ \@x{\@s{67.12} e1\@s{.5}\textrm{:}\@s{3}\@s{1.15} x [ self ] \.{:=} {\TRUE}
+ {\p@semicolon}}%
+ \@x{\@s{67.12} e2\@s{.5}\textrm{:}\@s{3}\@s{1.15} {\p@if} {\p@lparen} {\lnot}
+ x [ 1 \.{-} self ] {\p@rparen} {\p@lbrace} cs\@s{.5}\textrm{:}\@s{3}
+ {\p@skip} {\p@rbrace}}%
+ \@x{\@s{84.90} {\p@else} {\p@lbrace} {\p@if} {\p@lparen} self \.{=} 0
+ {\p@rparen} {\p@lbrace} {\p@goto} e2 {\p@rbrace}}%
+ \@x{\@s{116.59} {\p@else} {\p@lbrace} e3\@s{.5}\textrm{:}\@s{3} x [ 1 ]
+ \.{:=} {\FALSE} {\p@semicolon}}%
+ \@x{\@s{148.28} e4\@s{.5}\textrm{:}\@s{3} {\p@while} {\p@lparen} x [ 0 ]
+ {\p@rparen} {\p@lbrace} {\p@skip} {\p@rbrace} {\p@semicolon}}%
+\@x{\@s{164.91} {\p@goto} e1}%
+\@x{\@s{138.70} {\p@rbrace}}%
+\@x{\@s{111.11} {\p@rbrace} {\p@semicolon}}%
+\@x{\@s{63.02} f\@s{.5}\textrm{:}\@s{3}\@s{10.41} x [ self ] \.{:=} {\FALSE}}%
+\@x{\@s{54.82} {\p@rbrace}}%
+\@x{\@s{16.4} {\p@rbrace}}%
+\@x{\@s{4.1} {\p@rbrace}}%
+\end{tlatex}
+
+\end{popup}
+\makepopup

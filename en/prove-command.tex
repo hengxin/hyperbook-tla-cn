@@ -1,0 +1,32 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\makeindex
+\file{prove-command}
+\pdftitle{Executing the Prove Command}
+\newsetwidepopup{19}{11}
+\begin{document}
+  \ctindex{1}{Prove (Toolbox command)@\icmd{textsf}{Prove} (Toolbox command)}{prove}%
+  \vspace{-2\baselineskip}%
+\subsection*{Executing the Prove Command}
+
+You tell TLAPS to prove something by executing the \textsf{Prove Step
+or Module} command (called \textsf{Prove} for short).  To execute the
+command on a proof step or on an entire theorem, move the 
+ \marginpar{\popref{cursor}{Don't confuse the cursor with the
+                            mouse pointer.}}%
+cursor
+inside the statement of the step or the theorem and either
+\begin{itemize}
+\item right-click and choose \textsf{Prove Step or Module}, or
+
+\item type \textsf{control+g} \textsf{control+g}, which you do by holding
+down the \textsf{Control} key and typing \textsf{g} twice.
+\end{itemize}
+For a step with a leaf proof, you can put the cursor either in the
+step or in the proof.  Executing the \textsf{Prove} command with
+the cursor outside any theorem or proof causes all proofs in the
+module to be checked.
+%
+% \medskip\noindent
+%  \popref{Don't confuse the cursor with the mouse pointer.}  
+\end{document}

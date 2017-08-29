@@ -1,0 +1,22 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{The Body of Algorithm Euclid}
+\begin{popup}
+\subsection*{The Body of Algorithm \emph{Euclid}}
+
+\begin{nopcal}
+while (x # y) { if (x < y) { y := y - x }
+                else       { x := x - y }
+              } 
+\end{nopcal}
+\begin{tlatex}
+ \@x{ {\p@while} {\p@lparen} x \.{\neq} y {\p@rparen} {\p@lbrace} {\p@if}
+ {\p@lparen} x \.{<} y {\p@rparen} {\p@lbrace} y \.{:=} y\@s{0.10} \.{-} x
+ {\p@rbrace}}%
+ \@x{\@s{85.13} {\p@else}\@s{24.59}\@s{9.09}  {\p@lbrace} x\.{:=} x \.{-} y
+ {\p@rbrace}}%
+\@x{\@s{75.54} {\p@rbrace}}%
+\end{tlatex}
+
+\end{popup}
+\makepopup

@@ -1,0 +1,34 @@
+%% File url.sty  created 25 Feb Mar 1996 by Leslie Lamport
+%%
+%% \url{ARG} -- typesets ARG as a URL, by: 
+%%      * Using a \tt declaration.
+%%      * Making  % ~ $ # & _ ^ and \  act like ordinary letters.
+%%      * Allowing a line break after each "." and before each
+%%        "/" and "//".
+%%    It also allows a line break immediately before and after
+%%    ARG, so you can allow a line break between A and RG by
+%%    writing \url{A}\url{RG} instead of \url{ARG}.
+\newcommand{\realslash}{/}
+\begingroup
+\catcode`\/\active
+\catcode`\.\active
+\catcode`:\active
+\gdef\urlslash{\@ifnextchar/{\doubleslash}{\discretionary{}{}{}\realslash}}
+\gdef\urlend#1{\let/\urlslash\let.\urldot
+                 \discretionary{}{}{}#1\discretionary{}{}{}\endgroup}
+\endgroup
+\newcommand{\urldot}{.\discretionary{}{}{}}
+\newcommand{\url}{\begingroup\urlbegin}
+\newcommand{\urlbegin}{\catcode`\%12\relax
+                       \catcode`\~12\relax
+                       \catcode`\#12\relax
+                       \catcode`\$12\relax
+                       \catcode`\&12\relax
+                       \catcode`\_12\relax
+                       \catcode`\^12\relax
+                       \catcode`\\12\relax
+                       \catcode`\/\active
+                       \catcode`\.\active
+                       \tt
+                       \urlend}
+\newcommand{\doubleslash}[1]{\discretionary{}{}{}//}

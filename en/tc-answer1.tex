@@ -1,0 +1,53 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{}
+\begin{popup}
+Recall the original (non-\tlaplus) definition:
+ \[ R *\!*\, S == \{ <<x, y>> \; : \; \E\,z \!:\! (<<x, z>> \in R) 
+      \; /\ \; (<<z, y>> \in S) \}
+ \]
+Since $x$ is replacing $<<x, y>>$ , we can
+replace $x$ and $y$ by $x[1]$ and $x[2]$.  Hence, the definition becomes
+  \[ R *\!*\, S == \{ x \in T \; : \; 
+      \E\, z \!:\! (<<x[1], z>> \in R)\; /\ \;(<<z, x[2]>> \in S) \}
+ \]
+We now have to decide what the set $T$ should be.  A little thought
+reveals that the elements of $R*\!*\,S$ have to be pairs $<<r, s>>$
+with $r$ a node of $R$ and $s$ a node of $S$.  Therefore, we can take
+$T$ to be the Cartesian product $NodesOf(R) \X NodesOf(S)$, to obtain:
+\begin{display}
+\begin{notla}
+R ** S == { x \in NodesOf(R) \X NodesOf(S) : 
+                   \E z : (<<x[1], z>> \in R) /\ (<<z, x[2]>> \in S) }
+\end{notla}
+\begin{tlatex}
+ \@x{ R \.{\stst}\, S \.{\defeq} \{ x \.{\in} NodesOf ( R ) \.{\times} NodesOf
+ ( S ) \.{:}\vs{.2}}%
+ \@x{\@s{73.62} \E\, z \.{:} ( {\langle} x [ 1 ] ,\, z {\rangle} \.{\in} R )
+ \;\.{\land}\; ( {\langle} z ,\, x [ 2 ] {\rangle} \.{\in} S ) \}}%
+\end{tlatex}
+\end{display}  
+This is a legal \tlaplus\ definition, but TLC can't evaluate it
+because it contains the unbounded quantifier $\E z : \ldots$\,\,.  We need
+to restrict the range of the bound identifier $z$.  The body of the
+quantified expression is satisfied only if $z$ is an element of both
+$NodesOf(R)$ and $NodesOf(S)$.  So we could write this quantified expression
+in any of these ways:
+\begin{display}
+ $ \E z \in NodesOf(R) : \ldots$ \V{.2}
+ $\E z \in NodesOf(S) : \ldots$ \V{.2}
+ $\E z \in NodesOf(R) \; \cap \; NodesOf(S) : \ldots  $
+\end{display}
+Although longer, I find the third to be a little clearer:%
+\begin{display}
+\begin{tlatex}
+ \@x{ R \.{\stst}\@s{4.1} S \.{\defeq} \{ x \.{\in} NodesOf ( R ) \.{\times}
+ NodesOf ( S ) \.{:}\vs{.2}}%
+ \@x{\@s{72.59} \E\, z \.{\in} NodesOf ( R )\@s{4.1} \.{\cap}\@s{4.1} NodesOf
+ ( S ) \.{:}\vs{.2}}%
+ \@x{\@s{93.33} ( {\langle} x [ 1 ] ,\, z {\rangle} \.{\in} R )\@s{4.1}
+ \.{\land}\@s{4.1} ( {\langle} z ,\, x [ 2 ] {\rangle} \.{\in} S ) \}}%
+\end{tlatex}
+\end{display}
+\end{popup}
+\makepopup

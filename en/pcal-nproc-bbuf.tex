@@ -1,0 +1,49 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{The N-Process Bounded Buffer Algorithm}
+\begin{popup}
+%\subsection*{The N-Process Bounded Buffer Algorithm}
+
+\begin{nopcal}
+--algorithm NProcBBuf {
+   variables in = Input, out = << >>,
+             buf \in [0..(N-1) -> Msg], p = 0, c = 0;
+   fair process (Buffer \in 0..(N-1)) 
+    { b1:- while (TRUE) 
+           { await p % N = self ;
+             buf[self % N] := IHead(in);
+             in := ITail (in) ;
+             p := p (+) 1 ;
+      b2:    await c % N = self ;
+             out := Append(out, buf[self % N]) ;
+             c := c (+) 1
+           }
+    }
+}
+\end{nopcal}
+\begin{tlatex}
+\@x{ {\p@mmalgorithm} NProcBBuf {\p@lbrace}}%
+ \@x{\@s{12.29} {\p@variables} in \.{=} Input ,\, out \.{=} {\langle}
+ {\rangle} ,\,}%
+ \@x{\@s{60.06} buf \.{\in} [ 0 \.{\dotdot} ( N \.{-} 1 ) \.{\rightarrow} Msg
+ ] ,\, p \.{=} 0 ,\, c \.{=} 0 {\p@semicolon}\vs{.4}}%
+ \@x{\@s{12.29} {\p@fair} {\p@process} {\p@lparen} Buffer \.{\in} 0
+ \.{\dotdot} ( N \.{-} 1 ) {\p@rparen}}%
+ \@x{\@s{16.4} {\p@lbrace} b1\@s{.5}\textrm{:-}\@s{3} {\p@while} {\p@lparen}
+ {\TRUE} {\p@rparen}}%
+\@x{\@s{45.82} {\p@lbrace} {\p@await} p \.{\%} N \.{=} self {\p@semicolon}}%
+\@x{\@s{55.40} buf [ self \.{\%} N ] \.{:=} IHead ( in ) {\p@semicolon}}%
+\@x{\@s{55.40} in \.{:=} ITail ( in ) {\p@semicolon}}%
+\@x{\@s{55.40} p \.{:=} p \.{\oplus} 1 {\p@semicolon}\vs{.3}}%
+ \@x{\@s{25.98} b2\@s{.5}\textrm{:}\@s{3}\@s{12.91} {\p@await} c \.{\%} N
+ \.{=} self {\p@semicolon}}%
+ \@x{\@s{55.40} out \.{:=} Append ( out ,\, buf [ self \.{\%} N ] )
+ {\p@semicolon}}%
+\@x{\@s{55.40} c \.{:=} c \.{\oplus} 1}%
+\@x{\@s{46.48} {\p@rbrace}}%
+\@x{\@s{16.4} {\p@rbrace}}%
+\@x{ {\p@rbrace}}%
+\end{tlatex}
+
+\end{popup}
+\makepopup

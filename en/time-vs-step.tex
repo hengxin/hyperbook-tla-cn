@@ -1,0 +1,33 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{What is time?}
+\file{time-vs-step}
+\begin{popup}
+\subsection*{What is time?}
+
+Time 
+  \tindex{1}{time}% 
+is something we measure with a clock.  If we want to specify
+properties of a system that involve real time, then our specification
+needs to describe a clock.  For example, if we want to say that it
+takes 5 seconds for the system to do something, then we will have to
+add a variable whose value represents the time shown on the clock.
+
+\medskip
+
+I like to write such real-time specifications in terms of a variable
+$now$ that represents an ideal clock that keeps perfect time.  In such
+specifications, the passage of time is represented by a step that
+increases the value of $now$.  These specifications typically allow
+steps that leave $now$ unchanged.  A sequence of such steps represents
+a sequence of operations that are considered all to happen at the same
+time.
+
+\medskip
+
+The word ``time'' in my explanation of the temporal operator $[]$ is
+not what we usually mean by time.
+
+
+\end{popup}
+\makepopup

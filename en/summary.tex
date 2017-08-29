@@ -1,0 +1,822 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{Summary}
+\file{summary}
+
+% From TLA+ book
+\newcommand{\notemark}[1]{$^{\mbox{\tiny(#1)}}$}
+%\newcommand{\dd}{\,\,\ldotp\ldotp\,}
+\newcommand{\atat}{\mathop{@@}}
+
+\begin{document}
+\renewcommand{\contentsname}{Summary of \protect\tlaplus\protect\target{top}}
+\showversions
+\tableofcontents
+\hideversions
+\vfill 
+\newpage
+\section*{The Constant Operators}
+\addcontentsline{toc}{section}{The Constant Operators}
+\newcommand{\xins}{\ensuremath{x\in S}}
+{\centering
+\begin{tabbing}
+\hspace*{1em}\=\+\kill
+\bf \hspace*{-1em}Logic\\
+$\land$ \ \ $\lor$ 
+  \ \ $\lnot$ 
+  \ \ $=>$ \ \ $\equiv$ \\
+\TRUE \ \ \ \ \FALSE \ \ \ \ \BOOLEAN\ % \hspace{.5em}
+  {\small [the set $\{\TRUE,\, \FALSE\}$]}
+\\
+%$\forall\, x : p$  \ 
+%\ \ \ $\exists\, x : p$  \ \ \ \ 
+%$\forall\, x \in S : p$  \ \ \ \ $\exists\, x \in S : p$\\ 
+$\forall\, \xins : p$  \ 
+   \notemark{1} \
+\ \ \ $\exists\, \xins : p$
+\   \notemark{1} 
+\\ 
+% \ \ \ \ 
+% \CHOOSE $x : p$
+%   \ {\small [An $x$ satisfying $p$]}
+% \ \ \ \ 
+\CHOOSE $x\in S : p$ \ \small [An $x$ in $S$ satisfying $p$]
+\\[.875\baselineskip]
+%\\[.375\baselineskip]
+%
+{\bf \hspace*{-1em}Sets}\\
+$=$ \ \ $\neq$ \ \ $\in$ \ \ $\notin$ 
+  \ \ $\cup$ \ \ $\cap$ \ \ $\subseteq$ \ \ 
+  $:\:$ {\small [set difference]}\\
+$\{e : \xins \}$ \   \notemark{1} \hspace{.5em}\= \kill
+%$\{e_1, \ldots , e_n\}$ \hspace{.5em}\= \kill
+%
+$\{e_1, \ldots , e_n\}$     
+  \> \small [Set consisting of elements $e_i$] \\
+$\{x \in S : p\}$  \notemark{2} 
+  \> \small [Set of elements $x$ in $S$ satisfying $p$] \\
+$\{e : \xins \}$ \notemark{1} 
+  \> \small [Set of elements $e$ such that $x$ in $S$] \\
+\SUBSET $S$
+  \> \small [Set of subsets of $S$] \\
+$\UNION S$
+  \> \small [Union of all elements of $S$]%
+\\[.875\baselineskip]
+%\\[.375\baselineskip]
+%
+{\bf \hspace*{-1em}Functions}\\
+{[}$f \EXCEPT ![e_{1}]\,=\,e_{2}$] \notemark{1} 
+  \hspace{.5em}\= \kill
+$f$[$e$] \>
+  {\small [Function application]}\\
+\DOMAIN $f$ \> \small [Domain of function $f$] \\
+{[}$\xins$~$\mapsto$\ $\!e$] \notemark{1} 
+  \> \small [Function $f$ such that $f[x]=e$ for $x\in S$]\\
+{[}$S$ $\rightarrow$ $T$]
+  \> \small [Set of functions $f$ with $f[x]\in T$ for 
+             $x\in S$]            \\
+{[}$f \EXCEPT ![e_{1}]\,=\,e_{2}$] \notemark{3} 
+  \> \small [Function $\widehat{f}$ equal to $f$ except 
+             $\widehat{f}[e_{1}]=e_{2}$]%
+\\[.875\baselineskip]
+%\\[.375\baselineskip]
+%{[}
+% $\{\![f \EXCEPT ![e] \in S]\!\}$
+%   \> \small [Set of functions $\widehat{f}$ equal to $f$ except 
+%             $\widehat{f}[e]\in S$]\\[.375\baselineskip]
+%
+{\bf \hspace*{-1em}Records}\\
+$[ x_1 \mapsto e_1, \ldots , x_n \mapsto e_n ]$
+  \hspace{.5em}\= \kill
+ %
+$e.h$     
+\> \small [The $h$-field of record $e$] \\
+ %
+$[ h_1 \mapsto e_1, \ldots , h_n \mapsto e_n ]$
+  \> \small [The record whose $h_i$ field is $e_i$]\\
+ %
+$[ h_1 : S_1, \ldots , h_n : S_n ]$ 
+ \> \small [Set of all records with $h_i$ field in $S_i$]\\
+$[ r \EXCEPT  !.h=e]$ \notemark{3} 
+  \> \small [Record $\widehat{r}$ equal to $r$ except 
+             $\widehat{r}.h=e$]%
+\\[.875\baselineskip]
+%\\[.375\baselineskip]
+%$\{\![ r \EXCEPT !.h  \in S]\!\}$
+%  \> \small [Set of records $\widehat{r}$ equal to $r$ except 
+%             $\widehat{r}.h\in S$]\\[.375\baselineskip]
+%
+{\bf \hspace*{-1em}Tuples}\\
+ $S_1 \X \ldots \X S_n$ 
+ \hspace{.5em}\= \kill
+%
+$e[i]$  \>   \small [The $i^{\rm th}$ component of tuple $e$]\\
+$<<e_1, \ldots , e_n>>$
+  \> \small [The $n$-tuple whose $i^{\rm th}$ component is 
+            $e_i$]\\
+$S_1 \X \ldots \X S_n$
+   \> \small [The set of all $n$-tuples with $i^{\rm th}$ component in $S_i$]
+%
+%% \\[.875\baselineskip]
+%\\[.375\baselineskip]
+
+%% {\bf \hspace*{-1em}Strings and Numbers} \\
+%% $d_{1}\ldots d_{n}$ \ \ $d_{1}\ldots d_{n}.d_{n+1}\ldots d_{m}$
+%%  \hspace{.5em}\= \kill
+ %
+%% $"c_1 \ldots c_n"$
+%%   \> \small [A literal string of $n$ characters]   \\
+ %
+%% {\sc String} 
+%%   \> \small [The set of all strings] \\
+%% $d_{1}\ldots d_{n}$ \ \ $d_{1}\ldots d_{n}\,.\,d_{n+1}\ldots d_{m}$
+%%   \> \small [Numbers (where the $d_{i}$ are digits)]
+\end{tabbing}}
+\vspace{-\baselineskip}
+\rule{.2\textwidth}{.4pt}\\
+{\footnotesize
+\begin{tabular}[t]{@{}l@{\ }l}
+  (1)& \begin{minipage}[t]{.94\textwidth}
+    $x\in S$ may be replaced by a comma-separated list of items $v\in S$,
+   where $v$ is either a comma-separated list or a tuple of identifiers.\vs{.1}
+       \end{minipage}\\
+  (2)& $x$ may be an identifier or tuple of identifiers.\\[.1em]
+  (3)& \begin{minipage}[t]{.94\textwidth}
+    $![e_{1}]$ or $!.h$ may be replaced by a comma separated
+    list of items $!a_{1}\cdots a_{n}$,
+      where each $a_{i}$ is $[e_{i}]$ or $.h_{i}$\,.
+       \end{minipage}
+\end{tabular}}
+% \label{fig:TLA+operators1}%
+%   \index{constant!operator}%
+%   \index{operator!constant}%
+
+\newpage
+
+%\begin{table}
+
+\section*{Miscellaneous Constructs}
+\addcontentsline{toc}{section}{Miscellaneous Constructs}
+
+{\centering
+\begin{tabbing}
+%
+%{\bf \hspace*{-1em}Miscellaneous} \\[.2em]
+{\sc case} $p_1 \rightarrow e_1 \; [] \; \ldots \; [] \;  p_n \rightarrow e_n
+   \; [] \; \OTHER \rightarrow e$ 
+%{\sc case} $p_1 \rightarrow e_1 \; [] \; \ldots \; [] \;  p_n \rightarrow e_n$
+  \hspace{.5em}\= \kill
+ %
+{\sc if} $p$ {\sc then} $e_1$ {\sc else} $e_2$
+  \> \small [$e_1$ if $p$ true, else $e_2$]\\[.2em]
+ %
+{\sc case} $p_1 \rightarrow e_1 \; [] \; \ldots \; [] \;  p_n \rightarrow e_n$
+  \> \small [Some $e_i$ such that $p_i$ true]
+ \\[.2em]
+{\sc case} $p_1 \rightarrow e_1 \; [] \; \ldots \; [] \;  p_n \rightarrow e_n
+   \; [] \; \OTHER \rightarrow e$ 
+\> \small [\begin{tabular}[t]{@{}l@{}}
+              Some $e_i$ such that $p_i$ true,\\ or $e$ if all $p_{i}$
+             are false]\vs{.2}
+              \end{tabular}
+ \\[.2em]
+{\sc let}\, $d_{1}\deq e_{1}$ $\;\ldots\;$ $d_{n}\deq e_{n}$ \,{\sc in}\, $e$
+  \s{.5}  \small [$e$ in the context of the definitions] \\[.5\baselineskip]
+$\begin{noj2}
+  /\ & p_{1}  \\
+     & \s{.4}\vdots \\
+  /\ & p_{n}
+ \end{noj2}$\hspace{.5em}%
+ {\small [the conjunction $p_{1} /\ \ldots /\ p_{n}$]}
+ \hspace{2em}
+$\begin{noj2}
+  \/ & p_{1}\\
+     & \s{.4}\vdots \\
+  \/ & p_{n}
+ \end{noj2}$\hspace{.5em}%
+\small [the disjunction $p_{1} \/ \ldots \/ p_{n}$]
+\end{tabbing}\par }
+%\vspace{-1.25\baselineskip}
+%\caption[]{Miscellaneous constructs.\rule[-.75em]{0pt}{0pt}}
+%\label{fig:TLA+operators2}%
+% \end{table} % 
+
+\vspace{2em}
+
+%\begin{table} 
+
+\section*{Action Operators}
+\addcontentsline{toc}{section}{Action Operators}
+
+{\centering
+\begin{tabbing}
+\hspace*{1em}\=\+\kill
+%\bf \hspace*{-1em}Predicate and Action Operators\\
+$\UNCHANGED e$ \hspace{.5em} \=\kill
+$e'$       \>     \small [The value of $e$ in the final state of a step] \\
+$[A]_e$    \>    \small [$A \/ (e'=e)$] \\
+$<<A>>_e $ \>    \small [$A /\ (e' \neq e)$] \\
+$\ENABLED A$ \>  \small [An $A$ step is possible] \\
+$\UNCHANGED e$ \> \small [$e'=e$] \\
+$A\cdot B$   \>  \small [Composition of actions]
+%
+\end{tabbing}
+% \vspace{-\baselineskip}
+% \caption{Action operators.}
+% \label{fig:action-ops}
+%   \index{operator, action}%
+%   \index{action!operator}%
+}
+
+\vspace{2em}
+\section*{Temporal Operators}
+\addcontentsline{toc}{section}{Temporal Operators}
+
+
+{\centering
+\begin{minipage}{\textwidth}
+\begin{tabbing}
+%\bf \hspace*{-1em}Temporal Operators\\
+$F ~> G$ \hspace{.5em} \=\kill
+$[]F$    \> \small [$F$ is always true] \\
+$<>F$    \> \small  [$F$ is eventually true] \\
+WF$_{e}(A)$ \> \small [Weak fairness for action $A$]\\
+SF$_{e}(A)$ \> \small [Strong fairness for action $A$]\\
+$F ~> G$ \> \small [$F$ leads to $G$]
+%\\
+%
+% $F -+-> G$ \> \small [$F$ guarantees $G$]\\
+%
+% $\EE x : F$ \>
+%    \small [Temporal existential quantification (hiding)]\\
+% $\AA x : F$ \>
+%    \small [Temporal universal quantification]
+\end{tabbing}
+\end{minipage}\par }
+%\vspace{-\baselineskip}
+%\caption[]{Temporal operators.\rule[-1em]{0pt}{0pt}}
+%  \index{operator!temporal}%
+%  \index{temporal!operator}%
+%\label{fig:temporal-ops}
+% \end{table}
+
+\newpage
+
+
+%\begin{table}[p]
+% \textbf{Infix Operators}\\[.4em]
+%\s{1}
+
+\section*{User-Definable Operator Symbols\protect\target{user-definable}}
+\addcontentsline{toc}{section}{User-Definable Operator Symbols}
+
+\noindent\textbf{Infix Operators}
+
+\begin{tabular}{@{}l@{\hspace{0em}}l@{\hspace{2em}}%
+                   l@{\hspace{0em}}l@{\hspace{2em}}%
+                   l@{\hspace{0em}}l@{\hspace{2em}}%
+                   l@{\hspace{0em}}l@{\hspace{2em}}%
+                   l@{\hspace{0em}}l@{\hspace{2em}}%
+                   l@{\hspace{0em}}l%
+                   @{}}
+$+$ & \notemark{1} &
+$-$ &\notemark{1} &
+$*$ & \notemark{1} &
+$/$ & \notemark{2} &
+$\circ$ \notemark{3} &&
+\small $++$ &
+\\[.1em]
+$\div$ & \notemark{1} & 
+$\%$ & \notemark{1} &
+\verb|^| & \notemark{1,4} &
+$\ldotp\ldotp$  & \notemark{1} &
+$\dots$ &&
+\small $--$ & 
+\\[.1em]
+$\oplus$ & \notemark{5} &
+$\ominus$ & \notemark{5} &
+$\otimes$ &&
+$\oslash$ &&
+$\odot$ & &
+$**$ &
+\\[.1em]
+$<$ & \notemark{1} &
+$>$ & \notemark{1} &
+$\leq$ & \notemark{1}  &
+$\geq$ & \notemark{1} & 
+$\sqcap$ &&
+\small $//$ &
+\\[.1em]
+$\prec$ & &
+$\succ$ &&
+$\preceq$ &&
+$\succeq$ &&
+$\sqcup$ &&
+\verb|^^| &
+\\[.1em]
+$\ll$ &&
+$\gg$ &&
+$<:$ &&
+$:>$ & \notemark{6}&
+\small $\&$ &&
+\small $\&\&$ &
+\\[.1em]
+$\sqsubset$ &&
+$\sqsupset$ &&
+$\sqsubseteq$ & \notemark{5}  &
+$\sqsupseteq$ &&
+$|$ &&
+% $||$ &
+$\%\%$ &
+\\[.1em]
+$\subset$ &&
+$\supset$ &&
+&&
+$\supseteq$ &&
+$\star$ &&
+$@@$ & \notemark{6}
+\\[.1em]
+$|-$ &&
+$\dashv$ & &
+$|=$ &&
+\NOTLA$=\s{-.45}|$ &&
+$\bullet$ &&
+\small $\#\#$ &
+\\[.1em]
+$\sim$ & &
+$\simeq$ &&
+$\approx$ & &
+$\cong$ &&
+$\$$ & &
+$\$\$$ &
+\\[.1em]
+%$:=$ &&
+$\bigcirc$ &&
+$::=$ &&
+$\asymp$ & &
+$\doteq$ &&
+\small $??$ &&
+$!!$ &
+\\[.1em]
+$\propto$ &&
+$\wr$ &&
+$\uplus$ &&
+\\
+\end{tabular}
+
+\vspace{2\baselineskip}
+
+\noindent
+\textbf{Postfix Operators} \notemark{7}\\[.4em]
+\s{1}\verb|^|$+$\s{2}%
+\verb|^|$*$ \s{2}%
+\verb|^|$\#$ 
+
+
+% \vspace{2\baselineskip}
+% 
+% \noindent
+% \textbf{Prefix Operator}\\[.4em]
+% \s{1}$-$\ \notemark{8}
+
+
+\rule{.2\textwidth}{.4pt}\\
+{\footnotesize\begin{tabular}[t]{@{}l@{\ }l}
+  (1)& Defined by the $Naturals$, $Integers$, and $Reals$ modules.\\[.1em]
+% \begin{minipage}[t]{.94\textwidth}
+%       \end{minipage}\\
+  (2)& Defined by the $Reals$ module.\\[.1em]
+  (3)& Defined by the $Sequences$ module.\\[.1em]
+  (4)& $x$\verb|^|$y$ is printed as $x^{y}$.\\[.1em]
+  (5) & Defined by the $Bags$ module.\\[.1em]
+  (6) & Defined by the $TLC$ module. \\[.1em]
+  (7) & $e$\verb|^|$+$ is printed as $e^{+}$\s{-.2}, and similarly for
+        \verb|^|$*$ and \verb|^|$\#$. % \\[.1em]
+%   (8) & Defined by the $Integers$ and $Reals$ modules.
+\end{tabular}}
+%\caption{User-definable operator symbols.}%
+% %  \index{prefix operator}%
+%  \index{infix operator}%
+%  \index{operator!infix}%
+% %  \index{postfix operator}%
+% %  \index{operator!prefix}%
+% %  \index{operator!postfix}%
+%   \index{symbol!user-definable}%
+%   \index{user-definable symbol}%
+%   \index{operator!user-definable}%
+% \label{fig:user-definable-operators}
+% \end{table}
+
+\newpage
+
+\section*{Precedence Ranges of Operators}
+\addcontentsline{toc}{section}{Precedence Ranges of Operators}
+
+The relative precedence of two operators is unspecified if
+their ranges overlap.  Left-associative operators are indicated by
+{\small(a)}.
+
+\vspace{2\baselineskip}
+{\centering
+
+\textbf{Prefix Operators}
+\vspace{.2\baselineskip}
+
+\begin{tabular}[t]{@{}cl@{\,}l@{}}
+$~$ & 4--4 \\
+$\ENABLED$ & 4--15 \\
+$\UNCHANGED$ & 4--15 \\
+\end{tabular}%
+\s{2}%
+\begin{tabular}[t]{@{}cl@{\,}l@{}}
+$[]$ & 4--15 \\
+$<>$ & 4--15 \\
+$\SUBSET$ & 8--8 \\
+\end{tabular}%
+\s{2}%
+\begin{tabular}[t]{@{}cl@{\,}l@{}}
+$\UNION$ & 8--8 \\
+$\DOMAIN$ & 9--9\\
+$-$ & 12--12 \\
+\end{tabular}%
+
+
+\vspace{1.8\baselineskip}
+
+\textbf{Infix Operators}
+\vspace{.2\baselineskip}
+
+\begin{tabular}[t]{@{}cl@{\,}l@{}}
+$=>$     & 1--1   & \\
+$-+->$   & 2--2       & \\
+$\equiv$ & 2--2       & \\
+$~>$     & 2--2       & \\
+$\land$  & 3--3      & \small(a) \\
+$\lor$   & 3--3      & \small(a) \\
+$#$  & 5--5     & \\
+$\dashv$ & 5--5     & \\
+$::=$ & 5--5     & \\
+$:=$ & 5--5     & \\
+$<$ & 5--5     & \\
+$=$ & 5--5     & \\
+$=\s{-.45}|$ & 5--5     & \\
+$>$ & 5--5     & \\
+$\approx$ & 5--5     & \\
+$\asymp$ & 5--5     & \\
+$\cong$ & 5--5     & \\
+$\doteq$ & 5--5     & \\
+$\geq$ & 5--5     & \\
+$\gg$ & 5--5     & \\
+$\in$ & 5--5     & \\
+$\notin$ & 5--5     & \\
+\end{tabular}%
+\s{2}%
+\begin{tabular}[t]{@{}cl@{\,}l}
+$\leq$ & 5--5     & \\
+$\ll$ & 5--5     & \\
+$\prec$ & 5--5     & \\
+$\preceq$ & 5--5     & \\
+$\propto$ & 5--5     & \\
+$\sim$ & 5--5  & \\
+$\simeq$ & 5--5     & \\
+$\sqsubset$ & 5--5     & \\
+$\sqsubseteq$ & 5--5     & \\
+$\sqsupset$ & 5--5     & \\
+$\sqsupseteq$ & 5--5     & \\
+$\subset$ & 5--5     & \\
+$\subseteq$ & 5--5     & \\
+$\succ$ & 5--5     & \\
+$\succeq$ & 5--5     & \\
+$\supset$ & 5--5     & \\
+$\supseteq$ & 5--5     & \\
+$|-$ & 5--5     & \\
+$|=$ & 5--5     & \\
+$\cdot$\notemark{1} & 5--14  & \small(a) \\
+$@@$ & 6--6      & \small(a) \\
+$:>$ & 7--7 & \\
+\end{tabular}
+\s{2}%
+\begin{tabular}[t]{@{}cl@{\,}l}
+$<:$ & 7--7 & \\
+$:\:$ & 8--8        & \\
+$\cap$ & 8--8       & \small(a) \\
+$\cup$ & 8--8 & \small(a)  \\
+$\dd$  & 9--9     & \\
+$\dots$ & 9--9     & \\
+$!!$ & 9--13      & \\
+$\#\#$ & 9--13     & \small(a) \\
+$\$$ & 9--13     & \small(a) \\
+$\$\$$ & 9--13     & \small(a) \\
+$??$ & 9--13     & \small(a) \\
+$\sqcap$ & 9--13     & \small(a) \\
+$\sqcup$ & 9--13     & \small(a) \\
+$\uplus$ & 9--13     & \small(a) \\
+$\wr$ & 9--14   & \\
+$\oplus$ & 10--10   & \small(a)  \\
+$+$ & 10--10      & \small(a) \\
+$++$ & 10--10      & \small(a) \\
+$\%$ & 10--11      & \\
+$\%\%$ & 10--11     & \small(a) \\
+$|$ & 10--11     & \small(a) \\
+$||$ & 10--11     & \small(a) \\
+\end{tabular}%
+\s{2}%
+\begin{tabular}[t]{@{}cl@{\,}l}
+$\ominus$ & 11--11  & \small(a)  \\
+$-$ & 11--11     & \small(a) \\
+$--$ & 11--11     & \small(a) \\
+$\&$ & 13--13     & \small(a) \\
+$\&\&$ & 13--13     & \small(a) \\
+$\odot$ & 13--13  & \small(a)  \\
+$\oslash$ & 13--13    & \\
+$\otimes$ & 13--13     & \small(a) \\
+$*$ & 13--13     & \small(a) \\
+$**$ & 13--13     & \small(a) \\
+$/$ & 13--13      & \\
+$//$ & 13--13      & \\
+$\bigcirc$ & 13--13     & \small(a) \\
+$\bullet$ & 13--13     & \small(a) \\
+$\div$ & 13--13      & \\
+$\circ$ & 13--13     & \small(a) \\
+$\star$ & 13--13     & \small(a) \\
+%\notla 
+\verb|^| & 14--14  & \\ 
+%\notla 
+\verb|^^| & 14--14 & \\
+.\notemark{2} & 17--17 & \small(a)
+\end{tabular}%
+
+\vspace{1.8\baselineskip}
+
+\textbf{Postfix Operators}
+\vspace{.2\baselineskip}
+
+\begin{tabular}[t]{@{}cl@{\,}l}
+\verb|^+| & 15--15
+\end{tabular}%
+\s{2}%
+\begin{tabular}[t]{@{}cl@{\,}l}
+\verb|^*|& 15--15
+\end{tabular}%
+\s{2}%
+\begin{tabular}[t]{@{}cl@{\,}l}
+\verb|^#| & 15--15
+\end{tabular}%
+\s{2}%
+\begin{tabular}[t]{@{}cl@{\,}l}
+$'$ & 15--15
+\end{tabular}
+
+\raggedright
+
+\rule{.2\textwidth}{.4pt}\\
+{\footnotesize\begin{tabular}[t]{@{}l@{\ }l}
+  (1)& Action composition (\verb|\cdot|).\\[.1em]
+  (2)& Record field (period).
+\end{tabular}}
+ 
+}
+
+\newpage
+\section*{Operators Defined in Standard Modules.}
+\addcontentsline{toc}{section}{Operators Defined in Standard Modules.}
+
+
+%\begin{center}
+\begin{minipage}{.93\textwidth}
+\textbf{Modules} $Naturals$, $Integers$, $Reals$
+\\[.3em]
+\s{2}\( % \notla 
+    \noTeXmath 
+   \begin{array}{@{}l@{\hspace{2em}}l@{\hspace{2em}}l@{\hspace{2em}}%
+       l@{\hspace{2em}}l@{\hspace{2em}}l@{\hspace{2em}}l@{\hspace{1.5em}}l@{}}
+     +    & -\mbox{\s{.1}\notemark{1}} & *  &  /\mbox{\s{.1}\notemark{2}} & 
+              \verb|^|\mbox{\s{.1}\notemark{3}} &
+         \dd  
+          & Nat & 
+          Real \mbox{\s{.1}\notemark{2}} \V{.101}
+     \div & \% &     \leq & \geq & < & > & Int \mbox{\s{.1}\notemark{4}}  & 
+           Infinity \mbox{\s{.1}\notemark{2}} 
+   \end{array}
+\)  \\
+\s{2}\rule{.13\textwidth}{.4pt}\\
+\s{2}{\footnotesize
+\begin{tabular}[t]{@{}l@{\ }l}
+  (1)& Only infix $-$ is defined in $Naturals$. \\
+  (2)& Defined only in $Reals$ module.
+\\
+  (3)& Exponentiation. \\
+  (4)& Not defined in $Naturals$ module. 
+\end{tabular}}\s{-50} %% this eliminates a mysterious underfull hbox warning
+\vspace{2.01em}
+
+\textbf{Module} $Sequences$ \\[.3em]
+\s{2}\( % \notla  
+    \noTeXmath
+   \begin{array}{@{}l@{\hspace{2em}}l@{\hspace{2em}}l@{\hspace{2em}}l@{}}
+      \o      & Head  & SelectSeq & SubSeq \V{.101}
+       Append   & Len   & Seq       & Tail
+   \end{array}
+\)
+
+\vspace{2.01em}
+
+\textbf{Module} $FiniteSets$ \\[.3em]
+\s{2}$IsFiniteSet \s{2} Cardinality$
+
+\vspace{2.01em}
+
+\textbf{Module $Bags$} \\[.3em]
+\s{2}\( %\notla 
+   \noTeXmath
+   \begin{array}{@{}l@{\hspace{2em}}l@{\hspace{2em}}l@{\hspace{2em}}l@{}}
+     \oplus         & BagIn    & CopiesIn &  SubBag \V{.101}
+      \ominus       & BagOfAll & EmptyBag & \V{.101}
+      \sqsubseteq     & BagToSet & IsABag &  \V{.101}
+      BagCardinality & BagUnion  & SetToBag
+   \end{array}
+\)
+\vspace{2.01em}
+
+\textbf{Module $RealTime$} \\[.3em]
+\s{2}\( 
+RTBound \s{2} RTnow \s{2} now\;\mbox{\footnotesize(declared to be a variable)}
+\)
+
+\vspace{2.01em}
+
+\textbf{Module $TLC$} \\[.3em]
+\s{2}\( 
+     \colongt \s{3} \atat \s{2} Print \s{2} Assert  \s{2} JavaTime
+     \s{2} Permutations \s{-10}
+\)\V{.101}
+      \s{2}\(SortSeq\)
+
+\end{minipage}
+%\end{center}
+
+\newpage
+
+%\vspace{.32em}
+% \caption{Operators defined in the standard modules.} 
+% \label{fig:standard-module-symbols}
+%   \index{operator, defined in standard module}%
+%   \index{standard module, operators defined in}%
+%   \index{module, standard}%
+
+
+%\begin{table}
+% \vspace{\baselineskip}
+
+\section*{ASCII Representation of Typeset Symbols\protect\btarget{ascii}}
+\addcontentsline{toc}{section}{ASCII Representation of Typeset Symbols}
+
+
+\noindent
+\begin{tabular}[t]{@{}l@{\ }l@{}}
+$/\ $ & \verb+/\+ \ {\small or} \ \verb+\land+ \\
+$~$ & \verb+~+ \ {\small or} \ \verb+\lnot+ \ {\small or} \ \verb+\neg+ \\
+$\in$ & \verb+\in+ \\
+$<<$ & \verb+<<+ \\
+$<$ & \verb+<+ \\
+$\leq$ & \verb+\leq+ \ {\small or} \ \verb+=<+ \ {\small or} \ \verb+<=+ \\
+$\ll$ & \verb+\ll+ \\
+$\prec$ & \verb+\prec+ \\
+$\preceq$ & \verb+\preceq+ \\
+$\subseteq$ & \verb+\subseteq+ \\
+$\subset$ & \verb+\subset+ \\
+$\sqsubset$ & \verb+\sqsubset+ \\
+$\sqsubseteq$ & \verb+\sqsubseteq+ \\
+$|-$ & \verb+|-+ \\
+$|=$ & \verb+|=+ \\
+$->$ & \verb+->+ \\
+%% $\{\![$ & \verb+{|+ \\
+$\cap$ & \verb+\cap+ \,{\small or} \,\verb+\intersect+ \\
+$\sqcap$ & \verb+\sqcap+ \\
+$\oplus$ & \verb|(+)| \ {\small or} \ \verb+\oplus+ \\
+$\ominus$ & \verb+(-)+ \ {\small or} \ \verb+\ominus+ \\
+$\odot$ & \verb+(.)+ \ {\small or} \ \verb+\odot+ \\
+$\otimes$ & \verb|(\X)| \ {\small or} \ \verb+\otimes+ \\
+$\oslash$ & \verb+(/)+ \ {\small or} \ \verb+\oslash+ \\
+$\E$ & \verb|\E| \\
+$\EE$ & \verb|\EE|\\
+$]_v$ & \verb|]_|$v$\\
+$\WF_v$ & \verb|WF_|$v$
+\end{tabular}%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\s{1.5}
+\begin{tabular}[t]{@{}l@{\ }l@{}}
+$\/ $ & \verb+\/+ \ {\small or} \ \verb+\lor+ \\
+$\equiv$ & \verb+<=>+ \ {\small or} \ \verb+\equiv+ \\
+$\notin$ & \verb|\notin| \\
+$>>$ & \verb+>>+ \\
+$>$ & \verb+>+ \\
+$\geq$ & \verb+\geq+ \ {\small or} \ \verb+>=+ \\
+$\gg$ & \verb+\gg+ \\
+$\succ$ & \verb+\succ+ \\
+$\succeq$ & \verb+\succeq+ \\
+$\supseteq$ & \verb+\supseteq+ \\
+$\supset$ & \verb+\supset+ \\
+$\sqsupset$ & \verb+\sqsupset+ \\
+$\sqsupseteq$ & \verb+\sqsupseteq+ \\
+$\dashv$ & \verb+-|+ \\
+\NOTLA$=\s{-.45}|$ & \verb+=|+ \\
+$<-$ & \verb+<-+ \\
+%% $]\!\}$ & \verb+|}+ \\
+$\cup$ & \verb+\cup+ \,{\small or} \,\verb+\union+\\
+$\sqcup$ & \verb+\sqcup+ \\
+%% $\ominus$ & \verb+(-)+ \ {\small or} \ \verb+\ominus+ \\
+$\uplus$ & \verb+\uplus+ \\
+$\X$ & \verb+\X+ \ {\small or} \ \verb+\times+ \\
+$\wr$ & \verb+\wr+ \\
+$\propto$ & \verb+\propto+ \\
+$"s"$ & \verb+"s"+ \notemark{1} \\
+$\A$ & \verb|\A| \\
+$\AA$ & \verb|\AA| \\
+$>>_v$ & \verb|>>_|$v$\\
+$\SF_v$ & \verb|SF_|$v$\vs{.4}
+\end{tabular}%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\s{1.5}
+\begin{tabular}[t]{@{}l@{\ }l@{}}
+$=>$ & \verb+=>+ \\
+$\deq$ & \verb+==+ \\
+$#$ & \verb+#+ \ {\small or} \ \verb+/=+ \\
+$[]$ & \verb+[]+ \\
+$<>$ & \verb+<>+ \\
+$~>$ & \verb+~>+ \\
+$-+->$ & \verb|-+->| \\
+$|->$ & \verb+|->+ \\
+$\div$ & \verb+\div+ \\
+$\cdot$ & \verb+\cdot+ \\
+$\circ$ & \verb+\o+ \ {\small or} \ \verb+\circ+\s{-2} \\
+$\bullet$ & \verb+\bullet+ \\
+$\star$ & \verb+\star+ \\
+$\bigcirc$ & \verb+\bigcirc+\\
+$\sim$ & \verb+\sim+ \\
+$\simeq$ & \verb+\simeq+ \\
+$\asymp$ & \verb+\asymp+ \\
+$\approx$ & \verb+\approx+ \\
+$\cong$ & \verb+\cong+ \\
+$\doteq$ & \verb+\doteq+ \\
+$x^y$ & \verb+x^y+ \notemark{2}\\
+$x^+$ & \verb|x^+| \notemark{2}\\
+$x^*$ & \verb+x^*+ \notemark{2}\\
+\NOTLA$x^{\#}$ & \verb+x^#+ \notemark{2}\\
+$'$ & \verb+'+ 
+\end{tabular}\\
+\begin{minipage}{.18\textwidth}
+\begin{nomodule}
+\makeatletter
+    \raisebox{\@nmlineraise}[0pt][0pt]{\rule[.5ex]{\boxrulewd
+               }{\boxlineht}}%
+    \boxrule 
+\end{nomodule}
+\end{minipage}\s{1}
+\verb|--------| \notemark{3} 
+\s{2}
+\begin{minipage}{.178\textwidth}
+\begin{nomodule}
+\makeatletter
+\mbox{}\boxrule 
+    \raisebox{\@nmlineraise}[0pt][0pt]{\rule[.5ex]{\boxrulewd
+               }{\boxlineht}}
+\end{nomodule}
+\end{minipage}\s{1}
+\verb|--------| \notemark{3} \\[.2em]
+\hspace*{\boxsep}\begin{minipage}{.15\textwidth}
+\begin{nomodule}
+\midbar
+\end{nomodule}
+\end{minipage}\hspace*{\boxsep}\s{1}
+\verb|--------| \notemark{3} 
+\s{2}
+\hspace*{\boxsep}\begin{minipage}{.15\textwidth}
+\vspace{1ex}
+\begin{nomodule}
+\bottombar
+\end{nomodule}
+\end{minipage}\hspace*{\boxsep}\s{1}
+\verb|========| \notemark{3} 
+%
+
+%
+\rule{.2\textwidth}{.4pt}\\
+{\footnotesize
+\begin{tabular}[t]{@{}l@{\ }l}
+  (1)& $s$ is a sequence of characters.  
+% See Section~\ref{sec:strings} on page \pageref{sec:strings}.
+\\[.1em]
+  (2)& $x$ and $y$ are any expressions.\\[.1em]
+  (3)& a sequence of four or more \verb|-| or \verb|=| characters.
+\end{tabular}}
+% \vspace{\baselineskip}
+
+% \caption{The \textsc{ascii} representations of typeset symbols.}
+% \label{fig:ascii}
+%   \index{ascii representation of symbol@\textsc{ascii} representation of symbol}%
+%   \index{symbol!ascii representation@symbol, ASrepresentation}%
+% \end{table}
+
+
+\end{document}

@@ -1,0 +1,55 @@
+\contentsline {section}{\numberline {7}Mutual Exclusion}{2}{section.7}
+\contentsline {subsection}{\numberline {7.1}The Problem}{2}{subsection.7.1}
+\contentsline {subsection}{\numberline {7.2}The One-Bit Protocol}{4}{subsection.7.2}
+\contentsline {subsubsection}{\numberline {7.2.1}The Protocol}{4}{subsubsection.7.2.1}
+\contentsline {subsubsection}{\numberline {7.2.2}An Assertional Proof}{5}{subsubsection.7.2.2}
+\makeseclabel {two-bit-protocol-proof}
+\contentsline {subsubsection}{\numberline {7.2.3}Using TLC to Check an Inductive Invariant}{9}{subsubsection.7.2.3}
+\makeseclabel {checking-inductive-invariant}
+\contentsline {subsection}{\numberline {7.3}The Two-Process One-Bit Algorithm}{13}{subsection.7.3}
+\contentsline {subsubsection}{\numberline {7.3.1}The Two-Process Algorithm}{13}{subsubsection.7.3.1}
+\contentsline {subsubsection}{\numberline {7.3.2}Busy Waiting Versus Synchronization Primitives}{16}{subsubsection.7.3.2}
+\contentsline {subsubsection}{\numberline {7.3.3}Requirement (c)}{18}{subsubsection.7.3.3}
+\makeseclabel {requirement-c}
+\maketargetlabel {question.7.10}{mutex-question3}
+\contentsline {subsection}{\numberline {7.4}Proving Liveness}{19}{subsection.7.4}
+\contentsline {subsection}{\numberline {7.5}An Informal Proof}{19}{subsection.7.5}
+\contentsline {subsection}{\numberline {7.6}A More Formal Proof}{20}{subsection.7.6}
+\makeseclabel {more-formal-proof}
+\contentsline {subsection}{\numberline {7.7}The \emph {N}-Process One-Bit Algorithm}{22}{subsection.7.7}
+\makeseclabel {sec:n-proc-alg}
+\contentsline {subsection}{\numberline {7.8}The Bakery Algorithm}{25}{subsection.7.8}
+\contentsline {subsubsection}{\numberline {7.8.1}The Big-Step Algorithm}{25}{subsubsection.7.8.1}
+\contentsline {paragraph}{The Algorithm}{25}{section*.2}
+\contentsline {paragraph}{Safety}{27}{section*.3}
+\contentsline {paragraph}{Liveness}{29}{section*.4}
+\contentsline {subsubsection}{\numberline {7.8.2}Choosing the Grain of Atomicity}{31}{subsubsection.7.8.2}
+\makeseclabel {atom-grain}
+\contentsline {subsubsection}{\numberline {7.8.3}The Atomic Bakery Algorithm}{34}{subsubsection.7.8.3}
+\contentsline {subsubsection}{\numberline {7.8.4}The Real Bakery Algorithm}{36}{subsubsection.7.8.4}
+\contentsline {subsection}{\numberline {7.9}Mutual Exclusion in Modern Programs}{38}{subsection.7.9}
+\makeseclabel {modern-mutex}
+\contentsline {section}{\numberline {8}The Bounded Channel and Bounded Buffer}{40}{section.8}
+\makeseclabel {sec:alternation}
+\contentsline {subsection}{\numberline {8.1}The Bounded Channel}{40}{subsection.8.1}
+\makeseclabel {sec:bded-channel}
+\contentsline {subsubsection}{\numberline {8.1.1}The Specification}{40}{subsubsection.8.1.1}
+\contentsline {subsubsection}{\numberline {8.1.2}Safety}{43}{subsubsection.8.1.2}
+\contentsline {subsubsection}{\numberline {8.1.3}Liveness}{44}{subsubsection.8.1.3}
+\makeseclabel {bchan-liveness}
+\contentsline {subsubsection}{\numberline {8.1.4}Implementing The Bounded Channel}{44}{subsubsection.8.1.4}
+\makeseclabel {impl-bchan}
+\contentsline {subsection}{\numberline {8.2}The Bounded Buffer}{45}{subsection.8.2}
+\contentsline {subsubsection}{\numberline {8.2.1}Modular Arithmetic}{45}{subsubsection.8.2.1}
+\makeseclabel {modular-arithmetic}
+\contentsline {subsubsection}{\numberline {8.2.2}The Algorithm}{45}{subsubsection.8.2.2}
+\makeseclabel {main:bbuf-alg}
+\contentsline {subsection}{\numberline {8.3}The\nobreakspace {}Bounded\nobreakspace {}Buffer\nobreakspace {}Implements\nobreakspace {}the\nobreakspace {}Bounded\nobreakspace {}Channel\hspace *{-10em}}{48}{subsection.8.3}
+\contentsline {subsubsection}{\numberline {8.3.1}The Refinement Mapping}{48}{subsubsection.8.3.1}
+\makeseclabel {refinement-mapping}
+\contentsline {subsubsection}{\numberline {8.3.2}Showing Implementation}{50}{subsubsection.8.3.2}
+\makeseclabel {main:bbuf-impl-bchan}
+\contentsline {subsubsection}{\numberline {8.3.3}Liveness}{51}{subsubsection.8.3.3}
+\contentsline {subsection}{\numberline {8.4}A Finer-Grained Bounded Buffer}{54}{subsection.8.4}
+\contentsline {subsection}{\numberline {8.5}Further Refinement}{57}{subsection.8.5}
+\contentsline {subsection}{\numberline {8.6}What is a Process?}{58}{subsection.8.6}

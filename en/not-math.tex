@@ -1,0 +1,36 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{The TLC Module versus Mathematics}
+\file{not-math}
+\makeindex
+\begin{popup}
+\subsection*{The $TLC$ Module versus Mathematics}
+
+The standard $TLC$ 
+  \ctindex{1}{math!not}{math-not}%
+module defines a few operators that, as implemented by TLC, lie
+outside the domain of mathematics.  In mathematics, the formula $e=e$
+is true for every expression $e$.  However, using these special
+operators, you can write a formula of the form $e=e$ that TLC can find
+equal to \textsc{false}.  For example, one of these operators is
+$JavaTime$, which TLC evaluates to be a function of the current date
+and time (the number of milliseconds elapsed since 0:00 UTC on 1
+January 1970).  TLC could obtain the value \textsc{false} when it
+evaluates the formula $JavaTime=JavaTime$.
+
+\medskip\indent
+%
+When you use such an operator, you leave the world of mathematics and
+enter the world of programming.  You should never use any of these
+operators in a specification---neither an I/O specification nor a
+system specification.  You should use them only to help TLC check a
+specification.  The operators defined in the $TLC$ module that
+are outside the domain of mathematics are:
+ \[ JavaTime \s{2} RandomElement \s{2} TLCGet \]
+There are other operators defined in the $TLC$ module that make no
+sense as part of a specification---for example, $PrintT$.  However,
+the values TLC obtains when evaluating them are consistent with
+their \tlaplus\ definitions.
+
+\end{popup}
+\makepopup

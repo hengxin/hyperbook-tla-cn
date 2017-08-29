@@ -1,0 +1,42 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{Processes Tick and Tock}
+\begin{popup}
+\subsection*{Processes \emph{Tick} and \emph{Tock}}
+
+\begin{nopcal}
+   process (Tick = 0) 
+     { t0: while (TRUE)
+             { await b = 0 ;
+               b := 1
+             }
+     }
+   
+   process (Tock = 1)
+     { t1: while (TRUE)
+             { await b = 1 ;
+               b := 0
+             }
+     }
+\end{nopcal}
+\begin{tlatex}
+\@x{\@s{12.29} {\p@process} {\p@lparen} Tick \.{=} 0 {\p@rparen}}%
+ \@x{\@s{20.5} {\p@lbrace} t0\@s{.5}\textrm{:}\@s{3} {\p@while} {\p@lparen}
+ {\TRUE} {\p@rparen}}%
+\@x{\@s{53.83} {\p@lbrace} {\p@await} b \.{=} 0 {\p@semicolon}}%
+\@x{\@s{63.41} b \.{:=} 1}%
+\@x{\@s{53.83} {\p@rbrace}}%
+\@x{\@s{20.5} {\p@rbrace}}%
+\@pvspace{8.0pt}%
+\@x{\@s{12.29} {\p@process} {\p@lparen} Tock \.{=} 1 {\p@rparen}}%
+ \@x{\@s{20.5} {\p@lbrace} t1\@s{.5}\textrm{:}\@s{3} {\p@while} {\p@lparen}
+ {\TRUE} {\p@rparen}}%
+\@x{\@s{53.83} {\p@lbrace} {\p@await} b \.{=} 1 {\p@semicolon}}%
+\@x{\@s{63.41} b \.{:=} 0}%
+\@x{\@s{53.83} {\p@rbrace}}%
+\@x{\@s{20.5} {\p@rbrace}}%
+\end{tlatex}
+
+
+\end{popup}
+\makepopup

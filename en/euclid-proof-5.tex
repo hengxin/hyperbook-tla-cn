@@ -1,0 +1,85 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{Euclid Proof}
+\setpopup{36}
+% To get tlatex to work right.
+%  -In the source, add an extra space before a DEF
+%  -In the tlatex environment, add \@s{-37.3} before a PROVE to 
+%    align an ASSUME/PROVE
+\begin{document}
+\begin{notla}
+THEOREM /\ Init => Inv
+        /\ Inv /\ Next => Inv'
+        /\ Inv => Safe 
+<1>1. Init => Inv
+   BY MNPosInt  DEF Init, Inv, TypeOK
+<1>2. Inv /\ Next => Inv'
+  <2>1. SUFFICES ASSUME Inv, Next
+                 PROVE  Inv'
+     OBVIOUS
+  <2>2. CASE y > x
+    <3>1. (y - x \in Nat \ {0})  /\  ~(x > y)
+      BY <2>1, <2>2, SimpleArithmetic  DEF Inv, TypeOK
+    <3>2. QED 
+      BY <2>1, <3>1, GCD3  DEF Inv, TypeOK, GCDInv, Next
+  <2>3. CASE x > y
+    <3>1. (x - y \in Nat \ {0})  /\  ~(y > x)
+      BY <2>1, <2>3, SimpleArithmetic  DEF Inv, TypeOK
+    <3>2. GCD(y, x-y) = GCD(y, x)
+      BY <2>1, <3>1, GCD3  DEF Inv, TypeOK, Next
+    <3>3. QED
+      BY <2>1, <3>1, <3>2, GCD2 DEF Inv, TypeOK, GCDInv, Next
+  <2>4. QED
+    BY <2>1, <2>2, <2>3  DEF Next
+<1>3. Inv => Safe  
+  BY GCD1  DEF Inv, Safe, TypeOK
+<1>4. QED
+  BY <1>1, <1>2, <1>3
+\end{notla}
+\begin{tlatex}
+\@x{ {\THEOREM} \.{\land} Init \.{\implies} Inv}%
+\@x{\@s{46.82} \.{\land} Inv \.{\land} Next \.{\implies} Inv \.{'}}%
+\@x{\@s{46.82} \.{\land} Inv \.{\implies} Safe}%
+\@x{\@pfstepnum{1}{1.}\  Init \.{\implies} Inv}%
+\@x{\@s{12.29} {\BY} MNPosInt\@s{4.1} {\DEF} Init ,\, Inv ,\, TypeOK ,\, GCDInv}%
+\@x{\@pfstepnum{1}{2.}\  Inv \.{\land} Next \.{\implies} Inv \.{'}}%
+\@x{\@s{8.2}\@pfstepnum{2}{1.}\  {\SUFFICES} {\ASSUME} Inv ,\, Next}%
+\@x{\@s{113.83}\@s{-37.3} {\PROVE}\@s{4.1} Inv \.{'}}%
+\@x{\@s{20.5} {\OBVIOUS}}%
+\@x{\@s{8.2}\@pfstepnum{2}{2.}\  {\CASE} y \.{>} x}%
+ \@x{\@s{16.4}\@pfstepnum{3}{1.}\  ( y \.{-} x \.{\in} Nat \.{\,\backslash\,}
+ \{ 0 \} )\@s{4.1} \.{\land}\@s{4.1} {\lnot} ( x \.{>} y )}%
+ \@x{\@s{24.59} {\BY}\@pfstepnum{2}{1} ,\,\@pfstepnum{2}{2} ,\,
+ SimpleArithmetic\@s{4.1} {\DEF} Inv ,\, TypeOK}%
+\@x{\@s{16.4}\@pfstepnum{3}{2.}\  {\QED}}%
+ \@x{\@s{24.59} {\BY}\@pfstepnum{2}{1} ,\,\@pfstepnum{3}{1} ,\, GCD3\@s{4.1}
+ {\DEF} Inv ,\, TypeOK ,\, GCDInv,\, Next}%
+\@x{\@s{8.2}\@pfstepnum{2}{3.}\  {\CASE} x \.{>} y}%
+ \@x{\@s{16.4}\@pfstepnum{3}{1.}\  ( x \.{-} y \.{\in} Nat \.{\,\backslash\,}
+ \{ 0 \} )\@s{4.1} \.{\land}\@s{4.1} {\lnot} ( y \.{>} x )}%
+ \@x{\@s{24.59} {\BY}\@pfstepnum{2}{1} ,\,\@pfstepnum{2}{3} ,\,
+ SimpleArithmetic\@s{4.1} {\DEF} Inv ,\, TypeOK}%
+ \@x{\@s{16.4}\@pfstepnum{3}{2.}\  GCD ( y ,\, x \.{-} y ) \.{=} GCD ( y ,\, x
+ )}%
+ \@x{\@s{24.59} {\BY}\@pfstepnum{2}{1} ,\,\@pfstepnum{3}{1} ,\, GCD3\@s{4.1}
+ {\DEF} Inv ,\, TypeOK ,\, Next}%
+\@x{\@s{16.4}\@pfstepnum{3}{3.}\  {\QED}}%
+ \@x{\@s{24.59} {\BY}\@pfstepnum{2}{1} ,\,\@pfstepnum{3}{1}
+ ,\,\@pfstepnum{3}{2} ,\, GCD2\@s{4.1} {\DEF} Inv ,\, TypeOK ,\,
+ GCDInv ,\,Next}%
+\@x{\@s{8.2}\@pfstepnum{2}{4.}\  {\QED}}%
+ \@x{\@s{16.4} {\BY}\@pfstepnum{2}{1} ,\,\@pfstepnum{2}{2}
+ ,\,\@pfstepnum{2}{3}\ \@s{4.1} {\DEF} Next}%
+\@x{\@pfstepnum{1}{3.}\  Inv \.{\implies} Safe}%
+\@x{\@s{8.2} {\BY} GCD1\@s{4.1} {\DEF} Inv ,\, Safe ,\, TypeOK ,\, GCDInv}%
+\@x{\@pfstepnum{1}{4.}\  {\QED}}%
+ \@x{\@s{8.2} {\BY}\@pfstepnum{1}{1} ,\,\@pfstepnum{1}{2}
+ ,\,\@pfstepnum{1}{3}\ }%
+\end{tlatex}
+\vspace{1em}
+
+% \noindent
+% \popref{euclid-proof-5-ascii}{\textsf{Click here for 
+% \textsc{ascii} version.}}
+% \vspace*{-1.5em}
+\end{document}

@@ -1,0 +1,48 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{Answer}
+\pflongnumbers
+\pflongindent
+\beforePfSpace{15pt, 3pt, 2pt}
+\afterPfSpace{10pt, 7pt, 5pt}
+\interStepSpace{.5pt}
+%\pfsidenumbers{0}{.8em}
+\begin{popup}
+\subsection*{Answer}
+To prove $|- [](x=1) => []([](x=1)))$ we must prove
+  \[ \M{\sigma}{[](x=1) => []([](x=1))}\]
+for an arbitrary behavior $\sigma$.  Here is the proof.
+\begin{proof}
+\step{1}{\suffices{$\M{\sigma}{[](x=1)} => \M{\sigma}{[]([](x=1))}$}}
+\begin{proof}
+\pf\ Because $\M{\sigma}{F => G}$ is defined to equal 
+  $\M{\sigma}{F} => \M{\sigma}{G}$, for any $F$, $G$, and $\sigma$.
+\end{proof}
+
+\step{2}{\sassume{$\M{\sigma}{[](x=1)}$ and $\tau$ a suffix of
+                  $\sigma$}
+          \sprove{$\M{\tau}{[](x=1)}$}}
+\begin{proof}
+\pf\ By step~\stepref{1} and the definition of $\M{\sigma}{[]F}$, with
+$F <- [](x=1)$.
+\end{proof}
+
+\step{3}{\sassume{$\rho$ a suffix of $\tau$}
+         \sprove{$\M{\rho}{x=1}$}}
+\begin{proof}
+\pf\ By step~\stepref{2} and the definition of $\M{\sigma}{F}$, with
+$F <- x=1$.
+\end{proof}
+
+\qedstep
+\begin{proof}
+\pf\ $\rho$ is a suffix of $\sigma$ by steps \stepref{2} and \stepref{3}
+(since a suffix of a suffix of $\sigma$ is a suffix of $\sigma$).
+Hence $\M{\rho}{x=1}$ is true by the assumption $\M{\sigma}{[](x=1)}$
+of step~\stepref{2} and the definition of $[]$.
+\end{proof}
+\end{proof}
+Observe that replacing $(x=1)$ by $F$ in the proof shows that $[]F =>
+[][]F$ is a theorem, for any formula $F$.
+\end{popup}
+\makepopup

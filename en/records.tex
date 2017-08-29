@@ -1,0 +1,26 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{Records in Programming Languages}
+\file{records}
+\begin{popup}
+ \vspace*{-\baselineskip}
+\subsection*{Records in Programming Languages}
+ \ctindex{1}{struct (in C)}{struct}%
+ \ctindex{1}{object (in programming languages)}{object}%
+A record is called a \emph{struct} in the C programming language.  In
+more modern programming languages, an \emph{object} is a record for
+which certain operations are defined.  In addition to using $r.f$ to
+mean the value of field $f$ of record $r$, these languages also use
+$r.O(\ldots)$ to mean the value obtained (and side effects produced)
+by appying the operation $O$ to the record $r$.
+
+\medskip
+
+If you program in an object-oriented language, you may miss some of
+its features when using \tlaplus.  While those features are useful for
+writing programs, they are not needed for writing specifications, and
+their inherent mathematical complexity would make specifications that
+used them harder to understand.
+
+\end{popup}
+\makepopup

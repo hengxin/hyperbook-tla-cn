@@ -1,0 +1,202 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\beforePfSpace{5pt,0pt}
+\afterPfSpace{0pt}
+\interStepSpace{0pt}
+\pdftitle{Answer}
+
+\newsetwidepopup{53}{10}
+\begin{document}
+
+\subsection*{Answer}
+
+Let $\Pi$ be the process's next-state action and let $A_{1}$, \ldots,
+$A_{n}$ be the process's actions.  We prove that a behavior $\sigma$
+is weakly fair for $\Pi$ iff it is weakly fair for all the $A_{i}$.
+The proof is long, but it involves simple expansion of the definitions
+to state, for each step, what must be proved.
+
+\begin{proof}
+\step{1}{$\Pi \; \equiv \; A_{1} \/ \ldots \/ A_{n}$}
+\vspace{.2em}
+\begin{proof}
+\pf\ This is the definition of a process's next-state action.
+\end{proof}
+\vspace{.6em}
+
+\step{2}{$\Pi$ is enabled iff some $A_{i}$ is enabled}
+\vspace{.2em}
+\begin{proof}
+\pf\ By \stepref{1} and the definition of enabled.
+\end{proof}
+\vspace{.6em}
+
+\step{3}{\assume{1.\ $\sigma$ is a behavior that is weakly fair for $\Pi$ \\
+                 2.\ $i \in 1\dd n$}
+         \prove{$\sigma$ is weakly fair for $A_{i}$}}
+\vspace{.2em}
+\begin{proof}
+\step{3.1}{$\sigma$ does not end in a state in which $A_{i}$ is enabled}
+\vspace{.2em}
+ \begin{proof}
+ \pf\ Assumption \stepref{3}.1 and the definition of weakly fair implies
+   $\sigma$ does not end in a state in which $\Pi$ is enabled, which
+   by \stepref{2} implies \stepref{3.1}.
+ \end{proof}
+\vspace{.6em}
+
+\step{3.2}{$\sigma$ does not contain an infinite suffix $\tau$ such that
+           $A_{i}$ is enabled in every state of $\tau$ and $\tau$ contains
+           no $A_{i}$ step.}
+\vspace{.2em}
+  \begin{proof}
+   \step{3.2.1}{\sassume{$\tau$ is an infinite suffix of $\sigma$ with $A_{i}$ 
+                  enabled in every state}
+         \sprove{$\tau$ contains an $A_{i}$ step.}}
+\vspace{.2em}
+    \begin{proof}
+    \pf\ By simple logic.
+    \end{proof}
+\vspace{.2em}
+   
+  \step{3.2.2}{$\Pi$ is enabled in every state of $\tau$}
+%\vspace{.2em}
+    \begin{proof}
+    \pf\ By the step \stepref{3.2.1} assumption and \stepref{2}.
+    \end{proof}
+\vspace{.2em}
+
+  \step{3.2.3}{$\tau$  contains a $\Pi$ step.}
+%\vspace{.2em}
+    \begin{proof}
+    \pf\ By \stepref{3.2.2}, assumption \stepref{3}.1, and 
+     the definition of weakly fair.
+    \end{proof}
+
+\vspace{.2em}
+   \step{3.2.4}{A $\Pi$ step starting in a state with $A_{i}$ enabled
+                is an $A_{i}$ step.}
+%\vspace{.2em}
+     \begin{proof}
+     \pf\ By \stepref{1}, since, for any $j$, action $A_{j}$ is enabled
+    only if control in the process is at its label.
+     \end{proof}
+\vspace{.2em}
+    \qedstep
+      \begin{proof}
+      \pf\ By \stepref{3.2.1}, \stepref{3.2.3}, and \stepref{3.2.4}.
+      \end{proof}
+
+%    \pf\ We assume $\tau$ is an infinite suffix of $\sigma$ with $A_{i}$ 
+%     enabled in every state, and we show that 
+%     By \stepref{2}, , 
+%     so assumption \stepref{3}.1 and the definition of weakly fair implies
+%     $\tau$  contains a $\Pi$ step.  Since an action $A_{j}$ is enabled
+%     only if control in the process is at its label, \stepref{1} implies 
+%     that a $\Pi$ step from a state in which $A_{i}$ is enabled must be 
+%     an $A_{i}$ step.
+  \end{proof}
+\vspace{.6em}
+
+\qedstep
+\vspace{.2em}
+\begin{proof}
+\pf\ By \stepref{3.1}, \stepref{3.2}, and the definition of of weakly fair.
+\end{proof}
+\end{proof}
+
+\vspace{.6em}
+
+
+\step{4}{\assume{$\sigma$ is a behavior that is weakly fair for $A_{i}$, 
+                  for all 
+                 $i \in 1\dd n$.}
+         \prove{$\sigma$ is weakly fair for $\Pi$}}
+\vspace{.2em}
+\begin{proof}
+\step{4.1}{$\sigma$ does not end in a state in which $\Pi$ is enabled}
+\vspace{.2em}
+  \begin{proof}
+  \pf\ By \stepref{2}, $\Pi$ enabled implies $A_{i}$ is enabled for some
+   $i$, and the \stepref{4} assumption and the definition of weakly fair
+   implies that $\sigma$ does not end in any state in which an $A_{i}$ is
+   enabled.
+  \end{proof}
+\vspace{.6em}
+\step{4.2}{$\sigma$ does not contain an infinite suffix $\tau$ such that
+           $\Pi$ is enabled in every state of $\tau$ and $\tau$ contains
+           no $\Pi$ step.}
+\vspace{.2em}
+   \begin{proof} \NOTLA
+    \step{4.2.1}{\sassume{1.\ $\tau$ is an infinite suffix of $\sigma$ 
+                        with $\Pi$ enabled in \linebreak \s{1.2}every state.\\
+                          2. $\tau$ contains no $\Pi$ step.%
+    \marginpar{This is a proof by contradiction.}}
+                 \sprove{\FALSE}}\TLA% 
+%\vspace{.2em}
+     \begin{proof}
+     \pf\ Simple logic.
+     \end{proof}
+\vspace{.2em}
+
+    \step{4.2.2}{Choose $i$ such that the process's control is at the
+                 label of $A_{i}$ in the first state of $\tau$.}
+%\vspace{.2em}
+     \begin{proof}
+     \pf\ By assumption \stepref{4.2.1}.1, since $\Pi$ enabled implies
+      control is at one of its labels.
+     \end{proof}
+\vspace{.2em}
+
+    \step{4.2.3}{Control is at the label of $A_{i}$ in every state of $\tau$.}
+%\vspace{.2em}
+      \begin{proof}
+      \pf\ By \stepref{4.2.2} and assumption \stepref{4.2.1}.2, since control
+      in the process can be changed only by a $\Pi$ step.
+      \end{proof}
+\vspace{.2em}
+
+    \step{4.2.4}{$A_{i}$ is enabled in every state of $\tau$.}
+      \begin{proof}
+      \pf\ By \stepref{4.2.3} and assumption \stepref{4.2.1}.1.
+      \end{proof}
+\vspace{.2em}
+    \step{4.2.5}{$\tau$ contains an $A_{i}$ step.}
+%\vspace{.2em}
+      \begin{proof}
+      \pf\ By \stepref{4.2.4}, the step \stepref{4} assumption, and 
+       the definition
+      of weakly fair.
+      \end{proof}
+\vspace{.2em}
+     \qedstep
+        \begin{proof}
+        \pf\ \stepref{4.2.5} and \stepref{1} contradict
+         assumption \stepref{4.2.1}.2.
+        \end{proof}
+%     \pf\ We assume $\tau$ is an infinite suffix of $\sigma$ with $\Pi$
+%     enabled in every state and no $\Pi$ step, and we obtain a contradiction.
+%    In the first state of $\tau$, let control in the process be at the label 
+%    of action $A_{i}$.  Since $\tau$ contains no $\Pi$ step, control is
+%    at that same label in every state of $\tau$.  Because $\Pi$ is enabled
+%    in every state, \stepref{2} implies that $A_{i}$ is enabled in every
+%    state.  The step \stepref{4} assumption and the definition of 
+%    weakly fair implies that $\tau$ contains an $A_{i}$ step, which by
+%    \stepref{1} is a $\Pi$ step.  This is the required contradiction.
+   \end{proof}
+\vspace{.6em}
+\qedstep
+\vspace{.2em}
+\begin{proof}
+\pf\ By \stepref{4.1}, \stepref{4.2}, and the definition of of weakly fair.
+\end{proof}
+\end{proof}
+\vspace{.6em}
+\qedstep
+\vspace{.2em}
+\begin{proof}
+\pf\ By \stepref{3} and \stepref{4}.
+\end{proof}
+
+\end{proof}
+\end{document}

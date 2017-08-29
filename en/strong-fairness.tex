@@ -1,0 +1,39 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{What is Strong Fairness?}
+\file{strong-fairness}
+\makeindex
+\begin{popup}
+\subsection*{What is Strong Fairness?}
+    \tindex{9}{strong fairness}%
+  \ctindex{9}{fairness!strong}{fairness-strong}%
+  \tindex{9}{strongly fair}%
+  \ctindex{9}{fair!strongly}{fair-strongly}%
+  \vspace{-\baselineskip}%
+
+Naming a property \emph{weak fairness} suggests that there is also a
+property named \emph{strong fairness}.  Strong fairness of an action
+$A$ is the property that asserts that a behavior is \emph{strongly
+fair} for $A$.  The definition of a behavior $\sigma$ being strongly
+fair for $A$ differs from the definition of weakly fair in that its
+second condition is strengthened to:
+\begin{itemize}
+\item $\sigma$ does not contain an infinite suffix $\tau$ such that
+$A$ is enabled in infinitely many states of $\tau$ and $\tau$
+contains no $A$ steps.
+\end{itemize}
+This is a stronger condition than for weakly fair because, if $A$ is
+enabled in every state of the infinite suffix $\tau$, then it is
+enabled in infinitely many states of $\tau$.
+
+\medskip
+
+Weak fairness is a more common requirement than strong
+fairness---though for many specifications, the two conditions are
+equivalent.  For example, weak and strong fairness are equivalent for
+the $Rcv$ process of the bounded channel because once the system
+reaches a state in which $Rcv$ is enabled, if no further $Rcv$ steps
+occur then $Rcv$ remains enabled from then on (because the channel
+stays nonempty).
+\end{popup}
+\makepopup

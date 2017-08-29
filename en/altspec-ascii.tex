@@ -1,0 +1,29 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{ASCII Text}
+\fixverbatim
+\begin{popup}
+\begin{verbatim*}
+(***************************************************************
+--algorithm AltSpec {
+
+    variable b = 0;
+
+    process (Producer = 0) 
+      { pe: while (TRUE)
+              {      await b = 0 ;
+                put: skip ;
+                px:  b := 1         }  
+      }
+      
+    process (Consumer = 1)
+      { ce: while (TRUE)
+              {      await b = 1 ;
+                get: skip ;
+                cx:  b := 0        }
+      }
+}
+ ***************************************************************)
+\end{verbatim*}
+\end{popup}
+\makeasciipopup

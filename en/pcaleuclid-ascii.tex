@@ -1,0 +1,32 @@
+\documentclass[fleqn,leqno]{article}
+\usepackage{hypertlabook}
+\pdftitle{ASCII Text}
+\fixverbatim
+\begin{popup}
+\begin{verbatim*}
+EXTENDS Integers, GCD
+
+CONSTANT M, N
+ASSUME /\ M \in Nat \ {0}
+       /\ N \in Nat \ {0}
+
+(***************************************************************************
+--algorithm Euclid {
+  variables x = M, y = N ;
+  {  while (x # y) { if (x < y) { y := y - x }
+                     else       { x := x - y }
+                   } 
+  }
+}
+ ***************************************************************************)
+PartialCorrectness ==
+  (pc = "Done") => (x = y) /\ (x = GCD(M, N))
+
+TypeOK == /\ x \in Nat \ {0}
+          /\ y \in Nat \ {0}
+Inv == /\ TypeOK
+       /\ GCD(x, y) = GCD(M, N)
+       /\ (pc = "Done") => (x = y)
+\end{verbatim*}
+\end{popup}
+\makeasciipopup
