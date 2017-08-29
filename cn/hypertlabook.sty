@@ -1,0 +1,2920 @@
+% hyptertlabook style
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Last modified on Fri 31 July 2015 at 14:13:41 PST by lamport           %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% ENVIRONMENTS
+%%  \begin{2col} 
+%%     For full-page wide, 2-column text.  Don't leave a blank line
+%%     after the \begin{2col}.
+%%
+%%  \begin{bigoval}{Title}
+%%     Puts oval around full-page-wide text.
+%%
+%%  \begin{marginal}[pos]
+%%     For (shaded) marginal note.  The pos indicates if the top (t),
+%%     bottom (b) or center (c) of the note is to be aligned with the
+%%     line where the note appears.  Default is top.
+%%
+%%  \begin{marginal*}{n}
+%%     Like marginal, except it moves the note UP a distance of 
+%%     n * \baselineskip.  Note: if this gets moved this in strange ways,
+%%     search for "UNCOMMENT TO SHOW BOX" and follow directions to
+%%     get it to show where LaTeX thinks the box is.
+%%
+%%  \begin{noshademarginal}[pos]
+%%  \begin{noshademarginal*}{n}
+%%     Like marginal and marginal*, except without the shading.
+%%
+%%  \begin{chapquote}{source}
+%%     Quotation that begins a chapter.
+%%
+%%  \begin{mathtabbing}
+%%     Produces a tabbing environment, whose width is \pagewidth,
+%%     indented by \mathindent, in which each field is in math
+%%     mode.
+%%
+%%  \begin{program} 
+%%     Produces a tabbing environment, whose width is \pagewidth,
+%%     indented by \mathindent, with font chosen for programs.
+%%     The following commands for program constructs are defined
+%%     (they take no arguments and produce only the command):
+%%
+%%         \WHILE \IF \ELSE \{  \}
+%%
+%%     \IF, and \ELSE are redefined from their usual definition 
+%%     in TLA mode. \{ and \} are redefined to produce braces in 
+%%     the appropriate font.  The command \kwd{foo} prints foo
+%%     in the font used for keywords.  
+%%
+%%  \begin{figpgm}
+%%    Like `program', except put in a minipage box, without any 
+%%    indentation.
+%%
+%%  \pgm{txt}
+%%    Like the `program' environment, but for in-text programs.
+%%
+%%  \begin{atomic} txt -- or \atom{txt}
+%%    Produces <<txt>> : that is, txt typeset inside a tabular 
+%%    environment surrounded with atomic angle brackets.
+%%
+%%  \nonatom{txt} --
+%%    Produces <<txt>>^+, to represent a nonatomic operation.
+%%    Works properly only if txt is a one-liner.
+%%
+%% \begin{describe}{FOO} Is like \begin{description} except
+%% that the indentation is adjusted as follows
+%%      LABEL              blah blah blah
+%%      <- width of foo -> blah blah blah
+%%                         blah blah blah
+%%
+%% PAGE-REFERENCING COMMANDS
+%%  \nearpageref[opt]{foo}
+%%    provides a page reference to the item defined by \label{foo}.
+%%    For multiple references to the same label, use different 
+%%    optional arguments for the second and later ones.
+%%
+%%  \rangeref{foo}{bar} 
+%%    expands either to pages \pageref{foo}--\pageref{bar}
+%%    or to page~\pageref{foo}
+%%
+%%  \nearrangeref[opt]{foo1}{foo2}
+%%    Like \nearpageref, except for a range.
+%%
+%% \samepageref{label1}{label2}
+%%      {text if \pageref{label1} = \pageref{label2}}
+%%      {text if \pageref{label1} # \pageref{label2}}
+%%
+%% \ifleftpage{label}{left-text}{right-text}
+%%    Produces left-text or right-text depending on whether 
+%%      \label{label} is on a left-hand (even) or right-hand (odd) page.
+%%
+%% \settopagenum{ctr}{label} 
+%%    Sets the value of ctr to \pageref{label}
+%%    If label undefined, types out warning and sets ctr to -1
+%%
+%% COMMENTS
+%%   The TLA style \comment and \tlacomment have been changed to
+%%   produce shading, and to have zero height and width.  The following 
+%%   variants have been added.
+%%
+%%  \parcomment{n}{text}
+%%      Like \comment, except produces a paragraph n * \pagewidth wide.
+%%
+%%  \widecomment{comment}
+%%      Like comment, except has width (but no height).
+%%
+%%  In addition, the following combinations and unshaded versions
+%%  exist
+%%    \partlacomment
+%%    \noshadecomment
+%%    \noshadetlacomment
+%%    \noshadewidecomment
+%%    \wideparcomment
+%%    \noshadewideparcomment
+%%
+%% \commentruler
+%%    Produces a grid for measuring the width for \parcomment's.
+%%    
+%%
+%% MISC
+%% \tth : produces a superscript th.
+%% \st  : produces a superscript st.
+%% \nolabelyet[opt]{foo} 
+%%   For use in a description environment to produce an \item[foo] 
+%%   (or \item[opt -- foo] command and define the label foo (and opt).
+%%
+%% \pause
+%%   Produces a delimiter between the text above and below it. To
+%%   avoid a page break above or below it, it may be necessary to
+%%   attach it to the preceding paragraph.
+%%
+%% \shadebox{text}
+%%   Puts text in a shaded box
+%%
+%% \proofrule{top}{bot}
+%%    Produces:  top
+%%               ---
+%%               bot
+%%
+%% \namedrule{name}{top}{bot}
+%%    Produces:  name  top
+%%                     ---
+%%                     bot
+%%
+%% \tlrule{name}{top}{bot}
+%%    Produces:  name  top
+%%                     ---
+%%                     bot
+%%
+%% \parens  {formula}
+%% \brackets{formula}
+%%    Produces (formula) or [formula].  Use when formula is big--for 
+%%    example, made with conj environment.
+%%
+%% \bigbox, \BigBox, \BIGBOX
+%%    Temporal logic [], in \large, \Large, and \LARGE size.
+%%
+%% \lb, \rb
+%%    Left and right brace characters, ONLY WHEN USED IN \tt mode.
+%%
+%% \hyphen
+%%    Makes an ordinary hyphen.  Useful when inside TLA mode.
+%%    Note that \hyphen\hypen\hyphen will make a single --- dash.
+%%
+%%  NOTATION
+%%    \parbar : Parallel composition bar $\|$
+%%    \dbar   : Dijkstra bar
+%%                  ___
+%%    \ov{foo}  :  $foo$  
+%%    \ovr{foo} : Like \ov, except with a red overline.
+%%    \ovs{foo} : Like \ov, except with extra space around the expression.
+%%    \ovn{foo} : Like \ov except its height is that of foo.
+%%                Used for overlining inside atomic brackets.
+%%    \wh{foo}  : $\widehat{foo}$
+%%    \con{foo} : $\mathsf{foo}$  (for rigid variables)
+%%
+%%    \Z{foo} : The integers mod foo
+%%    \ZN  : Integers mod N
+%%    \nat : The naturals
+%%    \posnat : The positive integers.
+%%    \o   : Concatenation of sequences (\circ).
+%%    \nil : The NIL pointer
+%%    \card{S} : The cardinality of S.
+%%    \cardop  : The cardinality operator
+%%    \M{A}{s}{t} : s [[ A ]] t   
+%%    \chooseop : CHOOSE (for use in text).
+%%    \equivto{x} : equivalent except for values of x
+%%    \ltsub{n} : <_{N}      (lexicographical order on n-tuples)
+%%    \leqsub{n} : \leq_{N}  (lexicographical order on n-tuples)
+%%     \Mmap{e} : [[e]]
+%%     \M{s}{e} : [[e]](s)
+%%  EVENT DIAGRAMS
+%%  \tevent{name}
+%%  \bevent{name}
+%%     A picture oubject that creates an event dot, with the name 
+%%     above or below it.
+%%
+%%  \eventdots
+%%     An event object that produces three horizontal dots, positioned 
+%%     at the middle one.
+%%
+%%  MISC
+%%   \CV   : equivalent to \\[...]  where ... is the extra space
+%%           needed to make lines in \comment's have the same 
+%%           baselineskip as normalsize lines.
+%%   \CVV  : xx \\  yy \CVV zz  puts the zz line where it is put by
+%%           xx \CV yy \CV  zz  
+%%   \CVVV : like \CVV, but adds space to compensate for two \\'s.
+%%
+%%                       X
+%%   \ar{X} : Produces ---->
+%%  
+%% \tlabox{frmula}
+%%    Like \mbox{$frmula$} except with formula interpreted in TLA mode,
+%%    and with : defined to be \midcolon, which makes a colon with less
+%%    space around it.
+%%
+%% \ns(n)
+%%   Equivalent to \s{-n}. Use where the char coding makes \s{-...} impossible.
+%%
+%% \dayMonthYear
+%%    Produces the current date in format like 7 February 2041
+
+
+
+\usepackage{graphics}
+\usepackage{graphpap}
+\usepackage{color}
+\usepackage{latexsym}
+\usepackage{ifthen}
+\usepackage{makeidx}
+\usepackage{hyperref}
+
+\usepackage{tlatex}
+\usepackage{tla2texplus-book}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%               STYLE PARAMETERS              %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Redefine itemize and description environments to make 
+%% \topsep smaller for embedded displayed equations
+
+\def\itemize{%
+\ifnum \@itemdepth >\thr@@ \@toodeep \else \advance \@itemdepth \@ne
+\edef \@itemitem {labelitem\romannumeral \the \@itemdepth
+}\expandafter \list \csname \@itemitem \endcsname {\def \makelabel
+##1{\hss \llap {##1}}}\fi
+\setlength{\topsep}{0pt}}
+
+\def\description{%
+\list {}{\labelwidth \z@ 
+         \itemindent -\leftmargin 
+         \let \makelabel \descriptionlabel}
+         \topsep \z@}
+
+% \def\@listi{\leftmargin\leftmargini
+%             \parsep 0\p@ \@plus2\p@ \@minus\p@
+%             \topsep 8\p@ \@plus2\p@ \@minus4\p@
+%             \itemsep4\p@ \@plus2\p@ \@minus\p@}
+% \let\@listI\@listi
+% \def\@listii {\leftmargin\leftmarginii
+%               \labelwidth\leftmarginii
+%               \advance\labelwidth-\labelsep
+%               \topsep    0\p@ \@plus2\p@ \@minus\p@
+%               \parsep    0\p@ \@plus\p@  \@minus\p@
+%               \itemsep   0\parsep}
+
+%% Redefine \WITH to make it work right in math mode
+%\renewcommand{\WITH}{\;\mbox{\bf with}\;}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                COMMENTS                  %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+
+%\newcommand{\tlacomment}{\begingroup\tlachars\@comment}
+%\newcommand{\@tlacomment}[1]{\endgroup\mbox{\footnotesize\rm #1}}
+%\newcommand{\comment}{\begingroup\notlachars\@comment}
+%\newcommand{\@comment}[1]{\endgroup
+%    \raisebox{0pt}[0pt][0pt]{\footnotesize\rm %
+%       \begin{tabular}[t]{@{}l@{}}#1\end{tabular}}}
+
+%%% redefine \comment and \tlacomment to produce shaded boxes.
+\let\noshadewide@comment=\@comment
+\renewcommand{\@comment}[1]{\endgroup
+    \makebox[0pt][l]{\raisebox{0pt}[0pt][0pt]{\footnotesize\rm %
+       \shadebox{\begin{tabular}[t]{@{}l@{}}#1\end{tabular}}}}}
+\newcommand{\par@comment}[2]{\endgroup\comment
+    {\begin{minipage}[t]{#1\pagewidth}\texraggedright#2\end{minipage}}}
+\newcommand{\widepar@comment}[2]{\endgroup\widecomment
+    {\begin{minipage}[t]{#1\pagewidth}\texraggedright#2\end{minipage}}}
+\newcommand{\noshadewidepar@comment}[2]{\endgroup\noshadewidecomment
+    {\begin{minipage}[t]{#1\pagewidth}\texraggedright#2\end{minipage}}}
+\newcommand{\noshade@comment}[1]{\endgroup
+    \makebox[0pt][l]{\raisebox{0pt}[0pt][0pt]{\footnotesize\rm %
+       \begin{tabular}[t]{@{}l@{}}#1\end{tabular}}}}
+\newcommand{\wide@comment}[1]{\endgroup
+    \raisebox{0pt}[0pt][0pt]{\footnotesize\rm %
+       \shadebox{\begin{tabular}[t]{@{}l@{}}#1\end{tabular}}}}
+\newcommand{\parcomment}{\begingroup\notlachars\par@comment}
+\newcommand{\partlacomment}{\begingroup\tlachars\par@comment}
+\newcommand{\widecomment}{\begingroup\notlachars\wide@comment}
+\newcommand{\noshadecomment}{\begingroup\notlachars\noshade@comment}
+\newcommand{\noshadetlacomment}{\begingroup\tlachars\noshade@comment}
+\newcommand{\noshadewidecomment}{\begingroup\notlachars\noshadewide@comment}
+\newcommand{\wideparcomment}{\begingroup\notlachars\widepar@comment}
+\newcommand{\noshadewideparcomment}%
+    {\begingroup\notlachars\noshadewidepar@comment}
+\newcommand{\widetlacomment}{\begingroup\tlachars\wide@comment}
+
+\newcommand{\commentruler}{{\setlength{\unitlength}{\pagewidth}
+\par\noindent\begin{picture}(0,.05)
+\thicklines
+\put(0,0){\line(1,0){1}}
+\multiput(0,0)(.1,0){11}{\line(0,-1){1}}
+\thinlines
+\multiput(0,0)(.01,0){101}{\line(0,-1){1}}
+\setcounter{spgnum1}{0}%
+\multiput(1,.005)(-.1,0){11}{\makebox(0,0)[b]{.\arabic{spgnum1}}%
+    \addtocounter{spgnum1}{1}}
+\end{picture}\par}}
+
+
+%\usepackage{multicol}
+
+%  ****************************************
+%  *            PAGE LAYOUT               *
+%  ****************************************
+%
+% All margin dimensions measured from a point one inch from top and side
+% of page.  
+
+\columnsep 10pt          %    Space between columns 
+\columnseprule 0pt       %    Width of rule between columns.
+
+\newlength{\pagewidth}
+\newlength{\pageheight}
+
+\newcommand{\widepage}{%
+% SIDE MARGINS:
+\oddsidemargin  50pt      % Left margin on odd pages in twosided style,
+                          % or on all pages otherwise
+\evensidemargin 10pt     % Left right margin on even page in twosided style.
+\advance\oddsidemargin -1in %% correction for 1 inch margin added by TeX.
+
+\marginparwidth 110pt % 69.85pt % Width of marginal notes.
+\marginparsep   10pt    % Horizontal space between outer margin and 
+                        % marginal note
+
+% VERTICAL SPACING:        
+% Top of page:
+\topmargin  5pt 
+\headheight 0pt
+\footskip   0pt 
+
+\headheight 0pt         %    Height of box containing running head.
+\headsep    0pt         %    Space between running head and text.
+\topskip   10pt         %    '\baselineskip' for first line of page.
+% Bottom of page:
+\footskip   10pt         %    Distance from baseline of box containing foot 
+                         %    to baseline of last line of text.
+\advance\topmargin -1in  % correct for the 1 inch margin added by TeX
+
+% DIMENSION OF TEXT:
+\textheight 522pt 
+\textwidth  346.5pt 
+
+% DERIVED DIMENSIONS
+
+\pagewidth \textwidth
+\advance \pagewidth\marginparwidth
+\advance \pagewidth\marginparsep
+\paperwidth \pagewidth
+\advance \paperwidth\oddsidemargin
+\advance\paperwidth 1in
+\advance\paperwidth 10pt
+
+\pageheight\textheight
+\advance\pageheight\topmargin
+\advance\pageheight\headheight
+\advance\pageheight\headsep
+\advance\pageheight\footskip
+\advance\pageheight 1in
+\paperheight \pageheight
+
+% \newlength{\pagewidth}
+\newlength{\normaltextwidth}
+\normaltextwidth \textwidth\relax
+\newlength{\marginwidth}
+\setlength{\marginwidth}{\pagewidth}
+\addtolength{\marginwidth}{-\textwidth}
+
+\setlength{\mathindent}{30pt}
+
+% \paperwidth\textwidth
+% \advance\paperwidth\oddsidemargin
+% \advance\paperwidth\evensidemargin
+% \advance\paperwidth 1.2in
+}
+
+\widepage
+
+
+\newlength{\@colwidth}
+\newlength{\@coltwowidth}
+% \setlength{\@colwidth}{.5\pagewidth}
+% \addtolength{\@colwidth}{-.5\columnsep}
+\newsavebox{\@colboxone}
+\newsavebox{\@colboxtwo}
+
+% \begin{twocols} lcol \midcol rcol \end{twocols}
+%     Puts lcol and rcol in two top-aligned columns, extending
+%     the full \pagewidth width (into the margin).
+% With optional argument like .7, it makes the width of the first column 
+% be about  .7\pagewidth and the second column about .3\pagewidth.
+
+\newenvironment{twocols}[1][.5]%
+{\setlength{\@colwidth}{#1\pagewidth}
+\addtolength{\@colwidth}{-.5\columnsep}
+\setlength{\@coltwowidth}{\pagewidth}
+\addtolength{\@coltwowidth}{-\@colwidth}
+\addtolength{\@coltwowidth}{-.5\columnsep}
+\begin{lrbox}{\@colboxone}
+\begin{minipage}[t]{\@colwidth}}%
+{\end{minipage}%
+ \end{lrbox}
+\begin{trivlist}
+\item[] \usebox{\@colboxone}\hspace{\columnsep}\usebox{\@colboxtwo}%
+        \hspace*{-120pt}
+\end{trivlist}}
+
+\newcommand{\midcol}{%
+ \end{minipage}
+ \end{lrbox}
+ \begin{lrbox}{\@colboxtwo}
+ \begin{minipage}[t]{\@coltwowidth}
+}
+
+
+% \newenvironment{twocols}%
+% {\begin{lrbox}{\@colboxone}
+% \begin{minipage}[t]{\@colwidth}}%
+% {\end{minipage}%
+%  \end{lrbox}
+% \begin{trivlist}
+% \item[] \usebox{\@colboxone}\hspace{\columnsep}\usebox{\@colboxtwo}%
+%         \hspace*{-120pt}
+% \end{trivlist}}
+% 
+% \newcommand{\midcol}{%
+%  \end{minipage}
+%  \end{lrbox}
+%  \begin{lrbox}{\@colboxtwo}
+%  \begin{minipage}[t]{\@colwidth}
+% }
+
+
+
+\newlength{\@widemath}
+\setlength{\@widemath}{\pagewidth}
+\addtolength{\@widemath}{\mathindent}
+
+\newenvironment{widedisplay}%
+{\begin{lrbox}{\@colboxone}
+\begin{minipage}{\@widemath}}%   
+{\end{minipage}%   
+ \end{lrbox}
+\begin{trivlist}
+\item[] \hspace*{\mathindent}\usebox{\@colboxone}\hspace*{-180pt}
+\end{trivlist}}
+
+\newenvironment{display}%
+  {\begin{list}{}{\parsep=0pt\relax\leftmargin=\mathindent}\item[]}%
+  {\end{list}}
+
+\definecolor{quest}{rgb}{.4,0,.4}
+\newcommand{\quest}{\color{quest}}
+
+% \begin{question} text \end{question}
+% \begin{aquestion}{file} text \end{aquestion}
+%     Produce a question.  The aquestion environment puts an 
+%     ANSWER link to file.pdf in the margin.
+%
+\newenvironment{question}{\begin{trivlist}\quest
+\item[]\refstepcounter{question}
+ {\bf Question \thequestion\ }}{\end{trivlist}}
+
+\newenvironment{aquestion}[1]{\begin{trivlist} \quest
+\item[]
+  \refstepcounter{question}%
+    \mbox{}\marginpar{\popref{#1}{\textsc{answer}}}%
+     {\bf Question \thequestion\ }}{\end{trivlist}}
+
+\newenvironment{hquestion}[1]{\begin{trivlist}\quest\item[]
+  \refstepcounter{question}%
+    \mbox{}\marginpar{\popref{#1}{\textsc{hint}}}%
+     {\bf Question \thequestion\ }}{\end{trivlist}}
+
+\newenvironment{problem}{\begin{trivlist}\quest\item[]\refstepcounter{question}
+ {\bf Problem \thequestion\ }}{\end{trivlist}}
+
+\newenvironment{aproblem}[1]{\begin{trivlist}\quest\item[]
+  \refstepcounter{question}%
+    \mbox{}\marginpar{\popref{#1}{\textsc{answer}}}%
+     {\bf Problem \thequestion\ }}{\end{trivlist}}
+
+\newenvironment{hproblem}[1]{\begin{trivlist}\quest\item[]
+  \refstepcounter{question}%
+    \mbox{}\marginpar{\popref{#1}{\textsc{hint}}}%
+     {\bf Problem \thequestion\ }}{\end{trivlist}}
+
+\newcounter{question}[section]
+ \def\thequestion{\thesection.\arabic{question}}
+
+
+% A \raggedbottom command causes 'ragged bottom' pages: pages set to
+% natural height instead of being stretched to exactly \textheight.
+
+% MARGINAL NOTES:
+%
+\marginparpush 0pt       % Minimum vertical separation between two marginal 
+
+\@mparswitchfalse        % Puts all marginal notes on right.
+
+% FOOTNOTES:
+
+\footnotesep 6.65pt   % Height of strut placed at the beginning of every
+                      % footnote = height of normal \footnotesize strut,
+                      % so no extra space between footnotes.
+
+\skip\footins 9pt plus 4pt minus 2pt  % Space between last line of text and 
+                                      % top of first footnote.
+
+
+% FIGURE PLACEMENT
+
+\def\topfraction{.851}
+\def\bottomfraction{.5}
+\def\floatpagefraction{.81}
+\def\textfraction{.14}
+%\textfloatsep  12.0pt plus 2.0pt minus 4.0pt
+\textfloatsep  16.0pt plus 2.0pt minus 4.0pt  % changed 12 May 98
+\setcounter{topnumber}{1}
+\setcounter{bottomnumber}{1}
+
+%    ****************************************
+%    *              FONTS                   *
+%    ****************************************
+%
+% Redefine \xpt to provide a seven-point \bf font for subscripts.
+% 
+% \font\sevbf  = cmbx7              % extended bold 
+% 
+% \def\xpt{\textfont\z@\tenrm 
+%   \scriptfont\z@\sevrm \scriptscriptfont\z@\fivrm
+% \textfont\@ne\tenmi \scriptfont\@ne\sevmi \scriptscriptfont\@ne\fivmi
+% \textfont\tw@\tensy \scriptfont\tw@\sevsy \scriptscriptfont\tw@\fivsy
+% \textfont\thr@@\tenex \scriptfont\thr@@\tenex \scriptscriptfont\thr@@\tenex
+% \def\unboldmath{\everymath{}\everydisplay{}\@nomath\unboldmath
+%           \textfont\@ne\tenmi 
+%           \textfont\tw@\tensy \textfont\lyfam\tenly
+%           \@boldfalse}\@boldfalse
+% \def\boldmath{\@ifundefined{tenmib}{\global\font\tenmib\@mbi 
+%    \global\font\tensyb\@mbsy 
+%    \global\font\tenlyb\@lasyb\relax\@addfontinfo\@xpt
+%    {\def\boldmath{\everymath{\mit}\everydisplay{\mit}\@prtct\@nomathbold
+%         \textfont\@ne\tenmib \textfont\tw@\tensyb 
+%         \textfont\lyfam\tenlyb \@prtct\@boldtrue}}}{}\@xpt\boldmath}%
+% \def\prm{\fam\z@\tenrm}%
+% \def\pit{\fam\itfam\tenit}\textfont\itfam\tenit \scriptfont\itfam\sevit
+%     \scriptscriptfont\itfam\sevit
+% \def\psl{\fam\slfam\tensl}\textfont\slfam\tensl 
+%      \scriptfont\slfam\tensl \scriptscriptfont\slfam\tensl
+% \def\pbf{\fam\bffam\tenbf}\textfont\bffam\tenbf 
+%     \scriptfont\bffam\sevbf \scriptscriptfont\bffam\sevbf 
+% \def\ptt{\fam\ttfam\tentt}\textfont\ttfam\tentt
+%     \scriptfont\ttfam\tentt \scriptscriptfont\ttfam\tentt
+% \def\psf{\fam\sffam\tensf}\textfont\sffam\tensf
+%     \scriptfont\sffam\tensf \scriptscriptfont\sffam\tensf
+% \def\psc{\@getfont\psc\scfam\@xpt{\@mcsc}}%
+% \def\ly{\fam\lyfam\tenly}\textfont\lyfam\tenly 
+%    \scriptfont\lyfam\sevly \scriptscriptfont\lyfam\fivly 
+% \@setstrut \rm}
+
+
+
+
+%    ****************************************
+%    *            PAGE STYLES               *
+%    ****************************************
+%
+
+% \newcommand{\webversion}[1]{#1}
+% \newcommand{\evencropmarks}{}
+% \newcommand{\oddcropmarks}{}
+% \newcommand{\cropmarks}{%
+% \addtolength{\evensidemargin}{-.725in} %.975in}
+% \addtolength{\oddsidemargin}{-.25in} %.975in}
+% \renewcommand{\webversion}[1]{}
+% \renewcommand{\evencropmarks}{{\setlength{\unitlength}{1in}%
+% \begin{picture}(0,0)(.5,.695) %1.445)
+% %\begin{picture}(0,0)(.25,.695) %1.445)
+% \put(0,0){\line(1,0){.25}}
+% \put(0,0){\line(0,1){.25}}
+% \put(7.375,9.25){\line(-1,0){.25}}
+% \put(7.375,9.25){\line(0,-1){.25}}
+% \put(0,9.25){\line(1,0){.25}}
+% \put(0,9.25){\line(0,-1){.25}}
+% \put(7.375,0){\line(-1,0){.25}}
+% \put(7.375,0){\line(0,1){.25}}
+% \end{picture}}}%
+% \renewcommand{\oddcropmarks}{{\setlength{\unitlength}{1in}%
+% \begin{picture}(0,0)(6.875,.695) %1.445)
+% %\begin{picture}(0,0)(7.125,.695) %1.445)
+% \put(0,0){\line(1,0){.25}}
+% \put(0,0){\line(0,1){.25}}
+% \put(7.375,9.25){\line(-1,0){.25}}
+% \put(7.375,9.25){\line(0,-1){.25}}
+% \put(0,9.25){\line(1,0){.25}}
+% \put(0,9.25){\line(0,-1){.25}}
+% \put(7.375,0){\line(-1,0){.25}}
+% \put(7.375,0){\line(0,1){.25}}
+% \end{picture}}}}
+% 
+% \def\ps@empty{%
+%  \def\@oddhead{}%
+%  \def\@oddfoot{\hspace*{\pagewidth}\oddcropmarks\hss}%
+%  \def\@evenhead{}%
+%  \def\@evenfoot{\evencropmarks\hfill\mbox{}}}
+% 
+% \def\ps@plain{\let\@mkboth\@gobbletwo
+%      \def\@oddhead{}\def\@oddfoot{\hbox to \pagewidth
+%    {\hfil \rm\thepage}\oddcropmarks\hss}\def\@evenhead{}%
+% \def\@evenfoot{\evencropmarks\rm \thepage \hfil}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%              PAGE STYLE                      %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% \def\ps@headings{\let\@mkboth\markboth
+% \def\@oddfoot{\hspace*{\pagewidth}\oddcropmarks\hss}%
+% \def\@evenfoot{\evencropmarks\hfill\mbox{}}%       No feet.
+% \def\@evenhead{\underline{\hbox to \pagewidth
+%    {\rm \thepage\hfil \sl \leftmark}}\hss}%        Left heading.
+% \def\@oddhead{\underline{\hbox to \pagewidth
+%     {\hbox{}\sl \rightmark \hfil \rm\thepage}}\hss}% Right heading.
+% \def\chaptermark##1{\markboth {\uppercase{\ifnum \c@secnumdepth >\m@ne
+%       \@chapapp\ \thechapter. \ \fi ##1}}{}}%
+% \def\sectionmark##1{\markright {\uppercase{\ifnum \c@secnumdepth >\z@
+%    \thesection. \ \fi ##1}}}}
+
+
+
+\def\ps@web{%
+ \def\@oddfoot{\hspace*{\textwidth}\hspace*{4pt}\blue
+  \makebox[15pt][r]{\raisebox{10pt}[0pt]{\thepage}}}%
+ \def\@evenfoot{\@oddfoot}%
+ \def\@oddhead{}% \mbox{\strut}}%
+ \def\@evenhead{\@oddhead}%
+}
+
+\pagestyle{web}
+\definecolor{black}{rgb}{0,0,0}
+\newcommand{\black}{\color{black}}
+\definecolor{blue}{rgb}{0,0,.8}
+\newcommand{\blue}{\color{blue}}
+\definecolor{orange}{rgb}{.92,.64,.01}
+\newcommand{\orange}{\color{orange}}
+\definecolor{puce}{rgb}{.4,0,.7}
+\newcommand{\puce}{\color{puce}}
+%\definecolor{linkcolor}{rgb}{.4,0,.7}
+\definecolor{linkcolor}{rgb}{0,0,.9}
+\newcommand{\linkcolor}{\color{linkcolor}}
+\definecolor{red}{rgb}{.8,0,0}
+\newcommand{\red}{\color{red}}
+\definecolor{green}{rgb}{0,.8,0}
+\newcommand{\green}{\color{green}}
+%\definecolor{linkbackground}{rgb}{.9,.7,1}
+\definecolor{linkbackground}{rgb}{.6,.6,1}
+\newcommand{\linkbackground}{\color{linkbackground}}
+\definecolor{aqua}{rgb}{.4,.7,.7}
+\newcommand{\aqua}{\color{aqua}}
+\definecolor{darkaqua}{rgb}{.1,.5,.5}
+\newcommand{\darkaqua}{\color{darkaqua}}
+\definecolor{commentcolor}{rgb}{.6,0,0}
+\newcommand{\commentcolor}{\color{commentcolor}}
+\newcommand{\gray}{\color{gray}}
+\definecolor{gray}{rgb}{.7,.7,.7}
+ \definecolor{darkgreen}{rgb}{0,.6,0}
+ \newcommand{\darkgreen}{\color{darkgreen}}
+
+\definecolor{white}{rgb}{1,1,.9}
+\pagecolor{white}
+\newcommand{\white}{\color{white}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                SECTIONING COMMANDS                  %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Change sectioning commands to use full page width for headings.
+
+% \def\@sect#1#2#3#4#5#6[#7]#8{\hsize \pagewidth
+% \ifnum #2>\c@secnumdepth
+%      \def\@svsec{}\else 
+%      \refstepcounter{#1}\edef\@svsec{\csname the#1\endcsname\hskip 1em }\fi
+%      \@tempskipa #5\relax
+%       \ifdim \@tempskipa>\z@ 
+%         \begingroup #6\relax
+%           \@hangfrom{\hskip #3\relax\@svsec}{\interlinepenalty \@M #8\par}
+%         \endgroup
+%        \csname #1mark\endcsname{#7}\addcontentsline
+%          {toc}{#1}{\ifnum #2>\c@secnumdepth \else
+%                       \protect\numberline{\csname the#1\endcsname}\fi
+%                     #7}\else
+%         \def\@svsechd{#6\hskip #3\@svsec #8\csname #1mark\endcsname
+%                       {#7}\addcontentsline
+%                            {toc}{#1}{\ifnum #2>\c@secnumdepth \else
+%                              \protect\numberline{\csname the#1\endcsname}\fi
+%                        #7}}\fi
+%      \@xsect{#5}\hsize \textwidth}
+% 
+% \def\section{\@startsection {section}{1}{\z@}{-3.75ex plus -1ex minus 
+%     -.2ex}{2.3ex plus .2ex}{\LARGE\bf}}
+% \def\subsection{\@startsection {subsection}{2}{\z@}{-3.5ex plus -1ex minus 
+%     -.2ex}{2.3ex plus .2ex}{\Large\bf}}
+% \def\subsubsection{\@startsection{subsubsection}{3}{\z@}{-3.25ex plus 
+%    -1ex minus -.2ex}{1.5ex plus .2ex}{\large\bf}}
+% \def\paragraph{\@startsection{paragraph}{4}{\z@}{-3.25ex plus
+% -1ex minus -.2ex}{1.5ex plus .2ex}{\normalsize\bf}}
+% \def\subparagraph{\@startsection
+%      {subparagraph}{5}{\z@}{3.25ex plus 1ex minus .2ex}{-1em}{\normalsize\bf}}
+% 
+% \def\@makechapterhead#1{             % Heading for \chapter command
+%   \vspace*{50pt}                     % Space at top of text page.
+%   { {\hsize \pagewidth \parindent 0pt \raggedright 
+%     \ifnum \c@secnumdepth >\m@ne     % IF secnumdepth > -1 THEN
+%       \huge\bf \@chapapp{} \thechapter % Print 'Chapter' and number.
+%     \par 
+%     \vskip 20pt \fi                    % Space between number and title.
+%     \Huge \bf                        % Title.
+%     #1\par} 
+%     \nobreak                         % TeX penalty to prevent page break.
+%     \vskip 40pt                      % Space between title and text.
+%   } }
+% 
+% % \@makeschapterhead {TEXT} : Makes the heading for the \chapter* command.
+% %
+% 
+% \def\@makeschapterhead#1{             % Heading for \chapter* command
+%   \vspace*{50pt}                     % Space at top of page.
+%   { {\hsize \pagewidth \parindent 0pt \raggedright 
+%     \Huge \bf                        % Title.
+%     #1\par} 
+%     \nobreak                         % TeX penalty to prevent page break.
+%     \vskip 40pt                      % Space between title and text.
+%   } }
+
+
+
+
+% 
+% \setcounter{secnumdepth}{0}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                 COMMON COMMANDS                     %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% \newcommand{\len}[1]{|#1|}
+% \newcommand{\deq}{\stackrel{\scriptscriptstyle\Delta}{=}}
+% \let\eqv = \equiv  %% Use \eqv instead of \equiv in case I change
+%                    %% my mind and decide to replace \equiv by =.
+% \newcommand{\deqv}{\stackrel{\scriptscriptstyle\Delta}{\eqv}}
+% \newcommand{\at}[1]{\mbox{\it at\/$(#1)$}}
+% \newcommand{\after}[1]{\mbox{\it after\/$(#1)$}}
+% \newcommand{\true}{{\bf true\/}}
+% \newcommand{\false}{{\bf false\/}}
+% \newcommand{\implies}{\Rightarrow}
+% \newcommand{\init}{{\it Init\/}}
+% \newcommand{\NAT}{{\bf Natural}}
+% \newcommand{\BOOL}{{\bf Boolean}}
+% \newcommand{\SEQ}[1]{{\bf seq\ of\ }#1}
+% \newcommand{\new}{{\it new\/}}
+% \newcommand{\old}{{\it old\/}}
+% 
+% % \la, \ra : ANGLE BRACKETS 
+% \newcommand{\la}{\mbox{$\langle\,$}}
+% \newcommand{\ra}{\mbox{$\,\rangle$}}
+% 
+% % \hlt, \HLT : {a}<b>{c} ATOMIC HOARE TRIPLES 
+% %              (regular and with extra space around S)
+% \newcommand{\hlt}[3]{\mbox{$\{#1\}\la#2\ra\{#3\}$}}
+% \newcommand{\HLT}[3]{\mbox{$\{#1\}\,\la#2\ra\,\{#3\}$}}
+% 
+% % RECORD DELIMITERS
+% \newcommand{\lr}{\mbox{$[\![$}}
+% \newcommand{\rr}{\mbox{$]\!]$}}
+% 
+% 
+% %\1 = normal indentation space
+% \newcommand{\1}{\hspace*{1em}}
+
+% REMARK
+%  \remark{.7}{A (possibly) multiline remark, whose width is
+%                .7\pagewidth}
+%
+%  \xremark -- same as \remark except it has zero height.
+%
+\newcommand{\remark}[2]{\shadebox{\parbox[t]{#1\pagewidth}{\small\sf #2}}}
+\newcommand{\xremark}[2]{\raisebox{0pt}[0pt][0pt]{\remark{#1}{#2}}}
+
+
+% marginal environment like \marginpar except everything goes in 
+% a minipage, \parskip > 0pt, and various parameters changed.
+% 
+% \texraggedright = Plain TeX's ragged right command.
+
+\newcommand{\texraggedright}{%
+  \rightskip=0pt plus2em \spaceskip=.3333em \xspaceskip=.5em }
+\newsavebox{\marginalbox}
+\newenvironment{marginal}[1][t]%
+   {\@bsphack\begin{lrbox}{\marginalbox}\begin{minipage}[#1]{\marginparwidth}
+      \parskip .25\baselineskip
+%       \small
+      \footnotesize
+       \texraggedright
+       \topsep=0pt\relax
+       \marginwidth=0pt\relax
+       \mathindent=1em\relax
+    }%
+   {\end{minipage}\end{lrbox}\marginpar{\usebox{\marginalbox}}\@Esphack}
+
+\newenvironment{marginal*}[1]%
+   {\@bsphack\def\marginalmove{#1}%
+     \begin{lrbox}{\marginalbox}\begin{minipage}[t]{\marginparwidth}
+      \parskip .25\baselineskip
+%       \small
+       \footnotesize
+       \texraggedright
+       \topsep=0pt\relax
+       \marginwidth=0pt\relax
+       \mathindent=1em\relax
+    }%
+   {\end{minipage}\end{lrbox}%
+   \movemarginpar{\marginalmove}{\usebox{\marginalbox}}\@Esphack}
+
+\long\def\movemarginpar#1#2{\oldmarginpar{\noindent
+    \raisebox{#1\baselineskip}{\shadebox
+          {\parbox[t]{\marginparwidth}{\small\sf #2}}}}}
+
+\newenvironment{noshademarginal}[1][t]%
+   {\@bsphack\begin{lrbox}{\marginalbox}\begin{minipage}[#1]{\marginparwidth}
+      \parskip .25\baselineskip
+%       \small
+       \footnotesize
+       \texraggedright
+       \topsep=0pt\relax
+       \marginwidth=0pt\relax
+       \mathindent=1em\relax
+    }%
+   {\end{minipage}\end{lrbox}\oldmarginpar{\usebox{\marginalbox}}\@Esphack}
+
+\newenvironment{noshademarginal*}[1]%
+   {\@bsphack\def\marginalmove{#1}%
+     \begin{lrbox}{\marginalbox}\begin{minipage}[t]{\marginparwidth}
+      \parskip .25\baselineskip
+%       \small
+       \footnotesize
+       \texraggedright
+       \topsep=0pt\relax
+       \marginwidth=0pt\relax
+       \mathindent=1em\relax
+    }%
+   {\end{minipage}\end{lrbox}%
+   \nosmovemarginpar{\marginalmove}{\usebox{\marginalbox}}\@Esphack}
+
+\long\def\nosmovemarginpar#1#2{\oldmarginpar{\noindent
+%%%%% UNCOMMENT TO SHOW BOX %%%% \makebox[0pt][r]{\rule{10pt}{1pt}}\fbox{%
+    \raisebox{#1\baselineskip}{\parbox[t]{%
+       \marginparwidth}{\small\sf #2}}}}%
+%%%%% UNCOMMENT TO SHOW BOX %%%%      }
+
+% \newcommand{\marginal}[1]{\marginpar{\begin{minipage}[t]{\marginparwidth}
+% \parskip .5\baselineskip\small #1\end{minipage}}}
+
+% MPLIST
+%  list for use inside marginal 
+\newenvironment{mplist}{\begin{list}{}{\leftmargin=1em \topsep=0pt}\item[]}{\end{list}}
+
+%% chapquote
+\newenvironment{chapquote}[1]{%
+   \begin{flushright}
+   \def\chquoteauthor{#1}
+   \begin{tabular}[b]{@{}l@{}}}%
+  {\end{tabular}\\[.2em]
+   \chquoteauthor
+   \end{flushright}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%     CONJUNCTIONS AND DISJUNCTIONS OF LISTS      %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% \asswedge and \assvee produce the conjunction and disjunction "bullets"
+
+% \newbox\@assvee
+% \setbox\@assvee=\hbox to .8em{\raisebox{.15em}{\scriptsize %\tiny 
+%      $\bigcirc$\hspace{-.84em}\raisebox{-.09em}{$\vee$}}\hfill}
+% \def\assvee{\usebox{\@assvee}}
+% 
+% \newbox\@asswedge
+% \setbox\@asswedge=\hbox to .8em{\raisebox{.15em}{\scriptsize %\tiny 
+%      $\bigcirc$\hspace{-.834em}\raisebox{-.03em}{$\wedge$}}\hfill}
+% \def\asswedge{\usebox{\@asswedge}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%       MULTICOLUMN COMMANDS     %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newenvironment{2col}{%
+  \setlength{\linewidth}{\pagewidth}%
+  \setlength{\mathindent}{1.5em}%
+  \setlength{\leftmargini}{1.5em}%
+  \setlength{\topsep}{.25\baselineskip}%
+  \begin{multicols}{2}\setlength{\parindent}{1em}\noindent\ignorespaces}%
+   {\end{multicols}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   COMMANDS TO PUT OVALS AROUND PROGRAMS, ETC.   %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% \makeoval{title}{text}
+%%  makes a full-page-wide oval with given title and
+%%  with text as the given text.  
+%%%%--should be turned into an environment
+
+% \newsavebox{\ovalsbox}
+% \newsavebox{\ovaltitle}
+% \newlength{\ovalht}
+% \newlength{\ovaldp}
+% \newcommand{\makeoval}[2]{\savebox{\ovalsbox}{%
+%    \begin{minipage}[b]{\pagewidth}
+%    #2                                           
+%    \end{minipage}}%
+%    \settoheight{\ovalht}{\usebox{\ovalsbox}}%
+%   \topoval{\ovalht}{#1}\par\noindent\usebox{\ovalsbox}%
+%    \botoval{\ovalht}}
+% 
+% \newenvironment{bigoval}[1]{\savebox{\ovaltitle}{\large\bf#1}%
+%   \begin{lrbox}{\ovalsbox}%
+%    \begin{minipage}[b]{\pagewidth}}%
+%   {\end{minipage}\end{lrbox}%
+%    \settoheight{\ovalht}{\usebox{\ovalsbox}}%
+%    \settodepth{\ovaldp}{\usebox{\ovalsbox}}%
+%    \addtolength{\ovalht}{\ovaldp}%
+%   \topoval{.75\ovalht}{\usebox{\ovaltitle}}\par\noindent\usebox{\ovalsbox}%
+%    \hspace*{-156pt}%
+%    \botoval{.75\ovalht}}
+
+%% WIDE FIGURES
+%% The widefigure environment makes a wide figure
+\newcommand{\widefigure}[1][tbp]{\begin{figure}[#1]
+\setlength{\hsize}{\pagewidth}
+\setlength{\textwidth}{\pagewidth}
+\setlength{\linewidth}{\pagewidth}}
+\def\endwidefigure{\end{figure}}
+
+
+% \topoval{height}{text}
+%   Makes the top of an oval containing the text as the centered
+%   title.
+% \botoval{height}
+%   Makes the bottom of the oval.  Put on a new paragraph immediately
+%   after the bottom text.
+% \smtopoval and \smbotoval are the same except they're only
+%   \textwidth rather than \pagewidth wide.
+
+% % definitions of \topoval and \botoval assume that \pagewidth = 480pt
+% \def\topoval#1#2{\par \sbox{\@tempboxa}{\Large\bf #2}%
+%  {\unitlength=1pt\relax    %%%\thicklines
+%   \@tempdima \pagewidth \advance\@tempdima -1\wd\@tempboxa
+%   \divide\@tempdima 2\relax
+%   \advance \@tempdima -3\unitlength  % puts 9pt space on each side of title
+%   \@tempcnta\@tempdima \divide\@tempcnta\unitlength
+%   \@tempdima #1\relax 
+%   \@tempcntb\@tempdima \divide\@tempcntb\unitlength
+% %  \advance\@tempcntb-2\relax
+%   \noindent
+%   \begin{picture}(0,15)(6,-5)
+%     \put(\@tempcnta,-5){\advance\@tempcnta\@tempcnta\oval(\@tempcnta,10)[tl]}
+% %                   ^^^                                             ^^^
+% %               CIRCLE RADIUS                                CIRCLE DIAMETER
+%     \put(0,-\@tempcntb){\advance\@tempcntb-5\relax\line(0,1){\@tempcntb}}
+% %                                         ^^^ 
+% %                                    CIRCLE RADIUS    
+%     \put(246,-5){\makebox(0,0)[b]{\box\@tempboxa}}
+%   \end{picture}\relax
+%   \begin{picture}(0,0)(-486,-5)
+%     \put(-\@tempcnta,-5){\advance\@tempcnta\@tempcnta\oval(\@tempcnta,10)[tr]}
+% %                    ^^^                                             ^^^
+% %               CIRCLE RADIUS                                CIRCLE DIAMETER
+%     \put(0,-\@tempcntb){\advance\@tempcntb-5\relax\line(0,1){\@tempcntb}}
+% %                                         ^^^ 
+% %                                    CIRCLE RADIUS    
+%   \end{picture}}\par\vskip .7\baselineskip}
+% 
+% \def\botoval#1{\par
+%  {\unitlength=1pt\relax
+%   \@tempdima #1\relax 
+%   \@tempcntb\@tempdima \divide\@tempcntb\unitlength
+%   \noindent
+%   \begin{picture}(0,0)(0,-2)
+%    %%%% \thicklines
+%    \put(240,5){\oval(492,10)[b]} 
+% %          ^^^          ^^^
+% %     CIRCLE RADIUS    CIRCLE DIAMETER
+%    \advance\@tempcntb-5\relax   
+% %                    ^^^ 
+% %                 CIRCLE RADIUS    
+%    \put(-6,5){\line(0,1){\@tempcntb}}
+% %         ^^^         
+% %    CIRCLE RADIUS    
+%    \put(486,5){\line(0,1){\@tempcntb}}
+% %         ^^^         
+% %    CIRCLE RADIUS    
+%   \end{picture}}\par}
+% 
+% % definitions of \topoval and \botoval assume that \pagewidth = 480pt
+
+
+%% The following are the old definitions that made very round corners
+%%
+% \def\topoval#1#2{\par \sbox{\@tempboxa}{\Large\bf #2}%
+%  {\unitlength=1pt\relax    %%%\thicklines
+%   \@tempdima \pagewidth \advance\@tempdima -1\wd\@tempboxa
+%   \divide\@tempdima 2\relax
+%   \advance \@tempdima -3\unitlength  % puts 9pt space on each side of title
+%   \@tempcnta\@tempdima \divide\@tempcnta\unitlength
+%   \@tempdima #1\relax 
+%   \@tempcntb\@tempdima \divide\@tempcntb\unitlength
+%   \noindent
+%   \begin{picture}(0,15)(6,-5)
+%    \put(\@tempcnta,-\@tempcntb){\advance\@tempcnta\@tempcnta
+%     \advance\@tempcntb\@tempcntb\oval(\@tempcnta,\@tempcntb)[tl]}
+%    \put(246,-5){\makebox(0,0)[b]{\box\@tempboxa}}
+%   \end{picture}\relax
+%   \begin{picture}(0,0)(-486,-5)
+%    \put(-\@tempcnta,-\@tempcntb){\advance\@tempcnta\@tempcnta
+%     \advance\@tempcntb\@tempcntb\oval(\@tempcnta,\@tempcntb)[tr]}
+%   \end{picture}}\par\vskip .7\baselineskip}
+% 
+% \def\botoval#1{\par
+%  {\unitlength=1pt\relax
+%   \@tempdima #1\relax 
+%   \@tempcntb\@tempdima \divide\@tempcntb\unitlength
+%   \noindent
+%   \begin{picture}(0,0)(0,-2)
+%    %%%% \thicklines
+%    \put(240,\@tempcntb){\advance\@tempcntb\@tempcntb\oval(492,\@tempcntb)[b]}
+%   \end{picture}}\par}
+
+% definitions of \smtopoval and \smbotoval assume that \textwidth = 324pt
+% \def\smtopoval#1#2{\par \sbox{\@tempboxa}{\Large\bf #2}%
+%  {\unitlength=1pt\relax    \thicklines
+%   \@tempdima \textwidth \advance\@tempdima -1\wd\@tempboxa
+%   \divide\@tempdima 2\relax
+%   \advance \@tempdima -3\unitlength  % puts 9pt space on each side of title
+%   \@tempcnta\@tempdima \divide\@tempcnta\unitlength
+%   \@tempdima #1\relax 
+%   \@tempcntb\@tempdima \divide\@tempcntb\unitlength
+%   \noindent
+%   \begin{picture}(0,15)(6,-5)
+%    \put(\@tempcnta,-\@tempcntb){\advance\@tempcnta\@tempcnta
+%     \advance\@tempcntb\@tempcntb\oval(\@tempcnta,\@tempcntb)[tl]}
+%    \put(168,-5){\makebox(0,0)[b]{\box\@tempboxa}}
+%   \end{picture}\relax
+%   \begin{picture}(0,0)(-330,-5)
+%    \put(-\@tempcnta,-\@tempcntb){\advance\@tempcnta\@tempcnta
+%     \advance\@tempcntb\@tempcntb\oval(\@tempcnta,\@tempcntb)[tr]}
+%   \end{picture}}\par\vskip .7\baselineskip}
+% 
+% \def\smbotoval#1{\par
+%  {\unitlength=1pt\relax
+%   \@tempdima #1\relax 
+%   \@tempcntb\@tempdima \divide\@tempcntb\unitlength
+%   \noindent
+%   \begin{picture}(0,0)(0,-2)
+%    \thicklines
+%    \put(162,\@tempcntb){\advance\@tempcntb\@tempcntb\oval(336,\@tempcntb)[b]}
+%   \end{picture}}\par}
+% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%         DIGRESSION ENVIRONMENT           %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% \begin{digression}{SEMI-HEIGHT}{TITLE}
+%     Text of first column...
+%   \nextcolumn   %% IF NEXT COLUMN DOES NOT BEGIN A NEW PARAGRAPH
+%      OR 
+%   \newparcolumn %% IF NEXT COLUMN BEGINS A NEW PARAGRAPH
+%     Text of second column...
+%  \end{digression}
+
+% \newlength{\digsemiht}
+% \def\digression#1#2{\begin{figure}[t] 
+%  \global\digsemiht #1\relax
+%  \topoval{\digsemiht}{Digression}
+%  \vspace{-\baselineskip}
+%  \hsize \pagewidth
+%  \subsubsection*{#2}
+%  \begin{minipage}[t]{19.1pc}
+%  \parindent=1em 
+%  \noindent\ignorespaces}
+% \def\enddigression{\end{minipage}
+%  \vspace{\baselineskip}
+%  \botoval{\digsemiht}
+%  \end{figure}}
+% 
+% \newcommand{\nextcolumn}{\parfillskip=0pt
+% \end{minipage}\hfill
+% \begin{minipage}[t]{19.1pc}
+% \parindent=1em \noindent}
+% 
+% \def\newparcolumn{\end{minipage}\hfill
+% \begin{minipage}[t]{19.1pc}
+% \parindent=1em}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%        WIDE TABBING ENVIRONMENT          %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% \let\@realstartfield=\@startfield
+% \let\@realstopfield=\@stopfield
+% \newenvironment{mathtabbing}{%
+%   \def\@startfield{\@realstartfield\(\mbox{}}%
+%   \def\@stopfield{\mbox{}\)\@realstopfield}%
+%   \par\hsize\pagewidth 
+%   \linewidth\pagewidth
+%   \begin{tabbing}
+%   \hspace{\mathindent}\=\+}%
+%  {\end{tabbing}}
+% 
+% 
+% \newenvironment{widetab}{\par \hsize\pagewidth 
+%   \linewidth\pagewidth\begin{tabbing}}{\end{tabbing}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%            Rule ENVIRONMENT              %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+
+\newenvironment{Rule}[1]{\begin{trivlist}
+  \abovedisplayskip=2pt plus 3pt\relax
+  \samepage\item[]{\bf #1}\[}{\]\end{trivlist}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%              PAGE REFERENCES             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\let\textilde~
+% Since ~ is always active, if the definition of a macro contains ~,
+% when used inside math mode the macro produces \lnot rather than
+% a space.  So, \textilde is used instead of ~.
+
+
+% \samepageref{label1}{label2}
+%      {text if \pageref{label1} = \pageref{label2}}
+%      {text if \pageref{label1} # \pageref{label2}}
+%
+% \settopagenum{ctr}{label} 
+%    Sets the value of ctr to \pageref{label}
+%    If label undefined, types out warning and sets ctr to -1
+
+\newcommand{\settopagenum}[2]{%
+  \@ifundefined{r@#2}%
+   {\@warning {Reference `#2' on page \thepage \space undefined}%
+    \setcounter{spgnum1}{-1}}%  
+   {\edef\@tempa{\@nameuse{r@#2}}\expandafter
+    \@tempcnta\expandafter\@cdr\@tempa\@nil\relax\setcounter{#1}{\@tempcnta}}}
+
+\newcounter{spgnum1}
+\newcounter{spgnum2}
+\newcounter{spgnum3}
+\newcommand{\samepageref}[4]{%
+    \settopagenum{spgnum1}{#1}%
+    \settopagenum{spgnum2}{#2}%
+    \ifnum \value{spgnum1}=\value{spgnum2}#3\else#4\fi}
+
+\newcommand{\ifleftpage}[3]{\settopagenum{spgnum1}{#1}%
+   \ifodd\value{spgnum1}#2\else#1\fi}
+
+% \newcommand{\neartwopageref}[3][]{%
+%  \label{#2@#1}\settopagenum{spgnum1}{#2@#1}%
+%  \addtocounter{spgnum1}{1}%
+%  \settopagenum{spgnum2}{#2}%
+%  \ifthenelse{\value{spgnum1}=\value{spgnum2}}%
+%    {the next two pages}%
+%    {\rangeref{#2}{#3}}}
+
+
+\newcommand{\nearrangeref}[3][]{%
+  \settopagenum{spgnum2}{#2}%
+  \settopagenum{spgnum3}{#3}%
+  \ifthenelse{\value{spgnum2}=\value{spgnum3}}% %%% IF labels the same 
+   {\nearpageref[#1]{#2}}% %%% THEN use \nearpageref
+   {\addtocounter{spgnum3}{-1}% ELSE 
+    \ifthenelse{\value{spgnum2}=\value{spgnum3}}%     %%%IF on successive pages
+      {\label{#2@#1}%                                 %%  THEN  
+       \settopagenum{spgnum1}{#2@#1}%              
+       \ifthenelse{\value{spgnum1}=\value{spgnum2}}%%%     IF start on this page
+           {this page and the next}%%                       THEN "this page and the next"
+           {\addtocounter{spgnum1}{1}%                      ELSE
+            \ifthenelse{\value{spgnum1}=\value{spgnum2}}%    IF start on next page
+              {the following two pages}%%                      THEN "the following two pages"
+              {\addtocounter{spgnum1}{-2}%                     ELSE
+               \ifthenelse{\value{spgnum1}=\value{spgnum2}}%    IF start on preceding page
+                {\ifthenelse{\isodd{\value{spgnum1}}}%            THEN 
+%                                                                   IF preceding page odd
+                 {the preceding page and this page}%                  THEN "the preceding page and this page"
+                 {the facing page and this page}%                     ELSE "the facing page and this page" 
+                }%                                                  FI
+                {pages~\pageref{#2}--\pageref{#3}}%               ELSE "pages #2--#3" 
+             }}}%%                                         FI FI FI
+      {pages~\pageref{#2}--\pageref{#3}}}}%%              ELSE "pages #2--#3" FI
+
+% \nearpageref[num]{foo} provides a page reference to the item
+%   defined by \label{foo}.  If the reference is on the same page 
+%   or the preceding or following page, then it produces something 
+%  like `the next page', otherwise it produces something like `page 97'.
+%  Use only once for any label foo.  For multiple references
+%  to the same label, use different optional arguments for
+%  the second and later ones.
+%
+% \rangeref{foo}{bar} expands either to 
+%         pages \pageref{foo}--\pageref{bar}
+% or to 
+%         page~\pageref{foo}
+% depending upon whether \pageref{foo}=\pageref{bar}.
+
+\newcommand{\nearpageref}[2][]{%
+   \label{#2@#1}\@ifundefined{r@#2}{\@warning
+   {Reference `#2' on page \thepage \space 
+    undefined}\@tempcnta\z@}{\edef\@tempa{\@nameuse{r@#2}}\expandafter
+    \@tempcnta\expandafter\@cdr\@tempa\@nil\relax}\@ifundefined
+    {r@#2@#1}{\@warning
+   {nearpageref `#2' on page \thepage \space 
+    not right}\@tempcntb\z@}{\edef\@tempa{\@nameuse{r@#2@#1}}\expandafter
+    \@tempcntb\expandafter\@cdr\@tempa\@nil\relax}\advance\@tempcntb
+   -\@tempcnta\relax
+   \ifnum \@tempcntb=\z@ this page\else
+      \ifnum\@tempcntb=-\@ne the next page\else
+        \ifnum\@tempcntb=\@ne
+          \ifodd\@tempcnta the preceding page\else
+              the adjacent page\fi
+          \else page\textilde\@arabic{\@tempcnta}\fi\fi\fi}
+
+% \mypageref{foo}{bar} provides a page reference to the item
+%   defined by \label{foo}, where `bar' is a unique label.
+%   If the reference is on the same page or the preceding or
+%   following page, then it produces something like `the next page',
+%   otherwise it produces something like `page 97'
+%
+% \def\mypageref#1#2{\label{#2}\@ifundefined{r@#1}{\@warning
+%    {Reference `#1' on page \thepage \space 
+%     undefined}\@tempcnta\z@}{\edef\@tempa{\@nameuse{r@#1}}\expandafter
+%     \@tempcnta\expandafter\@cdr\@tempa\@nil\relax}\@ifundefined
+%     {r@#2}{\@warning
+%    {mypageref `#2' on page \thepage \space 
+%     not right}\@tempcntb\z@}{\edef\@tempa{\@nameuse{r@#2}}\expandafter
+%     \@tempcntb\expandafter\@cdr\@tempa\@nil\relax}\advance\@tempcntb
+%    -\@tempcnta\relax
+%    \ifnum \@tempcntb=\z@ this page\else
+%       \ifnum\@tempcntb=-\@ne the next page\else
+%         \ifnum\@tempcntb=\@ne
+%           \ifodd\@tempcnta the preceding page\else
+%               the facing page\fi
+%           \else page\textilde\@arabic{\@tempcnta}\fi\fi\fi}
+
+\def\rangeref#1#2{page\@ifundefined{r@#1}{s {\bf ?--?}\@warning
+   {Reference `#1' on page \thepage \space 
+    undefined}}{\@ifundefined{r@#2}{s {\bf ?--?}\@warning
+   {Reference `#2' on page \thepage \space 
+    undefined}}{\edef\@tempa{\@nameuse{r@#1}}\expandafter
+    \@tempcnta\expandafter\@cdr\@tempa\@nil\relax
+    \edef\@tempa{\@nameuse{r@#2}}\expandafter
+    \@tempcntb\expandafter\@cdr\@tempa\@nil\relax
+    \ifnum\@tempcnta=\@tempcntb \textilde\pageref{#1}\else 
+      s \pageref{#1}--\pageref{#2}\fi}}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                   MISCELLANEOUS                     %
+% \ns                                                 %
+% \tlabox{formula}                                    %
+% \dayMonthYear                                       %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\ns}[1]{\s{-#1}}
+\newcommand{\tlabox}{\begingroup\tlachars\@tlabox}
+\newcommand{\@tlabox}[1]{\endgroup\,\mbox{\let\tlacolon\midcolon\ensuremath{#1}}\,}
+\newcommand{\midcolon}{\mskip -.5\thinmuskip:\mskip -.5\thinmuskip}
+
+\newcommand{\dayMonthYear}{%
+  \number\day \space \ifcase \month 
+    \or January\or February\or March\or April\or May\or June\or July\or 
+    August\or September\or October\or November\or December\fi 
+   \space \number\year}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                  EVENT DIAGRAMS                     %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+\newcommand\tevent[1]{\setlength{\unitlength}{1pt}%
+                      \begin{picture}(0,0)
+                     \put(0,0){\circle*{3}}
+                     \put(0,5){\makebox(0,0)[b]{%
+                         \raisebox{0pt}[0pt][0pt]{\small\tla$#1$}}}
+                     \end{picture}}
+\newcommand\bevent[1]{\setlength{\unitlength}{1pt}%
+                      \begin{picture}(0,0)
+                     \put(0,0){\circle*{3}}
+                     \put(0,-5){\makebox(0,0)[t]{\small\tla$#1$}}
+                     \end{picture}}
+\newcommand{\eventdots}{\setlength{\unitlength}{1pt}%
+                        \begin{picture}(0,0)\Large
+                         \put(0,0){\makebox(0,0){.}}
+                         \put(-5,0){\makebox(0,0){.}}
+                         \put(5,0){\makebox(0,0){.}}
+                        \end{picture}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                      SHADING                        %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% \shadebox{BOX} puts a rectangular shaded area behind the box.
+% The shading erases anything put on the page before the \shadebox
+% command.
+%
+% \graylevel should be def'ed to something like the following values:
+%   For the Apple Laserwriter: .995
+%   For the LPS40: .95
+%
+% \graymargin is the number of points of gray margin left by \shadebox.
+%   Default is 3.
+
+\def\graylevel{.95}
+\def\graymargin{2}
+
+% \@sbdim{DIMEN}   ==   
+%        %% Concatenates the integer representation of DIMEN / \unitlength
+%        %% to the beginning of \@sbtemp.
+%   \@tempcnta := DIMEN / 1pt
+%   \@sbtemp := \the\@tempcnta * \@sbtemp 
+
+\def\@sbdim#1{\@tempcnta #1\relax \divide\@tempcnta \unitlength
+\edef\@sbtemp{\the\@tempcnta\@sbtemp}}
+
+% \shadebox{BOX}==
+%   \unitlength := 1pt;
+%   \@sbtemp    := ` ';
+%   \@tempboxa  := BOX;
+%   \@sbdim{\dp\@tempboxa};
+%   \@sbtemp    := ` def /dp ' * \@sbtemp
+%   \@sbdim{\wd\@tempboxa};
+%   \@sbtemp    := ` def /wd ' * \@sbtemp
+%   \@sbdim{\ht\@tempboxa};
+%   \special{`/ht '\@sbtemp `...'};
+%   BOX
+
+%\definecolor{boxshade}{gray}{\graylevel}
+\definecolor{boxshade}{rgb}{.8,.8,.7}
+%% I have no idea where \shadebox is being defined for the first time.
+\renewcommand{\shadebox}[1]{{\setlength{\fboxsep}{\graymargin pt}%
+      \hspace*{-\fboxsep}\colorbox{boxshade}{#1}\hspace*{-\fboxsep}}} 
+
+\newcommand{\noshading}{\renewcommand
+   {\shadebox}[1]{{\setlength{\fboxsep}{\graymargin pt}%
+     \hspace*{-\fboxsep}\fbox{##1}\hspace*{-\fboxsep}\hspace*{-2\fboxrule}}}}
+
+% \def\nullrule{\leavevmode\vbox{\hrule width0pt height0pt depth0pt}}
+% 
+% \def\shadebox#1{\unitlength=1pt\relax
+% \def\@sbtemp{ }\sbox{\@tempboxa}{#1}%
+% \@sbdim{\dp\@tempboxa}\edef\@sbtemp{ def /dp \@sbtemp}%
+% \@sbdim{\wd\@tempboxa}\edef\@sbtemp{ def /wd \@sbtemp}%
+% \@sbdim{\ht\@tempboxa}\nullrule\special{PS-INLINE /ht \@sbtemp
+% def
+% /margin \graymargin\space def
+% /grayLevel \graylevel\space def
+% /dx wd margin add margin add def
+% /dy ht dp add margin add margin add def
+% newpath
+%   0           dp neg      moveto
+%   margin neg  margin neg  rmoveto
+%   0      dy      rlineto
+%   dx     0       rlineto
+%   0      dy neg  rlineto
+%   dx neg 0       rlineto
+%   grayLevel setgray
+%   fill }%
+% \leavevmode\box\@tempboxa}
+% 
+% Redefine \marginpar to change the size and style.
+% \oldmarginpar is the original definition
+
+% \marginpar[n]{txt}
+%     Produces a marginal note raise by n em from its normal position.
+\let\oldmarginpar=\marginpar
+\renewcommand{\marginpar}[2][0]{\oldmarginpar{\noindent
+\raisebox{#1\baselineskip}{%\shadebox
+    {\parbox[t]{\marginparwidth}{{\small\sf\raggedright#2\par}}}}}}
+
+% \long\def\marginpar#1{\oldmarginpar{\noindent
+% \shadebox{\parbox[t]{\marginparwidth}{\small\sf #1}}}}
+
+% \vmarginpar{DIMEN}{TEXT} 
+%  Same as \marginpar except the baseline of the marginal note is
+%  lowered a distance of DIMEN.
+%
+\def\vmarginpar#1#2{\oldmarginpar{\vspace{#1}\vspace{-\baselineskip}\noindent
+\rule{0pt}{\baselineskip}\shadebox{\parbox[t]{\marginparwidth}{\small\sf #2}}}}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                     PROBLEMS                        %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% \newenvironment{project}{\begin{trivlist}\item[]\refstepcounter{problem}
+% {\bf Project \theproblem\ }}{\end{trivlist}}
+% 
+% \newenvironment{practice}{\begin{trivlist}\item[]\refstepcounter{problem}
+% {\bf Practice \theproblem\ }}{\end{trivlist}}
+% 
+% \newenvironment{puzzle}{\begin{trivlist}\item[]\refstepcounter{problem}
+% {\bf Puzzle \theproblem\ }}{\end{trivlist}}
+
+% \newcounter{problem}[chapter]
+% \def\theproblem{\thechapter.\arabic{problem}}
+
+% A hint environment inside or immediately after a problem writes the
+% hint on the file hints.tex.  The hints in this file are read in with
+% the \hints command.  Much of this code was stolen from the \answer macro
+% in Appendix E of Knuth's TeXBook.
+
+% \newwrite\hintfile
+% \immediate\openout\hintfile=hints.out
+% 
+% \newenvironment{printhint}[2]{\begin{trivlist}\item[]
+%  \textbf{Hint\label{h@#2} #1}}{\end{trivlist}}
+% 
+% \newenvironment{hint}{%
+%     {\addtocounter{hint}{1}%
+%      \small [See hint on page\textilde\pageref{h@\thechapter-\thehint}]}%
+%     \ifnum\value{hint}=1\relax
+%        \immediate\write\hintfile{\string\firsthint{\thechapter}}\fi
+%     \immediate\write\hintfile{\string
+%          \begin{printhint}{\theproblem}{\thechapter-\thehint}}%
+%     \begingroup\setupcopy\copytoblankline}%
+%   {\immediate\write\hintfile{\string\end{printhint}}%
+%    \immediate\write\hintfile{}}
+% 
+% % \newenvironment{printhint}[1]{\begin{trivlist}\item[]
+% %  \textbf{Hint #1 }}{\end{trivlist}}
+% % 
+% % \newenvironment{hint}{%
+% %     {\small [Hint]}%
+% %     \ifnum\value{hint}=0\relax
+% %       \begin{marginal}
+% %       Hints for these problems are on page\textilde\pageref{h@\thechapter}.
+% %       \end{marginal}
+% %        \immediate\write\hintfile{\string\firsthint{\thechapter}}\fi
+% %     \addtocounter{hint}{1}%
+% %     \immediate\write\hintfile{\string\begin{printhint}{\theproblem}}%
+% %     \begingroup\setupcopy\copytoblankline}%
+% %   {\immediate\write\hintfile{\string\end{printhint}}%
+% %    \immediate\write\hintfile{}}
+
+% \def\setupcopy{\def\do##1{\catcode`##1=12}\dospecials
+%      \catcode`\|=12\obeylines}
+% {\obeylines \gdef\copytoblankline
+%     {\copyans}%
+%       \gdef\copyans#1
+%        {\def\next{#1}%
+%        \ifx\next\ndhint\def\next{\endgroup\end{hint}}%
+%        \else\immediate\write\hintfile{\next} \let\next=\copyans\fi\next}}
+
+%% \firsthint{chapternum} appears in the hints.out file before the first
+%% hint of every chapter.
+% \newcommand{\firsthint}[1]{\section*{Hints for Chapter #1}\label{h@#1}}
+
+% \begingroup \catcode `|=0 \catcode `[= 1
+% \catcode`]=2 \catcode `\{=12 \catcode `\}=12
+% \catcode`\\=12 |gdef|ndhint[\end{hint}]
+% |endgroup
+% 
+% \newcounter{hint}[chapter]
+% \newcommand{\hints}{\immediate\closeout\hintfile\input{hints.out}}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                     NOTATION                        %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                     PROOF                           %
+%
+% Stuff commented out because it's in pf2.sty
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 
+% \step{<1>2}{\sassume{Text1}\sproof{Text2}} produces
+% 
+%      <1>2. SUFFICES ASSUME: Text1 
+%                     PROVE:  Text2
+% 
+% \suffices  produces SUFFICES:
+
+% \newcommand{\suffices}{{\kwfont Suffices\/}:}
+% 
+% \newenvironment{sassume+}{%
+%  \begin{pflist}{}{%                % Begin list environment with
+%    \topsep=0pt\relax                   %   \topsep     := 0
+%    \itemsep=0pt\relax                  %   \itemsep    := 0
+%    \parsep=0pt\relax                   %   \parsep     := 0
+%    \partopsep=0pt\relax                %   \partopsep  := 0
+%    \settowidth{\labelwidth}%     %   \labelwidth := width "Assume:"
+%      {{\kwfont Suffices Assume\/}:}%
+%    \leftmargin=\labelwidth\relax %   \leftmargin := \labelwidth
+%    \advance\leftmargin\labelsep  %                   + \labelsep
+%    \relax}%
+%  \item[{\kwfont Suffices Assume\/}:]}%    % \item[Assume:]]
+%  {\end{pflist}}
+% \newcommand{\sassume}[1]{\begin{sassume+}#1\end{sassume+}}
+% 
+% \newcommand{\sprove}[1]{\begin{sprove+}#1\end{sprove+}}
+% \newenvironment{sprove+}{%
+%  \begin{pflist}{}{%                % Begin list environment with
+%    \topsep=0pt\relax                   %   \topsep     := 0
+%    \itemsep=0pt\relax                  %   \itemsep    := 0
+%    \parsep=0pt\relax                   %   \parsep     := 0
+%    \partopsep=0pt\relax                %   \partopsep  := 0
+%    \settowidth{\labelwidth}%     %   \labelwidth := width "Assume:"
+%      {{\kwfont Suffices Assume\/}:}%
+%    \leftmargin=\labelwidth\relax %   \leftmargin := \labelwidth
+%    \advance\leftmargin\labelsep  %                   + \labelsep
+%    \relax}%
+%  \item[{\kwfont 
+%           \s{4.2}Prove\/}:\hfill]}%     % \item[Prove:]]
+%  {\end{pflist}}
+
+
+\newcommand{\tlaplus}{TLA$^{+}$\s{-.1}} 
+\newcommand{\tlaps}{TLAPS} 
+\newcommand{\tlaprover}{TLA$^{+}$ Proof System} 
+% DIJKSTA BAR (Fixed dimensions, made for 11pt)
+\newcommand{\dbar}{\usebox{\dbarbox}}
+\newsavebox{\dbarbox}
+\sbox{\dbarbox}{\begin{picture}(4,8)
+\put(0,-1){\framebox(4,8){}}
+\end{picture}}
+
+%\parbar == parallel composition bar ||
+%
+\newcommand{\parbar}{\ensuremath{\|}}
+
+% \ov, \ovs, \wh, and \con
+\newlength{\booklen}
+\newcommand{\ov}[1]{\ensuremath{\overline{\rule{0pt}{1.25ex}#1}}}
+\newcommand{\ovr}[1]{\ensuremath{{\red\overline{\black\rule{0pt}{1.25ex}#1}}}}
+\newcommand{\ovs}[1]{\ensuremath{\,\overline{\rule{0pt}{1.25ex}#1}}\,}
+\newcommand{\wh}[1]{\ensuremath{\widehat{#1}}}
+\newcommand{\con}[1]{\ensuremath{\mathsf{#1}}}
+\newcommand{\ovn}[1]{\settoheight{\booklen}{#1}%
+        \raisebox{0pt}[\booklen]{\ov{#1}}}
+
+% \A, \ZN, \nat, \posnat, \o, \nil, \card, \cardop
+\newcommand{\Z}[1]{\ensuremath{\mathbf{Z}_{#1}}}
+\newcommand{\ZN}{\Z{\mathsf{N}}}
+\newcommand{\nat}{\ensuremath{Nat}}
+\newcommand{\posnat}{\ensuremath{Nat_{>0}}}
+\renewcommand{\o}{\circ}
+\newcommand{\nil}{\textsc{nil}}
+\newcommand{\card}[1]{\ensuremath{\mbox{\textsc{Cardinality}}\;#1}}
+\newcommand{\cardop}{\mbox{\textsc{Cardinality}}}
+%\newcommand{\M}[3]{\mbox{$#2[\![#1]\!]#3$}}
+\newcommand{\chooseop}{\mbox{\sc choose}}
+\newcommand{\equivto}[1]{\ensuremath{\mathbin{\mathop{=}\limits_{#1}}}}
+\newcommand{\ltsub}[1]{\ensuremath{<_{#1}}}
+\newcommand{\leqsub}[1]{\ensuremath{\leq_{#1}}}
+\newcommand{\Mmap}[1]{\ensuremath{[\![#1]\!]}}
+\newcommand{\M}[2]{\ensuremath{[\![#2]\!](#1)}}
+\newcommand{\N}{\mathcal{N}}% 
+\newcommand{\F}{\mathcal{F}}% 
+
+%% Random notation
+%% \gssub{N}{x,y,z}  
+%%    Produces [N]_<<x,y,z>> except with everything but the N in gray
+%%
+%% \gssubvars{N}
+%%    Produces [N]_vars except with everything but the N in gray.
+%%
+%% \gssubnobr{N}{foo}
+%%    Produces [N]_foo except with everything but the N in gray.
+%%
+\newcommand{\gssub}[2]{\ensuremath{{\gray [}#1{\gray ]_{\langle#2\rangle}}}}
+\newcommand{\gssubvars}[1]{\ensuremath{{\gray [}#1{\gray ]_{vars}}}}
+\newcommand{\gssubnobr}[2]{\ensuremath{{\gray [}#1{\gray ]_{#2}}}}
+
+
+% OUTLINE COMMANDS
+%  \osec{Section Heading}
+% \newcommand{\osec}[1]{\addtocounter{osec}{1}\@hangfrom
+%   {\thechapter.\theosec\hspace{1em}}{\interlinepenalty \@M\bf 
+%   #1\par\vspace{5pt}}}
+% \newcounter{osec}[chapter]
+
+% BIG PARENTHESES
+%  \biglp{N} is used for the Nth level of left parenthesis.  \biglp{1} is
+%      the next largest after a plain `(', and \biglp{6} is the biggest.
+%  \bigrp{N} analagous right parenthesis
+%
+\def\biglp#1{\mbox{$\left(\rule
+   {0pt}{\ifcase #1\relax \or1\or1.25\or1.5\or2.2\or2.5\or2.75\fi em}\right.$}}
+\def\bigrp#1{\mbox{$\left.\rule
+   {0pt}{\ifcase #1\relax \or1\or1.25\or1.5\or2.2\or2.5\or2.75\fi em}\right)$}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                TABLE OF CONTENTS                    %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \renewcommand{\l@section}{\@dottedtocline   %%  {1}{1.5em}{2.3em}
+%    {1}{1.5em}{2.4em}} % originally 2.3em
+
+% \renewcommand{\l@subsection}{\@dottedtocline 
+%     {2}{3.8em}{3.4em}} % originally 3.2em
+
+% \renewcommand{\l@subsection}{\@dottedtocline 
+%     {2}{3.8em}{3.4em}} % originally 3.2em
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                DRAFT STYLE                          %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% MAKE PAGE the 13th page of chapter 4 be page 4:13.
+% 
+% \newcommand{\draftstyle}{
+% \def\thepage{\thechapter:\arabic{page}}
+% 
+% \def\chapter{\cleardoublepage % Starts new right-hand page.
+%    \thispagestyle{plain}     % Page style of chapter page is 'plain'
+%    \global\@topnum\z@        % Prevents figures from going at top of page.
+%    \@afterindentfalse        % Suppresses indent in first paragraph.  Change
+%    \secdef\@chapter\@schapter}   % to \@afterindenttrue to have indent.
+% 
+% %% Cause \chapter command to reset page number to 1.
+% \def\@chapter[##1]##2{\ifnum \c@secnumdepth >\m@ne
+%         \refstepcounter{chapter}
+%         \setcounter{page}{1}    
+%         \typeout{\@chapapp\space\thechapter.}
+%         \addcontentsline{toc}{chapter}{\protect
+%         \numberline{\thechapter}##1}\else
+%       \addcontentsline{toc}{chapter}{##1}\fi
+%    \chaptermark{##1}
+%    \addtocontents{lof}{\protect\addvspace{10pt}} % Adds between-chapter space
+%    \addtocontents{lot}{\protect\addvspace{10pt}} % to lists of figs & tables.
+%    \if@twocolumn                                 % Tests for two-column mode.  
+%            \@topnewpage[\@makechapterhead{##2}]  
+%      \else \@makechapterhead{##2}
+%            \@afterheading                  % Routine called after chapter and
+%      \fi}                                  % section heading.
+% %% REDEFINE \rangeref, \nearpageref, and \settopagenum 
+% %% TO WORK WITH NEW PAGE NUMBERS
+% \def\@rrcdr##1:##2\@nil{##2}
+% \def\@rrcnt##1{\edef\@tempa{\@nameuse{r@##1}}%
+% \edef\@tempa{\expandafter\@cdr\@tempa\@nil}%
+% \edef\@tempa{\expandafter\@rrcdr\@tempa\@nil}}
+% \def\@rscnt##1{\edef\@tempa{##1}%
+% \edef\@tempa{\expandafter\@cdr\@tempa\@nil}%
+% \edef\@tempa{\expandafter\@rrcdr\@tempa\@nil}}
+% 
+% \renewcommand{\settopagenum}[2]{%
+%  \@ifundefined{r@##2}%
+%    {\@warning {Reference `##2' on page \thepage \space undefined}%
+%     \setcounter{spgnum1}{-1}}%  
+%     {\edef\@tempa{\@nameuse{r@##2}}%
+%     \edef\@tempa{\expandafter\@cdr\@tempa\@nil}%
+%     \edef\@tempa{\expandafter\@rrcdr\@tempa\@nil}%
+%     \expandafter\@tempcnta\@tempa\relax\setcounter{##1}{\@tempcnta}}}
+% 
+% \def\rangeref##1##2{page\@ifundefined{r@##1}{s {\bf ?--?}\@warning
+%    {Reference `##1' on page \thepage \space 
+%     undefined}}{\@ifundefined{r@##2}{s {\bf ?--?}\@warning
+%    {Reference `##2' on page \thepage \space 
+%     undefined}}{\@rrcnt{##1}\@tempcnta\@tempa\relax
+%     \@rrcnt{##2}\@tempcntb\@tempa\relax
+%     \ifnum\@tempcnta=\@tempcntb \textilde\pageref{##1}\else 
+%       s \pageref{##1}--\@rrcnt{##2}\@tempa\fi}}}
+% 
+% %%  
+% \renewcommand{\nearpageref}[2][]{\label{##2@##1}\@ifundefined{r@##2}{\@warning
+%    {Reference `##2' on page \thepage \space 
+%     undefined}\@tempcnta\z@}{\@rscnt{\@nameuse{r@##2}}\expandafter
+%     \@tempcnta\@tempa\relax}\@ifundefined
+%     {r@##2@##1}{\@warning
+%    {nearpageref `##2' on page \thepage \space 
+%     not right}\@tempcntb\z@}{\@rscnt{\@nameuse{r@##2@##1}}\expandafter
+%     \@tempcntb\@tempa\relax}\advance\@tempcntb
+%    -\@tempcnta\relax
+%    \ifnum \@tempcntb=\z@ this page\else
+%       \ifnum\@tempcntb=-\@ne the next page\else
+%         \ifnum\@tempcntb=\@ne
+%           \ifodd\@tempcnta the preceding page\else
+%               the adjacent page\fi
+%           \else page\textilde\pageref{##2}\fi\fi\fi}
+
+
+% \def\mypageref##1##2{\label{##2}\@ifundefined{r@##1}{\@warning
+%    {Reference `##1' on page \thepage \space 
+%     undefined}\@tempcnta\z@}{\@rrcnt{##1}\@tempcnta\@tempa\relax
+%     }\@ifundefined{r@##2}{\@warning
+%    {mypageref `##2' on page \thepage \space 
+%     not right}\@tempcntb\z@}{\@rrcnt{##2}\@tempcntb\@tempa\relax
+%    \advance\@tempcntb -\@tempcnta\relax
+%    \ifnum \@tempcntb=\z@ this page\else
+%       \ifnum\@tempcntb=-\@ne the next page\else
+%         \ifnum\@tempcntb=\@ne
+%           \ifodd\@tempcnta the preceding page\else
+%               the facing page\fi
+%           \else page\textilde\pageref{##1}}\fi\fi\fi}
+
+% \def\@pnumwidth{3em}
+% 
+% \def\l@chapter##1##2{\pagebreak[3] 
+%    \vskip 1.0em plus 1pt  % space above chapter line
+%    \@tempdima 1.5em       % width of box holding chapter number
+%    \begingroup
+%      \parindent \z@ \rightskip \@pnumwidth 
+%      \parfillskip -\@pnumwidth   
+%      \bf                  % Boldface.
+%      \leavevmode          % TeX command to enter horizontal mode.       
+%       \advance\leftskip\@tempdima  %% added 5 Feb 88 to conform to 
+%       \hskip -\leftskip            %% 25 Jan 88 change to \numberline
+%      ##1
+%    \endgroup}
+
+
+% TIMESTAMP
+
+% \hour PRINTS, E.G., "11AM"
+%
+%  \newcommand{\hour}{\def\@tempa{ AM}
+%  \@tempcnta\time \divide\@tempcnta by 60\relax
+% \ifnum \@tempcnta>12\relax\advance\@tempcnta by -12\relax\def\@tempa{ PM}\fi
+% \ifnum\@tempcnta=12\relax noon\else \the\@tempcnta\@tempa\fi}
+
+% \def\@makechapterhead##1{             % Heading for \chapter command
+%   \hbox to \pagewidth{\hfill\raisebox{\headsep}[0pt][0pt]{\today\ 
+%           {\small \hour}}}
+%   \vspace*{50pt}                     % Space at top of text page.
+%   { \parindent 0pt \raggedright 
+%     \ifnum \c@secnumdepth >\m@ne     % IF secnumdepth > -1 THEN
+%       \huge\bf \@chapapp{} \thechapter % Print 'Chapter' and number.
+%     \par 
+%     \vskip 20pt \fi                    % Space between number and title.
+%     \Huge \bf                        % Title.
+%     ##1\par 
+%     \nobreak                         % TeX penalty to prevent page break.
+%     \vskip 40pt                      % Space between title and text.
+%   } }
+% 
+% % \@makeschapterhead {TEXT} : Makes the heading for the \chapter* command.
+% %
+% 
+% \def\@makeschapterhead##1{             % Heading for \chapter* command
+%   \hbox to \pagewidth{\hfill\raisebox{\headsep}[0pt][0pt]{\today\ 
+%           {\small \hour}}}
+%   \vspace*{50pt}                     % Space at top of page.
+%   { \parindent 0pt \raggedright 
+%     \Huge \bf                        % Title.
+%     ##1\par 
+%     \nobreak                         % TeX penalty to prevent page break.
+%     \vskip 40pt                      % Space between title and text.
+%   } }
+% 
+% }
+
+
+%\def\@schapter#1{\if@twocolumn \@topnewpage[\@makeschapterhead{#1}]
+%        \else \@makeschapterhead{#1} 
+%              \@afterheading\fi}
+
+%% \tth and \st
+\newcommand{\tth}{\ensuremath{^{\mathrm{th}}}}
+\newcommand{\st}{\ensuremath{^{\mathrm{st}}}}
+
+% PUT \nolabelyet[opt]{foo} command in a description environment to
+% produce an \item[foo] or \item[opt-foo] command and define the label foo
+% and opt.
+
+\def\nolabelyetdef{nolabelyet}
+
+%\tracingall
+\newcommand{\nolabelyet}[2][nolabelyet]{\def\@tempa{#1}%
+  \protect\ifx\nolabelyetdef\@tempa
+      \item[{\tt #2}\label{#2}]
+   \else \item[{\tt #1} -- {\tt #2}\label{#1}\label{#2}]\fi}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                 FOR MATH FORMULAS                   %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%% \vcmath - Takes something like a conj environment and changes the baseline
+%%%           to be in the middle.
+\newsavebox{\vcmathbox}
+\newlength{\vcmathlena}
+\newlength{\vcmathlenb}
+\newcommand{\vcmath}[1]{\savebox{\vcmathbox}{$#1$}%
+ \settoheight{\vcmathlena}{\usebox{\vcmathbox}}%
+ \settodepth{\vcmathlenb}{\usebox{\vcmathbox}}%
+ \addtolength{\vcmathlenb}{-\vcmathlena}%
+ \addtolength{\vcmathlenb}{.475em}%
+ \raisebox{.5\vcmathlenb}{\usebox{\vcmathbox}}%
+ \savebox{\vcmathbox}{}}
+
+%% \dovcmath{\cmd}{formula} does \cmd{\vcmath{formula}}
+%% where \cmd can use \vcmathlenb, which is twice the
+%% height by which formula is raised.
+\newcommand{\dovcmath}[2]{\savebox{\vcmathbox}{$#2$}%
+ \settoheight{\vcmathlena}{\usebox{\vcmathbox}}%
+ \settodepth{\vcmathlenb}{\usebox{\vcmathbox}}%
+ \addtolength{\vcmathlenb}{-\vcmathlena}%
+ \addtolength{\vcmathlenb}{.475em}%
+ #1{\raisebox{.5\vcmathlenb}{\usebox{\vcmathbox}}}%
+ \savebox{\vcmathbox}{}}
+
+
+%% \parens
+\newcommand{\parens}[1]{\ensuremath{\left(\vcmath{#1}\right)}}
+\newcommand{\@topparens}[1]{%
+   \raisebox{-.5\vcmathlenb}{\ensuremath{\left(#1\right)}}}
+\newcommand{\topparens}[1]{%
+        \dovcmath{\@topparens}{#1}}
+\newcommand{\brackets}[1]{\ensuremath{\left[\vcmath{#1}\right]}}
+
+%% \bigbox, \BigBox, \BIGBOX
+\newcommand{\bigbox}{\raisebox{-.15em}{\large$\Box$}}
+\newcommand{\BigBox}{\raisebox{-.15em}{\Large$\Box$}}
+\newcommand{\BIGBOX}{\raisebox{-.15em}{\LARGE$\Box$}}
+
+%% \bigsqact, \bigboxsqact, \Bigboxsqact
+\newcommand{\bigsqact}[2]{\left[\vcmath{#1}\right]_{\textstyle#2}}
+\newcommand{\bigboxsqact}[2]{\raisebox
+                {-.2em}{\Large$\Box$}\bigsqact{#1}{#2}}
+\newcommand{\Bigboxsqact}[2]{\raisebox
+                {-.3em}{\LARGE$\Box$}\bigsqact{#1}{#2}}
+
+%% \bang  already defined somewhere--perhaps in tlatex or tla2texplus
+%\newcommand{\bang}{\ensuremath{!}}
+%% \lb, \rb
+\newcommand{\lb}{\symbol{'173}}
+\newcommand{\rb}{\symbol{'175}}
+
+% COMMANDS TO MAKE \tt STYLE SPECIAL SYMBOLS
+% \bs    = \
+% \us    = _
+% \minus = -
+% \gthan = >
+% \lthan = <
+% \bbar  = |
+% \ttup  = ^
+% \ttquote = "        % "
+% \tilde = ~
+
+\def\bs{\mbox{\rm\texttt{\symbol{92}}}}
+% \def\pct{\mbox{\rm\texttt{\symbol{37}}}}
+\def\ttup{\mbox{\rm\texttt{\symbol{94}}}}  % ^
+\def\us{\mbox{\rm\texttt{\symbol{95}}}}
+\def\minus{\mbox{\rm\texttt{\symbol{45}}}}
+\def\gthan{\mbox{\rm\texttt{\symbol{62}}}}
+\def\lthan{\mbox{\rm\texttt{\symbol{60}}}}
+\def\bbar{\mbox{\rm\texttt{\symbol{124}}}}
+\def\ttquote{\mbox{\rm\texttt{\symbol{34}}}}
+\def\tilde{\mbox{\rm\texttt{\symbol{'176}}}}
+
+\def\dd{\mbox{\,.\,.\,}}
+
+\newcommand{\tlastring}[1]{\mbox{\rm``{\sf #1}''}}
+
+
+%% \hyphen
+\newcommand{\hyphen}{-}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%     THE program ENVIRONMENT     %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+\newcommand{\kwd}[1]{\mbox{\bf #1}}
+\newcommand{\WHILE}{\kwd{while}}
+\newcommand{\pgmIF}{\kwd{if}}
+\newcommand{\pgmELSE}{\kwd{else}}
+%% The following definitions make \{ and \} boldface braces.
+ \let\realLBR=\{
+ \let\realRBR=\}
+ \newcommand{\pgmLBR}{\mbox{\boldmath$\realLBR$}}
+ \newcommand{\pgmRBR}{\mbox{\boldmath$\realRBR$}}
+%% The following alternative definitions make \{ and \} plain
+%% \tt braces
+%%  \newcommand{\pgmLBR}{\mbox{\tt \symbol{'173}}}
+%%  \newcommand{\pgmRBR}{\mbox{\tt \symbol{'175}}}
+
+% \newcommand{\pgmcomment}[1]{%
+%  \raisebox{0pt}[0pt][0pt]{{\rm\footnotesize %
+%  \begin{tabular}[t]%
+%    {@{\texttt{/*}\hspace{.4em}}l@{\hspace{.4em}\texttt{*/}}}%
+%  #1\end{tabular}}}}
+\newcommand{\pgmdefs}{%
+%   \let\IF=\pgmIF
+%   \let\THEN=\pgmTHEN
+%   \let\ELSE=\pgmELSE
+   \let\{=\pgmLBR
+   \let\}=\pgmRBR
+%   \let\comment=\pgmcomment
+    \def\_{\symbol{'137}}%
+    }
+
+\newenvironment{program}%
+ {\begin{list}{}{%
+   \setlength{\labelwidth}{0pt}%
+   \setlength{\labelsep}{0pt}%
+   \setlength{\leftmargin}{\mathindent}%
+   \setlength{\rightmargin}{-\marginwidth}%
+   \setlength{\topsep}{.25\baselineskip}%
+   }\tt\pgmdefs\item[]
+  \begin{tabbing}}%
+  {\end{tabbing}
+   \end{list}}
+% \newenvironment{figpgm}%
+%  {\begin{list}{}{%
+%    \setlength{\labelwidth}{0pt}%
+%    \setlength{\labelsep}{0pt}%
+%    \setlength{\leftmargin}{0pt}%
+%    \setlength{\rightmargin}{-\marginwidth}%
+%    }\tt\pgmdefs 
+%   \begin{tabbing}}%
+%   {\end{tabbing}
+%    \end{list}}
+
+\newenvironment{figpgm}%
+ {\pgmdefs\begin{minipage}{\pagewidth}%
+  \tt\notla\begin{tabbing}}%
+ {\end{tabbing}%
+  \end{minipage}}
+
+\newcommand{\pgm}[1]{%
+  \mbox{\tt\pgmdefs\begin{tabular}[t]{@{}l@{}}#1\end{tabular}}}
+ 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%         ATOMIC OPERATIONS       % 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \begin{atomic} txt \end{atomic}
+% \atom{txt}
+%    Produces <<txt>> : that is, txt typeset inside a tabular 
+%    environment surrounded with atomic angle brackets.
+%    
+\newenvironment{atomic}%
+  {\begin{lrbox}{\vcmathbox}
+   \begin{tabular}{@{}l@{}}}%
+  {\end{tabular}                        
+   \end{lrbox}\bigatomize}
+\newcommand{\atom}[1]{%
+  \savebox{\vcmathbox}{\begin{tabular}{@{}l@{}}%
+                       #1%
+                       \end{tabular}}\bigatomize}
+
+\newcommand{\latom}{\ensuremath{\langle\!\langle}}
+\newcommand{\ratom}{\ensuremath{\rangle\!\rangle}}
+
+%% \bigatomize
+\newlength{\atomizelen}
+\newcommand{\biglala}[1]{{\setlength{\unitlength}{#1}%
+  \hspace{2.5pt}\begin{picture}(0.05,0)
+   \put(0,0){\line(1,5){.1}}
+   \put(0,0){\line(1,-5){.1}}
+   \put(0,0){\hspace{-2.5pt}\line(1,5){.1}}
+   \put(0,0){\hspace{-2.5pt}\line(1,-5){.1}}
+   \end{picture}}}
+\newcommand{\bigrara}[1]{{\setlength{\unitlength}{#1}%
+  \begin{picture}(0.05,0)
+   \put(0.05,0){\line(-1,5){.1}}
+   \put(0.05,0){\line(-1,-5){.1}}
+   \put(0.05,0){\hspace{2.5pt}\line(-1,5){.1}}
+   \put(0.05,0){\hspace{2.5pt}\line(-1,-5){.1}}
+   \end{picture}\hspace{2.5pt}}}
+%%   \put(.05,0){\line(-1,5){2}}
+%%   \put(.05,0){\line(-1,-5){2}}
+
+% \bigatomize prints the contents of \vcmathbox with atom 
+% brackets around it.
+\newcommand{\bigatomize}{% [1]{%
+% \savebox{\vcmathbox}{$\;#1\;$}%
+ \settoheight{\vcmathlena}{\usebox{\vcmathbox}}%
+ \settodepth{\vcmathlenb}{\usebox{\vcmathbox}}%
+ \setlength{\atomizelen}{\vcmathlena}%
+ \addtolength{\atomizelen}{\vcmathlenb}%
+\ifdim\atomizelen<14.01pt\relax   %%% was 12.01 but didn't work 
+%%%                               %%  on \atom{\ov{\pgm{Ring}}}
+  \ensuremath{\langle\!\langle\usebox{\vcmathbox}\rangle\!\rangle}%
+\else\addtolength{\vcmathlenb}{-\vcmathlena}%
+  \addtolength{\vcmathlenb}{.475em}%
+  \raisebox{-.5\vcmathlenb}{%
+    \raisebox{.2375em}{\biglala{\atomizelen}}%
+    \raisebox{.5\vcmathlenb}{\s{.27}\usebox{\vcmathbox}\s{.27}}%
+    \raisebox{.2375em}{\bigrara{\atomizelen}}}\fi%
+ \savebox{\vcmathbox}{}}
+
+\newcommand{\nonatom}[1]{\mbox{\atom{#1}$^{+}$}}
+
+
+%% Some obsolete commands
+% \newcommand{\atomize}[1]{\ensuremath{\langle\!\langle#1\rangle\!\rangle}}
+% \newcommand{\atomizett}[1]{\ensuremath{\langle\!\langle
+%               \texttt{#1}\rangle\!\rangle}}
+%% bigatom environment
+%% \newenvironment{bigatom}{\begin{lrbox}{\vcmathbox}\tla@math}
+%%   	{\tla@math\end{lrbox}\bigatomize{\usebox\vcmathbox}}
+
+%%% marginal note
+\newcommand{\marginalnote}[1]{\marginpar{\raggedright\textit{#1}}}
+%%
+%% \tempbox == a box for saving things.
+%%%\newsavebox{\tempbox}
+
+%%% notation
+%\newcommand{\real}{\ensuremath{\mathbf{R}}}
+
+\newcommand{\proofrule}[2]{\setlength{\arrayrulewidth}{.6pt}%
+  {\ensuremath{\begin{array}[t]{@{}c@{}}%
+       \begin{array}[t]{@{}l@{}} #1\raisebox{-.1em}{\strut}\end{array}\\
+       \hline \raisebox{.1em}{\strut}#2\end{array}}}}
+
+\newcommand{\tlrule}[2]{\setlength{\arrayrulewidth}{.6pt}%
+  {\ensuremath{\begin{array}[t]{@{}c@{}}%
+       \begin{array}[t]{@{}l@{}} #1\raisebox{-.1em}{\strut}\end{array}\\
+       \hline \hline \raisebox{.2em}{\strut}#2\end{array}}}}
+
+\newcommand{\namedrule}[3]{\textbf{#1}\s{1}\proofrule{#2}{#3}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%           MATH DISPLAYS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% redefine math displays to extend to right page margin.
+% Note: eqnarray not redefined.
+
+% \renewcommand\]{\relax
+%                 \ifmmode
+%                       \egroup $\hspace*{-\marginwidth}\hfil% $
+%                     \egroup
+%                   \end{trivlist}%
+%                 \else \@badmath
+%                 \fi}
+
+\newenvironment{equation*}%
+    {\@beginparpenalty\predisplaypenalty
+     \@endparpenalty\postdisplaypenalty
+     \refstepcounter{equation}%
+     \trivlist \item[]\leavevmode
+       \hb@xt@\linewidth\bgroup $\m@th% $
+         \displaystyle
+         \hskip\mathindent}%
+        {$\hfil % $
+         \displaywidth\linewidth\hbox{\@eqnnum}\hspace*{-\marginwidth}%
+       \egroup
+     \endtrivlist}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                THE describe ENVIRONMENT                %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Sets \topsep to 0 to reduce vertical space above
+% and below embedded displayed equations
+%
+% \newenvironment{describe}[1]%
+%    {\begin{list}{}{\settowidth{\labelwidth}{#1}%
+%             \setlength{\leftmargin}{\labelwidth}
+%             \addtolength{\leftmargin}{\labelsep}%
+%             \addtolength{\leftmargin}{\parindent}%
+%             \def\makelabel##1{\rm ##1\hfill}}%
+%             \setlength{\topsep}{0pt}}%%
+%    {\end{list}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%        MISC
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%   \CV : equivalent to \\[...]  where ... is the extra space
+%%         needed to make lines in \comment's have the same 
+%%         baselineskip as normalsize lines.
+%%
+%%   \CVV : xx \\  yy \CVV zz  puts the zz line where it is put by
+%%          xx \CV yy \CV  zz  
+%%   \CVVV : like \CVV, but adds space to compensate for two \\'s.
+%%   
+%%                       X
+%%   \ar{X} : Produces ---->
+%%                           X
+%%   \action{X} : Produces ---->
+%%      leaves more space around arrow than \ar{X}
+%
+% \newcommand{\CV}{\\[2.5pt]}
+% \newcommand{\CVV}{\\[5pt]}
+% \newcommand{\CVVV}{\\[7.5pt]}
+\newcommand{\xjoinrel}{\mathrel{\mkern-3.5mu}}
+\newcommand{\ar}[1]{\stackrel{\mbox{\small
+       $#1$}}{\relbar\xjoinrel\rightarrow}} 
+%\newcommand{\ar}[1]{\stackrel{\scriptstyle 
+%       #1}{\relbar\xjoinrel\rightarrow}} 
+%%% \pause
+\newcommand{\pause}{\nopagebreak\par\vspace{.2\baselineskip}%
+\hbox to \textwidth{\hfill
+\makebox[0pt][l]{\raisebox{2pt}{\rule{.1\textwidth}{.4pt}\hfill}}%%
+\rule{.1\textwidth}{.4pt}\hfill}\nopagebreak
+ \par\vspace{.4\baselineskip}\nopagebreak}
+\newcommand{\action}[1]{\ensuremath{\;\;\begin{array}[b]{@{}c@{}}
+                                    \mbox{\small \ensuremath{#1}}\\[-.3em]
+                                     \longrightarrow
+                                     \end{array}\;\;}}
+
+
+
+%%%%% The following hack causes LaTeX to print out the first label
+%%%%% that has changed since the previous run.  This will make it
+%%%%% easy to track down a nonconvergent label from a \nearpageref.
+
+% \def\enddocument{%
+% \@enddocumenthook \@checkend {document}\clearpage \begingroup \if@filesw 
+% \immediate \closeout \@mainaux \let \@setckpt \@gobbletwo \let \@newl@bel 
+% \@testdef
+%  \@tempswafalse \makeatletter \input \jobname .aux \fi \@dofilelist \ifdim 
+% \font@submax >\fontsubfuzz \relax 
+% \@font@warning {Size substitutions with differences\MessageBreak up to 
+%     \font@submax \space have occured.\@gobbletwo }\fi 
+% \@defaultsubs \@refundefined \if@filesw \ifx \@multiplelabels \relax 
+% \if@tempswa \@latex@warning@no@line 
+%    {Label \@firstmoved and other labels  may have changed. 
+%      Rerun to get cross-references right}\fi 
+%   \else \@multiplelabels \fi \fi \endgroup \deadcycles \z@ \@@end}
+% 
+% \def\@testdef#1#2#3{\def \reserved@a {#3}\expandafter \ifx 
+%     \csname #1@#2\endcsname \reserved@a \else \gdef\@firstmoved{`#2' }%
+%    \@tempswatrue \fi}
+
+\newenvironment{conj3}{%
+ \begin{array}[t]{@{\land\ }l@{\;}l@{\;}l}%
+ }{%
+ \end{array}}
+
+%%%%% Added 20 May to make figure-caption numbers boldface.
+%%%%   done separately from updating the version on home machine.
+%%%%    Home machine version probably wrong.
+
+% \renewcommand{\@makecaption}[2]{\vskip \abovecaptionskip 
+%    \sbox \@tempboxa {{\bf #1:} #2}\ifdim \wd \@tempboxa > \hsize 
+%          {\bf #1:} #2\par 
+%         \else \global \@minipagefalse 
+%         \hb@xt@ \hsize {\hfil \box \@tempboxa \hfil }\fi 
+%         \vskip \belowcaptionskip}
+% 
+%%%% Make equation numbers boldface
+%\renewcommand{\@eqnnum}{\hb@xt@ .01\p@ {}\rlap 
+%   {\normalfont\normalcolor\bf \hskip -\displaywidth (\theequation )}}
+
+%%% Index style changes
+% \renewcommand{\@idxitem}{\par \hangindent 30\p@}
+% \renewcommand{\subitem}{\@idxitem\hspace*{1em}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%    TABLE OF CONTENTS, LIST OF FIGURES AND TABLES    %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%% redefine \l@part to make \part entry look like:
+%%%     Part IV The Decline and Fall
+
+\renewcommand{\l@part}[2]{%
+ \ifnum \c@tocdepth >-2\relax 
+  \addpenalty {-\@highpenalty}\addvspace{2.25em \@plus \p@}%
+  \setlength\@tempdima{3em}\begingroup\parindent\z@ 
+  \rightskip \@pnumwidth \parfillskip -\@pnumwidth 
+  {\leavevmode \large \bfseries Part #1\hfil #2}\par 
+    \nobreak \global \@nobreaktrue \everypar {\global \@nobreakfalse 
+  \everypar {}}\endgroup \fi}
+
+
+%%% Combining List of Figures and List of Tables 
+
+% Change List Of Figures name to "List of Figures and Tables"
+\renewcommand{\listfigurename}{List of Figures and Tables}
+
+\renewcommand{\listoftables}{%
+ \if@twocolumn \@restonecoltrue \onecolumn \else \@restonecolfalse \fi 
+% \chapter*{\listtablename}
+% \@mkboth {\MakeUppercase \listtablename }{\MakeUppercase \listtablename }
+\par\vspace{5\baselineskip}
+{\leavevmode 
+\hspace*{-1.5em}%  %% remove to make "Tables" flush with table numbers
+\Large \bfseries Tables\par}%
+\@starttoc {lot}\if@restonecol \twocolumn \fi}
+
+% Add "Table" to table number in List of Tables entry.
+\newcommand{\@tabledottedtocline}[5]{%
+ \ifnum #1>\c@tocdepth \else \vskip \z@ \@plus .2\p@ {\leftskip #2\relax 
+ \rightskip \@tocrmarg \parfillskip -\rightskip \parindent #2\relax 
+ \@afterindenttrue \interlinepenalty \@M \leavevmode \@tempdima #3\relax 
+ \advance \leftskip \@tempdima \null \nobreak \hskip 
+ -\leftskip {Table #4}\nobreak 
+ \leaders \hbox {$\m@th \mkern \@dotsep mu\hbox {.}\mkern \@dotsep mu$}\hfill 
+ \nobreak \hb@xt@ \@pnumwidth {\hfil \normalfont \normalcolor #5}\par }\fi}
+
+\renewcommand{\l@table}{\@tabledottedtocline {1}{1.5em}{1.2em}} % {2.3em}}
+
+
+\renewcommand{\listoffigures}{%
+\if@twocolumn \@restonecoltrue \onecolumn \else \@restonecolfalse \fi 
+  \chapter *{\listfigurename}{\Large\bf Figures\par}%
+  \@mkboth{\MakeUppercase\listfigurename}{\MakeUppercase 
+  \listfigurename }\@starttoc {lof}\if@restonecol \twocolumn \fi}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% COMMANDS FOR hyperref 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% FIXING THE TABLE OF CONTENTS
+\newcommand{\myl@subsection}[2]{{%
+ \def\numberline##1{\makebox[2em][l]{##1}}%
+   #1}\par}
+\let\l@subsection=\myl@subsection
+
+\let\oldl@section=\l@section
+\newcommand{\myl@section}[2]{\oldl@section{#1}{}}
+\let\l@section=\myl@section
+
+\let\oldl@subsubsection=\l@subsubsection
+\newcommand{\myl@subsubsection}[2]{\oldl@subsubsection{#1%
+                                        \hskip 0pt plus 9filll}{}}
+\let\l@subsubsection=\myl@subsubsection
+
+
+
+
+% \pdftitle{txt} - makes txt the name displayed on the window's titlebar.
+\let\@oldtitle=\title
+\newcommand{\pdftitle}[1]{\hypersetup{pdftitle={#1}}\@oldtitle{#1}}
+
+% \target{nam} 
+% \btarget{nam} 
+%     Make nam the name of both a local and remote target for a link to 
+%     the spot where this command occurs in the document.  They differ
+%     in that with \btarget the target is at the baseline of the current
+%     line, and with \target it's \baselineskip higher.
+
+\newcommand{\btarget}[1]{\hypertarget{#1}{}} %\hyperdef{}{#1}{}}
+\newcommand{\target}[1]{\raisebox{\baselineskip}[0pt]{\btarget{#1}}}
+
+% \lref{nam}{txt}      
+%     Makes txt a link to the local target named nam
+% \rref{fil}{nam}{txt} 
+%     Makes txt a link to the target named nam in file fil.pdf
+% \popref{fil}{txt} 
+%     Like \rref, except target is a popup (opened in new window).
+\newcommand{\lref}[2]{\hyperlink{#1}{\linkcolor#2}}
+\newcommand{\rref}[3]{\hyperref{#1.pdf}{}{#2}{\linkcolor#3}%
+                       {\hypersetup{pdfnewwindow=true}%
+                          \hyperref{#1.pdf}{}{#2}{\raisebox{.3em}[0pt]{%
+                               \small$\linkcolor\Box$}}}}
+
+\newcommand{\sref}[3]{\hyperref{#1.pdf}{}{#2}{\linkcolor#3}}
+
+\newcommand{\tref}[3]{{\hypersetup{pdfnewwindow=true}%
+                       \hyperref{#1.pdf}{}{#2}{\linkcolor #3}}}
+
+\newcommand{\popref}[2]{{\hypersetup{pdfnewwindow=true}%
+                        \hyperref{#1.pdf}{}{}{\linkcolor #2}}}
+
+
+\newlength{\@oddlen}%
+\newlength{\@mpwidth}%
+
+\newcommand{\draft}{
+\setlength{\@oddlen}{\textheight}%
+\addtolength{\@oddlen}{-1in}%
+\setlength{\@mpwidth}{\marginparwidth}%
+\addtolength{\@mpwidth}{-2\fboxsep}%
+\newsavebox{\@back}
+\newsavebox{\@fwd}
+\sbox{\@back}{\begin{picture}(11,5)
+               \thicklines
+               \put(6,2.5){\line(1,0){5}}
+               \put(0,2.5){\vector(-1,0){0}}
+              \end{picture}}
+\sbox{\@fwd}{\begin{picture}(11,5)
+               \thicklines
+               \put(0,2.5){\line(1,0){5}}
+               \put(11,2.5){\vector(1,0){0}}
+              \end{picture}}
+\newcommand{\backbutton}{\Acrobatmenu{GoBack}{\colorbox
+                           {linkbackground}{%\linkcolor
+                              \makebox[\@buttonwidth]{\usebox{\@back}}}}}
+\newcommand{\fwdbutton}{\Acrobatmenu{GoForward}{\colorbox
+                           {linkbackground}{%\linkcolor
+                              \makebox[\@buttonwidth]{\usebox{\@fwd}}}}}
+\newlength{\@buttonwidth}
+\setlength{\@buttonwidth}{13pt}
+\newcommand{\helpbutton}{\hyperref{help.pdf}{}{top}{%
+                           \colorbox{linkbackground}{%
+                             \makebox[\@buttonwidth]{%\linkcolor
+                                \black\bf ?}}}}
+\newcommand{\tlabutton}{\hyperref{NOTWRITTEN.pdf}{}{top}{%
+                          \colorbox{linkbackground}{%
+                           \makebox[\@buttonwidth]{%\linkcolor
+                               \black\footnotesize TLA}}}}
+
+\newcommand{\contentsbutton}{%
+%     \ifthenelse{\equal{\@filename}{main}}%
+%         {\lref{contents}{%
+%             \colorbox{linkbackground}{\makebox[\@buttonwidth]{%
+%                                         \linkcolor\small\bf C}}}}%
+        {\sref{contents}{top}{
+             \colorbox{linkbackground}{\makebox[\@buttonwidth]{%\linkcolor
+                                         \black\small\bf C}}}}}
+\newcommand{\indexbutton}{%
+        {{\hypersetup{pdfnewwindow=true}%
+          \sref{index}{top}{
+             \colorbox{linkbackground}{\makebox[\@buttonwidth]{%\linkcolor
+                                         \black\small\bf I}}}}}}
+\newcommand{\summarybutton}{%
+        {{\hypersetup{pdfnewwindow=true}%
+          \sref{summary}{top}{
+             \colorbox{linkbackground}{\makebox[\@buttonwidth]{%\linkcolor
+                                         \black\small\bf S}}}}}}
+
+
+\def\@oddfoot{\makebox[\textwidth][l]{%
+      \hspace*{-\oddsidemargin}\hspace*{-1in}\hspace*{5pt}%
+     \makebox[0pt][l]{\raisebox{.3em}[0pt]{\thepage}}%
+    \raisebox{\@oddlen}[0pt][0pt]{
+     \begin{tabular}{@{}l@{}}
+       \mbox{} 
+        \\[100pt]
+        \helpbutton
+           \\[5pt]
+       \backbutton
+           \\[5pt]
+       \fwdbutton
+           \\[5pt]
+%       \tlabutton
+%           \\[5pt]
+       \contentsbutton
+           \\[5pt]
+       \indexbutton
+           \\[5pt]
+       \summarybutton
+
+     \end{tabular}}}}}
+
+
+  \newsavebox{\popupbox}
+
+% \begin{popup} txt \end{popup} 
+%   For a popup whose content is txt, which contains no pointers or
+%   Acrobat commands.  The file has no \begin{document} ... \end{document}.
+%   These are replaced by the single command \makepopup
+\newenvironment{popup}{
+  \begin{lrbox}{\popupbox}
+  \begin{minipage}[b]{\textwidth}}%
+ {\end{minipage}%
+  \end{lrbox}%
+  \global\setbox\popupbox\box\popupbox
+ }
+\def\makepopup{
+ \setlength{\oddsidemargin}{-1in}%
+ \addtolength{\oddsidemargin}{10pt}%
+ \setlength{\marginparsep}{0pt}%
+ \setlength{\marginparwidth}{0pt}%
+ \setlength{\paperwidth}{\textwidth}%
+ \addtolength{\paperwidth}{20pt}%
+% \addtolength{\paperwidth}{1in}%
+ \settoheight{\paperheight}{\usebox\popupbox}%
+ \addtolength{\paperheight}{4.2em}%
+  \pagestyle{empty}%
+  \hypersetup{pdfmenubar=false} %% this removes the top menu bar
+  \hypersetup{pdftoolbar=false}  % this seems to do nothing
+  \begin{document}
+   \noindent\target{top}\\\usebox{\popupbox}\\[5pt]
+   \mbox{}\hfill\closebutton% 
+\end{document}
+  }
+\newcommand{\makeasciipopup}{\let\closebutton\asciiclosebutton\makepopup}
+
+% \fixverbatim
+%    Changes verbatim* so blank lines show up with a single space
+%    and thus get copied.
+\newcommand{\fixverbatim}{%
+\def\@verbatim{\trivlist \item \relax \if@minipage \else \vskip \parskip \fi 
+ \leftskip \@totalleftmargin \rightskip \z@skip \parindent \z@ \parfillskip 
+ \@flushglue \parskip \z@skip \@@par \@tempswafalse \def \par {\if@tempswa 
+  \ifvmode \leavevmode \char'040\relax\fi 
+  \leavevmode \null \@@par
+   \penalty \interlinepenalty \else \@tempswatrue 
+  \ifhmode \@@par \penalty \interlinepenalty \fi \fi }\let \do \@makeother 
+   \dospecials \obeylines \verbatim@font
+   \@noligs \hyphenchar \font \m@ne \everypar 
+    \expandafter {\the \everypar \unpenalty }}}
+
+
+\newcommand{\asciiclosebutton}{%
+  \Acrobatmenu{Close}{\linkcolor
+     \setlength{\fboxsep}{0pt}%
+     \setlength{\fboxrule}{3pt}%
+     \scalebox{.5}{\includegraphics{close-picture.jpg}}%
+%      \fbox{%
+%         \raisebox{-.5\fboxrule}{\linkbackground\rule{40pt}{12pt}}}
+}}
+
+\newcommand{\closebutton}{%
+  \Acrobatmenu{Close}{\linkcolor\large\textbf{\sc close}}}
+
+% \setpopup{n}
+%    Set up page dimensions and style for a popup with height n em.
+%    For a multi-page popup, take n = 53.
+\newcommand{\setpopup}[1]{
+ \setlength{\oddsidemargin}{-1in}%
+ \addtolength{\oddsidemargin}{10pt}%
+ \setlength{\marginparsep}{0pt}%
+ \setlength{\marginparwidth}{0pt}%
+ \setlength{\paperwidth}{\textwidth}%
+ \addtolength{\paperwidth}{20pt}%
+ \setlength{\paperheight}{#1em}
+  \pagestyle{empty}%
+  \hypersetup{pdfmenubar=false} %% this removes the top menu bar
+  \hypersetup{pdftoolbar=false}  % this seems to do nothing
+  \let\@oldenddoc=\enddocument
+  \def\enddocument{\par \vspace{5pt}
+      \mbox{}\hfill\Acrobatmenu{Close}{\linkcolor\large\textbf{\sc close}}%
+    \@oldenddoc}
+ }
+
+% \setwidepopup{n}{m}
+%    Set up page dimensions and style for a popup with height n em,
+%    and extra page width m em.
+%    For a multi-page popup, take n = 53.
+\newcommand{\setwidepopup}[2]{
+ \setlength{\oddsidemargin}{-1in}%
+ \addtolength{\oddsidemargin}{10pt}%
+ \setlength{\marginparsep}{0pt}%
+ \setlength{\marginparwidth}{0pt}%
+ \setlength{\paperwidth}{\textwidth}%
+ \addtolength{\paperwidth}{20pt}%
+ \addtolength{\paperwidth}{#2em}%
+ \setlength{\paperheight}{#1em}
+  \pagestyle{empty}%
+  \hypersetup{pdfmenubar=false} %% this removes the top menu bar
+  \hypersetup{pdftoolbar=false}  % this seems to do nothing
+  \let\@oldenddoc=\enddocument
+  \def\enddocument{\par \vspace{5pt}
+      \mbox{}\hfill\Acrobatmenu{Close}{\linkcolor\large\textbf{\sc close}}%
+    \@oldenddoc}
+ }
+
+% \newsetwidepopup{n}{m}
+%    Like setwidepopup, but keeps room for marginal notes.
+\newcommand{\newsetwidepopup}[2]{
+ \setlength{\oddsidemargin}{-1in}%
+ \addtolength{\oddsidemargin}{10pt}%
+% \setlength{\marginparsep}{0pt}%
+% \setlength{\marginparwidth}{0pt}%
+ \setlength{\paperwidth}{\textwidth}%
+ \addtolength{\paperwidth}{20pt}%
+ \addtolength{\paperwidth}{#2em}%
+ \setlength{\paperheight}{#1em}
+  \pagestyle{empty}%
+  \hypersetup{pdfmenubar=false} %% this removes the top menu bar
+  \hypersetup{pdftoolbar=false}  % this seems to do nothing
+  \let\@oldenddoc=\enddocument
+  \def\enddocument{\par \vspace{5pt}
+      \mbox{}\hfill\Acrobatmenu{Close}{\linkcolor\large\textbf{\sc close}}%
+    \@oldenddoc}
+ }
+
+
+
+
+\newcommand{\@filename}{}
+\newcommand{\file}[1]{\def\@filename{#1}}
+
+\long\def\marginpop#1#2{%
+   \oldmarginpar{\noindent
+    \raisebox{.55\baselineskip}{% a fudge factor; I don't know why it's needed.
+     {\hypersetup{pdfnewwindow=true}%
+       \hyperref{#1.pdf}{}{top}{%
+%%%         \colorbox{linkbackground}
+        {%
+          \parbox[t]{\@mpwidth}{\linkcolor\small\sf\raggedright #2}}}}}}}
+
+
+% \ascii[num]{psfile}
+%     Produces a link labeled "ASCII version" in the margin, with a link
+%     to a popup in file psfill.pdf.  The link is raised by num ems.
+% \tascii[num]{txt}{psfile}
+%     Like \ascii, except it is labeled "ASCII version of txt" .
+
+\newcommand{\ascii}[2][0]{\marginpar[#1]{\popref{#2}{\textsc{ascii} version}}}
+\newcommand{\tascii}[3][0]{\marginpar[#1]{\popref{#3}{\textsc{ascii} version
+                            of #2}}}
+
+% \begin{asciieqn}{pdffile} formula \end{asciieqn}
+%     Produces an ordinary math display, containing in the margin
+%     a link to the ascii version in file pdffile.pdf.  However, if
+%     the line is too long, it will wrap instead of sticking into the
+%     margin.  Do not leave a 
+\newenvironment{asciieqn}[1]{\begin{trivlist}\item[]
+\mbox{}\ascii{#1}$}%
+{$\end{trivlist}}
+
+%%% Reference to a help page:
+% Type something like \helppage{gettingstarted/tla-preferences}{text}
+
+\newcommand{\helppage}[2]{%
+ \hyperref{http://tla.msr-inria.inria.fr/tlatoolbox/doc/#1.html}{}{}{#2}}
+
+%%%  Remote Section References: 
+% \xlabel{lbl}
+%      To make lbl a remote reference to a sectional unit number, write 
+%      write \xlabel{lbl} after the \section or whatever command.  The
+%      label lbl must be globally unique.
+%
+% \xref{lbl}
+%      Refers to the number (like 2.7) defined by an \xlabel{lbl} command.
+% \xlink{lbl}
+%      The target of a link.  If \xlabel{lbl} appears in file foo, then
+%      \sref{foo}{\xlink{lbl}}{...} produces a link to the sectional-unit
+%      header.  (Of course, this works for \rref too.)
+%
+% \targetlabel{lbl}
+%      Like \xlabel, except that: 
+%        - You can use it for a reference to anything that a LaTeX \ref
+%          normally references, and
+%        - The link produced by \xlink jumps to the location in the text
+%          of the \targetlabel command, not necessarily to the text
+%          object being labeled.
+% 
+%  Note: It is necessary to run the runpdftex shell script to make
+%  this \xlabel, \xlink, etc. business work.  That's because the
+%  linking information is in the xref.tex file, which is written
+%  by executing that shell script.  (Actually, it is written by 
+%  running pdflatex on contents.tex.)
+
+\newcommand{\xlabel}[1]{\addtocontents{toc}{\protect\makeseclabel{#1}}}
+\newcommand{\makeseclabel}[1]{}
+\def\@grabnum#1.#2XXX{#2}
+\newcommand{\makexref}[2]{%
+  \expandafter\def\expandafter\@num\expandafter{\@grabnum#2XXX}%
+  \expandafter\def\csname xlink@#1\endcsname{#2}%
+  \expandafter\xdef\csname xref@#1\endcsname{\@num}%
+}
+\newcommand{\xref}[1]{\@ifundefined{xref@#1}{\textbf{??}}{%
+       \csname xref@#1\endcsname}}
+\newcommand{\xlink}[1]{\@ifundefined{xlink@#1}{???}{%
+       \csname xlink@#1\endcsname}}
+
+%% added 19 Mar 2012
+\newcommand{\maketargetlabel}[2]{} 
+\newcommand{\targetlabel}[1]{\target{xlink@#1}\addtocontents{toc}{%
+  \expandafter\protect\expandafter\maketargetlabel\expandafter{\@currentHref}{#1}}}
+
+\def\documentclass#1\xdocumentclass{}
+\input{hypermode}
+\input{versions}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%           HYPERREF COMMANDS              %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% COMMANDS TO GO IN hyperref.tex
+% \draft
+%     Sets page dimensions, etc. for a draft.  At the moment,
+%     this is the same as the planned final version.  This
+%     command should go in the file hypermode.tex 
+
+%% COMMANDS TO GO IN PREAMBLE
+% \pdftitle{txt} 
+%     Makes txt the name displayed on the window's titlebar.
+% \begin{popup} txt \end{popup} 
+%     For a popup whose content is txt, which contains no pointers or
+%     Acrobat commands.  (Use \setpopup for popups with pointers.)
+%     The .tex file has no \begin{document} ... \end{document}. Instead,
+%     the popup environment is followed by the single command \makepopup
+% \setpopup{n}
+%    Set up page dimensions and style for a popup with of height n em.
+% \fixverbatim
+%    Changes verbatim* so blank lines show up with a single space
+%    and thus get copied.  Don't use with ordinary verbatim.
+
+
+%% COMMANDS TO GO IN TEXT
+% \target{nam} 
+% \btarget{nam} 
+%     Make nam the name of both a local and remote target for a link to 
+%     the spot where this command occurs in the document.  They differ
+%     in that with \btarget the target is at the baseline of the current
+%     line, and with \target it's \baselineskip higher.
+% \lref{nam}{txt}      
+%     Makes txt a link to the local target named nam
+% \rref{fil}{nam}{txt} 
+%     Makes txt a link to the target named nam in file fil.pdf, including
+%     a link to raise the target in a new window.
+% \sref{fil}{nam}{txt} 
+%     Makes txt a link to the target named nam in file fil.pdf, without
+%     the link to raise in a new window.
+% \tref{fil}{nam}{txt} 
+%     Like \sref, except the link is always raised in a new window.
+% \popref{fil}{txt} 
+%     Like \rref, except target is a popup (opened in new window).
+% \ascii[num]{psfile}
+%     Produces a link labeled ASCII TEXT in the margin, with a link
+%     to a popup in file psfill.pdf.  The link is raised by num ems.
+%
+% \xlabel{lbl}
+%      To make lbl a remote reference to a sectional unit number, write 
+%      write \xlabel{lbl} after the \section or whatever command.  The
+%      label lbl must be globally unique.
+% \xref{lbl}
+%      Refers to the number (like 2.7) defined by an \xlabel{lbl} command.
+% \xlink{lbl}
+%      The target of a link.  If \xlabel{lbl} appears in file foo, then
+%      \sref{foo}{\xlink{lbl}}{...} produces a link to the sectional-unit
+%      header.
+%
+% \getrefnumber{label}
+%     Produces the number that is produced by \ref, but without a
+%     link to the \label.
+% \refused{label}
+%     Types out a warning message if label is undefined.
+%  Note: To make a local link to a sectional unit, do something like
+%        \lref{subsection.2.1}{text}.  To make the link symbolic, you can
+%        write something like \lref{section.\getrefnumber{label}}.
+%        This should be put into a macro if it turns out to be useful.
+
+
+% Button-making commands:
+%   \helpbutton  \backbutton  \fwdbutton  \tlabutton  \contentsbutton
+% ----------------------------------------------------
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                   INDEXING                          %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% The following defines
+% 
+%   \tindex{n}{term}
+%   \ctindex{n}{term}{id}
+% 
+% so it creates the same entry as \index{term} on page n, but 
+% it makes the n a link to this location.  Here, n should
+% be a number that is used to order different entries for the same
+% term.  Use \ctindex if term has @ or other non-simple elements.
+%
+%   \mmath{exp}
+%
+% to typeset exp in math mode in the index.
+% 
+% To add a command \foo to an index entry, put \icmd{foo} in the
+% \[c]tindex command argument.
+% 
+\def\tindex#1#2{\ctindex{#1}{#2}{#2}}
+% \def\tindex#1#2{%
+%       {\ifthenelse{\equal{\@filename}{}}{\thisFileMissingAFileCommand}{}%
+%        \def\@@wrindex##1|##2|##3\\{%
+%         \if@filesw
+%           \ifx\\##2\\%
+%             \protected@write\@indexfile{}{%
+%               \string\indexentry{##1|indexref{#1}{\@filename}{#2}}{#1}%
+%               %% Replace the last #1 by \thepage to get page references.
+%             }%
+%           \else
+%             \def\Hy@temp@A{##2}%
+%             \ifcase0\ifx\Hy@temp@A\HyInd@ParenLeft 1\fi
+%                     \ifx\Hy@temp@A\HyInd@ParenRight 1\fi
+%                     \relax
+%               \protected@write\@indexfile{}{%
+%                 \string\indexentry{##1|##2}{\thepage}%
+%               }%
+%             \else
+%               \protected@write\@indexfile{}{%
+%                  \string\indexentry{##1|##2hyperpage}{\thepage}%
+%               }%
+%             \fi
+%           \fi
+%         \fi
+%         \endgroup
+%         \@esphack
+%       }%
+%    \index{#2}%
+%    \target{#1#2}%
+%    }%
+% }
+
+\def\ctindex#1#2#3{%
+      {\ifthenelse{\equal{\@filename}{}}{\thisFileMissingAFileCommand}{}%
+       \def\@@wrindex##1|##2|##3\\{%
+        \if@filesw
+          \ifx\\##2\\%
+            \protected@write\@indexfile{}{%
+              \string\indexentry{##1|indexref{#1}{\@filename}{#1#3}}{#1}%
+            }%
+          \else
+            \def\Hy@temp@A{##2}%
+            \ifcase0\ifx\Hy@temp@A\HyInd@ParenLeft 1\fi
+                    \ifx\Hy@temp@A\HyInd@ParenRight 1\fi
+                    \relax
+              \protected@write\@indexfile{}{%
+                \string\indexentry{##1|##2}{\thepage}%
+              }%
+            \else
+              \protected@write\@indexfile{}{%
+                 \string\indexentry{##1|##2hyperpage}{\thepage}%
+              }%
+            \fi
+          \fi
+        \fi
+        \endgroup
+        \@esphack
+      }%
+   \index{#2}%
+   \target{#1#3}%
+   }%
+}
+
+
+\newcommand\indexref[4]{%
+  {\hypersetup{pdfnewwindow=true}%
+  \hyperref{#2.pdf}{}{#3}{{\linkcolor #1}}}
+}
+
+\newcommand{\mmath}{}
+\let\mmath=\relax
+\newcommand{\icmd}{}
+\let\icmd\relax
+
+% MARGINAL STUFF
+
+% \marginpar[n]{txt}
+%     Produces a marginal note raise by n times \baselineskip from its normal position.
+
+% \marginpop{file}{txt}
+%    Produces a marginal note that's a link to the popup file.pdf.
+% OTHER ENVIRONMENTS
+% \begin{display} text \end{display}
+% \begin{widedisplay} text \end{widedisplay}
+%     Produces a display, indented by \mathindent.  The widedisplay
+%     environment's line width extends to the edge of the page.
+% \begin{twocols} lcol \midcol rcol \end{twocols}
+%     Puts lcol and rcol in two top-aligned columns, extending
+%     the full \pagewidth width (into the margin).
+% \begin{question} text \end{question}
+% \begin{aquestion}{file} text \end{aquestion}
+%     Produce a question.  The aquestion environment puts an 
+%     ANSWER link to file.pdf in the margin.
+
+%% MATH
+% \tlabox{frmula}
+%     Like \mbox{$frmula$} except with formula interpreted in TLA mode,
+%     and with : defined to be \midcolon, which makes a colon with less
+%     space around it.
+%
+% \ns(n)
+%     Equivalent to \s{-n}.  Use where the char coding makes \s{-...} 
+%     impossible.
+%
+% \begin{asciieqn}{pdffile} formula \end{asciieqn}
+%     Produces an ordinary math display, containing in the margin
+%     a link to the ascii version in file pdffile.pdf.
+
+%% DISPLAYS
+
+
+% \begin{display} text \end{display}
+% \begin{widedisplay} text \end{widedisplay}
+%     Produce displays, indented by \mathindent.  With display, the
+%     line width extends to the ordinary right margin.  With widedisplay
+%     it extends to the end of the page.
+
+
+
+%%%% CHARACTERS AND SYMBOLS
+% \dd = ..
+% \bang= !
+% \vbar=|
+%% \tlastring{text}
+%%     Produces the TLA+ string "text".
+
+%% \lb, \rb
+%%    Left and right brace characters, ONLY WHEN USED IN \tt mode.
+%%
+%% \hyphen
+%%    Makes an ordinary hyphen.  Useful when inside TLA mode.
+%%    Note that \hyphen\hypen\hyphen will make a single --- dash.
+%%
+%%  The following make \tt style characters.
+% COMMANDS TO MAKE \tt STYLE SPECIAL SYMBOLS
+% \bs    = \
+% \us    = _
+% \minus = -
+% \gthan = >
+% \lthan = <
+% \bbar  = |
+% \ttup  = ^
+% \ttquote = "        % "
+% \tilde = ~
+\newcommand{\vbar}{\ensuremath{|}}
+
+%% \smallfbox : for things like the [+] button symbol.
+\newcommand{\smallfbox}[1]{{\setlength{\fboxsep}{1pt}\footnotesize \fbox{#1}}}
+
+%% PlusCal keywords
+\newcommand{\variable}{\textbf{variable}}
+\newcommand{\variables}{\textbf{variables}}
+\newcommand{\algorithm}{\textbf{-{}-algorithm}}
+\newcommand{\pwhile}{\textbf{while}}
+\newcommand{\process}{\textbf{process}}
+\newcommand{\pif}{\textbf{if}}
+\newcommand{\pelse}{\textbf{else}}
+\newcommand{\when}{\textbf{when}}
+\newcommand{\await}{\textbf{await}}
+\newcommand{\with}{\textbf{with}}
+\newcommand{\fair}{\textbf{fair}}
+\newcommand{\goto}{\textbf{goto}}
+\newcommand{\pskip}{\textbf{skip}}
+\newcommand{\por}{\textbf{or}}
+\newcommand{\peither}{\textbf{either}}
+
+
+%% \mathcal symbols
+%%   \MF = \mathcal{F}
+%%   \MC = \mathcal{C}
+%%   \MG = \mathcal{G}
+%%
+%%  REDUCTION  
+%%   \rd{X} produces X^R
+
+\newcommand{\rd}[1]{\ensuremath{#1^{R}}}
+\newcommand{\MF}{\ensuremath{\mathcal{F}}}
+\newcommand{\MG}{\ensuremath{\mathcal{G}}}
+\newcommand{\MC}{\ensuremath{\mathcal{C}}}
+
+%%%% \bookmark command
+%%%    Sets the return link for the BOOKMARK.pdf files.
+
+%% COMMAND PROVIDED BY FRANK MITTELBACK TO ALLOW TAB STOPS OF DEPTH
+%% 25
+\def\providetabstops #1{%
+   \count@#1\relax
+   \newdimen\@gtempa
+   \chardef\@firsttab=\the\allocationnumber
+   \loop
+     \newdimen\@gtempa
+     \advance\count@\m@ne
+     \ifnum\count@>\z@
+   \repeat
+   \chardef\@maxtab=\the\allocationnumber
+}
+\providetabstops{25}
+
+
+\newcommand{\bookmark}[1][0]{\marginpar[#1]{\target{bookmark}\red BOOKMARK}}
+
+%% NUMBER EQUATIONS WITHIN SECTIONS
+\renewcommand \theequation {\thesection.\@arabic\c@equation}
+\@addtoreset {equation}{section}
+
+%% 
+
+%% Make \pdftrue and \pdffalse set and unset pdf mode.
+%% Normally in pdfmode
+\newif\ifpdf
+\pdftrue
+
+%  \pict(x,y){factor}{file}
+%  In pdf mode, reads the picture from file and scales it by factor.
+%  In dvi mode, draws a rectangle xpt by ypt with the file name
+%    inside it.
+%
+%  To find out the values for x and y, use the command
+%    \pictdim{factor}{file}
+%  and read the output it produces
+%
+
+\newcommand{\ifmakingpdf}[2]{\ifpdf #1\else #2\fi}
+\def\pict(#1,#2)#3#4{%
+    \ifmakingpdf{\scalebox{#3}{\includegraphics{#4}}}%
+  {{\framebox(#1,#2){#4}}}}
+\newlength{\pictlen}
+\newsavebox{\pictbox}
+\newcommand{\pictdim}[2]{
+\sbox{\pictbox}{\scalebox{#1}{\includegraphics{#2}}}%
+\settowidth{\pictlen}{\usebox{\pictbox}}%
+width = \the\pictlen, %
+\settoheight{\pictlen}{\usebox{\pictbox}}%
+height= \the\pictlen.%
+}

@@ -1,0 +1,77 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%                       VERSIONING COMMANDS	
+%%
+%%  When a section is modified, add the command \version{i} to its
+%%  \...section command argument, where i is the number of the next
+%%  version to be released.  In this file, add a command like
+%%
+%%     \newversion{i}{29 February 2020}
+%%
+%% at the end where the date is the version's date.  Versions should be
+%% consecutively numbered, starting from any number > 0.  Any versions
+%% less than the minimum declared version will not be printed.  Versions
+%% > the maximum declared version will produce an error.
+%% 
+%% Use \showversions to print version numbers \hideversions to suppress
+%% printing.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% This file defines commands for versioning.
+%% Go to the end for instructions on what to do.
+% The \documentclass ... \xdocumentclass is a hack so that pdflatex can
+% be run on the file without doing anything.
+\documentclass{article}
+\begin{document}
+\end{document}
+\xdocumentclass  
+\newcommand{\version}{\protect\xversion}
+\newcommand{\xversion}[1]{#1}
+\newcounter{maxversion}
+\setcounter{maxversion}{0}
+\newcounter{minversion}
+\setcounter{minversion}{999999}
+\newcounter{colorcounter}
+\setcounter{colorcounter}{0}
+\newcommand{\newversion}[2]{\expandafter\def\csname version#1\endcsname{#2}
+  \ifthenelse{#1>\value{maxversion}}{\setcounter{maxversion}{#1}}{}%
+  \ifthenelse{\value{minversion}>#1}{\setcounter{minversion}{#1}}{}}
+
+\newcommand{\printversion}[1]{%
+  \ifthenelse{\value{maxversion}<#1}{\typeout{Version number too large.}%
+                                     \versionNumberIsTooLarge}{}%%%%
+  \ifthenelse{\value{minversion}>#1}{}{%
+    {\setcounter{colorcounter}{\value{maxversion}}%
+     \addtocounter{colorcounter}{-#1}%
+     \ifthenelse{\value{colorcounter}<3}{%
+          \expandafter\csname \thecolorcounter color\endcsname}{}%
+           ~~{\rm [modified \csname version#1\endcsname]}}}}
+
+\newcommand{\showversions}{\renewcommand{\xversion}\printversion}
+\newcommand{\hideversions}{\renewcommand{\xversion}[1]{\gobbleversion}}
+\newcommand{\gobbleversion}[1]{}
+
+\expandafter\def\csname 0color\endcsname{\red}
+\expandafter\def\csname 1color\endcsname{\orange}
+\expandafter\def\csname 2color\endcsname{\green}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  Define the versions here using
+%
+%   \newversion{n}{text}
+%
+%  Versions should be consecutively numbered, starting from
+%  any number > 0.  Any versions less than the minimum declared
+%  version will not be printed.  Versions > the maximum declared
+%  version will produce an error.
+%
+%  Use \showversions to print version numbers \hideversions to
+%  suppress printing.
+
+\newversion{1}{9 December 2010}
+\newversion{2}{20 December 2010}
+\newversion{3}{1 January 2010}
+% \newversion{5}{Version 5}
+% \newversion{6}{Version 6}
+
+
