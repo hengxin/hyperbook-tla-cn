@@ -41,6 +41,8 @@
 \usepackage{hypertlabook}
 \usepackage{graphpap}
 %%%%% The following packages are added by hengxin (hfwei@nju.edu.cn) %%%%%
+\usepackage{savesym}	% to resolve conflicts between packages
+\savesymbol{tilde}
 \usepackage{comment}	
 \includecomment{ch}
 \excludecomment{en}
@@ -266,7 +268,7 @@ system is that its computation consists of a collection of discrete
 events.  
 \end{en}
 
-\begin{cn}
+\begin{ch}
 \subsection{为计算建模} \label{sec:computing-devices}
 
 如上所述，并发计算是允许不同操作并发的一种计算形式。
@@ -277,14 +279,14 @@ events.
 然而，由于种种原因，这个答案不能令人满意：
 \begin{itemize}
   \item 我们很难定义什么是计算机。
-    一部手机是计算机吗？一部$$\text{MP3}$$ 播放器呢？
+    一部手机是计算机吗？一部MP3播放器呢？
   \item 如今，计算通常是由多台计算机组成的网络所完成的。
   \item 计算可以由非物理设备——尤其是程序与算法——完成。
 \end{itemize}
 一个更好的定义是：计算就是数字系统所做的那些事情。
-计算机、$\text{MP3}$播放器、计算机网络、程序与算法都是数字系统。
+计算机、MP3 播放器、计算机网络、程序与算法都是数字系统。
 数字系统与其它系统的区别在于它的计算是由一组离散事件构成的。
-\end{cn}
+\end{ch}
 %%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%%
@@ -667,6 +669,8 @@ straightforward and easy to understand.  Reasoning about the
 translation is quite practical.
 
  
+%%%%%%%%%%%%%%%
+\begin{en}
 \newpage
  \tindex{1}{One-Bit Clock}%
  \ctindex{1}{Clock!One-Bit}{clock-one-bit}%
@@ -682,15 +686,47 @@ can specify that requirement, so we are going to ignore it.  This
 leaves a very simple computing device that just alternates between two
 states: the state in which the clock displays 0 and the state in which
 it displays~1.
+\end{en}
 
+\begin{ch}
+\newpage
+ \tindex{1}{One-Bit Clock}%
+ \ctindex{1}{Clock!One-Bit}{clock-one-bit}%
+ \vspace{-\baselineskip}%
+\btarget{sec:one-bit}\section{单比特时钟}
+
+我们考虑的第一个例子是一个尽可能简单的时钟：它交替显示``时间''0与1。
+这类时钟控制着你正用于阅读本书的计算机，它的``时间''表现为电缆上的电压。
+真实的时钟应该基本保持匀速行走。
+我们忽略这种需求，因为如果要描述它，我们还需要解释很多事情。
+% 要想描述这个需求，我们还需要解释很多事情，所以我们忽略它。
+这样一来，我们只需要考虑一个在两种状态之间交替的非常简单的计算装置：
+一个状态显示0，另一个状态显示1。
+\end{ch}
+%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%
+\begin{en}
 This may seem a strange example to choose because it has no
 concurrency.  The clock does only one thing at a time.  A system can
 do any number of things at a time.  \emph{One} is a simple special
 case of \emph{any number}, and it's a good place to begin.  Learning
 to specify sequential systems in \tlaplus\ teaches most of what you
 need to know to specify concurrent systems.
+\end{en}
+
+\begin{ch}
+  这似乎是个奇怪的例子，因为它不涉及并发。
+  这个时钟一次只做一件事。
+  在同一时刻，一个系统可以做任意多件事。
+  \emph{一}是\emph{任意多}的简单的特殊情况，这是一个好的起点。
+  学习使用 \tlaplus\ 描述顺序系统能让我们掌握描述并发系统所需的大多数知识。
+\end{ch}
+%%%%%%%%%%%%%%%
 
 
+%%%%%%%%%%%%%%%
+\begin{en}
 \subsection{The Clock's Behaviors} \label{sec2.1}
 
 We use the standard model to represent the clock.  This means that a
@@ -705,7 +741,26 @@ the assignment of 0 to $b$ represents the clock displaying 0, and the
 assignment of 1 to $b$ represents its displaying 1.  We describe the
 state that assigns the value 0 to $b$ by the formula $b=0$, and
 similarly for $b=1$.
+\end{en}
 
+\begin{ch}
+\subsection{时钟的行为} \label{sec2.1}
+
+我们使用标准模型建模时钟。
+也就是说，时钟的一次可能执行表示为一个%
+  \tindex{2}{behavior}%
+行为。
+一个行为是一个状态序列，而一个%
+  \tindex{2}{state}%
+状态则是对变量的一种赋值。
+我们用一个变量$b$表示``钟面''：
+$b$赋值为0表示时钟显示0，赋值为1表示时钟显示1。
+我们用公式$b=0$表示``变量$b$赋值为0''这一状态；$b=1$的含义类似。
+\end{ch}
+%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%
+\begin{en}
 If we start the clock displaying 0, then we can pictorially represent
 its behavior as:
  \[ %\begin{equation} \label{eq1}
@@ -718,7 +773,24 @@ running for long enough.  However, it's more convenient to consider an
 ideal clock that never stops, rather than having to decide for how
 long we should require it to run.  So, we describe a clock
 that runs forever.
+\end{en}
 
+\begin{ch}
+  如果我们让时钟从0开始，那么它的行为可以形象地描述成：
+  \[ %\begin{equation} \label{eq1}
+    b=0 \s{.701} -> \s{.701} b=1 \s{.701} -> \s{.701} b=0 
+        \s{.701} -> \s{.701} b=1 \s{.701} -> \s{.701} \cdots
+  \] %\end{equation}
+  其中，``$\cdots$''表示时钟永不停歇。
+  真实的时钟总会停下来；我们只能期望它运行的时间足够长。
+  但是，考虑一个理想的永不停歇的时钟更为方便，
+  而不必决定它究竟需要运行多长时间。
+  因此，我们描述一个永不停歇的时钟。
+\end{ch}
+%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%
+\begin{en}
 We could also let the clock start displaying 1, in which case
 its behavior is
  \[ % \begin{equation} \label{eqclk1}
@@ -727,6 +799,17 @@ its behavior is
  \] % \end{equation}
 These two are the only possible behaviors of the one-bit
 clock.
+\end{en}
+
+\begin{ch}
+  我们也可以让时钟从1开始，在这种情况下，它的行为如下所示：
+  \[ % \begin{equation} \label{eqclk1}
+    b=1 \s{.701} -> \s{.701} b=0 \s{.701} -> \s{.701} b=1 
+        \s{.701} -> \s{.701} b=0  \s{.701} -> \s{.701} \cdots
+  \] % \end{equation}
+  以上行为是单比特时钟仅有的两种行为。
+\end{ch}
+%%%%%%%%%%%%%%%
 
 \pause
 
@@ -7570,4 +7653,3 @@ stuttering actions.  By combining the three consecutive actions into a
 single $p3$ action, we then obtain a behavior $\sigma$ of the
 coarser-grained algorithm such that \ovs{\tau} and \ovs{\sigma} differ
 only by stuttering steps. 
-
