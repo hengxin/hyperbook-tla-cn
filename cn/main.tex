@@ -171,36 +171,52 @@
 \vfill
 \newpage
 \vspace*{-\baselineskip}
+
+%%%%%%%%%%%%%%%
+\begin{en}
+\section{Introduction}
+
+\subsection{Concurrent Computation}
+
+ \tindex{1}{concurrent}%
+\emph{Concurrent} 
+means occurring at the same time.
+   \tindex{1}{concurrency}%
+\emph{Concurrency} 
+is the noun form of this adjective; it means the
+existence of multiple things happening at the same time.
+
+Concurrent computation means computation in which different operations
+can occur concurrently.  These days, most computation is performed in
+response to real-world actions---perhaps when a user moves a mouse or
+clicks on a mouse button.  Concurrency in the real world means that
+concurrent computation cannot be avoided.  Your computer cannot
+prevent you from clicking on the mouse button while you are moving the
+mouse.
+\end{en}
+
+\begin{ch}
 \section{导论}
 
 \subsection{并发计算}
 
-\begin{ch}
  \tindex{1}{concurrent}%
-``并发的'' 即``同时发生的''。
+ ``\emph{并发的}'' 即``同时发生的''。
 作为其名词形式，
    \tindex{1}{concurrency}%
-``并发'' 意味着多件事情同时发生。
+ ``\emph{并发}'' 意味着多件事情同时发生。
 
 ``并发计算''是允许不同操作并发的一种计算形式。
 如今，大多数计算都是对现实世界里发生的动作的响应——比如用户移动或者点击了鼠标。
 现实世界里的并发动作意味着并发计算不可避免。
 当你移动鼠标的时候，你的计算机不能阻止你同时点击鼠标。
 \end{ch}
+%%%%%%%%%%%%%%%
 
+%%%%%%%%%%%%%%%
+\begin{en}
   \tindex{1}{parallel computation}%
   \ctindex{1}{computation!parallel}{parallel-computation}%
-
-\begin{ch}
-``并行计算'' 是一类特殊的并发计算。
-在并行计算中，为了加速完成任务，一个任务被分成多个子任务并发执行。
-原则上讲，并行是可以避免的，因为我们可以按序依次执行这些子任务。
-在实践中，并行或许不可避免，否则可能需要很长时间才能完成任务。
-但是，即使并行（同并发一样）不可避免，究其本质而言，它只是并发的一种简单形式。
-这是因为，在并行计算中，一件事情在何时发生是由我们——而非外部世界——所控制的。
-\end{ch}
-
-\begin{en}
 Parallel computation is a special kind of concurrent computation in
 which different parts of a single task are performed concurrently to
 speed up execution of the task.  In principle, parallelism is
@@ -211,24 +227,19 @@ form of concurrency because we, rather than the external world,
 control when things happen.
 \end{en}
 
-\begin{cn}
-如上所述，并发计算是允许不同操作并发的一种计算形式。
-但是，
-\tindex{1}{computation}%
-什么是计算呢？
-一个简单的答案是：计算就是一台计算机所做的那些事情。
-然而，由于种种原因，这个答案不能令人满意：
-\begin{itemize}
-  \item 我们很难定义什么是计算机。
-    一部手机是计算机吗？一部$$\text{MP3}$$ 播放器呢？
-  \item 如今，计算通常是由多台计算机组成的网络所完成的。
-  \item 计算可以由非物理设备——尤其是程序与算法——完成。
-\end{itemize}
-一个更好的定义是：计算就是数字系统所做的那些事情。
-计算机、$\text{MP3}$播放器、计算机网络、程序与算法都是数字系统。
-数字系统与其它系统的区别在于它的计算是由一组离散事件构成的。
-\end{cn}
+\begin{ch}
+  \tindex{1}{parallel computation}%
+  \ctindex{1}{computation!parallel}{parallel-computation}%
+并行计算是一类特殊的并发计算。
+在并行计算中，为了加速完成任务，一个任务被分成多个子任务并发执行。
+原则上讲，并行是可以避免的，因为我们可以按序依次执行这些子任务。
+在实践中，并行或许不可避免，否则可能需要很长时间才能完成任务。
+但是，即使并行（同并发一样）不可避免，究其本质而言，它只是并发的一种简单形式。
+这是因为，在并行计算中，一件事情在何时发生是由我们——而非外部世界——所控制的。
+\end{ch}
+%%%%%%%%%%%%%%%
 
+%%%%%%%%%%%%%%%
 \begin{en}
 \subsection{Modeling Computation} \label{sec:computing-devices}
 
@@ -255,24 +266,28 @@ system is that its computation consists of a collection of discrete
 events.  
 \end{en}
 
-\begin{ch}
-  袖珍计算器的计算是由诸如``按键''与``在屏幕上显示数字''这样的离散事件构成的，
-  所以它是一种数字系统。
-  不过，这些事件真的是离散事件吗？
-  改变屏幕上显示的数字需要几毫秒，
-  在这段时间内，屏幕由显示旧数字连续地变成显示新数字。
-  计算器的使用者会认为这种变化是一个单一事件。
-  但是，屏幕的设计者很可能不这么认为。
-  当我们认为某个系统的计算是由离散事件构成的时候，
-  对我们来说，这个系统就是一种数字系统。
-  这时，我们直接说``该系统（如计算器）是一种数字系统''，
-  而不说``我们认为该系统（如计算器）是一种数字系统''。
-  更进一步，由于本书的主题是数字系统，
-  我将省略``数字''这一定语并使用
-    \tindex{1}{system}%
-  ``系统''指代数字系统。
-\end{ch}
+\begin{cn}
+\subsection{为计算建模} \label{sec:computing-devices}
 
+如上所述，并发计算是允许不同操作并发的一种计算形式。
+但是，
+\tindex{1}{computation}%
+什么是计算呢？
+一个简单的答案是：计算就是一台计算机所做的那些事情。
+然而，由于种种原因，这个答案不能令人满意：
+\begin{itemize}
+  \item 我们很难定义什么是计算机。
+    一部手机是计算机吗？一部$$\text{MP3}$$ 播放器呢？
+  \item 如今，计算通常是由多台计算机组成的网络所完成的。
+  \item 计算可以由非物理设备——尤其是程序与算法——完成。
+\end{itemize}
+一个更好的定义是：计算就是数字系统所做的那些事情。
+计算机、$\text{MP3}$播放器、计算机网络、程序与算法都是数字系统。
+数字系统与其它系统的区别在于它的计算是由一组离散事件构成的。
+\end{cn}
+%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%
 \begin{en}
 A pocket calculator is a digital system because its computation
 consists of discrete events like the pressing of a button and the
@@ -292,13 +307,25 @@ almost always omit the ``digital'' and simply write
 \end{en}
 
 \begin{ch}
-  袖珍计算器系统的离散事件究竟是什么？
-  从键盘输入数字$3$是一个单一事件吗？
-  还是说，按下按键$3$与松开按键$3$是两个不同的事件？
-  计算器的使用者很可能会认为输入数字$3$是一个单一事件。
-  而对键盘的设计者来说，它又包含两个不同的事件。
+  袖珍计算器的计算是由诸如``按键''与``在屏幕上显示数字''这样的离散事件构成的，
+  所以它是一种数字系统。
+  不过，这些事件真的是离散事件吗？
+  改变屏幕上显示的数字需要几毫秒，
+  在这段时间内，屏幕由显示旧数字连续地变成显示新数字。
+  计算器的使用者会认为这种变化是一个单一事件。
+  但是，屏幕的设计者很可能不这么认为。
+  当我们认为某个系统的计算是由离散事件构成的时候，
+  对我们来说，这个系统就是一种数字系统。
+  这时，我们直接说``该系统（如计算器）是一种数字系统''，
+  而不说``我们认为该系统（如计算器）是一种数字系统''。
+  更进一步，由于本书的主题是数字系统，
+  我将省略``数字''这一定语并使用%
+    \tindex{1}{system}%
+  ``\emph{系统}''指代数字系统。
 \end{ch}
+%%%%%%%%%%%%%%%
 
+%%%%%%%%%%%%%%%
 \begin{en}
 What exactly are the discrete events of the pocket calculator system?
 Is entering the number 3 on the keypad a single event?  Or are
@@ -308,12 +335,15 @@ keypad's designer, they are separate events.
 \end{en}
 
 \begin{ch}
-  本书的主题不是像计算器这样的物理系统，而是
-    \ctindex{1}{system!abstract}{system-abstract}%
-  \emph{抽象}系统——那些我们认为其计算是由离散事件构成的数字系统的抽象。
-  我们研究的是抽象系统的原理。
+  袖珍计算器系统的离散事件究竟是什么？
+  从键盘输入数字$3$是一个单一事件吗？
+  还是说，按下按键$3$与松开按键$3$是两个不同的事件？
+  计算器的使用者很可能会认为输入数字$3$是一个单一事件。
+  而对键盘的设计者来说，它又包含两个不同的事件。
 \end{ch}
+%%%%%%%%%%%%%%%
 
+%%%%%%%%%%%%%%%
 \begin{en}
 This hyperbook is not about physical systems like calculators.  It is
 about 
@@ -325,19 +355,14 @@ systems.
 \end{en}
 
 \begin{ch}
-  对一个物理系统，我们如何决定该使用什么抽象呢？
-  输入数字$3$是一个事件还是包含两个事件？
-  这取决于抽象的目标。
-  将输入某数字看作一个单一事件所得到的抽象比较简单。
-  然而，它无法描述这样一种可能情况：
-  先按下$3$，然后在松开$3$之前按下$4$。
-  键盘的设计者需要考虑这种可能性。
-  因此，这种抽象不能满足键盘设计者的需求，
-  他们需要区分``按键''与``松键''两种事件。
-  尝试理解如何使用计算器的用户很可能不关心同时按下两个键会发生什么。
-  所以，用户更喜欢遵循简单抽象的使用手册。
+  本书的主题不是像计算器这样的物理系统，而是%
+    \ctindex{1}{system!abstract}{system-abstract}%
+  \emph{抽象}系统——那些我们认为其计算是由离散事件构成的数字系统的抽象。
+  我们研究的是抽象系统的原理。
 \end{ch}
+%%%%%%%%%%%%%%%
 
+%%%%%%%%%%%%%%%
 \begin{en}
 How do we decide what abstraction of a physical system to use?  Should
 entering the number 3 be one event or two?  The answer depends on the
@@ -350,19 +375,54 @@ needs separate \emph{depress} and \emph{release} events.  The user
 trying to understand how to use the calculator probably doesn't care
 what happens if two keys are depressed at the same time, so he will
 prefer an instruction manual that adopts the simpler abstraction.
-\end{en}
 
 This kind of abstraction is common to all sciences.  Astronomers
 studying planetary motion often use an abstraction in which a
 planet is represented as a point mass.  However, that abstraction is not
 satisfactory if tidal effects are important.  
+\end{en}
 
+\begin{ch}
+  对一个物理系统，我们如何决定该使用什么抽象呢？
+  输入数字$3$是一个事件还是包含了两个事件？
+  这取决于抽象的目标。
+  将输入某数字看作一个单一事件所得到的抽象比较简单。
+  然而，它无法描述这样一种可能情况：
+  先按下$3$，然后在松开$3$之前按下$4$。
+  键盘的设计者需要考虑这种可能性，
+  因此，这种抽象不能满足他们的需求，
+  他们需要区分``按键''与``松键''两种事件。
+  尝试理解如何使用计算器的用户很可能并不关心同时按下两个键会发生什么，
+  他们更喜欢依照简单抽象写成的使用手册。
+
+  % 这种抽象对所有学科都是共通的。
+  所有学科都有这种关于抽象的问题。
+  天文学家在研究行星运动时通常将行星抽象为一个质点。
+  但是，如果需要考虑潮汐效应的话，这种抽象就不能满足要求了。
+\end{ch}
+%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%
+\begin{en}
 Having fewer separate events makes an abstraction simpler; having more
 events allows it to more accurately represent the actual system.  We
 want to use the simplest abstraction that is accurate enough.  Finding
 the right abstraction is an art, but we will see that there are
 principles that can guide us.
+\end{en}
 
+\begin{ch}
+  包含较少事件的抽象比较简单。
+  包含较多事件的抽象则可以更精确地刻画实际系统。
+  我们希望使用简单而又不失精确的抽象。
+  虽然如何选择正确的抽象是一门艺术，
+  但是还是有一些基本原则可供遵循。
+  % 但是我们将会看到一些具有引导作用的原则。
+\end{ch}
+%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%
+\begin{en}
 Having chosen an abstraction of a system, we need to decide how to
 represent that abstraction.  A representation of an abstraction of a
 system is called a 
@@ -404,7 +464,48 @@ scales well to descriptions of complex systems.
 We model abstractions of systems.  By a \emph{system model} or a
 \emph{model of a system}, I mean a model of an abstraction of a
 (digital) system.
+\end{en}
 
+\begin{ch}
+  选定了系统的某种抽象之后，
+  我们需要决定如何表示这种抽象。
+  系统的某种抽象的一种表示被称作该系统的一个%
+    \ctindex{1}{model!system}{model-system}%
+  \emph{模型}。
+  系统建模有多种方式。
+  有的将事件看作原子对象。
+  有的将状态——也就是变量的赋值——看作原子对象，而将事件定义为状态之间的转换。
+  还有的将状态与事件名作为原子对象，此时，事件被定义为标有事件名的状态转换。
+  还有一种建模方式将事件集合看作原子对象。
+  不同的模型可以表达不同的性质，我们将会接触到多种模型。
+  但是，我们用得最多的是被我们称为标准模型的如下模型：
+  \begin{quote}
+    \textbf{标准模型} \  
+      \ctindex{1}{model!standard}{model-standard}%
+      \tindex{1}{standard model}%
+    一个%
+      \target{main:standard-model}%
+    抽象系统被描述为一组（系统）行为，其中每个（系统）行为代表系统的一次可能执行。
+    一个（系统）%
+      \tindex{1}{behavior}%
+    行为是一个状态序列，
+    而一个%
+      \tindex{1}{state}%
+    状态则是一种变量赋值。
+  \end{quote}
+  在该模型中，%
+    \tindex{1}{event}%
+  事件，或者称%
+    \tindex{1}{step}%
+  \emph{步}，
+  被定义为系统行为中的状态转换。
+  我发现上述标准模型是所有能够很好地扩展到复杂系统的模型中最简单的一种模型。
+
+  我们为系统的某种抽象建立模型。
+  我们用\emph{系统模型}（或者\emph{某系统的某个模型}）
+  表示为（数字）系统的某种抽象建立的模型。
+\end{ch}
+%%%%%%%%%%%%%%%
 
 % I will usually omit the ``abstract'' and write simply \emph{system} to
 % mean an abstraction of a digital system.  Moreover, when using the
