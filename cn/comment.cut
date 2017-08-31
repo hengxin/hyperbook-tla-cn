@@ -1,6 +1,7 @@
-  我们也可以让时钟从1开始，在这种情况下，它的行为如下所示：
-  \[ % \begin{equation} \label{eqclk1}
-    b=1 \s{.701} -> \s{.701} b=0 \s{.701} -> \s{.701} b=1
-        \s{.701} -> \s{.701} b=0  \s{.701} -> \s{.701} \cdots
-  \] % \end{equation}
-  以上行为是单比特时钟仅有的两种行为。
+  初始状态易于描述。
+  我们只需要断言 $b$ 的初始值是0或者1，用公式表示如下：
+  \[ (b=0) \; \/ \; (b=1)\]
+  我们称该公式为%
+    \tindex{1}{initial predicate}%
+    \ctindex{1}{predicate!initial}{predicate-initial}%
+  \emph{初始谓词}。

@@ -1,0 +1,495 @@
+% Section 1: Introduction
+%%%%%%%%%%%%%%%
+\begin{en}
+\section{Introduction}
+
+\subsection{Concurrent Computation}
+
+ \tindex{1}{concurrent}%
+\emph{Concurrent} 
+means occurring at the same time.
+   \tindex{1}{concurrency}%
+\emph{Concurrency} 
+is the noun form of this adjective; it means the
+existence of multiple things happening at the same time.
+
+Concurrent computation means computation in which different operations
+can occur concurrently.  These days, most computation is performed in
+response to real-world actions---perhaps when a user moves a mouse or
+clicks on a mouse button.  Concurrency in the real world means that
+concurrent computation cannot be avoided.  Your computer cannot
+prevent you from clicking on the mouse button while you are moving the
+mouse.
+\end{en}
+
+\begin{ch}
+\section{导论}
+
+\subsection{并发计算}
+
+ \tindex{1}{concurrent}%
+ ``\emph{并发的}'' 即``同时发生的''。
+作为其名词形式，
+   \tindex{1}{concurrency}%
+ ``\emph{并发}'' 意味着多件事情同时发生。
+
+``并发计算''是允许不同操作并发的一种计算形式。
+如今，大多数计算都是对现实世界里发生的动作的响应——比如用户移动或者点击了鼠标。
+现实世界里的并发动作意味着并发计算不可避免。
+当你移动鼠标的时候，你的计算机不能阻止你同时点击鼠标。
+\end{ch}
+%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%
+\begin{en}
+  \tindex{1}{parallel computation}%
+  \ctindex{1}{computation!parallel}{parallel-computation}%
+Parallel computation is a special kind of concurrent computation in
+which different parts of a single task are performed concurrently to
+speed up execution of the task.  In principle, parallelism is
+avoidable because we can perform the separate parts one at a time.  It
+may not be avoidable in practice because without it, executing the
+task may take too long.  However, parallelism is an inherently simpler
+form of concurrency because we, rather than the external world,
+control when things happen.
+\end{en}
+
+\begin{ch}
+  \tindex{1}{parallel computation}%
+  \ctindex{1}{computation!parallel}{parallel-computation}%
+并行计算是一类特殊的并发计算。
+在并行计算中，为了加速完成任务，一个任务被分成多个子任务并发执行。
+原则上讲，并行是可以避免的，因为我们可以按序依次执行这些子任务。
+在实践中，并行或许不可避免，否则可能需要很长时间才能完成任务。
+但是，即使并行（同并发一样）不可避免，究其本质而言，它只是并发的一种简单形式。
+这是因为，在并行计算中，一件事情在何时发生是由我们——而非外部世界——所控制的。
+\end{ch}
+%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%
+\begin{en}
+\subsection{Modeling Computation} \label{sec:computing-devices}
+
+Concurrent computation is computation in which different operations
+can occur concurrently, but 
+  \tindex{1}{computation}%
+what is computation?  A simple answer is:
+computation is what a computer does.  This answer is unsatisfactory
+for several reasons:
+\begin{itemize}
+\item It's hard to define what a computer is.  Is a cell phone a
+computer?  What about an MP3 player?
+
+\item These days, computations are often performed by networks of
+separate computers.
+
+\item Computations can be performed by non-physical things---in particular,
+by programs and algorithms.
+\end{itemize}
+A better definition is that computation is what a digital system does,
+where computers, MP3 players, computer networks, programs, and
+algorithms are all digital systems.  What distinguishes a digital
+system is that its computation consists of a collection of discrete
+events.  
+\end{en}
+
+\begin{ch}
+\subsection{为计算建模} \label{sec:computing-devices}
+
+如上所述，并发计算是允许不同操作并发的一种计算形式。
+但是，
+\tindex{1}{computation}%
+什么是计算呢？
+一个简单的答案是：计算就是一台计算机所做的那些事情。
+然而，由于种种原因，这个答案不能令人满意：
+\begin{itemize}
+  \item 我们很难定义什么是计算机。
+    一部手机是计算机吗？一部MP3播放器呢？
+  \item 如今，计算通常是由多台计算机组成的网络所完成的。
+  \item 计算可以由非物理设备——尤其是程序与算法——完成。
+\end{itemize}
+一个更好的定义是：计算就是数字系统所做的那些事情。
+计算机、MP3 播放器、计算机网络、程序与算法都是数字系统。
+数字系统与其它系统的区别在于它的计算是由一组离散事件构成的。
+\end{ch}
+%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%
+\begin{en}
+A pocket calculator is a digital system because its computation
+consists of discrete events like the pressing of a button and the
+writing of a number on its display.  But are these really discrete
+events?  Changing the number shown on the display requires a few
+milliseconds, during which time the display changes continuously from
+showing its old value to showing its new one.  The user of the
+calculator thinks of it as a single event.  The designer of the
+display probably doesn't.  We consider something to be a digital
+system if we think of its computation as consisting of discrete
+events.  However, instead of saying that we are considering the
+calculator to be a digital system, we simply say that it \emph{is}
+one.  Moreover, since this hyperbook is about digital systems, I will
+almost always omit the ``digital'' and simply write 
+  \tindex{1}{system}%
+\emph{system} to mean digital system.
+\end{en}
+
+\begin{ch}
+  袖珍计算器的计算是由诸如``按键''与``在屏幕上显示数字''这样的离散事件构成的，
+  所以它是一种数字系统。
+  不过，这些事件真的是离散事件吗？
+  改变屏幕上显示的数字需要几毫秒，
+  在这段时间内，屏幕由显示旧数字连续地变成显示新数字。
+  计算器的使用者会认为这种变化是一个单一事件。
+  但是，屏幕的设计者很可能不这么认为。
+  当我们认为某个系统的计算是由离散事件构成的时候，
+  对我们来说，这个系统就是一种数字系统。
+  这时，我们直接说``该系统（如计算器）是一种数字系统''，
+  而不说``我们认为该系统（如计算器）是一种数字系统''。
+  更进一步，由于本书的主题是数字系统，
+  我将省略``数字''这一定语并使用%
+    \tindex{1}{system}%
+  ``\emph{系统}''指代数字系统。
+\end{ch}
+%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%
+\begin{en}
+What exactly are the discrete events of the pocket calculator system?
+Is entering the number 3 on the keypad a single event?  Or are
+depressing the 3 and releasing it two separate events?  A user of the
+calculator probably considers entering 3 to be a single event; to the
+keypad's designer, they are separate events.  
+\end{en}
+
+\begin{ch}
+  袖珍计算器系统的离散事件究竟是什么？
+  从键盘输入数字$3$是一个单一事件吗？
+  还是说，按下按键$3$与松开按键$3$是两个不同的事件？
+  计算器的使用者很可能会认为输入数字$3$是一个单一事件。
+  而对键盘的设计者来说，它又包含两个不同的事件。
+\end{ch}
+%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%
+\begin{en}
+This hyperbook is not about physical systems like calculators.  It is
+about 
+  \ctindex{1}{system!abstract}{system-abstract}%
+\emph{abstract} systems, which are abstractions of digital systems
+obtained by considering their computations to consist of certain
+discrete events.  The principles we study are principles of abstract
+systems.
+\end{en}
+
+\begin{ch}
+  本书的主题不是像计算器这样的物理系统，而是%
+    \ctindex{1}{system!abstract}{system-abstract}%
+  \emph{抽象}系统——那些我们认为其计算是由离散事件构成的数字系统的抽象。
+  我们研究的是抽象系统的原理。
+\end{ch}
+%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%
+\begin{en}
+How do we decide what abstraction of a physical system to use?  Should
+entering the number 3 be one event or two?  The answer depends on the
+purpose of the abstraction.  The abstraction in which entering a
+number is a single event is simpler.  However, it cannot describe the
+physical possibility of depressing the 3 and then depressing the 4
+before releasing the 3.  The keypad engineer cares about this
+possibility, so the abstraction does not serve her purpose and she
+needs separate \emph{depress} and \emph{release} events.  The user
+trying to understand how to use the calculator probably doesn't care
+what happens if two keys are depressed at the same time, so he will
+prefer an instruction manual that adopts the simpler abstraction.
+
+This kind of abstraction is common to all sciences.  Astronomers
+studying planetary motion often use an abstraction in which a
+planet is represented as a point mass.  However, that abstraction is not
+satisfactory if tidal effects are important.  
+\end{en}
+
+\begin{ch}
+  对一个物理系统，我们如何决定该使用什么抽象呢？
+  输入数字$3$是一个事件还是包含了两个事件？
+  这取决于抽象的目标。
+  将输入某数字看作一个单一事件所得到的抽象比较简单。
+  然而，它无法描述这样一种可能情况：
+  先按下$3$，然后在松开$3$之前按下$4$。
+  键盘的设计者需要考虑这种可能性，
+  因此，这种抽象不能满足他们的需求，
+  他们需要区分``按键''与``松键''两种事件。
+  尝试理解如何使用计算器的用户很可能并不关心同时按下两个键会发生什么，
+  他们更喜欢依照简单抽象写成的使用手册。
+
+  % 这种抽象对所有学科都是共通的。
+  所有学科都有这种关于抽象的问题。
+  天文学家在研究行星运动时通常将行星抽象为一个质点。
+  但是，如果需要考虑潮汐效应的话，这种抽象就不能满足要求了。
+\end{ch}
+%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%
+\begin{en}
+Having fewer separate events makes an abstraction simpler; having more
+events allows it to more accurately represent the actual system.  We
+want to use the simplest abstraction that is accurate enough.  Finding
+the right abstraction is an art, but we will see that there are
+principles that can guide us.
+\end{en}
+
+\begin{ch}
+  包含较少事件的抽象比较简单。
+  包含较多事件的抽象则可以更精确地刻画实际系统。
+  我们希望使用简单而又不失精确的抽象。
+  虽然如何选择正确的抽象是一门艺术，
+  但是还是有一些基本原则可供遵循。
+  % 但是我们将会看到一些具有引导作用的原则。
+\end{ch}
+%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%
+\begin{en}
+Having chosen an abstraction of a system, we need to decide how to
+represent that abstraction.  A representation of an abstraction of a
+system is called a 
+  \ctindex{1}{model!system}{model-system}%
+\emph{model} of the system.  There are several ways
+of modeling systems.  Some take events to be primitive objects.
+Others take states to be primitive, where a state is an assignment of
+values to variables, with an event defined to be a transition from one
+state to another.  Still others take both states and event names as
+primitives, with an event being a state transition labeled by an event
+name.  There is also one way of modeling systems in which the
+primitive objects are sets of events.  These different kinds of models
+can be used to express different classes of properties, and we will
+use more than one of them.  However, the one we take as our standard
+model, and the one we use most often,~is:
+\begin{quote}
+\textbf{The Standard Model} \  
+    \ctindex{1}{model!standard}{model-standard}%
+    \tindex{1}{standard model}%
+An 
+ \target{main:standard-model}
+abstract system is described as a collection of behaviors, each
+representing a possible execution of the system, where a 
+  \tindex{1}{behavior}%
+behavior is a
+sequence of states and a 
+  \tindex{1}{state}%
+state is an assignment of values to
+variables.
+\end{quote}
+In this model, an 
+  \tindex{1}{event}%
+event, also called a 
+   \tindex{1}{step}%
+\emph{step}, is the transition from one state to the next in a
+behavior.  I find the standard model to be the simplest one that
+scales well to descriptions of complex systems.
+
+We model abstractions of systems.  By a \emph{system model} or a
+\emph{model of a system}, I mean a model of an abstraction of a
+(digital) system.
+\end{en}
+
+\begin{ch}
+  选定了系统的某种抽象之后，
+  我们需要决定如何表示这种抽象。
+  系统的某种抽象的一种表示被称作该系统的一个%
+    \ctindex{1}{model!system}{model-system}%
+  \emph{模型}。
+  系统建模有多种方式。
+  有的将事件看作原子对象。
+  有的将状态——也就是变量的赋值——看作原子对象，而将事件定义为状态之间的转换。
+  还有的将状态与事件名作为原子对象，此时，事件被定义为标有事件名的状态转换。
+  还有一种建模方式将事件集合看作原子对象。
+  不同的模型可以表达不同的性质，我们将会接触到多种模型。
+  但是，我们用得最多的是被我们称为标准模型的如下模型：
+  \begin{quote}
+    \textbf{标准模型} \  
+      \ctindex{1}{model!standard}{model-standard}%
+      \tindex{1}{standard model}%
+    一个%
+      \target{main:standard-model}%
+    抽象系统被描述为一组（系统）行为，其中每个（系统）行为代表系统的一次可能执行。
+    一个（系统）%
+      \tindex{1}{behavior}%
+    行为是一个状态序列，
+    而一个%
+      \tindex{1}{state}%
+    状态则是一种变量赋值。
+  \end{quote}
+  在该模型中，%
+    \tindex{1}{event}%
+  事件，或者称%
+    \tindex{1}{step}%
+  \emph{步}，
+  被定义为系统行为中的状态转换。
+  我发现上述标准模型是所有能够很好地扩展到复杂系统的模型中最简单的一种模型。
+
+  我们为系统的某种抽象建立模型。
+  我们用\emph{系统模型}（或者\emph{某系统的某个模型}）
+  表示为（数字）系统的某种抽象建立的模型。
+\end{ch}
+%%%%%%%%%%%%%%%
+
+% I will usually omit the ``abstract'' and write simply \emph{system} to
+% mean an abstraction of a digital system.  Moreover, when using the
+% standard model, I will generally omit the ``model'' and let
+% \emph{system} mean the standard model of an abstraction of a digital
+% system.  However, it is important to remember that modeling a real
+% system means abstracting---that is, choosing what aspects of the
+% system we are describing and what aspects we are ignoring.  We cannot
+% find an error in a program or in a system design that is not
+% represented in our abstraction.  Never confuse the map with the
+% territory.
+
+\tindex{1}{specification}%
+\vspace{-\baselineskip}
+\subsection{Specification}    
+A \emph{specification} 
+is a description of a system model.  A
+\emph{formal} specification is one that is written in a precisely
+defined language.  I will use the term \emph{system specification} (or
+\emph{specification of a system}) to mean a specification of a system
+model.  
+
+A system specification is a specification of a model of an abstraction
+of a system.  It is quite removed from an actual system.  Why should
+we write such a specification?
+
+A specification is like a 
+  \tindex{1}{blueprint}%
+blueprint.  A blueprint is far removed from a building.  It is a sheet
+of paper with writing on it, while a building is made of steel and
+concrete.  There is no need to explain why we draw blueprints of
+buildings.  However, it's worth pointing out that a blueprint is
+useful in large part because it is so far removed from the building it
+is describing.  If you want to know how many square feet of office
+space the building has, it is easier to use a blueprint than to
+measure the building.  It is very much easier if the blueprint was
+drawn with a computer program that can automatically calculate such
+things.
+
+No one constructs a large building without first drawing blueprints of
+it.  We should not build a complex system without first specifying it.
+People will give many reasons why writing a specification of a
+system is a waste of time:
+\begin{itemize}
+\item You can't automatically generate code or circuit diagrams from
+the specification.
+
+\item You (usually) can't verify that the code or circuit diagrams
+correctly implement the specification.
+
+\item While building the system, you can discover problems that
+require changing what you want the system to do.  This leads to the
+specification not describing the actual system.
+\end{itemize}
+You can find the answers to such arguments by translating them into
+the corresponding ones for not drawing blueprints.
+
+Blueprints are most useful when drawn before the building is
+constructed, so they can guide its construction.  However, they are
+sometimes drawn afterwards---for example, before remodeling an old
+building whose blueprints have been lost.  System specifications are
+also most useful before the system is built.  However, they are also
+written afterwards to understand what the system does---perhaps to
+look for errors or because the system needs to be modified.
+
+A formal specification is like a detailed blueprint; an informal
+specification is like a rough design sketch.  A sketch may suffice for
+a small construction project such as adding a skylight or a door to a
+house; an informal specification may suffice for a simple system model.
+The main advantage of writing a formal specification is that you can
+apply tools to check it for errors.  This hyperbook teaches you how to
+write formal specifications and how to check them.  Learning to write
+formal specifications will help you to write informal ones.
+
+% From now on, I will write \emph{specification} to mean \emph{formal
+% specification}.
+
+\subsection{Systems and Languages}
+
+A formal specification must be written in a precisely defined
+language.  What language or languages should we use?
+
+A common belief is that a system specification is most useful if 
+written in a language that resembles the one in which the system is to
+be implemented.  If we're specifying a program, the specification
+language should look like a programming language.  By this reasoning,
+if we construct a building out of bricks, the blueprints should be
+made of brick.
+
+A specification language is for describing models of abstractions of
+digital systems.  Most scientists and engineers have settled on a
+common informal language for describing models of abstractions of
+non-digital systems: the language of mathematics.  Mathematics is the
+simplest and most expressive language I know for describing digital
+systems as well.  
+
+Although mathematics is simple, the education of programmers and
+computer scientists (at least in the United States) has made them
+afraid of it.  Fortunately, the math that we need for writing
+specifications is quite elementary.  I learned most of it in high
+school; you should have learned most of it by the end of your first or
+second year of university.  What you need to understand are the
+elementary concepts of sets, functions, and simple logic.  You should
+not only understand them, but they should be as natural to you as
+simple arithmetic.  If you are not already comfortable with these
+concepts, I hope that you will be after reading and writing
+specifications.
+
+Although mathematics is simple, we are fallible.  It's easy to make a
+mistake when writing mathematical formulas.  It is almost as hard to
+get a formula right the first time as it is to write a program that
+works the first time you run it.  For them to be checked with tools,
+our mathematical specifications must be formal ones.  There is no
+commonly accepted formal language for writing mathematics, so I had to
+design my own specification language: \tlaplus.
+
+The \tlaplus\ language has some 
+   \tindex{1}{ordinary math}%
+   \ctindex{1}{math!ordinary}{math-ordinary}%
+\popref{tla-vs-math}{notations and concepts that are not ordinary
+math}, but you needn't worry about them now.  You'll quickly get used
+to the notations, and the new concepts are either ``hidden beneath the
+covers'', or else they are used mainly for advanced applications.
+
+Although mathematics is simple and elegant, it has two disadvantages:
+\begin{itemize}
+\item For many algorithms, informal specifications written in
+pseudo-code are simpler than ones written in mathematics.
+
+\item Most people are not used to reading mathematical specifications
+of systems; they would prefer specifications that look more like
+programs.
+\end{itemize}
+\target{main:pluscal}%
+PlusCal 
+  \tindex{1}{PlusCal}%
+is a language for writing formal specifications of algorithms.
+It resembles a very simple programming language, except that any
+\tlaplus\ expression can be used as an expression in a PlusCal
+algorithm.  This makes PlusCal infinitely more expressive than any
+programming language.  An algorithm written in PlusCal is translated
+(compiled) into a \tlaplus\ specification that can be checked with the
+\tlaplus\ tools.
+
+PlusCal is more convenient than \tlaplus\ for describing the flow of
+control in an algorithm.  This generally makes it better for
+specifying sequential algorithms and shared-memory multiprocess
+algorithms.  Control flow within a process is usually not important in
+specifications of distributed algorithms, and the greater
+expressiveness of \tlaplus\ makes it better for these algorithms.
+However, \tlaplus\ is usually not much better, and the PlusCal version
+may be preferable for people less comfortable with mathematics.  
+Most of the algorithms in this hyperbook are written in PlusCal.
+
+Reasoning means mathematics, so if you want to prove something about a
+model of a system, you should use a \tlaplus\ specification.  PlusCal
+was designed so the \tlaplus\ translation of an algorithm is 
+straightforward and easy to understand.  Reasoning about the
+translation is quite practical.
+
