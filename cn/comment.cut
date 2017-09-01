@@ -1,7 +1,0 @@
-  初始状态易于描述。
-  我们只需要断言 $b$ 的初始值是0或者1，用公式表示如下：
-  \[ (b=0) \; \/ \; (b=1)\]
-  我们称该公式为%
-    \tindex{1}{initial predicate}%
-    \ctindex{1}{predicate!initial}{predicate-initial}%
-  \emph{初始谓词}。

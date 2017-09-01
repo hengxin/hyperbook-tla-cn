@@ -1,0 +1,11 @@
+  \subsection{编写规约}
+
+  现在，我们将\tlainitpredicate{}与\tlanextstateaction{}写入 \tlaplus\ \tlaspec。
+  在%
+    \tindex{1}{Toolbox}%
+  \hyperref{http://research.microsoft.com/en-us/um/people/lamport/tla/toolbox.html}{}{}{\protect\tlaplus\ \tlatoolbox}%
+  里%
+  \popref{open-new-spec}{打开新规约}。
+  将\tlaspec{}与它的根\tlamodule{}命名为 \emph{OneBitClock}。
+  这会创建一个名为 \texttt{OneBitClock.tla} 的\tlamodule{}文件，
+  并打开一个编辑器。

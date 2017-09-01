@@ -292,10 +292,12 @@ We call this formula the
   我们称该公式为%
     \tindex{1}{initial predicate}%
     \ctindex{1}{predicate!initial}{predicate-initial}%
-  \emph{初始谓词}。
+  \emph{\tlainitpredicate}。
 \end{ch}
 %%%%%%%%%%%%%%%
 
+%%%%%%%%%%%%%%%
+\begin{en}
 To describe the possible steps, we have to write a mathematical
 formula relating the values of $b$ in two states: the first state of
 the step and its next state.  We do this by letting $b$ mean the
@@ -336,7 +338,50 @@ However it is written, we usually call this formula the
   \ctindex{1}{next-state relation|see{\icmd{lref}{next-state-target}{next-state action}}}{next-state-rel}%
   \ctindex{1}{action!next-state}{action-next-state}%
 \emph{next-state action} or sometimes the \emph{next-state relation}.
+\end{en}
+\begin{ch}
+  要描述可能的\tlastep{}，我们必须使用一个数学公式将 $b$ 
+  在两个状态——\fixme{该\tlastep{}的出发状态与后继状态}——中的值联系起来。
+  我们使用 $b$ 表示 $b$ 在出发状态的值，%
+    \ctindex{1}{+2a@\mmath{'} (prime)}{+2a}%
+    \ctindex{1}{prime (\mmath{'})!of a variable}{prime-variable}%
+  $b'$ 表示 $b$ 在后继状态的值。
+  有两种可能的\tlastep{}：
+  一种是 $b = 0$ 且 $b' = 1$；
+  另一种是 $b = 1$ 且 $b' = 0$。
+  因此，所有可能的\tlastep{}可用如下公式表示：
+  \[   
+    ((b=0) \; /\ \; (b'=1)) \; \/ \; ((b=1) \; /\ \; (b'=0)) 
+  \]
+  由于括号的原因，即使这么短的公式也有点难以阅读。
+  对于由合取与析取构成的更长的公式，我们几乎无法追踪其中的括号。
+  \tlaplus\ 允许我们将合取与析取写成标有符号 $/\ $ 或 $\/ $ 的公式列表。
+  因此，上式也可以写成：%
+  \marginpar{我们也可以将\tlainitpredicate{}写成：\\
+               \s{1}$\begin{disj}
+                     b=0 \\ b=1
+                     \end{disj}$ \V{.4}\popref{junct-warning}{\bf 警告.}}
+  \[ \begin{disj}
+     (b=0) \; /\ \; (b'=1) \\ (b=1) \; /\ \; (b'=0)
+     \end{disj}
+    \s{2}\mbox{or} \s{2}
+  %
+  \begin{disj}
+     \begin{conj}
+     b=0 \\ b'=1
+     \end{conj} \\
+     \begin{conj}
+     b=1 \\ b'=0
+     \end{conj}
+     \end{disj}
+  \] 
+  不管写成什么形式，我们通常将该公式称为%
+  \emph{\tlanextstateaction}，有时也称为\emph{\tlanextstaterelation}。
+\end{ch}
+%%%%%%%%%%%%%%%
 
+%%%%%%%%%%%%%%%
+\begin{en}
 \subsection{Writing the Specification}
 
 Let's now turn the initial predicate and next-state action into a
@@ -349,6 +394,22 @@ Toolbox}.
 Name the specification and
 its root module \emph{OneBitClock}.  This creates a new module file
 named \texttt{OneBitClock.tla} and opens an editor on it.
+\end{en}
+
+\begin{ch}
+  \subsection{编写规约}
+
+  现在，我们将\tlainitpredicate{}与\tlanextstateaction{}写入 \tlaplus\ \tlaspec。
+  在%
+    \tindex{1}{Toolbox}%
+  \hyperref{http://research.microsoft.com/en-us/um/people/lamport/tla/toolbox.html}{}{}{\protect\tlaplus\ \tlatoolbox}%
+  里%
+  \popref{open-new-spec}{打开新规约}。
+  将\tlaspec{}与它的根\tlamodule{}命名为 \emph{OneBitClock}。
+  这会创建一个名为 \texttt{OneBitClock.tla} 的\tlamodule{}文件，
+  并打开一个编辑器。
+\end{ch}
+%%%%%%%%%%%%%%%
 
 The newly created module looks something like this in the editor:
 \begin{display}
@@ -396,11 +457,11 @@ Next1 == \/ /\ b = 0
 \par\vspace{8.0pt}%
 \@x{ Next1 \.{\defeq} \.{\lor} \.{\land} b \.{=} 0}%
   \target{main:next1}%
-\@x{\@s{55.94} \.{\land} b \.{'} \.{=} 1}%
+\@x{\@s{55.94} \.{\land} b' \.{=} 1}%
 \@x{\@s{44.83} \.{\lor} \.{\land} b \.{=} 1}%
 \marginpar[1]{Remember that you can click on the link to the
  \textsc{ascii} version and copy the text.}%
-\@x{\@s{55.94} \.{\land} b \.{'} \.{=} 0}%
+\@x{\@s{55.94} \.{\land} b' \.{=} 0}%
 \end{tlatex}
 \end{display}
 These two \tlaplus\ statements define $Init1$ and $Next1$ to be the
@@ -986,8 +1047,8 @@ IF b = 0 THEN b' = 1
          ELSE b' = 0
 \end{notla}
 \begin{tlatex}
-\@x{ {\IF} b \.{=} 0 \.{\THEN} b \.{'} \.{=} 1}%
-\@x{\@s{35.71} \.{\ELSE} b \.{'} \.{=} 0}%
+\@x{ {\IF} b \.{=} 0 \.{\THEN} b' \.{=} 1}%
+\@x{\@s{35.71} \.{\ELSE} b' \.{=} 0}%
 \end{tlatex}
 \end{display}
 As $Next1$ and $Next2$ show, even two next-state actions that are not
@@ -1157,8 +1218,8 @@ Next == IF b = 0 THEN  b' = 1
 \begin{tlatex}
 \@x{ Init\@s{4.12} \.{\defeq} b \.{\in} \{ 0 ,\, 1 \}}%
 \par\vspace{8.0pt}%
-\@x{ Next \.{\defeq} {\IF} b \.{=} 0 \.{\THEN}\@s{4.1} b \.{'} \.{=} 1}%
-\@x{\@s{75.55} \.{\ELSE}\@s{4.1} b \.{'} \.{=} 0}%
+\@x{ Next \.{\defeq} {\IF} b \.{=} 0 \.{\THEN}\@s{4.1} b' \.{=} 1}%
+\@x{\@s{75.55} \.{\ELSE}\@s{4.1} b' \.{=} 0}%
 \end{tlatex}
 \end{display}
 except that the translator formats them differently, inserting a
