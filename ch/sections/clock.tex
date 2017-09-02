@@ -380,6 +380,7 @@ However it is written, we usually call this formula the
 \end{ch}
 %%%%%%%%%%%%%%%
 
+% 1st
 %%%%%%%%%%%%%%%
 \begin{en}
 \subsection{Writing the Specification}
@@ -411,6 +412,9 @@ named \texttt{OneBitClock.tla} and opens an editor on it.
 \end{ch}
 %%%%%%%%%%%%%%%
 
+% 2nd
+%%%%%%%%%%%%%%%
+\begin{en}
 The newly created module looks something like this in the editor:
 \begin{display}
 \begin{verbatim}
@@ -469,7 +473,72 @@ two formulas.  Thus, anywhere in the spec following the definition of
 $Init1$, typing $Init1$ is completely equivalent to typing
 \tlabox{((b=0)\/(b=1))}.  The symbol $\!==\!$ (typed \verb|==|) is
 read \emph{is defined to equal}.
+\end{en}
 
+\begin{ch}
+  编辑器中新模块的内容如下所示：
+  \begin{display}
+  \begin{verbatim}
+  ------------------- MODULE OneBitClock --------------------
+
+  ===========================================================
+  \* Modification History
+  \* Created Mon Dec 13 09:57:04 PST 2010 by jones
+  \end{verbatim}
+  \end{display}
+  第一行是%
+    \tindex{1}{module opening}%
+    \ctindex{1}{opening!of module}{opening-of-module}%
+  \emph{\tlamoduleopening}语句，
+  最后一行是%
+    \tindex{1}{module closing}%
+    \ctindex{1}{closing!of module}{closing-of-module}%
+  \emph{\tlamoduleclosing}语句。
+  \tlamoduleopening{}语句之前以及\tlamoduleclosing{}语句之后的内容
+  都不属于模块，会被忽略。
+  \tlamoduleopening{}语句中每个 \verb|-| 序列
+  与\tlamoduleclosing{}语句中的 \verb|=| 序列的长度可以是大于3的任意值。
+  \tlamoduleopening{}与\tlamoduleclosing{}显示如下：
+  \begin{display}
+    \begin{module}{OneBitClock}
+    \mbox{\strut}
+    \end{module}
+  \end{display}
+  现在，我们为上面定义的\tlainitpredicate{}与\tlanextstateaction{}命名。
+  习惯上，我称它们为 $Init$ 与 $Next$。
+  不过，由于后面我们会给出几种不同的定义，
+  所以目前我们称它们为 $Init1$ 与 $Next1$，定义如下：
+  \begin{display}
+    \begin{notla}
+    Init1 == (b=0) \/ (b=1)
+	 
+    Next1 == \/ /\ b = 0
+		/\ b' = 1
+	     \/ /\ b = 1
+		/\ b' = 0
+    \end{notla}
+    \begin{tlatex}
+    \@x{ Init1\@s{4.12} \.{\defeq} ( b \.{=} 0 ) \.{\lor}
+       ( b \.{=} 1 )}\ascii{OneBitClock-1}\target{init1-next1-clock}%
+    \par\vspace{8.0pt}%
+    \@x{ Next1 \.{\defeq} \.{\lor} \.{\land} b \.{=} 0}%
+      \target{main:next1}%
+    \@x{\@s{55.94} \.{\land} b' \.{=} 1}%
+    \@x{\@s{44.83} \.{\lor} \.{\land} b \.{=} 1}%
+    \marginpar[1]{你可以点击上面的链接，查看并拷贝公式的 \textsc{ascii} 版本。}%
+    \@x{\@s{55.94} \.{\land} b' \.{=} 0}%
+    \end{tlatex}
+  \end{display}
+  上面两个 \tlaplus\ 语句分别将 $Init1$ 和 $Next1$ 定义为一个公式。
+  因此，在 $Init1$ 定义语句之后的任何地方，
+  $Init1$ 都完全等价于 \tlabox{((b=0)\/(b=1))}。
+  符号 $\!==\!$（输入\verb|==|）读作``\emph{\tladefeq}''。
+\end{ch}
+%%%%%%%%%%%%%%%
+
+% 3rd
+%%%%%%%%%%%%%%%
+\begin{en}
 Now \popref{save-module}{save the module}, which should cause the
 Toolbox to parse the module.  (If it doesn't, go to the
 \popref{parser-preferences}{TLA+ Parser Preferences menu}.)  The
@@ -478,6 +547,16 @@ operator.  Clicking on each error message in the \textsf{Parsing
 Errors} view highlights the location of the error---in this case, the
 location of the particular occurrence of $b$ that it is complaining
 about.
+\end{en}
+
+\begin{ch}
+  \popref{save-module}{保存模块}，\tlatoolbox{}将自动编译。
+  （如果\tlatoolbox{}没有自动编译，请查看\popref{parser-preferences}{TLA+ \tlaparser{}配置菜单}。）
+  \tlaparser{}将报告六个错误，统统抱怨``$b$是一个未知的操作符''。
+  点击 \textsf{\tlaparsererror} 视图中的错误信息，将高亮显示错误的位置，
+  也就是 $b$ 的某次特定出现。
+\end{ch}
+%%%%%%%%%%%%%%%
 
 Every symbol that appears in the module must either be a
 primitive \tlaplus\ operator or else defined or declared before its

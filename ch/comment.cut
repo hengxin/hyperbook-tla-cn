@@ -1,11 +1,5 @@
-  \subsection{编写规约}
-
-  现在，我们将\tlainitpredicate{}与\tlanextstateaction{}写入 \tlaplus\ \tlaspec。
-  在%
-    \tindex{1}{Toolbox}%
-  \hyperref{http://research.microsoft.com/en-us/um/people/lamport/tla/toolbox.html}{}{}{\protect\tlaplus\ \tlatoolbox}%
-  里%
-  \popref{open-new-spec}{打开新规约}。
-  将\tlaspec{}与它的根\tlamodule{}命名为 \emph{OneBitClock}。
-  这会创建一个名为 \texttt{OneBitClock.tla} 的\tlamodule{}文件，
-  并打开一个编辑器。
+  \popref{save-module}{保存模块}，\tlatoolbox{}将自动编译。
+  （如果\tlatoolbox{}没有自动编译，请查看\popref{parser-preferences}{TLA+ \tlaparser{}配置菜单}。）
+  \tlaparser{}将报告六个错误，统统抱怨``$b$是一个未知的操作符''。
+  点击 \textsf{\tlaparsererror} 视图中的错误信息，将高亮显示错误的位置，
+  也就是 $b$ 的某次特定出现。
