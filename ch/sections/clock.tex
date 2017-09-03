@@ -507,7 +507,7 @@ read \emph{is defined to equal}.
   现在，我们为上面定义的\tlainitpredicate{}与\tlanextstateaction{}命名。
   习惯上，我称它们为 $Init$ 与 $Next$。
   不过，由于后面我们会给出几种不同的定义，
-  所以目前我们称它们为 $Init1$ 与 $Next1$，定义如下：
+  所以目前我们称之为 $Init1$ 与 $Next1$，定义如下：
   \begin{display}
     \begin{notla}
     Init1 == (b=0) \/ (b=1)
@@ -550,14 +550,16 @@ about.
 \end{en}
 
 \begin{ch}
-  \popref{save-module}{保存模块}，\tlatoolbox{}将自动编译。
-  （如果\tlatoolbox{}没有自动编译，请查看\popref{parser-preferences}{TLA+ \tlaparser{}配置菜单}。）
-  \tlaparser{}将报告六个错误，统统抱怨``$b$是一个未知的操作符''。
-  点击 \textsf{\tlaparsererror} 视图中的错误信息，将高亮显示错误的位置，
+  \popref{save-module}{保存模块}，\tlatoolbox{}将自动解析。
+  （否则，请查看\popref{parser-preferences}{TLA+ \tlaparser{}配置菜单}。）
+  \tlaparser{}将报告六个错误，都在抱怨``$b$是一个未知的操作符''。
+  点击\textsf{\tlaparsererror} 视图中的某条错误信息，将高亮显示该错误的位置，
   也就是 $b$ 的某次特定出现。
 \end{ch}
 %%%%%%%%%%%%%%%
 
+%%%%%%%%%%%%%%%
+\begin{en}
 Every symbol that appears in the module must either be a
 primitive \tlaplus\ operator or else defined or declared before its
 first use.  We must 
@@ -581,11 +583,40 @@ Saving \marginpar{The
  icon in the lower-right corner tells you
  that the spec has no parsing errors.}
 will make the errors go away.
+\end{en}
+
+\begin{ch}
+  模块中的每个符号都要么是一个原子 \tlaplus\ 操作符，
+  \fixme{要么在使用前已被定义过或声明过}。
+  我们需要
+    \ctindex{1}%
+     {variable declaration (tla)@variable declaration (\icmd{tlaplus})}%
+     {tla-var-decl}%
+    \ctindex{1}{declaration!tla variable@\icmd{tlaplus} variable}%
+     {var-decl-tla}%
+  声明 $b$ 是一个变量。
+  具体做法是在 $Init1$ 定义语句之前插入如下声明语句：%
+    \ctindex{1}{variable@\icmd{textsc}{variable}}{variable}%
+  \begin{display}
+  \begin{twocols}
+  $\VARIABLE b$ %\ascii{OneBitClock-2} 
+  \midcol \verb|VARIABLE b|
+  \end{twocols}
+  \end{display}
+  保存模块，%
+    \marginpar{右下角的%
+    \raisebox{-2pt}{\scalebox{.75}{\includegraphics{parsed-icon.jpg}}}
+     图标表明该规约没有解析错误。}
+  错误将自行消失。
+\end{ch}
+%%%%%%%%%%%%%%%
 
 \pause
 %
 \noindent
 %
+%%%%%%%%%%%%%%%
+\begin{en}
 When talking about the 
   \target{two-meanings-of-spec}%
   \ctindex{1}{specification!two meanings of}{spec-two-meanings}%
@@ -602,6 +633,23 @@ when we mean the first.  We use the term
   \tindex{1}{behavior specification}%
   \ctindex{1}{specification!behavior}{spec-behavior}%
 \emph{behavior specification} to mean the second.
+\end{en}
+
+\begin{ch}
+  当我们谈论单比特时钟的%
+  \emph{\tlaspec}时，我们指的是
+  \begin{itemize}
+    \item 整个模块，或者
+    \item \tlainitpredicate{}与\tlanextstaterelation{}。
+  \end{itemize}
+  我们通常可以依靠上下文分辨出具体指代的是什么。
+  为了避免混淆，当我们\fixme{意指前者时}，我们只谈论模块，而不谈规约。
+  另外，我们使用术语%
+    \tindex{1}{behavior specification}%
+    \ctindex{1}{specification!behavior}{spec-behavior}%
+  \emph{\tlabehaviorspec}指代后者。
+\end{ch}
+%%%%%%%%%%%%%%%
 
   \tindex{1}{pretty printing}%
   \vspace{-\baselineskip}%

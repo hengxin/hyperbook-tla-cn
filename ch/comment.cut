@@ -1,5 +1,12 @@
-  \popref{save-module}{保存模块}，\tlatoolbox{}将自动编译。
-  （如果\tlatoolbox{}没有自动编译，请查看\popref{parser-preferences}{TLA+ \tlaparser{}配置菜单}。）
-  \tlaparser{}将报告六个错误，统统抱怨``$b$是一个未知的操作符''。
-  点击 \textsf{\tlaparsererror} 视图中的错误信息，将高亮显示错误的位置，
-  也就是 $b$ 的某次特定出现。
+  当我们谈论单比特时钟的%
+  \emph{\tlaspec}时，我们指的是
+  \begin{itemize}
+    \item 整个模块，或者
+    \item \tlainitpredicate{}与\tlanextstaterelation{}。
+  \end{itemize}
+  我们通常可以依靠上下文分辨出具体指代的是什么。
+  为了避免混淆，当我们\fixme{意指前者时}，我们只谈论模块，而不谈规约。
+  另外，我们使用术语%
+    \tindex{1}{behavior specification}%
+    \ctindex{1}{specification!behavior}{spec-behavior}%
+  \emph{\tlabehaviorspec}指代后者。
