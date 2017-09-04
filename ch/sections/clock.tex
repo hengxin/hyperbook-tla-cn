@@ -651,6 +651,9 @@ when we mean the first.  We use the term
 \end{ch}
 %%%%%%%%%%%%%%%
 
+% 1st
+%%%%%%%%%%%%%%%
+\begin{en}
   \tindex{1}{pretty printing}%
   \vspace{-\baselineskip}%
 \btarget{pretty-printing}\subsection{The Pretty-Printed Version of Your Spec}
@@ -665,7 +668,29 @@ pretty-printing options can be found in
 \marginpar{\rref{help}{toolbox-help}{How to find help pages in
                                      the Toolbox.}}
 \helppage{spec/pretty-printing}{the relevant Toolbox help page}.
+\end{en}
 
+\begin{ch}
+  \tindex{1}{pretty printing}%
+  \vspace{-\baselineskip}%
+  \btarget{pretty-printing}\subsection{\tlaprettyprinted{}规约}
+
+  除了我们所编辑的 \textsc{ascii} 版本的模块，
+  \tlatoolbox{}还可以显示一种``\tlaprettyprinted{}''版本。
+  这需要安装
+    \ctindex{1}{pdflatex@\icmd{texttt}{pdflatex}}{pdflatex}%
+  \texttt{pdflatex} 程序。
+  关于如何安装 \texttt{pdflatex}，
+  以及如何配置\tlatoolbox{}的``\tlaprettyprinting{}''选项，
+  请参考%
+  \marginpar{\rref{help}{toolbox-help}{如何找到\tlatoolbox{}的帮助页面。}}
+  \helppage{spec/pretty-printing}{\tlatoolbox{}的相关帮助页面}。
+\end{ch}
+%%%%%%%%%%%%%%%
+
+% 2nd
+%%%%%%%%%%%%%%%
+\begin{en}
 To produce a pretty-printed version of the module, click on the
 \textsf{File} menu and choose \textsf{Produce PDF Version}.  The 
 pretty-printed version will be displayed in a separate window within
@@ -678,11 +703,36 @@ pretty-printed versions by clicking either the \textsf{TLA Module} or
 Editing the \textsc{ascii} version does not automatically change the
 pretty-printed version.  You need to run the
 \textsf{File}\,/\,\textsf{Produce PDF Version} command again to update it.
+\end{en}
 
+\begin{ch}
+  要生成模块的\tlaprettyprinting{}版本，
+  请点击 \tlafilemenu{} 菜单，选择 \tlaproducepdfmenu{}。
+  生成的\tlaprettyprinting{}版本将显示在工具箱的一个单独的窗口中，
+  其中的 \tlaplus\ \fixme{表达式的显示方式与本书所展示的差不多}。
+  你可以通过点击模块窗口左上角的 \tlamoduletab{} 或者 \tlapdfviewertab{} 标签
+  在 \textsc{ascii} 版本与\tlaprettyprinting{}版本之间进行切换。
+  编辑 \textsc{ascii} 版本并不会自动更新\tlaprettyprinting{}版本，
+  你需要再次运行 \tlafilemenu{}\,/\,\tlaproducepdfmenu{} 命令。
+  % 以更新\tlaprettyprinting{}版本。
+\end{ch}
+%%%%%%%%%%%%%%%
+
+% 3rd
+%%%%%%%%%%%%%%%
+\begin{en}
 The pretty-printed version is produced in a file
 \texttt{OneBitClock.pdf} that the Toolbox puts in the same directory
 as the module file \texttt{OneBitClock.tla}.  You can print that file
 to get a paper version.
+\end{en}
+
+\begin{ch}
+  \tlaprettyprinting{}版本的文件名是 \texttt{OneBitClock.pdf}，
+  与模块文件 \texttt{OneBitClock.tla} 存放在同一个文件夹下。
+  你可以把它\fixme{打印成纸质版本}。% 打印出来？
+\end{ch}
+%%%%%%%%%%%%%%%
 
 \subsection{Checking the Specification}
 
