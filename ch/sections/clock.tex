@@ -734,6 +734,9 @@ to get a paper version.
 \end{ch}
 %%%%%%%%%%%%%%%
 
+% 1st
+%%%%%%%%%%%%%%%
+\begin{en}
 \subsection{Checking the Specification}
 
 Let's now get the 
@@ -743,13 +746,33 @@ TLC model checker to check this specification.
   \ctindex{1}{model!editor}{model-editor}% 
 model editor on the model.  That editor has three pages; the model is
 opened to the \textsf{Model Overview} page.
+\end{en}
 
+\begin{ch}
+  \subsection{验证规约}
+
+  现在，我们使用 
+    \tindex{1}{TLC}%
+  TLC \tlcmodelchecker{}来验证该规约。
+  \popref{create-new-model}{创建一个新的模型}。
+  这将打开一个包含三个页面的%
+    \ctindex{1}{model!editor}{model-editor}% 
+  模型编辑器，\fixme{默认打开的}是 \tlcmodeloverview{}页面。
+\end{ch}
+%%%%%%%%%%%%%%%
+
+% 2nd
+%%%%%%%%%%%%%%%
 Enter $Init1$ and $Next1$ in the appropriate fields as the initial
 predicate and next-state relation, and \popref{run-tlc}{run TLC}\@.
 TLC runs for a couple of seconds and stops, reporting no errors.  This
 means that the specification is sensible.  More precisely, it means
 that our specification completely determines a collection of
 behaviors.
+
+\begin{ch}
+\end{ch}
+%%%%%%%%%%%%%%%
 
 \pause
 
