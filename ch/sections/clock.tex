@@ -763,19 +763,28 @@ opened to the \textsf{Model Overview} page.
 
 % 2nd
 %%%%%%%%%%%%%%%
+\begin{en}
 Enter $Init1$ and $Next1$ in the appropriate fields as the initial
 predicate and next-state relation, and \popref{run-tlc}{run TLC}\@.
 TLC runs for a couple of seconds and stops, reporting no errors.  This
 means that the specification is sensible.  More precisely, it means
 that our specification completely determines a collection of
 behaviors.
+\end{en}
 
 \begin{ch}
+  将\tlainitpredicate{} $Init1$ 与\tlanextstaterelation{} $Next1$ 填入
+  相应的文本域，并\popref{run-tlc}{运行 \tlc{}}\@。
+  \tlc{}将在几秒钟后停下来，并且没有发现错误。
+  这意味着该规约是合理的，更准确地说，它完全确定了一组行为。
 \end{ch}
 %%%%%%%%%%%%%%%
 
 \pause
 
+% 3rd
+%%%%%%%%%%%%%%%
+\begin{en}
 \noindent
 %
 Let's change the specification so it doesn't determine a collection of
@@ -811,7 +820,50 @@ This raises the module editor, showing in part:
 \end{display}
 The highlighted portion is the disjunct of the next-state action $Next1$
 that permits the step \,\tlabox{b=1 \, -> \, b = "xyz"}\,.
+\end{en}
 
+\begin{ch}
+  \noindent
+  %
+  让我们修改规约，以使得它不能确定一组行为。
+  切换到模块编辑器（可点击相应标签页），
+  将 $Next1$ 定义中的 \verb|/\ b' = 0| 修改为 \verb|/\ b' = "xyz"|。
+  现在，$Next1$ 的第二个析取式允许\fixme{一个\tlastep{}将 $b$ 从数字 0 设置为}
+  \rref{math}{strings}{字符串} \tlastring{xyz}。
+  保存模块，回到模型编辑器，再次运行 \tlc{}。
+  这次，\tlc{} 将报告如下错误：
+  \begin{widedisplay}\small \tt
+    Attempted to check equality of string "xyz" with non-string: 0 \\
+    （试图检查字符串 "xyz" 与非字符串 0 的相等性）
+  \end{widedisplay}
+  \tlcerrors{} 窗口如下所示：%
+    \marginpar{你可以 \popref{resize-errors-view}{调整 \tlcerrors{} 视图中文本域的大小。}}
+  \begin{display}
+    \scalebox{.75}{\includegraphics{OneBitClock-errortrace-1.jpg}}
+  \end{display}
+  它描述了一条\fixme{\tlcerrortrace{}}：
+  \[ 
+    b=1 \s{.701} -> \s{.701} b = "xyz"
+  \]
+  这是 \tlc{} 在遇到错误之前\fixme{所构造的行为的开头部分}。
+  变量 $b$ 的值 $"xyz"$ 带有淡红色背景，
+  这表示该值与前一个状态中 $b$ 的取值不同。
+  双击\tlcerrortrace{}中的如下一行，
+  \begin{display}
+    \scalebox{.75}{\includegraphics{OneBitClock-errortrace-2.jpg}}
+  \end{display}
+  将\fixme{跳转到模块编辑器的如下部分}：
+  \begin{display}
+    \scalebox{.75}{\includegraphics{OneBitClock-1.jpg}}
+  \end{display}
+  高亮显示的部分是\tlanextstateaction{} $Next1$ 中
+  允许 \,\tlabox{b=1 \, -> \, b = "xyz"}\, \tlastep{}的析取式。
+\end{ch}
+%%%%%%%%%%%%%%%
+
+% 4th
+%%%%%%%%%%%%%%%
+\begin{en}
 To calculate the possible next states from the state with $b="xyz"$,
 TLC had to compute the value of the formula $"xyz"=0$.  (The rest of
 the error message tells you that it was computing that formula in
@@ -824,10 +876,32 @@ determine whether or not a string is equal to a
 number.  It could
 therefore not determine if the formula $"xyz"=0$ equals \TRUE\ or
 \FALSE, so it reported an error. 
+\end{en}
 
+\begin{ch}
+  要计算满足 $b="xyz"$ 的状态 \fixme{with} 的所有可能的后继状态，
+  \tlc{} 需要计算公式 $"xyz"=0$ 的值。
+  （错误信息的剩余部分表明 \tlc{} 正在计算该公式，
+  以便决定定义 $Next1$ 中的子公式 $b=0$ 的真假。）
+  \tlc{} 无法完成该工作，
+  因为 \tlaplus\ 的语义没有指明一个字符串是否等于一个
+    \marginpar{\popref{strings-vs-numbers}{\fixme{Why shouldn't 
+      \tlastring{xyz} be unequal to $0$?}}}
+  数字。
+  所以，\tlc{} 无法确定公式 $"xyz"=0$ 的值是 \TRUE\ 还是 \FALSE，
+  因此它报告了一个错误。
+\end{ch}
+%%%%%%%%%%%%%%%
+
+% 5th
+%%%%%%%%%%%%%%%
 Restore the original definition of $Next1$ by replacing $"xyz"$ with 0
 and save the module.  Go back to the model editor and run TLC again.
 It should once again find no error.
+
+\begin{ch}
+\end{ch}
+%%%%%%%%%%%%%%%
 
 \pause
 %
