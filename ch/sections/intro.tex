@@ -322,9 +322,9 @@ We model abstractions of systems.  By a \emph{system model} or a
   \end{quote}
   在该模型中，%
     \tindex{1}{event}%
-  事件，或者称%
+  事件（或者称%
     \tindex{1}{step}%
-  \emph{步}，
+  \emph{\tlastep{}}）
   被定义为系统行为中的状态转换。
   我发现上述标准模型是所有能够很好地扩展到复杂系统的模型中最简单的一种模型。
 
@@ -345,6 +345,9 @@ We model abstractions of systems.  By a \emph{system model} or a
 % represented in our abstraction.  Never confuse the map with the
 % territory.
 
+% 1st
+%%%%%%%%%%%%%%%
+\begin{en}
 \tindex{1}{specification}%
 \vspace{-\baselineskip}
 \subsection{Specification}    
@@ -354,11 +357,38 @@ is a description of a system model.  A
 defined language.  I will use the term \emph{system specification} (or
 \emph{specification of a system}) to mean a specification of a system
 model.  
+\end{en}
 
+\begin{ch}
+  \tindex{1}{specification}%
+  \vspace{-\baselineskip}
+  \subsection{\tlaspec}    
+
+  \emph{\tlaspec}是对系统模型的一种描述。
+  \emph{形式化}\tlaspec{}是用精确定义的语言写成的规约。
+  我将使用术语\emph{\tlasystemspec}（或者\emph{某系统的规约}）
+  表示一个系统模型的规约。
+\end{ch}
+%%%%%%%%%%%%%%%
+
+% 2nd
+%%%%%%%%%%%%%%%
+\begin{en}
 A system specification is a specification of a model of an abstraction
 of a system.  It is quite removed from an actual system.  Why should
 we write such a specification?
+\end{en}
 
+\begin{ch}
+  一个\tlasystemspec{}是该系统的某种抽象的某个模型的规约。
+  它与实际系统相去甚远。
+  我们为什么要写这样的规约呢？
+\end{ch}
+%%%%%%%%%%%%%%%
+
+% 3rd
+%%%%%%%%%%%%%%%
+\begin{en}
 A specification is like a 
   \tindex{1}{blueprint}%
 blueprint.  A blueprint is far removed from a building.  It is a sheet
@@ -371,7 +401,27 @@ space the building has, it is easier to use a blueprint than to
 measure the building.  It is very much easier if the blueprint was
 drawn with a computer program that can automatically calculate such
 things.
+\end{en}
 
+\begin{ch}
+  一个\tlaspec{}就像一张%
+    \tindex{1}{blueprint}%
+  建筑\blueprint{}。
+  \blueprint{}与实际建筑也相去甚远，
+  它是一张写了东西的纸，
+  而一栋建筑则是由钢筋混凝土筑成的。
+  我们无需解释为什么需要画建筑\blueprint{}。
+  但是，值得指出的是，一张\blueprint{}之所以有用，
+  在很大程度上正是因为它与它所勾画的实际建筑相去甚远。
+  如果你想知道一栋建筑有多少平方英尺的办公面积，
+  查看\blueprint{}比实际测量要来得容易。
+  如果\blueprint{}是用支持自动计算的计算机程序绘制的，那就更容易了。
+\end{ch}
+%%%%%%%%%%%%%%%
+
+% 4th
+%%%%%%%%%%%%%%%
+\begin{en}
 No one constructs a large building without first drawing blueprints of
 it.  We should not build a complex system without first specifying it.
 People will give many reasons why writing a specification of a
@@ -389,7 +439,26 @@ specification not describing the actual system.
 \end{itemize}
 You can find the answers to such arguments by translating them into
 the corresponding ones for not drawing blueprints.
+\end{en}
 
+\begin{ch}
+  \fixme{没有人会在建造一栋大型建筑之前不先绘制一张\blueprint{}的}。
+  我们也不应该在没有规约的情况下构造一个复杂的系统。
+  人们会给出很多理由来说明为系统编写规约是在浪费时间：
+  \begin{itemize}
+    \item 无法从规约自动生成代码或者电路图。
+    \item （经常）无法验证代码或者电路图是否正确地实现了某规约。
+    \item 在构造系统时，我们会发现\fixme{一些需要改变系统需求的问题}。
+      这导致规约没有描述实际系统。
+  \end{itemize}
+  \fixme{当我们将这些理由看作}关于``不用绘制\blueprint{}''的论证时，
+  我们就能找到反驳它们的方法。
+\end{ch}
+%%%%%%%%%%%%%%%
+
+% 5th
+%%%%%%%%%%%%%%%
+\begin{en}
 Blueprints are most useful when drawn before the building is
 constructed, so they can guide its construction.  However, they are
 sometimes drawn afterwards---for example, before remodeling an old
@@ -397,7 +466,22 @@ building whose blueprints have been lost.  System specifications are
 also most useful before the system is built.  However, they are also
 written afterwards to understand what the system does---perhaps to
 look for errors or because the system needs to be modified.
+\end{en}
 
+\begin{ch}
+  在筑造建筑物之前绘制的\blueprint{}是最有用的，
+  它可以指导施工过程。
+  然而，有的\blueprint{}是事后绘制的：
+  比如，要改造一栋丢失了\blueprint{}的旧建筑。
+  同样地，在构造系统之前编写的系统规约是最有用的。
+  然而，有的规约也是事后编写的，用以理解一个系统：
+  也许是为了寻找错误，也许是因为需要修改该系统。
+\end{ch}
+%%%%%%%%%%%%%%%
+
+% 6th
+%%%%%%%%%%%%%%%
+\begin{en}
 A formal specification is like a detailed blueprint; an informal
 specification is like a rough design sketch.  A sketch may suffice for
 a small construction project such as adding a skylight or a door to a
@@ -406,6 +490,19 @@ The main advantage of writing a formal specification is that you can
 apply tools to check it for errors.  This hyperbook teaches you how to
 write formal specifications and how to check them.  Learning to write
 formal specifications will help you to write informal ones.
+\end{en}
+
+\begin{ch}
+  一个形式化规约就像一张详细的图纸；
+  非形式化规约则像一张设计草图。
+  \fixme{对于像}为一所房子加一个天窗或者一扇门这样的小型工程，
+  使用设计草图可能就够了；
+  对于简单系统模型来说，使用非形式化规约可能也足够了。
+  编写形式化规约的最大好处在于可以使用工具检查它是否有错。
+  本书教你如何编写并且检查形式化规约。
+  学习编写形式化规约对编写非形式化规约也是有帮助的。
+\end{ch}
+%%%%%%%%%%%%%%%
 
 % From now on, I will write \emph{specification} to mean \emph{formal
 % specification}.
