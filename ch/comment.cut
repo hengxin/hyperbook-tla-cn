@@ -1,3 +1,11 @@
-  将 $"xyz"$ 替换为 0 以恢复 $Next1$ 的初始定义，然后保存模块。
-  回到模型编辑器，运行 \tlc{}。
-  \tlc{} 将再次报告没有错误。
+\newpage
+   \tindex{1}{Die Hard}%
+\vspace{-\baselineskip}%
+
+\section{Die Hard 问题} \xlabel{sec:diehard}
+
+在电影《虎胆龙威（三）》中，
+两位英雄必须解决一个问题：
+用一个 5 加仑的水壶，一个 3 加仑的水壶，\fixme{和一个水龙头}，
+如何得到 4 加仑的水？
+现在，我们用 \tlaplus\ 和 \tlc{} 模型验证器解决该问题。
