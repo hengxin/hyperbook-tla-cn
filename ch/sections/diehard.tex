@@ -32,6 +32,7 @@ model checker to solve this problem.
 
 % 2nd
 %%%%%%%%%%%%%%%
+\begin{en}
 \subsection{Representing the Problem in TLAPlus}%
 
 The first step in solving the problem is to model the physical system
@@ -69,6 +70,51 @@ $\dhstate{2}{3}$\V{1.01}
 \> $\dhstate{2}{0}$
 \end{tabbing}
 \end{display}
+\end{en}
+
+\begin{ch}
+  \subsection{用 TLAPlus 描述 Die Hard 问题}%
+
+  解决该问题的首要任务
+  是以数学的方式将由英雄、水壶和水龙头构成的物理系统建模为一个离散系统。
+  在该物理系统中，唯一相关的状态是两个水壶中的水量。
+  因此，我们用两个变量建模该系统：
+  $big$ 和 $small$ 分别表示大小两个水壶中的水量。
+  选定变量之后，弄清如何编写规约的一个好方法是
+  先写系统的某个行为的头几个状态。
+  一开始，水壶是空的，因此 $big$ 和 $small$ 都等于 0。
+  系统的某个行为的开头可能如下所示
+  （一个状态是一种变量赋值。
+  在本例中，变量是 $big$ 和 $small$。）：
+  \begin{display}
+  \begin{tabbing}
+  将大水壶里的水倒入小水壶，直到小水壶装满水为止。\= \kill
+  %
+  \>
+  $\dhstate{0}{0}$\V{1.01}
+  %
+  \>大水壶从水龙头灌满水。\'\s{2.7}$\downarrow$\V{.31}
+  %
+  \>
+  $\dhstate{5}{0}$\V{1.01} 
+  %
+  %
+  \>将大水壶里的水倒入小水壶，直到小水壶装满水为止。\'\s{2.7}$\downarrow$\V{.31}
+  %
+  \>
+  $\dhstate{2}{3}$\V{1.01}
+  %
+  \>将小水壶中的水倾空（倒在地上）。\'\s{2.7}$\downarrow$\V{.31}
+  %
+  \> $\dhstate{2}{0}$
+  \end{tabbing}
+  \end{display}
+\end{ch}
+%%%%%%%%%%%%%%%
+%  in the same paragraph
+% 3rd
+%%%%%%%%%%%%%%%
+\begin{en}
 A little thought reveals that there are three kinds of steps in a
 behavior:
 \begin{itemize}
@@ -109,6 +155,55 @@ $
 \end{twocols}
 \end{display}
 \smallskip
+\end{en}
+% in the same paragraph 
+\begin{ch}
+  稍作思考，我们会发现一个行为包含三类\tlastep{}：
+  \begin{itemize}
+  \item （从水龙头）装满某个水壶。
+  \item 倾空某个水壶。
+  \item 从一个水壶往另一个水壶倒水。这分两种情况：
+  \begin{itemize}
+  \item 第一个水壶被倾空。
+  \item 第二个水壶被装满。此时，第一个水壶中可能还有水。
+  \end{itemize}
+  \end{itemize}
+  现在，我们可以编写规约了。
+  在\tlatoolbox{}中\popref{open-new-spec}{打开一个新的规约}，
+  命名为 $DieHard$。
+  由于该规约需要用到算术操作，所以它以
+  \begin{display}
+  \begin{twocols}%[.45]
+  $\EXTENDS\ Integers$
+  \midcol
+  \verb|EXTENDS Integers|
+  \end{twocols}
+  \end{display}
+  开头。
+  我们声明变量，编写\tlainitpredicate{}，
+  \fixme{并按照惯例}将\tlainitpredicate{}命名为 $Init$。
+  \smallskip
+  \begin{display}
+  \begin{twocols}%[.45]
+  $\VARIABLES big,\ small$ \V{.4}
+  $Init == 
+  \begin{conj}
+  big = 0 \\ small = 0
+  \end{conj}
+  $
+  \midcol
+  \verb*|VARIABLES big, small|\V{.4}
+  \verb*|Init == /\ big = 0| \\
+  \verb*|        /\ small = 0|
+  \end{twocols}
+  \end{display}
+  \smallskip
+\end{ch}
+%%%%%%%%%%%%%%%
+% % in the same paragraph
+% 4th
+%%%%%%%%%%%%%%%
+\begin{en}
 Each of the three possible kinds of steps has two possibilities---one
 for each jug (each first jug for the third type).  This suggests
 writing the next state action as the disjunction of six formulas, each
@@ -144,6 +239,50 @@ Next == \/ FillSmall
 \end{verbatim*}
 \end{twocols}
 \medskip
+\end{en}
+% in the same paragraph 
+\begin{ch}
+  每一类可能的\tlastep{}都有两种情况，
+  分别对应于不同的水壶
+  （对于第三类\tlastep{}，第一个水壶可以是两个水壶中的任意一个）。
+  这提示我们将\tlanextstateaction{}写成 6 个公式的析取式，
+  每个公式对应一类可能的\tlastep{}。
+  因此，我们如下定义\tlanextstateaction{}，并按照惯例将其命名为 $Next$：
+  \medskip
+  \begin{twocols}%[.45]
+  \begin{notla}
+  Next == \/ FillSmall 
+	  \/ FillBig    
+	  \/ EmptySmall 
+	  \/ EmptyBig    
+	  \/ SmallToBig    
+	  \/ BigToSmall 
+  \end{notla}
+  \begin{tlatex}
+  \@x{ Next \.{\defeq} \.{\lor} FillSmall}%
+  \@x{\@s{39.83} \.{\lor} FillBig}%
+  \@x{\@s{39.83} \.{\lor} EmptySmall}%
+  \@x{\@s{39.83} \.{\lor} EmptyBig}%
+  \@x{\@s{39.83} \.{\lor} SmallToBig}%
+  \@x{\@s{39.83} \.{\lor} BigToSmall}%
+  \end{tlatex}
+  \midcol
+  \begin{verbatim*}
+  Next == \/ FillSmall 
+	  \/ FillBig    
+	  \/ EmptySmall 
+	  \/ EmptyBig    
+	  \/ SmallToBig    
+	  \/ BigToSmall 
+  \end{verbatim*}
+  \end{twocols}
+  \medskip
+\end{ch}
+%%%%%%%%%%%%%%%
+% % in the same paragraph
+% 5th
+%%%%%%%%%%%%%%%
+\begin{en}
 The definitions of the six formulas $FillSmall$, \ldots\,, $BigToSmall$,
 which often called 
  \tindex{1}{subaction}%
@@ -151,124 +290,21 @@ which often called
 precede the definition of $Next$ in the module.  (In \tlaplus, a
 symbol must be defined or declared before it can be used.)  Let's now
 define them.  
-
+\end{en}
+% in the same paragraph 
 \begin{ch}
-\subsection{用 TLAPlus 描述 Die Hard 问题}%
-
-解决该问题的首要任务
-是以数学的方式将由英雄、水壶和水龙头构成的物理系统建模为一个离散系统。
-在该物理系统中，唯一相关的状态是两个水壶中的水量。
-因此，我们用两个变量建模该系统：
-$big$ 和 $small$ 分别表示大小两个水壶中的水量。
-选定变量之后，弄清如何编写规约的一个好方法是
-先写系统的某个行为的头几个状态。
-一开始，水壶是空的，因此 $big$ 和 $small$ 都等于 0。
-系统的某个行为的开头可能如下所示
-（一个状态是一种变量赋值。
-在本例中，变量是 $big$ 和 $small$。）：
-\begin{display}
-\begin{tabbing}
-将大水壶里的水倒入小水壶，直到小水壶装满水为止。\= \kill
-%
-\>
-$\dhstate{0}{0}$\V{1.01}
-%
-\>大水壶从水龙头灌满水。\'\s{2.7}$\downarrow$\V{.31}
-%
-\>
-$\dhstate{5}{0}$\V{1.01} 
-%
-%
-\>将大水壶里的水倒入小水壶，直到小水壶装满水为止。\'\s{2.7}$\downarrow$\V{.31}
-%
-\>
-$\dhstate{2}{3}$\V{1.01}
-%
-\>将小水壶中的水倾空（倒在地上）。\'\s{2.7}$\downarrow$\V{.31}
-%
-\> $\dhstate{2}{0}$
-\end{tabbing}
-\end{display}
-稍作思考，我们会发现一个行为包含三类\tlastep{}：
-\begin{itemize}
-\item （从水龙头）装满某个水壶。Filling a jug.
-\item 倾空某个水壶。
-\item 从一个水壶往另一个水壶倒水。这分两种情况：
-\begin{itemize}
-\item 第一个水壶被倾空。
-\item 第二个水壶被装满。此时，第一个水壶中可能还有水。
-\end{itemize}
-\end{itemize}
-现在，我们可以编写规约了。
-在\tlatoolbox{}中\popref{open-new-spec}{打开一个新的规约}，
-命名为 $DieHard$。
-由于该规约需要用到算术操作，所以它以
-\begin{display}
-\begin{twocols}%[.45]
-$\EXTENDS\ Integers$
-\midcol
-\verb|EXTENDS Integers|
-\end{twocols}
-\end{display}
-开头。
-我们声明变量，编写\tlainitpredicate{}，
-\fixme{并按照惯例}将\tlainitpredicate{}命名为 $Init$。
-\smallskip
-\begin{display}
-\begin{twocols}%[.45]
-$\VARIABLES big,\ small$ \V{.4}
-$Init == 
-\begin{conj}
-big = 0 \\ small = 0
-\end{conj}
-$
-\midcol
-\verb*|VARIABLES big, small|\V{.4}
-\verb*|Init == /\ big = 0| \\
-\verb*|        /\ small = 0|
-\end{twocols}
-\end{display}
-\smallskip
-每一类可能的\tlastep{}都有两种情况：
-一种
-Each of the three possible kinds of steps has two possibilities---one
-for each jug (each first jug for the third type).  This suggests
-writing the next state action as the disjunction of six formulas, each
-allowing one of these six possible kinds of step.  We can therefore
-define the next-state action, which by convention is called $Next$, as
-follows:
-\medskip
-\begin{twocols}%[.45]
-\begin{notla}
-Next == \/ FillSmall 
-        \/ FillBig    
-        \/ EmptySmall 
-        \/ EmptyBig    
-        \/ SmallToBig    
-        \/ BigToSmall 
-\end{notla}
-\begin{tlatex}
-\@x{ Next \.{\defeq} \.{\lor} FillSmall}%
-\@x{\@s{39.83} \.{\lor} FillBig}%
-\@x{\@s{39.83} \.{\lor} EmptySmall}%
-\@x{\@s{39.83} \.{\lor} EmptyBig}%
-\@x{\@s{39.83} \.{\lor} SmallToBig}%
-\@x{\@s{39.83} \.{\lor} BigToSmall}%
-\end{tlatex}
-\midcol
-\begin{verbatim*}
-Next == \/ FillSmall 
-        \/ FillBig    
-        \/ EmptySmall 
-        \/ EmptyBig    
-        \/ SmallToBig    
-        \/ BigToSmall 
-\end{verbatim*}
-\end{twocols}
-\medskip
+  这 6 个公式 —— 通常称为\tlanextstateaction{}的%
+   \tindex{1}{subaction}%
+  \emph{\tlasubaction{}} —— 
+  的定义必须出现在 $Next$ 的定义之前。
+  （在 \tlaplus 中，一个符号需要先定义或者先声明之后才可使用。）
+  现在，我们定义这些\tlasubaction{}。
 \end{ch}
 %%%%%%%%%%%%%%%
 
+% 6th
+%%%%%%%%%%%%%%%
+\begin{en}
 Most programmers would expect the definition of $FillSmall$ to be
  \[ FillSmall == small' = 3 \]
 This formula is certainly satisfied by a step like
@@ -280,7 +316,29 @@ However, the formula is also satisfied by this step
 because substituting
  \[ big <- 2, \ \ small <- 1, \ \ big' <- \sqrt{42}, \ \ small' <- 3
  \]
-in the formula produces the true formula $3=3$.  Since a step that
+in the formula produces the true formula $3=3$.  
+\end{en}
+
+\begin{ch}
+  大多数程序员期望看到如下定义的 $FillSmall$ 公式：
+  \[ FillSmall == small' = 3 \]
+  该公式当然可以被如下所示的\tlastep{}所满足：
+  \[ \dhstate{2}{1} -> \dhstate{2}{3}
+  \]
+  但是，它也可以被\tlastep{}
+  \[ \dhstate{2}{1} -> \dhstate{\sqrt{42}}{3}
+  \]
+  所满足，这是因为在公式中施行替换
+  \[ big <- 2, \ \ small <- 1, \ \ big' <- \sqrt{42}, \ \ small' <- 3
+  \]
+  会产生永真式 $3=3$。
+\end{ch}
+%%%%%%%%%%%%%%%
+%  % in the same paragraph
+% 7th
+%%%%%%%%%%%%%%%
+\begin{en}
+Since a step that
 fills the small jug should leave the contents of the big jug
 unchanged, the subaction $FillSmall$ must assert that $big'$ equals
 $big$.  With this observation, the definitions of the first four
@@ -328,8 +386,64 @@ EmptyBig   == /\ big' = 0
               /\ small' = small
 \end{verbatim*} 
 \end{twocols} 
- \medskip
-%
+\medskip
+\end{en}
+% in the same paragraph 
+\begin{ch}
+  由于``将小水壶装满''这一\tlastep{}应该保持大水壶里的水量不变，
+  所以\tlasubaction{} $FillSmall$ 必须保证 $big'$ 等于 $big$。
+  \fixme{基于这种观察}，
+  前四个\tlasubaction{}的定义是显而易见的：
+  \medskip
+  \begin{twocols}%[.45]
+  \begin{notla}
+  FillSmall  == /\ small' = 3 
+		/\ big' = big
+
+  FillBig    == /\ big' = 5 
+		/\ small' = small
+
+  EmptySmall == /\ small' = 0 
+		/\ big' = big
+
+  EmptyBig   == /\ big' = 0 
+		/\ small' = small
+  \end{notla}
+  \begin{tlatex}
+  \@x{ FillSmall\@s{13.03} \.{\defeq} \.{\land} small' \.{=} 3}%
+  \@x{\@s{72.70} \.{\land} big' \.{=} big}%
+  \@pvspace{8.0pt}%
+  \@x{ FillBig\@s{23.00} \.{\defeq} \.{\land} big' \.{=} 5}%
+  \@x{\@s{72.70} \.{\land} small' \.{=} small}%
+  \@pvspace{8.0pt}%
+  \@x{ EmptySmall \.{\defeq} \.{\land} small' \.{=} 0}%
+  \@x{\@s{72.70} \.{\land} big' \.{=} big}%
+  \@pvspace{8.0pt}%
+  \@x{ EmptyBig\@s{9.97} \.{\defeq} \.{\land} big' \.{=} 0}%
+  \@x{\@s{72.70} \.{\land} small' \.{=} small}%
+  \end{tlatex}
+  \midcol
+  \begin{verbatim*}
+  FillSmall  == /\ small' = 3 
+		/\ big' = big
+
+  FillBig    == /\ big' = 5 
+		/\ small' = small
+
+  EmptySmall == /\ small' = 0 
+		/\ big' = big
+
+  EmptyBig   == /\ big' = 0 
+		/\ small' = small
+  \end{verbatim*} 
+  \end{twocols} 
+  \medskip
+\end{ch}
+%%%%%%%%%%%%%%%
+% % in the same paragraph
+% 8th
+%%%%%%%%%%%%%%%
+\begin{en}
 The definitions of the last two, $SmallToBig$ and $BigToSmall$, are
 trickier because each has two cases.  Let's consider $SmallToBig$.
 We can express the two possibilities as the disjunction of two
@@ -356,6 +470,41 @@ SmallToBig == \/ /\ big + small > 5
 \@x{\@s{81.62} \.{\land} small' \.{=} 0}%
 \end{tlatex}
 \end{display}
+\end{en}
+% in the same paragraph 
+\begin{ch}
+  后两个\tlasubaction{} $SmalltoBig$ 和 $BigToSmall$ 的定义稍显复杂，
+  因为每个都有两种情况。
+  考虑 $SmallToBig$。
+  我们可以将它的两种情况表示成两个公式的析取：
+  \begin{display}
+  \begin{notla}
+  SmallToBig == \/ /\ big + small > 5
+		   /\ big' = 5
+		   /\ small' = small - (5 - big)
+		\/ /\ big + small =< 5
+		   /\ big' = big + small
+		   /\ small' = 0
+  \end{notla}
+  \begin{tlatex}
+  \@x{ SmallToBig \.{\defeq} \.{\lor} \.{\land} big \.{+} small \.{>} 5}%
+  \@x{\@s{81.62} \.{\land} big' \.{=} 5}%
+  \@x{\@s{81.62} \.{\land} small' \.{=} small \.{-} ( 5 \.{-} big )}%
+  %
+  \marginpar{如果大水壶装不下小水壶中所有的水，
+    那么从小水壶中倒入大水壶中的水量是 $5-big$ 加仑。} 
+  %
+  \@x{\@s{70.51} \.{\lor} \.{\land} big \.{+} small \.{\leq} 5}%
+  \@x{\@s{81.62} \.{\land} big' \.{=} big \.{+} small}%
+  \@x{\@s{81.62} \.{\land} small' \.{=} 0}%
+  \end{tlatex}
+  \end{display}
+\end{ch}
+%%%%%%%%%%%%%%%
+% % in the same paragraph
+% 9th
+%%%%%%%%%%%%%%%
+\begin{en}
 This definition is fine, but it can be expressed more compactly.
 Observe that a $SmallToBig$ step sets the value of $big$ to the
 smaller of $big+small$ and 5.  Let's define $Min$ so that $Min(m, n)$
@@ -384,6 +533,43 @@ SmallToBig == /\ big' = Min(big + small, 5)
  \.{-} big )}%
 \end{tlatex}
 \end{display}
+\end{en}
+% in the same paragraph 
+\begin{ch}
+  这个定义还不错，但是可以表达得更紧凑些。
+  注意到 $SmallToBig$ \tlastep{} 将 $big$ 设置为 $big+small$ 与 5 中的较小值。
+  我们定义 $Min$， 使得 $Min(m,n)$ 等于 $m$ 与 $n$ 的较小值
+  （如果 $m$ 与 $n$ 是数字）。
+  \begin{twocols}
+  \begin{notla}
+  Min(m,n) == IF m < n THEN m ELSE n
+  \end{notla}
+  \begin{tlatex}
+  \@x{ Min ( m ,\, n ) \.{\defeq} {\IF} m \.{<} n \.{\THEN} m \.{\ELSE} n}%
+  \end{tlatex}
+  \midcol
+  \verb|Min(m,n) == IF m < n THEN m ELSE n|
+  \end{twocols}
+  因为从小水壶中倒出的水量等于大水壶增加的水量，
+  所以我们可以如下定义 $SmallToBig$：
+  \begin{display}
+  \begin{notla}
+  SmallToBig == /\ big' = Min(big + small, 5)
+		/\ small' = small - (big' - big)
+  \end{notla}
+  \begin{tlatex}
+   \@x{ SmallToBig \.{\defeq} \.{\land} big' \.{=} Min ( big \.{+} small
+   ,\, 5 )}%
+   \@x{\@s{70.51} \.{\land} small' \.{=} small\@s{0.54} \.{-} ( big'
+   \.{-} big )}%
+  \end{tlatex}
+  \end{display}
+\end{ch}
+%%%%%%%%%%%%%%%
+% % in the same paragraph
+% 10th
+%%%%%%%%%%%%%%%
+\begin{en}
 This definition has one drawback.  When reading an action formula, we
 often want to see how a particular variable's value changes.  This is
 easiest to do if the value of the primed variable is expressed as a
@@ -402,6 +588,34 @@ SmallToBig == /\ big' = Min(big + small, 5)
  \.{+} small ,\, 5 ) \.{-} big )}%
 \end{tlatex}
 \end{display}
+\end{en}
+% in the same paragraph 
+\begin{ch}
+  这个定义有一个缺陷。
+  当阅读一个\tlaaction{}公式时，
+  我们通常想知道一个特定变量的值是如何变化的。
+  如果\tlaprimedvariable{}的值被表示成\tlaunprimedvariable{}的值的函数，
+  那么这\fixme{很容易}做到。
+  但是，该定义用 $big'$（以及 $big$ 与 $small$）的值来表示 $small'$ 的值。
+  我们可以通过重写定义修复这个缺陷：
+  \begin{display}
+  \begin{notla}
+  SmallToBig == /\ big' = Min(big + small, 5)
+		/\ small' = small - (Min(big + small, 5) - big)
+  \end{notla}
+  \begin{tlatex}
+   \@x{ SmallToBig \.{\defeq} \.{\land} big' \.{=} Min ( big \.{+} small
+   ,\, 5 )}%
+   \@x{\@s{70.51} \.{\land} small' \.{=} small\@s{0.54} \.{-} ( Min ( big
+   \.{+} small ,\, 5 ) \.{-} big )}%
+  \end{tlatex}
+  \end{display}
+\end{ch}
+%%%%%%%%%%%%%%%
+% % in the same paragraph
+% 11th
+%%%%%%%%%%%%%%%
+\begin{en}
 However, it's better not to repeat the expression $Min(big + small, 5)$.
 I find it more elegant to write the action in terms the amount
 of water poured from one jug to the other.  I prefer writing the
@@ -434,6 +648,46 @@ SmallToBig ==
 \end{twocols}
  \medskip
 (Note that $poured$ equals $Min(small, 5-big)$.)
+\end{en}
+% in the same paragraph
+\begin{ch}
+  不过，最好不要重复表达式 $Min(big + small, 5)$。
+  我发现使用\fixme{从一个水壶到另一个水壶的倒水量}来表达该\tlaaction{}更为简练。
+  我更喜欢使用 \tlaplus\ 提供的
+    \rref{math}{let-in}{\textsc{let}\,/\,\textsc{in} \tlaconstruct{}}
+  将它写成如下形式（\textsc{let}\,/\,\textsc{in} 允许我们\fixme{在表达式内部给出局部定义}）：
+  \medskip
+  \begin{twocols}%[.45]
+  \setboolean{shading}{true}
+  \begin{notla}
+  SmallToBig == 
+    LET poured == Min(big + small, 5) - big
+    IN  /\ big'   = big + poured
+	/\ small' = small - poured
+  \end{notla}
+  \begin{tlatex}
+  \@x{ SmallToBig \.{\defeq}}%
+   \@x{\@s{8.2} \.{\LET} poured \.{\defeq} Min ( big \.{+} small ,\, 5 ) \.{-}
+   big}%
+  \@x{\@s{8.2} \.{\IN} \.{\land} big'\@s{10.88} \.{=} big \.{+} poured}%
+  \@x{\@s{28.59} \.{\land} small' \.{=} small \.{-} poured}%
+  \end{tlatex}
+  \midcol
+  \begin{verbatim*}
+  SmallToBig == 
+    LET poured == Min(big + small, 5) - big
+    IN  /\ big'   = big + poured
+	/\ small' = small - poured
+  \end{verbatim*}
+  \end{twocols}
+   \medskip
+  （注意 $poured$ 等于 $Min(small, 5-big)$。）
+\end{ch}
+%%%%%%%%%%%%%%%
+% in the same paragraph
+% 12th
+%%%%%%%%%%%%%%%
+\begin{en}
 The definition of the $BigToSmall$ subaction is similar.
  \medskip
 \begin{twocols}
@@ -443,13 +697,13 @@ BigToSmall ==
   IN  /\ big'   = big - poured
       /\ small' = small + poured
 \end{notla}
-% \begin{tlatex}
-% \@x{ BigToSmall \.{\defeq}}%
-%  \@x{\@s{8.2} \.{\LET} poured \.{\defeq} Min ( big \.{+} small ,\, 3 ) \.{-}
-%  small}%
-% \@x{\@s{8.2} \.{\IN} \.{\land} big' \@s{10.88} \.{=} big \.{-} poured}%
-% \@x{\@s{28.59} \.{\land} small' \.{=} small \.{+} poured}%
-% \end{tlatex}
+\begin{tlatex}
+\@x{ BigToSmall \.{\defeq}}%
+ \@x{\@s{8.2} \.{\LET} poured \.{\defeq} Min ( big \.{+} small ,\, 3 ) \.{-}
+ small}%
+\@x{\@s{8.2} \.{\IN} \.{\land} big' \@s{10.88} \.{=} big \.{-} poured}%
+\@x{\@s{28.59} \.{\land} small' \.{=} small \.{+} poured}%
+\end{tlatex}
 \midcol
 \begin{verbatim*}
 BigToSmall == 
@@ -459,6 +713,39 @@ BigToSmall ==
 \end{verbatim*}
 \end{twocols}
  \medskip
+\end{en}
+% in the same paragraph
+\begin{ch}
+  \tlasubaction{} $BigToSmall$ 的定义与之类似。
+ \medskip
+  \begin{twocols}
+  \begin{notla}
+  BigToSmall == 
+    LET poured == Min(big + small, 3) - small
+    IN  /\ big'   = big - poured
+	/\ small' = small + poured
+  \end{notla}
+  \begin{tlatex}
+  \@x{ BigToSmall \.{\defeq}}%
+   \@x{\@s{8.2} \.{\LET} poured \.{\defeq} Min ( big \.{+} small ,\, 3 ) \.{-}
+   small}%
+  \@x{\@s{8.2} \.{\IN} \.{\land} big' \@s{10.88} \.{=} big \.{-} poured}%
+  \@x{\@s{28.59} \.{\land} small' \.{=} small \.{+} poured}%
+  \end{tlatex}
+  \midcol
+  \begin{verbatim*}
+  BigToSmall == 
+    LET poured == Min(big + small, 3) - small
+    IN  /\ big'   = big - poured
+	/\ small' = small + poured
+  \end{verbatim*}
+  \end{twocols}
+ \medskip
+\end{ch}
+%%%%%%%%%%%%%%%
+% in the same paragraph
+% 13th
+%%%%%%%%%%%%%%%
 We should also define a type invariant.  Clearly, the values of
 both $big$ and $small$ should be natural numbers, with $big\leq 5$
 and $small\leq3$.  To express this, we use the operator 
@@ -496,6 +783,10 @@ TypeOK == /\ big   \in 0..5
 This definition is best put right after the declaration of the
 variables $big$ and $small$.
 
+\begin{ch}
+
+\end{ch}
+%%%%%%%%%%%%%%%
 \subsection{Applying TLC}
 
 
