@@ -1,11 +1,111 @@
-\newpage
-   \tindex{1}{Die Hard}%
-\vspace{-\baselineskip}%
+\subsection{用 TLAPlus 描述 Die Hard 问题}%
 
-\section{Die Hard 问题} \xlabel{sec:diehard}
-
-在电影《虎胆龙威（三）》中，
-两位英雄必须解决一个问题：
-用一个 5 加仑的水壶，一个 3 加仑的水壶，\fixme{和一个水龙头}，
-如何得到 4 加仑的水？
-现在，我们用 \tlaplus\ 和 \tlc{} 模型验证器解决该问题。
+解决该问题的首要任务
+是以数学的方式将由英雄、水壶和水龙头构成的物理系统建模为一个离散系统。
+在该物理系统中，唯一相关的状态是两个水壶中的水量。
+因此，我们用两个变量建模该系统：
+$big$ 和 $small$ 分别表示大小两个水壶中的水量。
+选定变量之后，弄清如何编写规约的一个好方法是
+先写系统的某个行为的头几个状态。
+一开始，水壶是空的，因此 $big$ 和 $small$ 都等于 0。
+系统的某个行为的开头可能如下所示
+（一个状态是一种变量赋值。
+在本例中，变量是 $big$ 和 $small$。）：
+\begin{display}
+\begin{tabbing}
+将大水壶里的水倒入小水壶，直到小水壶装满水为止。\= \kill
+%
+\>
+$\dhstate{0}{0}$\V{1.01}
+%
+\>大水壶从水龙头灌满水。\'\s{2.7}$\downarrow$\V{.31}
+%
+\>
+$\dhstate{5}{0}$\V{1.01}
+%
+%
+\>将大水壶里的水倒入小水壶，直到小水壶装满水为止。\'\s{2.7}$\downarrow$\V{.31}
+%
+\>
+$\dhstate{2}{3}$\V{1.01}
+%
+\>将小水壶中的水倾空（倒在地上）。\'\s{2.7}$\downarrow$\V{.31}
+%
+\> $\dhstate{2}{0}$
+\end{tabbing}
+\end{display}
+稍作思考，我们会发现一个行为包含三类\tlastep{}：
+\begin{itemize}
+\item （从水龙头）装满某个水壶。Filling a jug.
+\item 倾空某个水壶。
+\item 从一个水壶往另一个水壶倒水。这分两种情况：
+\begin{itemize}
+\item 第一个水壶被倾空。
+\item 第二个水壶被装满。此时，第一个水壶中可能还有水。
+\end{itemize}
+\end{itemize}
+现在，我们可以编写规约了。
+在\tlatoolbox{}中\popref{open-new-spec}{打开一个新的规约}，
+命名为 $DieHard$。
+由于该规约需要用到算术操作，所以它以
+\begin{display}
+\begin{twocols}%[.45]
+$\EXTENDS\ Integers$
+\midcol
+\verb|EXTENDS Integers|
+\end{twocols}
+\end{display}
+开头。
+我们声明变量，编写\tlainitpredicate{}，
+\fixme{并按照惯例}将\tlainitpredicate{}命名为 $Init$。
+\smallskip
+\begin{display}
+\begin{twocols}%[.45]
+$\VARIABLES big,\ small$ \V{.4}
+$Init ==
+\begin{conj}
+big = 0 \\ small = 0
+\end{conj}
+$
+\midcol
+\verb*|VARIABLES big, small|\V{.4}
+\verb*|Init == /\ big = 0| \\
+\verb*|        /\ small = 0|
+\end{twocols}
+\end{display}
+\smallskip
+Each of the three possible kinds of steps has two possibilities---one
+for each jug (each first jug for the third type).  This suggests
+writing the next state action as the disjunction of six formulas, each
+allowing one of these six possible kinds of step.  We can therefore
+define the next-state action, which by convention is called $Next$, as
+follows:
+\medskip
+\begin{twocols}%[.45]
+\begin{notla}
+Next == \/ FillSmall
+        \/ FillBig
+        \/ EmptySmall
+        \/ EmptyBig
+        \/ SmallToBig
+        \/ BigToSmall
+\end{notla}
+\begin{tlatex}
+\@x{ Next \.{\defeq} \.{\lor} FillSmall}%
+\@x{\@s{39.83} \.{\lor} FillBig}%
+\@x{\@s{39.83} \.{\lor} EmptySmall}%
+\@x{\@s{39.83} \.{\lor} EmptyBig}%
+\@x{\@s{39.83} \.{\lor} SmallToBig}%
+\@x{\@s{39.83} \.{\lor} BigToSmall}%
+\end{tlatex}
+\midcol
+\begin{verbatim*}
+Next == \/ FillSmall
+        \/ FillBig
+        \/ EmptySmall
+        \/ EmptyBig
+        \/ SmallToBig
+        \/ BigToSmall
+\end{verbatim*}
+\end{twocols}
+\medskip
