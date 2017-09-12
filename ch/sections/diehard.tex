@@ -651,7 +651,7 @@ SmallToBig ==
 \end{en}
 % in the same paragraph
 \begin{ch}
-  不过，最好不要重复表达式 $Min(big + small, 5)$。
+  不过，最好不要重复使用表达式 $Min(big + small, 5)$。
   我发现使用\fixme{从一个水壶到另一个水壶的倒水量}来表达该\tlaaction{}更为简练。
   我更喜欢使用 \tlaplus\ 提供的
     \rref{math}{let-in}{\textsc{let}\,/\,\textsc{in} \tlaconstruct{}}
@@ -746,6 +746,7 @@ BigToSmall ==
 % in the same paragraph
 % 13th
 %%%%%%%%%%%%%%%
+\begin{en}
 We should also define a type invariant.  Clearly, the values of
 both $big$ and $small$ should be natural numbers, with $big\leq 5$
 and $small\leq3$.  To express this, we use the operator 
@@ -782,9 +783,47 @@ TypeOK == /\ big   \in 0..5
  \medskip
 This definition is best put right after the declaration of the
 variables $big$ and $small$.
-
+\end{en}
+% in the same paragraph
 \begin{ch}
-
+  我们还应该定义一个\tlatypeinvariant{}。
+  显然，变量 $big$ 和 $small$ 的值都是自然数，
+  并且 $big \leq 5$，$small \leq 3$。
+  为了\fixme{表达这一点}，
+  我们使用在 $Integers$ 模块中定义的%
+    \ctindex{1}{+3i@\mmath{\icmd{dd}} (integer interval)}{+3i}%
+  $\dd$ 操作符。
+  $i\dd j$ 表示从 $i$ 到 $j$ 的整数集合。
+  更精确地讲，$i\dd j$ 被定义为满足 $i\leq k$ 与 $k\leq j$ 条件
+  的整数 $k$ 构成的集合。
+  如果 $j < i$，则 $i\dd j$ 是空集。
+  操作符 $\dd$ 的定义是：
+  \marginpar{\rref{math}{set-constructors}{$\{x \in S : P(x)\}$ 
+    是 $S$ 中所有满足 $P(x)$ 的元素 $x$ 构成的 $S$ 的子集。}}%
+  \[ i \dd j == \{k \in Int : (i \leq k) /\ (k \leq j)\}
+  \]
+  这里， 
+    \ctindex{1}{Int@\mmath{Int}}{Int}%
+  $Int$ 是所有整数构成的集合，定义在 $Integers$ 模块中。
+  \tlatypeinvariant{}的定义如下所示：
+   \medskip
+  \begin{twocols}
+  \begin{notla}
+  TypeOK == /\ big   \in 0..5
+            /\ small \in 0..3 
+  \end{notla}
+  \begin{tlatex}
+  \@x{ TypeOK \.{\defeq} \.{\land} big\@s{10.88} \.{\in} 0 \.{\dotdot} 5}%
+  \@x{\@s{56.14} \.{\land} small \.{\in} 0 \.{\dotdot} 3}%
+  \end{tlatex}
+  \midcol
+  \begin{verbatim*}
+  TypeOK == /\ big   \in 0..5
+            /\ small \in 0..3 
+  \end{verbatim*}
+  \end{twocols}
+   \medskip
+  该定义最好紧跟在变量 $big$ 与 $small$ 的声明语句之后。
 \end{ch}
 %%%%%%%%%%%%%%%
 \subsection{Applying TLC}
