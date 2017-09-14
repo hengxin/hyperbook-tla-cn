@@ -1,0 +1,1887 @@
+%try
+\newpage
+\ctindex{1}{Euclid's Algorithm}{euclid-algorithm}%
+\vspace{-\baselineskip}
+ \btarget{main:euclid}%
+\section{Euclid's Algorithm} \xlabel{sec:euclid}
+
+Euclid's algorithm is a classic algorithm 
+  \ctindex{1}{gcd@gcd\icmd{target}{gcdtarget}}{gcd}%
+for computing the greatest common divisor (abbreviated \emph{gcd}) of
+two positive integers.  We consider a simpler and much less efficient
+version than the one described by Euclid in his \emph{Elements}.
+However, before writing an algorithm to compute the gcd, we should
+define precisely what the gcd is.
+
+\rref{math}{predicate-logic}{If you are not familiar with the
+quantifiers $\A$ and $\E$, detour here.}
+
+  \ctindex{2}{gcd@gcd\icmd{target}{gcdtarget}}{gcd}%
+  \ctindex{1}{greatest common divisor|see{\icmd{lref}{gcdtarget}{gcd}}}{g-c-d}%
+  \vspace{-\baselineskip}
+\subsection{The Greatest Common Divisor} \xlabel{main:euclid:gcd}
+
+We want to define an operator $GCD$ such that $GCD(m, n)$ equals the
+gcd of $m$ and $n$, for numbers $m$ and $n$.  Negative numbers and the
+number 0 were unknown to Euclid, so let's assume that $m$ and $n$ are
+positive integers.  (The gcd of $m$ and $n$ is undefined if either of
+them equals~0.)  Since we might want to use this operator in some
+specification other than that of Euclid's algorithm, the instinct of
+any good engineer is to put the definition into a separate module so
+it can be re-used.
+  \marginpar{\popref{reuse}{Why we usually don't re-use 
+     specifications in practice.}}
+So, let's create a spec to contain the definition of $GCD$ and any
+other related definitions and properties we might need.  
+
+In the Toolbox, open a new specification called $GCD$.  (\tlaplus\
+allows the use of the same name for both a module and a defined
+operator.)  
+You can make it easier to use the module in other specifications
+by putting it in a separate library folder.  Library folders
+are explained on the
+  \helppage{gettingstarted/tla-preferences}{help page} 
+for the \tlaplus\
+  \helppage{gettingstarted/preferences}{preferences page}.
+
+We'll need the usual operations on integers, so we import
+them by beginning the module with the statement:
+\begin{display}
+\begin{twocols}
+$\EXTENDS Integers$
+ \midcol
+\verb|EXTENDS Integers|
+\end{twocols}
+\end{display}
+% The gcd of two positive integers is the largest integer that divides
+% both of them.  To define it, we must first define what it means for
+% one positive integer to divide another.  However, before doing that,
+% let's make the spec a little easier to read by separating the part of
+% the spec up to now from the following part, which defines the gcd.  We
+% do this by adding a line of dash (\texttt{-}) characters, which is
+% purely decorative:
+% \begin{display}
+% \verb|-------------------------------------------|
+% \end{display}
+% The line must contain at least four dashes.  See how that is
+% %\lref{pretty-printing}{pretty-printed}.
+% \sref{main}{pretty-printing}{pretty-printed}.
+
+
+\tindex{1}{divisor}%
+\vspace{-\baselineskip}%
+\subsubsection{Divisors}
+
+We define the operator $Divides$ so that $Divides(p,\,n)$ equals
+$\TRUE$ if the integer $p$ divides the integer $n$, and equals
+$\FALSE$ if it doesn't.  You learned in grade school that $p$ divides
+$n$ \popref{iff}{iff} $n/p$ is an integer.  The $Integers$ module
+defines $Int$ to be the set of all integers.  So, an obvious
+definition of $Divides$ is
+\begin{display}
+\begin{twocols}
+$Divides(p, n)== n/p \in Int$
+\midcol
+\verb|Divides(p, n) == n/p \in Int|
+\end{twocols}
+\end{display}
+However, if we use this definition, the Toolbox reports an error
+because it can't find the definition of the operator $/$\,.
+
+The $Integers$ module is about integers, and $n/p$ is not, in general,
+an integer.  The only arithmetic operations you learned in grade
+school that the module defines are addition ($+$), subtraction ($-$),
+multiplication ($*$), and exponentiation ($a^{b}$ is
+typed~\verb|a^b|).  There is a 
+  \ctindex{1}{Reals module@\mmath{Reals} module}{reals-module}%
+$Reals$ module that defines ordinary division, but it is rarely used
+because the TLC model checker can't evaluate the operator $/$\,.  So,
+we define $Divides$ using the operators defined in the $Integers$
+module.
+
+The definition is simple.  An integer $p$ divides an integer $n$ iff
+$n$ equals $q*p$ for some integer $q$.  We can therefore define $Divides$
+by
+\begin{twocols}
+$Divides(p, n) == \E\, q \in Int : n = q*p$
+\midcol
+\verb|Divides(p, n) == \E q \in Int : n = q * p|
+\end{twocols}
+Add this definition and save the module.
+
+Let's test our definition.  \popref{create-new-model}{Create a new TLC
+model}.  In it, use TLC to 
+  \marginpar{\popref{evaluate-constant-expression}{How 
+   to use TLC to evaluate a constant expression.}}%
+evaluate the expression \tlabox{Divides(2,\,4)}.  This produces an
+error message that looks like:
+\begin{display}
+\tt TLC
+  \ctindex{1}{non-enumerable quantifier bound}{non-enum-q-bound}%
+encountered a non-enumerable quantifier bound\\
+Int.\\
+\underline{line 4, col 27 to line 4, col 29 of module GCD}
+\end{display}
+Clicking on the location in the message takes you to the
+$Int$ in the definition.
+
+TLC evaluates an expression of the form $\E\,x\in S:exp$ by computing
+all the elements in the set $S$ and evaluating $exp$ for each of those
+values.  It obviously can't do this if $S$ is an infinite set like
+$Int$.  
+
+We don't have to try all integers $q$ to see if there is one
+satisfying $n=q*p$.  Since we're concerned only with positive
+integers, it's enough to try all integers between $1$ and $n$.  So,
+we could define $Divides$ by
+  \[ Divides(p, n) == \E\, q \in 1\dd n: n = q*p\]
+%
+% Alternatively, we could use the 
+%   \rref{math}{math:modulus}{modulus operator $\%$},
+% (defined in the $Integers$ module so that $a\,\%\, b$ is the remainder
+% when $a$ is divided by $b$).  We could then define $Divides$ by
+%  \[ Divides(p, n) == n \,\%\, p = 0
+%  \]
+% However, I prefer the original definition; I find it more elegant.  
+%
+A principal goal of TLC is that it should not be necessary to modify a
+spec in order to model-check it.  Instead, we let the model tell TLC
+to override the definition of $Int$,
+   \marginpar{\popref{definition-override}{How to override a definition
+   in TLC.}}%
+redefining it to equal some finite set of numbers.  Have the model
+redefine $Int$ to equal $-1000\dd 1000$, and run TLC again.  This time,
+TLC's evaluation of \tlabox{Divides(2,\,4)} obtains the value $\TRUE$.
+Check that TLC calculates \tlabox{Divides(2,\,5)} to equal
+$\FALSE$.  
+
+% \pause
+% 
+% \noindent
+%   \ctindex{1}{+2g@\icmd{vbar}}{+2g}% 
+% Mathematicians usually write $p|n$ instead of $Divides(p,\,n)$.
+% \tlaplus\ allows the use of $\,|\,$ as an infix operator, so you
+% can define $p|n$ to have the same meaning as $Divides(p,\,n)$ by
+% adding the following definition to the module:
+% \begin{twocols}
+% $p\,|\, n== \E\, q \in 0\dd n: n = q*p$
+% \midcol
+% \verb+p | n == \E q \in 0..n : n = q * p+
+% \end{twocols}
+% You can replace any use of $Divides$ with a use of $\,|\,$.
+% \rref{user-definable-ops}{}{Click here} for a list of all the infix
+% operator symbols that \tlaplus\ provides.
+% 
+% \pause 
+
+The gcd of $m$ and $n$ is the largest divisor of both $m$
+and $n$.  In other words, it is the maximum of the set of divisors of
+both $m$ and $n$.  To write this definition mathematically, we first
+define the set of divisors of a number and the maximum of a set of
+numbers.  The set $DivisorsOf(n)$
+of divisors of an integer $n$ is obviously:%
+ \marginpar[3]{\rref{math}{set-constructors}{Recall
+that $\{x \in S : P(x)\}$ is the
+     subset of $S$ consisting of all its elements $x$
+     satisfying $P(x)$.}}%
+\begin{twocols} 
+$DivisorsOf(n) == \{p \in Int : Divides(p, n)\}$
+\midcol
+\verb|DivisorsOf(n) == {p \in Int : Divides(p, n)}|
+\end{twocols}
+Add this definition to module $GCD$ and have TLC evaluate 
+$DivisorsOf(493)$.  It should obtain
+  $ \{-493,\, -29,\, -17,\, -1,\, 1,\, 17,\, 29,\, 493\}
+  $.
+
+  \ctindex{1}{choose@\icmd{textsc}{choose}}{choose}%
+  \vspace{-\baselineskip}%
+\subsubsection{{\sc choose} and the Maximum of a Set} \xlabel{set-max}
+
+To define the maximum of a set of numbers, we need to introduce
+the \tlaplus\ \textsc{choose} operator.  The expression
+ \[ \CHOOSE x \in S : P(x) \]
+equals some value $v$ in $S$ such that $P(v)$ equals \TRUE, if such
+a value exists.  Its value
+%
+% \marginpar{\popref{choose----nondeterministic}{Is \textsc{choose} 
+%    nondeterministic?}}
+%
+is unspecified if no such $v$ exists.  For example, if we define
+ \[ Foo == \CHOOSE i \in Int : i^2 = 4\]
+then $Foo$ equals either $2$ or $-2$, since these are the two elements
+of $Int$ whose square equals~4.  The semantics of \tlaplus\ do not say
+which of those two values $Foo$ equals.  We have absolutely no idea
+what the value of this expression is:
+ \[ \CHOOSE i \in Int : i^2 = -4\]
+since there is no integer whose square equals $-4$.%
+%
+\marginpar{\rref{math}{choose}{Learn more about \textsc{choose} here.}}
+
+Using \textsc{choose}, it's easy to define 
+  \ctindex{1}{maximum!of set of numbers}{max-of-set-if-numbers}%
+the maximum of a set $S$ of
+numbers.  The maximum of $S$ is an element of $S$ that is
+greater than or equal to every element of $S$:%
+ \ctindex{1}{+5e@\mmath{\icmd{geq}} (greater than or equal)}{+5e}%
+\begin{twocols}
+$SetMax(S) ==$ \\
+\s{1.5}$\CHOOSE i \in S : \A\, j \in S : i \geq j$
+\midcol
+\verb*|SetMax(S) == | \\
+\verb*|    CHOOSE i \in S : \A j \in S : i >= j| 
+\end{twocols}
+Note that $\geq$ is typed \verb|>=|\,.  It can also be
+typed \verb|\geq|\,.  Add this definition to module $GCD$ and
+check it by having the Toolbox evaluate the expression
+$SetMax(DivisorsOf(493))$, which should of course equal~493.  
+
+    \ctindex{3}{gcd@gcd\icmd{target}{gcdtarget}}{gcd}%
+    \vspace{-\baselineskip}%
+\subsubsection{The GCD Operator} \xlabel{main:gcd-operator}
+
+The gcd of two positive integers $m$ and $n$ is the maximum of the set
+of all numbers that are divisors of both of them.  That set is just
+the intersection
+ \marginpar{\rref{math}{simple-setops}{If you are not familiar with the set
+            operator $\cap$, detour here}.}
+ of their two sets of
+divisors.  We can therefore define:\target{gcd-detour-return}
+\begin{twocols}
+$\begin{noj}
+ GCD(m, n) == \\ \s{2}SetMax(DivisorsOf(m) \cap DivisorsOf(n))
+\end{noj}$
+\midcol
+\verb*|GCD(m, n) == | \\
+\verb*|   SetMax(DivisorsOf(m) \cap DivisorsOf(n))|
+\end{twocols}
+Add this definition to module $GCD$ and check that it's correct
+by evaluating $GCD$ for some numbers.  You will find
+that TLC can quickly evaluate the gcd of pairs of numbers less than
+1000.  
+\begin{aquestion}{finding-gcds}
+How can you easily find pairs of numbers whose gcd you know
+in order to test the definition?
+\end{aquestion}
+This sort of testing will not satisfy a mathematician, but it's
+good enough for engineers.  It checks that we haven't made a gross
+error, such as misspelling something or writing $\cup$ instead of
+$\cap$.  The only plausible source of error is missing a subtle corner
+case.  We are claiming that this is the correct definition of
+$GCD(m,\,n)$ only if $m$ and $n$ are positive integers, so obvious
+corner cases are (i)~if one or both of them equals 1 and (ii)~if
+they are equal.  A little thought reveals that there is nothing
+exceptional about these cases.  However, it's a good idea to test them
+anyway.
+
+%try
+
+  \tindex{1}{comments}%
+  \vspace{-\baselineskip}%
+\btarget{main:comments}%
+\subsection{Comments} 
+
+Mathematics is precise, compact, and elegant.  But it's hard to look
+at a mathematical formula and see what it's about.  For example, suppose
+instead of $Divides$, $DivisorsOf$, $SetMax$, and $GCD$,
+we had named our operators $A$, $B$, $C$, and $D$.  Their definitions 
+would then look like this.
+\begin{display}
+\begin{notla}
+A(p, n) == \E q \in Int : n = q * p
+B(n)    == {p \in Int : A(p, n)}
+C(S)    == CHOOSE i \in S : \A j \in S : i >= j
+D(m, n) == C(B(m) \cap B(n))
+\end{notla}
+\begin{tlatex}
+ \@x{ A ( p ,\, n )\@s{4.25} \.{\defeq} \E\, q \.{\in} Int \.{:} n \.{=} q * p}%
+\@x{ B ( n )\@s{15.48} \.{\defeq} \{ p \.{\in} Int \.{:} A ( p ,\, n ) \}}%
+ \@x{ C ( S )\@s{14.50} \.{\defeq} {\CHOOSE} i \.{\in} S \.{:} \A\, j \.{\in}
+ S \.{:} i \.{\geq} j}%
+\@x{ D ( m ,\, n ) \.{\defeq} C ( B ( m ) \.{\cap} B ( n ) )}%
+\end{tlatex}
+\end{display}
+Imagine how hard it would now be to figure out what these operators mean.
+
+Choosing explanatory names certainly helps, but it's seldom
+enough to make our specifications easy to understand.  We need to add
+explanatory comments---for example, as in this definition
+of $Divides$.
+\begin{display}
+\begin{notla}
+Divides(p, n) == \E q \in Int : n = q * p
+\end{notla}
+\begin{tlatex}
+ \@x{ Divides ( p ,\, n ) \.{\defeq} \E\, q \.{\in} Int \.{:} n \.{=} q * p}%
+\end{tlatex}
+\par
+%\vspace{-1.2\baselineskip}
+% \par
+\mbox{}\s{2}\Comment{For integers $p$ and $n$, 
+                     equals $\TRUE$ iff $p$ divides $n$.  }
+\end{display}
+There are two ways to write comments in \tlaplus.  Text between
+  \ctindex{1}{+4kj@\mmath{(*\ldots*)} (comment)}{+4kj}%
+\verb|(*| and \verb|*)| is a comment, and all text that follows a
+  \ctindex{2}{+2oj@\mmath{\icmd{backslash}*} (end-of-line comment)}{+2oj}%
+\verb|\*| on the same line is a comment.  Thus, the comment above
+following the definition of $Divides$ can be written in either of
+the following two ways:
+\begin{display}
+\verb|(* For integers p and n, equals   |\\
+\verb|   TRUE iff p divides n. *)| \V{.6}
+\verb|\* For integers p and n, equals TRUE iff p divides n.|
+\end{display}
+Comments can be nested within one another, as in
+\begin{display}
+\verb|(* This is all (* commented *) text *)|
+\end{display}
+Nesting comments is useful for commenting out parts of a specification
+during testing, but don't do it in actual comments.  The
+\sref{main}{pretty-printing}{pretty-printer} ignores comments inside
+comments.  The one exception is that comments inside a PlusCal
+algorithm are handled properly, even though the algorithm appears
+inside a comment.
+
+I like to make comments more visible in the \textsc{ascii} version
+by 
+  \ctindex{1}{comments!boxed}{comments-boxed}%
+boxing them like this:
+\begin{display}
+\verb|(********************************)|\\
+\verb|(* For integers p and n, equals *)|\\
+\verb|(* TRUE iff p divides n.        *)|\\
+\verb|(********************************)|
+\end{display}
+The Toolbox provides commands for writing boxed comments.  They are
+described in the \emph{Editing Comments} section of the
+\helppage{spec/editing-modules}{\emph{Editing Modules} help page}.
+
+
+The pretty-printer handles boxed comments properly---even if
+you write something like 
+this.\marginpar{\popref{box-comment-example}{Give it a try.}}
+\begin{widedisplay}
+\begin{verbatim}
+Divides(p, n) ==              (**********************************)
+      \E q \in Int :          (* For integers p and n, equals   *)
+              n = q * p       (* TRUE iff p divides n -- which  *)
+                              (* I think is really neat; don't  *)
+                              (* you?                           *)
+                              (**********************************)
+\end{verbatim}
+\end{widedisplay}
+The pretty-printer generally does a reasonably good job of formatting
+the comments.  However, if you want nicely
+    \ctindex{1}{comments!pretty printed}{comments-pretty-printed}%
+    \ctindex{1}{pretty printing!comments}{pretty-printing-comments}%
+printed comments for others to
+read, you will have to help it.  To find out how, see the Toolbox's
+\helppage{spec/help-print}{\emph{Helping the Pretty-Printer} help page}.
+
+Because I explain the specifications in the text as I present them, I
+will usually omit comments in this hyperbook.  You should not omit
+comments from your specs.  Unless you're going to stand next to all
+the readers of your spec as they read it, and you can project yourself
+into the future to explain the spec to yourself when you read it a
+year later, include extensive comments.  Every definition and the
+purpose of every declared variable should be explained in a comment.
+
+Comments are especially important in \tlaplus\ because it is untyped.
+In a typed language, you would have to declare that the arguments of
+$Divides$ are integers and its value is a Boolean.  The absence of
+type declarations makes the definition shorter and mathematically
+simpler.  However, it imposes on us the responsibility%
+ \marginpar{\popref{what-divides-means}{What does $Divides(p,n)$ 
+ mean if $p$ and $n$ are not integers---or not even numbers?}}
+of telling the reader that we expect the arguments to be integers.
+(It's pretty obvious in this case that the value of
+$Divides(p,n)$ is a Boolean.)
+
+Text that comes in the file before or after the module is ignored; it
+can be used to record any information about the spec that you don't
+want to put in comments within it.  The pretty-printer does output
+this text, but it might not do a very good job of formatting it.
+
+% \medskip
+% 
+% You can also make your modules easier to read by adding ``section
+% separators'' consisting of four or more dashes (\texttt{-}
+% characters), as in:
+% \medskip
+% \begin{display}
+% \begin{minipage}{.8\textwidth}
+% \begin{verbatim}
+% SetMax(S) ==  CHOOSE i \in S : \A j \in S : i >= j
+% -----------------------------------------------------------
+% Divides(p, n) == \E q \in Int : n = p * q
+% \end{verbatim}
+% \end{minipage}
+% \end{display}
+% %
+% \medskip
+% %
+% Here's how it is printed:
+% \medskip
+% \begin{display}
+% \begin{minipage}{.8\textwidth}
+% \begin{notla}
+% SetMax(S) ==  CHOOSE i \in S : \A j \in S : i >= j
+% -------------------------------------------------
+% Divides(p, n) == \E q \in Int : n = p * q
+% \end{notla}
+% \begin{tlatex}
+%  \@x{ SetMax ( S ) \.{\defeq}\@s{4.1} {\CHOOSE} i \.{\in} S \.{:} \A\, j
+%  \.{\in} S \.{:} i \.{\geq} j}%
+% \@x{}\midbar\@xx{}%
+%  \@x{ Divides ( p ,\, n ) \.{\defeq} \E\, q \.{\in} Int \.{:} n \.{=} p \.{*}
+%  q}%
+% \end{tlatex}
+% \end{minipage}
+% \end{display}
+% 
+%try
+
+\subsection{The Algorithm} \label{sec:euclid}\xlabel{main:euclid-alg}
+
+
+Let the positive integers whose gcd we are computing be $M$ and $N$.
+Euclid's algorithm uses two variables, which we call $x$ and $y$.  It
+can be described informally as follows.
+\begin{itemize}
+\item Start with $x$ equal to $M$ and $y$ equal to $N$.
+
+\item Keep subtracting the smaller of $x$ and $y$ from the larger 
+one, until $x$ and $y$ are equal.
+
+\item When $x$ and $y$ are equal, they equal the gcd of $M$ and $N$.
+\end{itemize}
+We represent the algorithm in the standard model, describing it 
+in PlusCal.
+
+Open the Toolbox and open a new spec with root module $Euclid$.  We'll
+want to use the definition of $GCD$, so we want to import it with an
+\textsc{extends} statement.  Since the $GCD$ module extends the
+$Integers$ module, the \textsc{extends} statement will also import the
+$Integers$ module.  However, I think the spec is easier to understand
+if it explicitly includes $Integers$ in the \textsc{extends}
+statement, even if it is redundant.  So, we begin the module with
+\begin{twocols}
+$\EXTENDS Integers,\ GCD$
+ \midcol
+\verb|EXTENDS Integers, GCD|
+\end{twocols}
+We need to declare $M$ and $N$, which we do by writing.%
+  \ctindex{1}{constant@\icmd{textsc}{constant}}{constant}%
+  \ctindex{1}{constants@\icmd{textsc}{constants}}{constants}%
+  \tindex{1}{constant declaration}%
+\marginpar[-1]{The keywords \textsc{constant} and \textsc{constants}
+           are equivalent.}%
+\begin{twocols} 
+$\CONSTANTS M,\, N$%
+ \midcol 
+\tt CONSTANTS M, N 
+\end{twocols}
+This declares $M$ and $N$ to be
+unspecified constants---unspecified because we are saying nothing
+about their values, and constants because their values do not change
+during the course of a behavior.
+
+We don't want the values of $M$ and $N$ to be totally unspecified; we
+want them to be positive integers.  To assert this assumption, we must
+express the set of positive integers in \tlaplus.  The $Integers$
+module defines
+  \ctindex{1}{Nat@\mmath{Nat}}{Nat}%
+$Nat$ to be the set of all natural numbers
+(non-negative integers).  The set of positive integers is the set of
+all natural numbers except 0, which can be written 
+with the \popref{set-difference}{set difference operator}
+  \tindex{3}{set difference}%
+  \ctindex{3}{+2o@\mmath{\icmd{backslash}} (set difference)}{2oa}%
+$:\:$ as 
+$Nat :\: \{0\}$.
+Our assumption about $M$ and $N$ can therefore be written as follows:%
+  \ctindex{1}{assume (TLA+ statement)@\icmd{textsc}{assume} (\icmd{tlaplus} statement)}{assume}%
+\begin{twocols}
+$\ASSUME \; 
+     \begin{conj}
+        M \in Nat :\: \{0\} \\ N \in Nat :\: \{0\}
+     \end{conj}$
+\midcol
+\begin{verbatim*}
+ASSUME /\ M \in Nat \ {0}
+       /\ N \in Nat \ {0}
+\end{verbatim*}
+\end{twocols}
+\begin{aquestion}{euclid-assump}
+Use set notation to write this assumption more compactly.
+\end{aquestion}
+\begin{aquestion}{writing-pos-ints}
+How many other ways can you write the set of positive integers
+in \tlaplus?
+\end{aquestion}
+%
+As always, the algorithm appears inside a multi-line comment,
+beginning with the keyword \verb|--algorithm| and followed by the name
+and an opening \texttt{\bf\{}\,.  Let's name the algorithm $Euclid$.
+\begin{display}
+\begin{verbatim}
+(****************************************************
+--algorithm Euclid {
+
+}
+*****************************************************)
+\end{verbatim}
+\end{display}
+The algorithm uses the two
+variables $x$ and $y$, initially equal to $M$ and $N$,
+respectively.
+\begin{twocols}
+\textbf{variables} $x = M$, $y = N$ ;
+\midcol
+\verb*| variables x = M, y = N ;|
+\end{twocols}
+This is followed by the body of the algorithm, enclosed
+in curly braces.
+
+Euclid's algorithm works by continually subtracting the smaller of $x$
+and $y$ from the larger, stopping when $x$ equals $y$.  If you have
+used an ordinary programming language, you will probably understand
+this code, which follows the variable declaration.%
+    \ctindex{1}{while (PlusCal statement)@\icmd{textbf}{while} (PlusCal statement)}{while}%
+\begin{twocols}% [.75]
+\begin{tabbing}
+\{ \= \textbf{while} $(x # y)$ % \`\mbox{}\\
+   %\> \s{1} \= 
+    \= \{ \= \textbf{if} $(x < y)$ \= \{$y := y - x$\}\s{3}\\
+   \>      \>    \> \textbf{else} \>  \{$x := x-y$\} \\
+   \>      \> \}\\
+\}
+\end{tabbing}
+\midcol
+\begin{verbatim*}
+ { while (x # y) { if (x < y) { y := y - x }
+                   else       { x := x - y }
+                 };
+ }
+\end{verbatim*}
+\end{twocols}
+If you don't understand the code, be patient.  We'll soon see exactly
+what it means.
+
+Having finished the algorithm, 
+% 
+% we now add the following two one-line
+% comments after the multi-line comment that contains the algorithm.
+% \begin{display}
+% \begin{verbatim}
+% \* BEGIN TRANSLATION
+% \* END TRANSLATION
+% \end{verbatim}
+% \end{display}
+% Next, 
+% 
+you must run the translator to compile it to a \tlaplus\
+specification.  Do this with the \textsf{File} menu's
+\textsf{Translate PlusCal Algorithm} command, or by typing
+\textsf{control+t}.  The translator inserts the \tlaplus\ translation
+after the end of the comment containing the algorithm, between
+\verb|BEGIN| \verb|TRANSLATION| and \verb|END| \verb|TRANSLATION|
+comment lines.  If the file already contains such comment lines, the
+translator replaces everything between those lines with the
+algorithm's translation.
+
+\subsection{The TLAPlus Translation}
+
+The \tlaplus\ translation describes the precise meaning of the PlusCal
+algorithm.  It begins by declaring the algorithm's variables:
+\begin{display}
+$\VARIABLES x,\ y,\ pc$
+\end{display}
+The translation has added a new 
+   \ctindex{1}{pc variable@\mmath{pc} variable}{pc-variable}%
+variable $pc$, which is short for
+  \tindex{1}{program control variable}%
+\emph{program control}.  The intuitive meaning of the \textbf{while}
+loop is that it continues to execute as long as $x#y$ is true.  When
+that formula becomes false, the code following the \textbf{while} loop
+is executed.  In the \lref{main:standard-model}{Standard Model}
+underlying \tlaplus, there is no concept of code.  An execution is
+represented simply as a sequence of states.  What code is being
+executed must be described within the state.  In the PlusCal
+translation, it is described by the value of the variable $pc$.
+
+After declaring the variables, the translation defines the identifier
+  \ctindex{1}{vars@\mmath{vars}}{vars}%
+$vars$ to equal the triple of all the variables.
+\begin{display}
+$vars == << x,\ y,\ pc >>$
+\end{display}
+  \ctindex{1}{+4o@\mmath{\icmd{langle}e_{1}, \ldots , e_{n}\icmd{rangle}} (tuple)}{+4o}%
+  \tindex{1}{tuple}%
+In \tlaplus, tuples
+are 
+  \marginpar{\rref{math}{tuples}{Tuples are explained here.}}%
+enclosed between angle brackets $<<$ and $>>$, which are typed 
+\verb|<<| and \verb|>>|, so the definition of $vars$ is written
+\begin{display}
+\verb|vars == << x, y, pc >>|
+\end{display}
+Next comes the definition of the initial predicate.%
+%
+   \marginpar{I have reformatted the translation slightly to make it
+   a bit easier to read.}
+\begin{display}
+\begin{notla}
+Init == /\ x = M
+        /\ y = N
+        /\ pc = "Lbl_1"
+\end{notla}
+\begin{tlatex}
+\@x{ Init \.{\defeq} \.{\land} x \.{=} M}%
+\@x{\@s{35.70} \.{\land} y\@s{0.10} \.{=} N}%
+\@x{\@s{35.70} \.{\land} pc \.{=}\@w{Lbl\_1}}%
+\end{tlatex}
+\end{display}
+The variables $x$ and $y$ have the expected initial values; $pc$
+initially equals the string $"Lbl\_1"$.  We shall see later what this
+value means and how it was chosen.
+
+The translation next defines $Lbl\_1$ to be the action that
+describes the \popref{step}{steps} that can be taken when execution is
+at the control point $"Lbl\_1"$.  Such a step represents the execution
+of a single iteration of the \textbf{while} loop.%
+  \marginpar{\popref{euclid-pcal2}{Here is a pop-up window with
+                                 this definition.}}
+% \begin{display}
+% \begin{notla}
+% Lbl_1 == /\  pc = "Lbl_1"
+%          /\  IF x # y
+%                 THEN /\ IF x < y
+%                           THEN /\ y' = y - x
+%                                /\ x' = x
+%                           ELSE /\ x' = x - y
+%                                /\ y' = y
+%                      /\ pc' = "Lbl_1"
+%                 ELSE /\ pc' = "Done"
+%                      /\ UNCHANGED << x, y >>
+% \end{notla}
+% \begin{tlatex}
+% \@x{ Lbl\_1 \.{\defeq} \.{\land}\@s{4.1} pc \.{=}\@w{Lbl\_1}}%
+% \@x{\@s{42.84} \.{\land}\@s{4.09} {\IF} x \.{\neq} y}%
+% \@x{\@s{70.21} \.{\THEN} \.{\land} {\IF} x \.{<} y}%
+% \@x{\@s{120.83} \.{\THEN} \.{\land} y \.{'}\@s{0.10} \.{=} y \.{-} x}%
+% \@x{\@s{152.14} \.{\land} x \.{'} \.{=} x}%
+% \@x{\@s{120.83} \.{\ELSE} \.{\land} x \.{'} \.{=} x \.{-} y}%
+% \@x{\@s{152.14} \.{\land} y \.{'}\@s{0.10} \.{=} y}%
+% \@x{\@s{101.52} \.{\land} pc \.{'} \.{=}\@w{Lbl\_1}}%
+% \@x{\@s{70.21} \.{\ELSE} \.{\land} pc \.{'} \.{=}\@w{Done}}%
+% \@x{\@s{101.52} \.{\land} {\UNCHANGED} {\langle} x ,\, y {\rangle}}%
+% \end{tlatex}
+% \end{display}
+The first conjunct of action $Lbl\_1$ has no primed variables, so it
+is an 
+  \tindex{1}{enabling condition}%
+enabling condition.  It asserts that an $Lbl\_1$ step can occur
+only when $pc$ equals $"Lbl\_1"$, meaning only when control is at the
+beginning of the \textbf{while} statement.  
+
+The second conjunct, which is an
+ \popref{if-vs-if}{\textsc{if}/\textsc{then}/\textsc{else} expression},
+specifies the new values of the three variables $x$, $y$, and $pc$.
+Let's first look at the new value of $pc$, which is specified by the
+value of $pc'$.  If $x#y$ is true, then the second conjunct of the
+outermost \textsc{then} clause asserts $pc'="Lbl\_1"$.  When $x$ and
+$y$ are not equal, executing one iteration of the \textbf{while}
+statement leaves $pc$ equal to $"Lbl\_1"$, meaning that it leaves
+control at the beginning of the \textbf{while}.  If $x#y$ is false, so
+$x$ and $y$ are equal, then the first conjunct of the outermost
+\textsc{else} clause asserts $pc'="Done"$, meaning that control is
+after the \textbf{while} loop.
+
+Let's now look at the new values of $x$ and $y$, which are specified
+by the values of $x'$ and $y'$.  If $x#y$ is true, then these values
+are specified by the first conjunct of the outermost \textsc{then}
+clause, which is an $\IF$\ldots$\THEN$\ldots$\ELSE\!\!\!$ expression.  
+This inner \textsc{if} expression asserts that, if $x<y$ is true, then
+$x'$ equals $x$ and $y'$ equals $y-x$; otherwise $x'$ equals $x-y$ and
+$y'$ equals $y$.  If $x#y$ is false (so $x$ equals $y$), then the
+outermost \textsc{else} clause (of the \textsc{if}~$x#y$) asserts 
+ $\UNCHANGED <<x, y>>$.
+The built-in \tlaplus\ operator 
+  \ctindex{1}{UNCHANGED@\icmd{textsc}{unchanged}}{unchanged}%
+\textsc{unchanged} is defined by
+ \[ \UNCHANGED e == e' = e \NOTLA \target{main:unchanged-vars}\]
+for any expression $e$.  
+Priming an expression $e$
+means priming all the variables in $e$ (after
+fully expanding the definitions of all symbols that occur in $e$).
+We therefore have%
+ \[ \NOTLA \newcommand{\pb}[1]{\parbox[t]{.6\textwidth}{#1}} 
+\TLA
+\begin{noj4}
+    \UNCHANGED <<x, y>> \;
+         & \Leftrightarrow \; &  <<x, y>>' =  <<x, y>> &
+    \mbox{By definition of \textsc{unchanged}.\vs{.4}} \\
+         & \Leftrightarrow  & <<x', y'>> =  <<x, y>> &
+     \pb{By definition of priming an expression.\vs{.4}} \\
+        & \Leftrightarrow  & (x' = x) /\ (y' = y) &
+     \pb{Because two ordered pairs are equal iff
+       their corresponding elements are equal.\vs{.2}}
+    \end{noj4}
+ \]
+Putting this all together, we see that action $Lbl\_1$ describes a
+step that
+\begin{itemize}
+\item can occur only when $pc$ equals $"Lbl\_1"$.
+
+\item if $x#y$, subtracts the smaller of $x$ and $y$ from the larger,
+leaving the smaller of them and $pc$ unchanged.
+
+\item if $x=y$, sets $pc$ to $"Done"$, leaving the values of $x$ and
+$y$ unchanged.
+\end{itemize}
+%
+The algorithm begins with $pc$ equal to $"Lbl\_1"$.  As long as $x#y$,
+it can execute $Lbl\_1$ steps that leave $pc$ equal to $"Lbl\_1"$ and
+decrease $x$ or $y$.  If $x=y$, it can execute an $Lbl\_1$ step that
+leaves $x$ and $y$ unchanged and sets $pc$ to $"Done"$.  When $pc$
+equals $"Done"$, the algorithm has terminated and it can do nothing
+else.  We therefore expect $Lbl\_1$ to be the algorithm's next-state
+action.  However, the translation defines $Next$ to be the disjunction
+of $Lbl\_1$ and another formula.  Let's forget about that other
+formula for now; we'll return to it soon.
+
+The translation then defines two temporal formulas.  A temporal
+formula is a predicate on behaviors (a formula that is true or false
+of a behavior).  Formula $Spec$ is defined to equal
+  $Init /\ [][Next]_{vars}$, where
+$vars$ is defined to be the triple $<<x, y, pc>>$ of the algorithm's
+variables.  
+(The formula is written in \textsc{ascii} as \verb|Init /\ [][Next]_vars|.)
+We will see later that this temporal formula is true of a
+behavior iff the behavior is a possible execution of the algorithm.
+In other words, formula $Spec$ is the \tlaplus\ 
+  \tindex{2}{behavior specification}%
+  \ctindex{2}{specification!behavior}{spec-behavior}%
+behavior specification of the algorithm.
+
+The second temporal formula defined by the translation is
+$Termination$.  As we will also see later, it is true of a behavior
+iff the behavior eventually reaches a state in which $pc$ equals
+$"Done"$.  Hence, formula $Termination$ asserts (of a behavior) that
+the algorithm terminates.
+
+\pause
+
+\noindent
+You may have remarked that the variable $pc$ did not appear in the
+translations of our previous PlusCal algorithms: the one-bit clock
+algorithm $Clock$ and algorithm $DieHard$.  The translator is clever
+enough to realize that control is always at the same point in an 
+execution of those algorithms, so $pc$ is not needed.
+
+\subsection{Checking Safety}
+
+Correctness of algorithm $Euclid$ means that it satisfies two
+properties:
+\begin{itemize}
+\item If the algorithm terminates, it does so with $x$ and $y$ both equal
+to $GCD(M,N)$.
+
+\item The algorithm eventually terminates.
+\end{itemize}
+The first property is what is called a
+   \ctindex{2}{property!safety}{safety}%
+   \tindex{2}{safety property}%
+safety property; 
+  \marginpar{\popref{safe-live-intro}{What are safety 
+      and liveness properties?}}%
+the second is a
+  \ctindex{2}{property!liveness}{liveness}%
+  \tindex{2}{liveness property}%
+liveness property.  We consider the safety property.
+
+The algorithm has terminated iff $pc$ equals $"Done"$.  Therefore, the
+safety property is equivalent to the assertion that the following
+formula is an invariant of the algorithm (true in all reachable states):
+  \[  (pc = "Done") => (x = y) /\ (x = GCD(M, N))
+  \]
+So, let's have TLC check that it is an invariant of the algorithm.
+
+\popref{create-new-model}{Create a new TLC model} for the $Euclid$
+specification.  The Toolbox reports two errors in the model, because 
+the model must specify the values of the declared constants $M$ and $N$.
+Double-clicking on a constant in the \textsf{What is the model?} section
+of the \textsf{Model Overview} page of the model pops up a window in
+which you can enter the value.  (Keep the default \textsf{Ordinary assignment}
+selection.)  Set $M$ to 30 and $N$ to 18.
+
+The Toolbox has set the model's behavior specification to the temporal
+formula $Spec$.  Before checking the invariant, let's just run TLC to
+make sure there is no error in the algorithm's specification.  TLC
+finds no errors, and reports that there are 6 reachable states and the
+diameter of the \lref{main:state-graph}{state graph} is 5.  This is what
+we expect for an algorithm with a single possible behavior that
+terminates after taking 5 steps.
+
+Let's now check the invariant.  We can enter the invariant directly into
+the model.  However, we might as well put the invariant in a definition
+in the specification itself.  The property of an algorithm that it
+terminates only with the correct result is called 
+  \tindex{1}{partial correctness}%
+\emph{partial correctness}, so let's add to module $Euclid$ the definition:
+\begin{twocols}[.485]
+\begin{notla}
+PartialCorrectness ==
+  (pc = "Done") => (x = y) /\ (x = GCD(M, N))
+\end{notla}
+\begin{tlatex}
+\@x{ PartialCorrectness \.{\defeq}}%
+ \@x{\@s{8.2} ( pc \.{=}\@w{Done} ) \.{\implies} ( x \.{=} y ) \.{\land} ( x
+ \.{=} GCD ( M ,\, N ) )}%
+\end{tlatex}
+\midcol
+\begin{verbatim*}
+PartialCorrectness ==
+  (pc = "Done") => (x = y) /\ (x = GCD(M, N))
+\end{verbatim*}
+\end{twocols}
+Add the invariant $PartialCorrectness$ to the \textsf{Invariants} part
+of the \textsf{What to check?} section of the \textsf{Model Overview}
+page and run TLC\@.  This produces an error, with the not very helpful
+error message
+\begin{display}
+\texttt{Evaluating invariant PartialCorrectness failed.}
+\end{display}
+The error trace shows that this error occurred when TLC was evaluating
+the invariant on the last state of a complete execution.  This
+is the first state TLC computed in which $pc="Done"$ equals true,
+so it is the first state in which it had to compute $GCD(M,N)$ when
+evaluating $PartialCorrectness$.  TLC can't evaluate $GCD(M,N)$ unless
+we override the definition of $Int$ to make it a finite set.  As we did
+for the $GCD$ spec, use the \textsf{Definition Override} section of
+the \textsf{Advanced Options} page to have the model redefine $Int$
+to equal $-1000\dd 1000$.  TLC should now find no error, verifying that
+the algorithm terminated with $x$ and $y$ equal to $GCD(M,N)$.
+
+Try changing the values of $M$ and $N$ and running TLC again.  Each
+run should take a couple of seconds for values of $M$ and $N$ less
+than 1000.  Since we know that Euclid's algorithm is correct, checking
+a few values of $M$ and $N$ will give us confidence that our PlusCal
+version is correct.  
+
+If we didn't know that Euclid's algorithm was correct, we would need
+to check it for many more values.  Instead of checking that our
+algorithm computes the gcd of $M$ and $N$, let's check that it
+computes the gcd of all pairs of numbers in $1\dd N$.  We do this by
+  \marginpar{This is one situation where there
+             is no good way to test the algorithm without
+             modifying it.}%
+declaring the initial values of $x$ and $y$ to be arbitrary elements
+of $1\dd N$.  We also add two variables $x0$ and $y0$ that initially
+equal $x$ and $y$, respectively, and whose values are left unchanged.
+We then check that, when the algorithm terminates, $x$ and $y$ equal
+$GCD(x0,y0)$.
+
+Change the \textbf{variables} declaration of the algorithm to:
+\begin{display}
+\begin{nopcal}
+variables x \in 1..N, y \in 1..N, x0 = x, y0 = y ;
+\end{nopcal}
+\begin{tlatex}
+ \@x{ {\p@variables} x \.{\in} 1 \.{\dotdot} N ,\, y \.{\in} 1 \.{\dotdot} N
+ ,\, x0 \.{=} x ,\, y0 \.{=} y {\p@semicolon}}%
+\end{tlatex}
+\end{display}
+Rerun the translator and examine the formulas $Init$ and $Next$ that
+it produces.  Formula $Init$ should be what you expect it to be, and
+formula $Next$ is the same as before except for a conjunct asserting
+that $x0$ and $y0$ are unchanged.
+
+Create a new model by 
+  \popref{clone-model}{cloning the model} you already created.
+In the model's \textsf{Invariants} section, uncheck the invariant
+$PartialCorrectness$ and add the invariant:
+\begin{display}
+$(pc = "Done") => (x = y) /\ (x = GCD(x0, y0))$
+\end{display}
+When you're not sure how long checking a model will take, start with a
+very small model.  Set the value of $N$ to be~5, so there are 25
+possible behaviors of the algorithm (because there are 25 different
+initial states).  Even with such a small model, running TLC with a
+single \popref{worker-threads}{worker thread} takes 30 seconds on my
+computer.  Why is it so slow?
+
+TLC is spending almost all its time computing $GCD(x0, y0)$ when
+evaluating the invariant.  Doing that requires it to compute
+$Divisors(x0)$ and $Divisors(y0)$.  TLC computes $Divisors(n)$ from
+the definition of $Divisors$ by enumerating all the elements $p$ in
+$Int$ and checking if $Divides(p,n)$ is true.  In the common case when
+$p$ does not divide $n$, this computing $Divides(p,n)$ requires TLC to
+check that $n$ does not equal $p*q$ for every element $q$ of $Int$.
+Since our model redefines $Int$ to be a set with about 2000 elements,
+computing $GCD(x0, y0)$ requires TLC to compute an expression of the
+form $n=p*q$ about 8 million times.  It computes $GCD(x0, y0)$ 25
+times for this model---once for the final state of each of the
+behaviors.  Experimentation reveals that there is a constant 7 second
+start-up overhead, and simple arithmetic then shows that it takes TLC
+a little over .1 microsecond to compute $n=p*q$.  This is about 100
+times longer than it takes a Java program to evaluate the same
+expression on my computer.
+
+All the positive divisors of a positive integer $n$ are elements of
+$1\dd n$.  TLC will therefore correctly compute $GCD(x0,y0)$ for $x0$
+and $y0$ in $1\dd N$ if we redefine $Int$ to equal $1\dd N$.  Change
+the model to override the definition of $Int$ with this value.  It now
+takes TLC only 7 seconds to run the model on my computer for $N=5$.
+For $N=100$, it takes 33 seconds.  
+
+This example illustrates that for checking a spec, it helps to have a
+basic understanding of how TLC works.  It also shows that the
+simplicity and elegance of mathematics compared to programming
+languages comes at a high price in efficiency of execution.
+Fortunately, checking all behaviors of a small model is generally more
+effective at finding errors in an algorithm than checking randomly
+chosen behaviors of a programming-language implementation.
+
+\bigskip
+
+Instead of checking the algorithm by adding an invariant to the model,
+we can add an \textbf{assert} statement to the algorithm.  Place the
+following statement right after the \textbf{while} statement:
+  \ctindex{1}{assert (PlusCal statement)@\icmd{textbf}{assert} (PlusCal statement)}{assert}%
+\begin{twocols}
+\textbf{assert} $(x = y) \; /\ \; (x = GCD(x0, y0))$
+\midcol
+\verb|assert (x = y) /\ (x = GCD(x0, y0))|
+\end{twocols}
+Execution of the statement \textbf{assert}~$P$ does nothing if $P$ is
+true, and it reports an error if $P$ is false.  
+Save the module and
+run the translator again.  If you followed the directions above
+exactly, this will yield a translator error reporting a missing
+  \ctindex{1}{semicolon (\mmath{;}) (PlusCal separator)}{semicolon-pluscal}%
+   \ctindex{1}{+5pk@\mmath{;} (PlusCal separator)}{+5pj}%
+semicolon (;) before the \textbf{assert}.
+Separate PlusCal statements must be separated by semicolons.  (A
+semicolon can be placed at the end of a sequence of statements, but it
+is not required.)  Insert the missing semicolon, which most people
+place just to the right of the \textbf{\}} that ends the \textbf{while}
+statement.  Save the module and run the translator again.  This should
+result in the parser error:%
+  \marginpar{\popref{translator-bug}{If you got a different error,
+                                     click here.}}
+\begin{display} \tt
+Unknown operator: `Assert'.
+\end{display}
+The translation of the \textbf{assert} statement uses a special
+operator 
+  \ctindex{1}{Assert (defined in \mmath{TLC} module)}{Assert-TLC-module}%
+$Assert$ defined in the 
+  \ctindex{1}{TLC module@\mmath{TLC} module}{tlc-module}%
+standard $TLC$ module.  It defines $Assert(P,m)$ to equal $\TRUE$ if
+$P$ equals $\TRUE$.  If TLC evaluates $P$ to be different from
+$\TRUE$, it reports an error that includes $m$.  (In that case the
+value of $P$ shouldn't matter.)  Add $TLC$ to the \textsc{extends}
+statement and save the module.  The parser error disappear, and you
+can now run TLC\@.
+
+Try changing the \textbf{assert} statement to cause an error---for
+example change $x=y$ to $x#y$---and run TLC\@.  Clicking on the
+appropriate links in the error message will take you to the
+\textbf{assert} statement and to its translation.
+
+
+
+
+\subsection{Checking Liveness} \xlabel{main:liveness}
+
+Open the model for the $Euclid$ algorithm that you have been checking
+with TLC. Open the \textsf{Properties} part of the \textsf{What to
+check?} section of the \textsf{Model Overview} page.  It should list
+the property $Termination$, but with it unchecked.  Remember that
+$Termination$ is the temporal formula that is true of a behavior iff
+the behavior terminates (reaches a state with $pc$ equal to $"Done"$).
+(If it's not in the list, add it.)  Check that property to tell TLC to
+check it.  Have the model set $N$ to 10 and run TLC on it.
+
+TLC reports that
+\begin{display}
+\tt Temporal properties were violated.
+\end{display}
+and it produces an error trace consisting of a single state, which is a
+possible initial state (one satisfying the $Init$ predicate), followed
+by the mysterious indication $\langle$\textsf{Stuttering}$\rangle$.
+This trace describes a behavior consisting of a single state,
+representing an execution that stops in an initial state.  (It will
+become clear later why the trace says \emph{Stuttering}.)
+
+A behavior of the algorithm is a sequence $s_{1}-> s_{2}-> \cdots$
+that satisfies two conditions:
+\begin{enumerate}
+\item $Init$ is true if the variables have their values in state $s_{1}$.
+(Remember that a state is an assignment of values to variables.)
+
+\item For any pair $s_{i}->s_{i+1}$ of successive states, $Next$ is
+true if the unprimed variables have their values in $s_{i}$ and
+primed variables have their values in $s_{i+1}$.  
+\end{enumerate}
+It seems natural also to require that the behavior doesn't end before
+it has to---in other words, to add the condition:
+\begin{enumerate}
+\item[3.] The behavior does not end in a state $s_{n}$ if there exists
+a state $s_{n+1}$ such that the sequence $s_{1}->\ldots->s_{n+1}$ also
+satisfies condition~2.
+\end{enumerate}
+However, the PlusCal algorithms we have written thus far do not have
+this requirement.  They allow all behaviors that satisfy conditions 1
+and 2, including behaviors that stop in the initial state.  More
+precisely, the temporal formulas $Spec$ that are those algorithms'
+translations allow all such behaviors.
+
+To add requirement 3 for the behaviors of an algorithm, 
+instead of beginning the algorithm with \texttt{-{}-algorithm},
+we begin it with:
+\begin{display}
+\tt -\mbox{}-fair algorithm
+   \ctindex{1}{fair algorithm@\icmd{fair} \icmd{algorithm}}{fair-alg}%
+\end{display}
+Make this change, run the translator, and run TLC again on the model.
+This time, TLC finds no error, verifying that for the model, all
+behaviors terminate.
+
+Examining the translation, we find that the new definition of 
+the behavior specification $Spec$
+is the conjunction of its original definition and the formula
+$\WF_{vars}(Next)$ (written in \textsc{ascii} as \verb|WF_vars(Next)|).
+It is this formula that expresses condition~3.  The requirement is
+called 
+    \ctindex{1}{weak fairness!of next-state action}{weak-fairness-next}%
+    \ctindex{1}{fairness!weak, of next-state action}{fairness-weak-next}%
+\emph{weak fairness} of the action $Next$.  We will study
+fairness formulas later.  For now, you need only know that this
+particular formula, with $Next$ the specification's next-state action,
+asserts condition~3.%
+     \marginpar[3]{\popref{why-require-fair}{Why don't we require 
+     condition~3 to hold for all algorithms?}}
+
+
+\subsection{The Translation Revisited}
+
+Let's return to the definition of $Next$ in the translation, which is
+\begin{display}
+$Next == Lbl\_1 \; \/ \; (pc = "Done" \, /\ \, \UNCHANGED vars)$
+\end{display}
+where $vars$ is defined to equal 
+ \tlabox{<< x,\, y,\, x0,\, y0,\, pc >>}.  
+Action $Lbl\_1$ describes the steps allowed by the body of the
+algorithm.  The second disjunct allows steps that start in a state in
+which $pc$ equals $"Done"$ and leaves the algorithm's five variables
+unchanged.  A step that leaves all of a specification's variables
+unchanged is called a
+     \tindex{1}{stuttering step}%
+     \ctindex{1}{step!stuttering}{step-stuttering}%
+\emph{stuttering} step.  
+
+The comment added by the translator tells us that this disjunct is
+added to prevent deadlock on termination.  To verify that it's needed,
+comment out the disjunct, save the module, and run TLC on the same
+model.  (An easy way to comment out those two lines is to select
+them and type \textsf{control+/}.)  Indeed, TLC reports that deadlock
+was reached and shows an error trace ending in a terminated state.
+
+TLC considers a reachable state from which there is no next state
+satisfying the next-state action to be a deadlock error.  The only
+difference between
+  \ctindex{1}{termination!versus deadlock}{term-vs-deadlock}%
+  \ctindex{1}{deadlock!versus termination}{deadlock-vs-term}%
+deadlock and termination is that termination is deadlock that we want
+to happen---or equivalently, that deadlock is termination we don't
+want to happen.  TLC doesn't know whether or not we wanted this
+deadlock to happen.  We can tell TLC to ignore deadlock by unchecking
+the \emph{Deadlock} box in the \emph{What to check} section of the
+model overview page.  However, it's possible to write PlusCal
+algorithms that can deadlock at a state with $pc#"Done"$.  This
+usually indicates an error---that is, deadlock that we didn't want to
+happen---so we want TLC to report it.  Therefore, the translation adds
+this disjunct to the next-state action so TLC doesn't treat
+termination as deadlock.
+
+\subsection{The Grain of Atomicity}
+
+
+The \tlaplus\ translation defines the next-state action $Next$ for
+which an execution of one iteration of the \textbf{while} loop is a
+single step.  Why?  Why didn't the translator produce a definition of
+$Next$ in which evaluating the \textbf{while} test and executing the
+body of the \textbf{while} statement are represented as two separate
+steps?  Perhaps it should have made execution of the \textbf{if}
+statement two steps, one evaluating the condition and the second
+executing either the \textbf{if} or the \textbf{else} clause.
+
+In PlusCal, what constitutes a step is specified by the use of 
+    \tindex{1}{labels, PlusCal}%
+    \ctindex{1}{PlusCal!labels in}{pluscal-labels-in}%
+labels
+in the code.  A step is execution from one label to the next.  For
+uniprocessor algorithms like the ones we have written so far, we can
+omit the labels and let the translator decide where they belong.  For
+algorithm $Euclid$, the translator decided that there should be a
+single label $Lbl\_1$ on the \textbf{while} statement.  To see that
+this is the case, let's explicitly add the label $abc$ to the
+\textbf{while} loop, so it becomes:
+\begin{display}
+\begin{nopcal}
+abc: while (x # y) { ...
+\end{nopcal}
+\begin{tlatex}
+ \@x{ abc\@s{.5}\textrm{:}\@s{3} {\p@while} {\p@lparen} x \.{\neq} y
+ {\p@rparen} {\p@lbrace} \.{\dots}}%
+\end{tlatex}
+\end{display}
+Run the translator.  The translation is exactly the same as before
+except that formula $Lbl\_1$ has become formula $abc$, whose
+definition is the same as the original definition of $Lbl\_1$ except
+that the string $"Lbl\_1"$ has been replaced by $"abc"$.
+
+There are rules for where labels must go and where they may not go.
+Most of the rules serve to make the translation simple, which is
+important because we want to be able to reason about it.
+You'll learn the rules as we go along, and the translator's error
+messages will tell you if you've omitted a necessary label or put
+one where it shouldn't go.  The first 
+  \ctindex{1}{rules!labeling}{rules-labeling}%
+  \ctindex{1}{labels, PlusCal!rules for}{labels-rules}%
+two rules are:
+\begin{itemize}
+\item The first statement in the body of the algorithm must have a label.
+
+\item A \textbf{while} statement must have a label.
+\end{itemize}
+Both imply that the translator had to add a (virtual) label where it
+did.  If we let it decide where the labels should be, it uses as few
+as possible.  This produces a specification in which an execution has
+the fewest possible steps, which makes model checking most efficient.
+It also produces the simplest translation.  For uniprocess algorithms,
+we usually care only about the answer they produce and not what
+constitutes a step.
+
+Let's see what happens when we add another label.  Put the label $d$ on the
+\textbf{if} statement, so the body of the algorithm becomes:
+\begin{display}
+\begin{nopcal}
+abc: while (x # y) { d: if (x < y) { y := y - x }
+                        else       { x := x - y }
+                   } ;
+     assert (x = y) /\ (x = GCD(x0, y0))
+\end{nopcal}
+\begin{tlatex}
+ \@x{ abc\@s{.5}\textrm{:}\@s{3} {\p@while} {\p@lparen} x \.{\neq} y
+ {\p@rparen} {\p@lbrace} d\@s{.5}\textrm{:}\@s{3} {\p@if} {\p@lparen} x \.{<}
+ y {\p@rparen} {\p@lbrace} y \.{:=} y\@s{0.10} \.{-} x {\p@rbrace}}%
+ \@x{\@s{118.19} {\p@else}\@s{24.59}\@s{9.09} 
+{\p@lbrace} x \.{:=} x \.{-} y
+ {\p@rbrace}}%
+\@x{\@s{96.19} {\p@rbrace} {\p@semicolon}}%
+ \@x{\@s{20.64} {\p@assert} ( x \.{=} y ) \.{\land} ( x \.{=} GCD ( x0 ,\, y0
+ ) )}%
+\end{tlatex}
+\end{display}
+There are two kinds of steps in an execution of this algorithm:
+\begin{description}
+\item[An \emph{abc} step:] The step starts with control at $abc$ and, based
+on the value of the test $x#y$, either moves control to $d$ or else
+executes the \textbf{assert} statement and moves control to $Done$
+(the implicit control point at the end of the algorithm).
+
+\item[A \emph{d} step:] A step that starts with control at $d$, executes
+the \textbf{if} step, and then moves control to $abc$.
+\end{description}
+Run the translator.  The translation defines two subactions, $abc$ and
+$d$, that describe these two kinds of steps.  It defines $Next$ to be
+the disjunction of these two subactions and of the subaction allowing
+stuttering steps when the algorithm has terminated.
+
+Try adding other labels in addition to or instead of $d$.  Make
+sure you understand the translations.  In this algorithm, you can add
+a label at the beginning of any complete statement.  The only
+requirement is that the \textbf{while} statement be labeled.  As you
+have already figured out, the translation defines a subaction for each
+label.  Run TLC on the different versions (for a small value of $N$)
+and compare their numbers of reachable states.
+
+\subsection{Why Euclid's Algorithm Is Correct} \xlabel{why-euclid-correct}
+
+Checking an algorithm with TLC can give us some confidence that an
+algorithm is correct.  How much confidence depends on the algorithm.
+It cannot show us \emph{why} the algorithm is correct.  For that, we
+need a proof.
+
+In this track, we write only informal correctness proofs.  Writing any
+kind of proof helps you understand an algorithm and therefore helps
+you avoid errors.  However, it's often easy to write an incorrect
+informal proof that claims to prove a property that an algorithm
+doesn't satisfy---especially for a safety property.  The informal
+safety proofs we will write can be made as rigorous as necessary to
+give us sufficient confidence in their correctness.  (What constitutes
+sufficient confidence depends on what the algorithm is going to be
+used for.)  If necessary, they can be turned into formal \tlaplus\
+proofs and checked with the
+  \tindex{1}{TLAPS}%
+TLAPS proof system.  Few readers will ever need to write a formal
+proof.  However, learning to write formal proofs will improve your
+ability to write rigorous informal ones.  I therefore urge you
+to learn how to write and check formal proofs by reading at least the
+beginning of the 
+ \rref{proof}{top}{\tlaplus\ Proof Track}.
+
+Since we are reasoning about the algorithm, not testing it, let's use
+the simpler, original version of the algorithm.  Recall that this
+version computed the gcd of $M$ and $N$ with $x$ and $y$ the only
+(declared) variables, and it had no labels and no \textbf{assert}
+statement.  Change the algorithm in the $Euclid$ module back to that
+version and run the translator.
+
+\subsubsection{Proving Invariance}  \xlabel{proving-invariance}
+
+The safety property we want to prove about algorithm $Euclid$ is the
+invariance of the state predicate $PartialCorrectness$, which is defined
+to equal
+ \[ (pc = "Done") \;=>\; (x = y) \, /\ \, (x = GCD(M, N))
+ \]
+A 
+  \ctindex{1}{state predicate}{state-predicate}%
+  \ctindex{1}{predicate!state}{predicate-state}%
+state predicate is a formula that is true or false of a state.  In
+other words, it is a Boolean-valued expression that may contain
+variables but no primes (or temporal operators).  Invariance of a
+state predicate means that it is true in every state of every behavior
+of the algorithm.  To prove that a state predicate $Inv$ is true in
+every state of a particular behavior
+  $s_{1}->s_{2}-> \ldots$\,, 
+we prove:
+\begin{enumerate}
+\item $Inv$ is true in state $s_{1}$.
+
+\item For every step $s_{n}->s_{n+1}$ in the behavior, if $Inv$ is
+true in state $s_{n}$ then it is true in state $s_{n+1}$.
+\end{enumerate}
+It follows by induction from 1 and 2 that $Inv$ is true for every
+state $s_{n}$ of the behavior.  This reasoning shows that we
+can prove that $Inv$ is true in every state of every behavior by
+proving:
+\begin{enumerate}
+\item $Inv$ is true for any initial state, and
+
+\item If $Inv$ is true in a state $s$ and $s->t$ is a possible step
+of the algorithm, then $Inv$ is true in state $t$.
+\end{enumerate}
+An initial state is one that satisfies the initial predicate $Init$.
+Therefore the first condition is equivalent to the truth of:
+\begin{enumerate}
+\item[I1.] $Init => Inv$
+\end{enumerate}
+A step $s -> t$ is a possible step of the algorithm only if the
+next-state action $Next$ is true when each unprimed variable has its
+value in state $s$ and each primed variable has its value in state
+$t$.  For any state predicate $P$, we define $P'$ to be the formula
+obtained from $P$ by priming all the variables in it.  For example,
+$PartialCorrectness'$ equals
+ \[ (pc' = "Done") \;=>\; (x' = y') \,/\ \,(x' = GCD(M, N))
+ \]
+Condition~2 is then satisfied if the following formula is true:
+\begin{enumerate}
+\item[I2.] 
+$Inv /\ Next => Inv'$%
+ \target{main:inv-i2}
+\end{enumerate}
+Make sure you understand why the truth of I2 implies the truth of
+condition~2 above.
+
+An invariant 
+  \target{main:inductive-invariant}%
+$Inv$ satisfying I1 and I2 is called an
+   \ctindex{1}{invariant!inductive}{inv-inductive}%
+   \tindex{1}{inductive invariant}%
+\emph{inductive invariant} of the algorithm.  (A predicate satisfying
+I2 is sometimes called an inductive invariant of the next-state action
+$Next$.)  Although $PartialCorrectness$ is an invariant of algorithm
+$Euclid$, it is not an inductive invariant.  It satisfies I1 but not I2.
+For example, consider the following values for the unprimed and primed
+variables:
+ \[ x = 42 \s{1.5} y = 42 \s{1.5} pc = "Lbl\_1" 
+       \s{2} x' = 42 \s{1.5} y' = 42 \s{1.5} pc' = "Done"
+ \]
+You can check that $Next$ is true for these values of the primed and
+unprimed variables by substituting them in the definition of $Lbl\_1$
+and checking that the resulting formula equals $\TRUE$.  This is perhaps
+easier to see by observing that the step
+%
+%
+ \[ \pestate{42}{42}{"Lbl\_1"}\  -> \ \pestate{42}{42}{"Done"} 
+ \]
+\begin{sloppypar}
+\noindent which starts with control at the beginning of the \textbf{while}
+statement and ends with control at the end of the algorithm, is
+allowed by the code in the algorithm's body.  With those values of the
+primed and unprimed variables, $PartialCorrectness$ equals $\TRUE$
+(because $pc=Done$ equals \FALSE), and $PartialCorrectness'$ equals
+the formula
+$42 = GCD(M,N)$ (because $pc'="Done"$ and $x'=y'$ both equal
+$\TRUE$).  Hence with these substitutions, I2 becomes $\TRUE /\ \TRUE
+=> (42 = GCD(M,N))$, which equals $42 = GCD(M,N)$.  Thus, I2 is false
+for $Inv$ equal to $PartialCorrectness$ unless the gcd of $M$ and $N$
+happens to equal 42.  In that case, we can replace 42 by another
+number to get an example in which I2 is false.  Therefore,
+$PartialCorrectness$ is not an inductive invariant.
+\end{sloppypar}
+
+This was a long calculation to demonstration something that should
+have been obvious.  Formula $PartialCorrectness$ is true in any state
+with $pc$ not equal to $"Done"$.  Its truth tells us nothing about the
+relation between the values of $x$, $y$, and $GCD(M,N)$ during the
+algorithm's execution, so its truth during the execution can't imply
+that it will be true upon termination.  However, doing this long
+calculation should help you understand that, by describing the
+algorithm with two formulas, $Init$ and $Next$, \tlaplus\ reduces
+reasoning about an algorithm to simple mathematics.
+
+We are still left with the problem of proving the invariance of
+$PartialCorrectness$.  We do that by finding an inductive invariant
+$Inv$ that, in addition to I1 and I2, satisfies:
+\begin{enumerate}
+\item[I3.] $Inv => PartialCorrectness$
+\end{enumerate}
+Conditions I1 and I2 imply that $Inv$ is true in all reachable states,
+which by I3 implies that $PartialCorrectness$ is true in all reachable
+states, so it is an invariant.  
+
+The fundamental reason why Euclid's algorithm computes the gcd is that
+it maintains the invariance of the state predicate:
+ \[ GCD(x, y) = GCD(M, N)
+ \]
+This is an inductive invariant of the algorithm.  However, it doesn't 
+satisfy I3 because it doesn't imply that $x$ equals $y$ on
+termination.  An inductive invariant $Inv$ that satisfies $I3$
+is:
+ \[ Inv == \begin{conj}
+           GCD(x, y) = GCD(M, N) \V{.2}
+           (pc = "Done") => (x = y)
+           \end{conj}
+ \]
+The proof that $Inv$ satisfies I1--I3 requires three facts about the gcd.
+These facts, which we call $GCD1$--$GCD3$, are expressed by the
+following theorems:
+\begin{display}
+\begin{notla}
+THEOREM GCD1 == \A m \in Nat \ {0} : GCD(m, m) = m
+
+THEOREM GCD2 == \A m, n \in Nat \ {0} : GCD(m, n) = GCD(n, m)
+
+THEOREM GCD3 == \A m, n \in Nat \ {0} : (n > m) => (GCD(m, n) = GCD(m, n-m))
+\end{notla}
+\begin{tlatex}
+ \@x{ {\THEOREM} GCD1 \.{\defeq} \A\, m \.{\in} Nat \.{\,\backslash\,} \{ 0 \}
+ \.{:} GCD ( m ,\, m ) \.{=} m}%
+\@pvspace{6.0pt}%
+ \@x{ {\THEOREM} GCD2 \.{\defeq} \A\, m ,\, n \.{\in} Nat \.{\,\backslash\,}
+ \{ 0 \} \.{:} GCD ( m ,\, n ) \.{=} GCD ( n ,\, m )}%
+\@pvspace{6.0pt}%
+ \@x{ {\THEOREM} GCD3 \.{\defeq} \A\, m ,\, n \.{\in} Nat \.{\,\backslash\,}
+ \{ 0 \} \.{:} ( n \.{>} m ) \.{\implies} ( GCD ( m ,\, n ) \.{=} GCD ( m ,\,
+ n \.{-} m ) )\s{-10}}%
+\end{tlatex}
+\end{display}
+Let's just assume them for now; we'll return to them later.
+
+\popref{euclid-inv-proof}{Click here} for a proof of the invariance of
+$PartialCorrectness$.  The first thing you will notice is that this
+proof doesn't look like an ordinary mathematician's proof.  Instead,
+  \tindex{1}{structured proof}%
+  \ctindex{1}{proof!structured}{proofs-structured}%
+it is hierarchically structured.  Proofs of algorithms can be quite
+complicated, and the way to handle complexity is by hierarchical
+structure.  Here are some other things to observe about the proof style.
+\begin{itemize}
+\item A proof is either a leaf proof, consisting of a short paragraph;
+or it is a sequence of steps, each with a proof, ending with a
+\textsc{qed} step.  
+
+\item A \textsc{qed} step asserts the goal of the current level of
+proof.  Its proof shows that this goal is proved by the preceding
+steps.
+
+\item A \textsc{case} statement asserts that the current proof's goal
+is true if the \textsc{case} assumption is.
+\end{itemize}
+Learning to write proofs that are correct and easy to read is an art.
+Here are a couple of tips.
+\begin{itemize}
+\item If a leaf proof is too long to be easily understood, it should
+be decomposed into a non-leaf proof, adding another level to the
+hierarchy.  A leaf proof that is not easy to understand could easily
+be incorrect.
+
+\item Any previous proof steps required by a leaf proof should
+be explicitly mentioned, as should other significant facts being
+used (such as $GCD1$--$GCD3$).
+\end{itemize}
+This proof may seem rigorous.  Actually it is incorrect---for a reason
+that should eventually become obvious to you.  Throughout the proof,
+there is an implicit assumption that $x$, $y$, $M$, and $N$ are
+positive integers.  The \textsc{assume} statement in the module
+asserts that $M$ and $N$ are positive integers, justifying that
+assumption.  Step~1 is therefore correct, though its proof should
+mention that it uses the assumption.  However, there is nothing in the
+hypotheses of any other step to imply that $x$ and $y$ are positive
+integers---an assumption that is needed to apply $GCD1$--$GCD3$.  We
+can't even prove that $x$ and $y$ are numbers.
+
+In all the proofs except for that of step~1, we get to assume that
+$Inv$ is true.  Thus, we can justify the assumption that $x$ and $y$
+are positive integers by having $Inv$ assert it.  Let's do that
+by defining:
+  \[ TypeOK == \begin{conj}
+               x \in Nat :\: \{0\} \V{.2}
+               y \in Nat :\: \{0\} \V{.2}
+               \end{conj}
+ \]
+and changing the definition of $Inv$ to 
+ \[ Inv == \begin{conj}
+           TypeOK\V{.2}
+           GCD(x, y) = GCD(M, N) \V{.2}
+           (pc = "Done") => (x = y)
+           \end{conj}
+ \]
+With this change, our proof becomes correct in the sense that the
+assertion made by every step is true.  However, a more rigorous proof
+would mention that the proof uses $TypeOK$.  Also, in steps 2.1--2.3,
+the proofs of $Inv'$ need to prove $TypeOK'$.
+
+In general, an inductive invariant must contain a type-correctness
+condition.  Since that's not a very interesting part of the invariant,
+we encapsulate this condition in a separate formula that I like to
+call $TypeOK$.  The formula usually has a conjunct for each variable,
+asserting that the variable is an element of some set.  For uniprocess
+PlusCal algorithms such as this one, there may be no need of a
+type-correctness condition for the variable~$pc$.  We may not bother
+mentioning the use of $TypeOK$ in an informal proof.  However, we should
+include it in the inductive invariant, because proving statements that
+are not true is a bad habit to get into.
+
+\begin{aquestion}{euclid-inv-fg}
+Modify the algorithm by labeling the \textbf{while} loop $abc$ and
+labeling the \textbf{if} statement $d$.  Show that the formula
+$Inv$ defined above is not an inductive invariant of the resulting
+algorithm.  Find an inductive invariant of this algorithm that implies
+$PartialCorrectness$.
+\end{aquestion}
+%
+\popref{floyd-hoare}{Click here if you already learned how to prove partial
+correctness of programs.}
+
+
+\subsubsection{Verifying \emph{GCD}1--\emph{GCD}3} \xlabel{verifying-gcd}
+
+A complete proof of Euclid's algorithm should include a proof of 
+$GCD1$--$GCD3$.  However, before we do any proving, we should use TLC
+to check the correctness of these theorems.  It's a lot easier to
+prove something if it's true.  And even an obviously true theorem
+could be incorrect because of a typo.
+
+Open the $GCD$ spec in the Toolbox and create a new model.  We can
+check all three theorems at once by having the model tell TLC to
+  \popref{evaluate-constant-expression}{evaluate the constant expression}
+\begin{display}
+\begin{twocols}
+$<<GCD1,\ GCD2,\ GCD3>>$
+\midcol
+\verb|<<GCD1, GCD2, GCD3>>|
+\end{twocols}
+\end{display}
+We saw in \lref{\xlink{main:euclid:gcd}}{Section~\xref{main:euclid:gcd}}
+that we must override the definition of
+$Int$ with a finite set of integers to allow TLC to evaluate the
+$GCD$ operator.  The three theorems are all of the form 
+ \[\A \ldots\in Nat :\: \{0\}: \ldots \]
+TLC can evaluate such formulas only if we override the definition 
+of $Nat$.  Have the model \popref{definition-override}{override the
+ definitions} of $Nat$ and $Int$ with small sets of integers---for example,
+$0\dd5$---and run TLC on it.  If you've made no error, it should
+report the value $<<TRUE, \ TRUE, \ TRUE>>$.  You can then check
+$GCD1$--$GCD3$ on a larger model.  It should take TLC one or two
+minutes to do this for a model that defines $Nat$ and $Int$ to equal
+$0\dd100$.
+%% 78 seconds for Nat = 0..100 and Int = 0..100
+
+Having checked $GCD1$--$GCD3$ with TLC, we can now think about proving
+them.  Theorems $GCD1$ and $GCD2$ follow easily from the definition of
+$GCD$ and we won't bother proving them.  The proof of $GCD3$ uses this
+simple fact
+\begin{display}
+\textbf{Lemma Div} For any integers $m$, $n$, and $d$, if $d$ divides
+both $m$ and $n$ then it also divides both $m+n$ and $n-m$.
+\end{display}
+You should have no trouble proving it.
+
+Here is \popref{gcd-proof-1}{a proof of $GCD3$}.  The structure of the
+proof becomes clearer, and the proof easier to read, if we introduce
+notation to replace some of the prose, obtaining
+\popref{gcd-proof-2}{this proof}.  Compare the two proofs.  To help
+you understand the second proof, \popref{gcd-proof-3}{here it is with
+comments.} Although the notation may seem strange, you should be able
+to see that it makes the second proof easier to read.  Ease of reading
+is very important for complex proofs.
+
+\bigskip
+
+%\noindent 
+The formal \tlaplus\ versions of the invariance proof of Euclid's
+algorithm and the proof of $GCD1$---$GCD3$ are in
+Section~\xref{proof:euclid} of the \rref{proof}{top}{Proof Track}.
+
+\subsubsection{Proving Termination}
+
+To prove that algorithm $Euclid$ always terminates (assuming
+fairness), we observe that each step of the algorithm that doesn't
+reach a terminating step decreases either $x$ or $y$ and leaves the
+other unchanged.  Thus, such a step decreases $x+y$.  Since $x$ and
+$y$ are always positive integers, $x+y$ can be decreased only a finite
+number of times.  Hence, the algorithm can take only a finite number
+of steps without terminating.
+
+In general, to prove that an algorithm terminates, we find
+an integer-valued state function $W$ for which:
+\begin{itemize}
+\item $W \geq 0$ in any reachable, non-terminating state.
+
+\item If $s$ is any reachable state and $s->t$ is any step satisfying
+the next-state action, then either the value of $W$ in state $s$ is
+greater than its value in state $t$, or the algorithm is terminated in
+state $t$.
+\end{itemize}
+To reason about reachable states, we use an invariant---which by
+definition is a predicate that is true in every reachable state of an
+algorithm.  Let $Next$ be the algorithm's next-state action.  The same
+kind of reasoning that led to \lref{main:inv-i2}{condition I2 above}
+shows that we can prove termination by finding a state function $W$
+and an invariant $I$ of the algorithm satisfying:
+\begin{enumerate}
+\item[L1.] $I => (W \in Nat) \/ (pc = "Done")$%
+ \target{main:cond-l1}
+
+\item[L2.] $I /\ Next => (W > W') \/ (pc' = "Done")$
+\end{enumerate}
+The state function $W$ is called a
+ \tindex{1}{variant function}%
+ \ctindex{1}{function!variant}{function-variant}%
+\emph{variant function}.  For algorithm $Euclid$, we let $W$ be $x+y$
+and we let $I$ be the (inductive) invariant $Inv$.
+
+The use of the ordering $>$ on natural numbers in this method can be
+generalized to any 
+  \popref{well-founded}{well-founded ordering} on a set.  However, the
+generalization is seldom needed to prove termination of
+uniprocess algorithms.
+
+\ctindex{1}{Euclid's Algorithm!for sets}{euclid-algorithm-sets}%
+\vspace{-\baselineskip}
+\subsection{Euclid's Algorithm for Sets}
+
+We now consider a generalization of Euclid's algorithm that I find
+elegant.  It computes the gcd of a set of numbers, rather than of just
+two numbers.  We start by defining $SetGCD(T)$ to be the gcd of a set
+$T$ of positive integers.  It equals the maximum of the set of numbers
+that divide all the numbers in $T$:
+\begin{display}
+\begin{notla}
+SetGCD(T) == SetMax({d \in Int : \A t \in T : Divides(d, t)})
+\end{notla}\midcol
+\begin{tlatex}
+ \@x{ SetGCD ( T ) \.{\defeq} SetMax ( \{ d \.{\in} Int \.{:} \A\, t \.{\in} T
+ \.{:} Divides ( d ,\, t ) \} )}\ascii{setgcd-ascii}%
+\end{tlatex}
+\end{display}
+Add the definition to module $GCD$ and check it for one or two small
+sets of positive integers.  (Use the same model you did before, which
+defined $Int$ to be a finite set of integers.)
+
+The algorithm, which computes the gcd of a non-empty set $Input$ of positive
+integers, uses a single variable $S$.  Its informal description is:
+\begin{itemize}
+\item Start with $S$ equal to $Input$.
+
+\item While $S$ has more than one element, choose elements $x$ and $y$
+in $S$ with $y > x$, remove $y$ from $S$ and insert $y-x$ in $S$.
+
+\item If $S$ contains a single element, that element is $SetGCD(Input)$.
+\end{itemize}
+(If you don't understand how removing  one element from $S$ and inserting
+another could reduce the number of elements in $S$, you need to
+\rref{math}{sets-intro}{read about sets}.)
+
+The body of the PlusCal algorithm should be a \textbf{while} loop
+whose test asserts that $S$ has more than one element.  The standard
+$FiniteSets$ module defines
+  \ctindex{2}{Cardinality@\mmath{Cardinality}}{cardinality}%
+  $Cardinality(S)$ to equal the
+number of elements in $S$, if $S$ is a finite set.  The value of
+$Cardinality(S)$ is unspecified if $S$ is not a finite set.  
+We will assume that $Input$ is a finite set, so $S$ will always
+be a finite set.  The \textbf{while} loop's test can therefore
+be written as $Cardinality(S) > 1$.  Here is the complete
+body of the algorithm:%
+\begin{display}
+\begin{nopcal}
+while (Cardinality(S) > 1) 
+  {  with (  x \in S,  y \in {s \in S : s > x}  ) 
+       {  S := (S \ {y}) \cup {y-x}  }
+  }
+\end{nopcal}
+\begin{tlatex}
+\@x{ {\p@while} {\p@lparen} Cardinality ( S ) \.{>} 1 {\p@rparen}}%
+  \target{seteuclid-body}%
+ \@x{\@s{8.2} {\p@lbrace}\@s{4.1} {\p@with} {\p@lparen}\@s{4.1} x \.{\in} S
+ ,\,\@s{4.1} y \.{\in} \{ s \.{\in} S \.{:} s \.{>} x \}\@s{4.1} {\p@rparen}}%
+ \@x{\@s{30.08} {\p@lbrace}\@s{4.1} S \.{:=} ( S \.{\,\backslash\,} \{ y \} )
+ \.{\cup} \{ y \.{-} x \}\@s{4.1} {\p@rbrace}}%
+\@x{\@s{8.2} {\p@rbrace}}%
+\end{tlatex}
+\end{display}
+To understand the meaning of the \textbf{with} statement, let's look at
+the translation of the algorithm's body:
+
+\begin{display}
+\begin{notla}
+Lbl_1 == /\ pc = "Lbl_1"
+         /\ IF Cardinality(S) > 1
+               THEN /\ \E x \in S:
+                         \E y \in {s \in S : s > x}:
+                           S' = ((S \ {y}) \cup {y-x})
+                    /\ pc' = "Lbl_1"
+               ELSE /\ pc' = "Done"
+                    /\ S' = S
+\end{notla}
+\begin{tlatex} %\gray 
+\@x{Lbl\_1 \.{\defeq} \.{\land} pc \.{=}\@w{Lbl\_1}}%
+\@x{\@s{42.84} \.{\land} {\IF} Cardinality ( S ) \.{>} 1}%
+\@x{\@s{66.11} \.{\THEN} \.{\land} \red \E\, x \.{\in} S \.{:}}%
+ \@x{\@s{116.73} \red \E\, y \.{\in} \{ s \.{\in} S \.{:} s \.{>} x \}
+ \.{:}}%  \@s{4.86} removed
+ \@x{\@s{124.93} \darkgreen S' \.{=} ( ( S \.{\,\backslash\,} \{ y \} ) \cup \{ y - x \} )}%
+\@x{\@s{97.42} \.{\land} pc' \.{=}\@w{Lbl\_1}}%
+\@x{\@s{66.11} \.{\ELSE} \.{\land} pc' \.{=}\@w{Done}}%
+\@x{\@s{97.42} \.{\land} S' \.{=} S}%
+\end{tlatex}
+\end{display}
+The colored formula is the translation of the \textbf{with} statement;
+the green formula is the translation of its body, the assignment to $S$.
+Let's examine the formula piece by piece.
+\begin{description}
+\item[\darkgreen$S \,\backslash\, \{y\}$] \mbox{}\\
+The set obtained by removing all the
+elements in the set $\{y\}$ from $S$---in other words, obtained by
+removing $y$ from $S$.
+
+\item[\darkgreen$(S \,\backslash\, \{y\})\cup \{y - x\}$] \mbox{}\\
+The set obtained from $S$ by removing $y$ and inserting $y-x$.
+\end{description}
+The green formula therefore asserts that $S'$ (the new value of $S$)
+equals the set obtained by removing $y$ from (the old value of) $S$
+and inserting $y-x$.
+\begin{description}
+\item[\red$\{s \in S : s > x\}$] \mbox{}\\ 
+The set of elements in $S$
+that are greater than $x$.
+\end{description}
+The entire formula therefore asserts that there exist $x$ and $y$ in
+$S$, with $y>x$, such that the green formula is true.  
+ \target{with-stmt}
+The meaning
+of the 
+       \ctindex{2}{with (PlusCal keyword)@\icmd{with} 
+                   (PlusCal keyword)}{with-pcal}%
+\textbf{with} statement is therefore:
+\begin{display}
+Execute the body with $x$ an arbitrary element of $S$ and $y$ an
+arbitrary element of $S$ greater than $x$.
+\end{display}
+In general, the statement\target{main:with}
+\begin{display}
+\textbf{with (} $v_{1} \in S_{1}$, \ldots\,, $v_{1} \in S_{1}$ \textbf{) \{}
+ $\Sigma$ \textbf{\}}%
+ \marginpar[.5]{\popref{with-in-vs-equal}{\textbf{with (\,$v\in S$\,)}
+  versus \\ \textbf{with (}\,$v=S$\,)}}
+\end{display}
+is executed by letting each $v_{i}$ be arbitrary element in $S_{i}$
+and executing $\Sigma$ with those values of the $v_{i}$.  TLC will check
+the executions obtained by all possible choices of the $v_{i}$.
+
+Create a new module named $SetEuclid$ that \textsc{extends} module
+$GCD$ and $Integers$.  Enter the PlusCal specification, translate it,
+and test that TLC executes the specification on a model with $Init$ a
+small set of positive integers.  Make it a fair algorithm (beginning
+with \,\texttt{-{}-fair algorithm}\,) and have TLC check that it terminates.
+
+Partial correctness of Euclid's algorithm, which asserts that 
+on termination $S$ contains the single element $SetGCD(Input)$, 
+is expressed by the invariance of:
+\begin{display}
+\begin{notla}
+PartialCorrectness == (pc = "Done") => (S = {SetGCD(Input)})
+\end{notla}
+\begin{tlatex}
+ \@x{ PartialCorrectness \.{\defeq} ( pc \.{=}\@w{Done} ) \.{\implies} ( S
+ \.{=} \{ SetGCD ( Input ) \} )}%
+\end{tlatex}
+\end{display}
+Add this definition to module $SetEuclid$ and have TLC check that the
+invariance of $PartialCorrectness$.  (Since evaluating this formula
+requires TLC to compute $SetGCD(Input)$, your model will have to
+override the definition of $Int$.)
+
+The proof of partial correctness is analogous to that of 
+algorithm $Euclid$ and is based on the invariance of
+ \[ SetGCD(S) = SetGCD(Input) \]
+A rigorous proof uses the inductive invariant
+\begin{display}
+\begin{notla}
+SInv == /\ TypeOK
+        /\ SetGCD(S) = SetGCD(Input)
+        /\ PartialCorrectness
+\end{notla}
+\begin{tlatex}
+\@x{ SInv \.{\defeq} \.{\land} TypeOK}%
+\@x{\@s{39.66} \.{\land} SetGCD ( S ) \.{=} SetGCD ( Input )}%
+\@x{\@s{39.66} \.{\land} PartialCorrectness}%
+\end{tlatex}
+\end{display}
+where the type invariant is defined by
+\begin{display}
+\begin{notla}
+TypeOK == /\ S \subseteq Nat \ {0}
+          /\ S # {} 
+          /\ IsFiniteSet(S)
+\end{notla}
+\begin{tlatex}
+ \@x{ TypeOK \.{\defeq} \.{\land} S \.{\subseteq} Nat \.{\,\backslash\,} \{ 0
+ \}}%
+\@x{\@s{56.14} \.{\land} S \.{\neq} \{ \}}%
+\@x{\@s{56.14} \.{\land} IsFiniteSet ( S )}%
+\end{tlatex}
+\end{display}
+The assumption that $S$ is finite is required because we don't know
+what the expression $Cardinality(S)$ in the \textbf{while} test means
+if $S$ is not a finite set.  To prove that $TypeOK$ is true in the
+initial state, we need the assumption:
+\begin{display}
+\begin{notla}
+ASSUME == /\ Input \subseteq Nat \ {0}
+          /\ Input # {}
+          /\ IsFiniteSet(Input)
+\end{notla}
+\begin{tlatex}
+ \@x{ {\ASSUME} \.{\defeq} \.{\land} Input \.{\subseteq} Nat
+ \.{\,\backslash\,} \{ 0 \}}%
+\@x{\@s{57.13} \.{\land} Input \.{\neq} \{ \}}%
+\@x{\@s{57.13} \.{\land} IsFiniteSet ( Input )}%
+\end{tlatex}
+\end{display}
+\begin{aquestion}{euclid-answer-no-cardinality}
+Rewrite the algorithm without using the $Cardinality$ operator, so
+partial correctness is true even for infinite sets $Input$.  (The
+rewritten algorithm obviously does not terminate if $Input$ is an
+infinite set.)
+\end{aquestion}
+%
+The proof of termination is based on the observation that each
+non-terminating step of the algorithm decreases the sum of all the
+elements of $S$.  To state this rigorously, we must define the sum of
+the elements in a finite set of numbers.  The only way I know to define
+this mathematically is with a 
+    \ctindex{1}{operator!recursive definition of}{op-recursive-def-of}%
+    \ctindex{1}{recursive!operator definition}{recursive-op-def}%
+recursive definition (also called by
+mathematicians an 
+  \tindex{1}{inductive definition}%
+inductive definition): 
+\begin{itemize}
+\item The sum of the empty set is 0.
+
+\item The sum of a non-empty set $T$ of integers is the sum of some
+element $t$ in $T$ plus the sum of the elements in $T :\: \{t\}$.
+\end{itemize}
+Since it doesn't matter what element $t$ of $T$ is chosen in the
+recursive step, we can use the \textsc{choose} operator to select it.
+The obvious definition is then:
+\begin{display}
+\begin{notla}
+SetSum(T) == IF T = {} THEN 0
+                       ELSE LET t == CHOOSE x \in T : TRUE
+                            IN  t + SetSum(T \ {t}) 
+\end{notla}
+\begin{tlatex}
+\@x{ SetSum ( T ) \.{\defeq} {\IF} T \.{=} \{ \} \.{\THEN} 0}%
+  \ascii{set-sum-ascii}%
+ \@x{\@s{112.60} \.{\ELSE} \.{\LET} t \.{\defeq} {\CHOOSE} x \.{\in} T \.{:}
+ {\TRUE}}%
+\@x{\@s{143.91} \.{\IN} t \.{+} SetSum ( T \.{\,\backslash\,} \{ t \} )}%
+\end{tlatex}
+\end{display}
+Add the definition to module $SetEuclid$ and save the module.  This
+produces a parsing error complaining that the operator $SetSum$ is
+undefined when used on the right-hand side of the symbol.  In \tlaplus,
+a symbol must be defined or declared before it can be used.  To allow
+such a recursive definition of $SetSum$, the definition must be preceded
+by this \textsc{recursive} declaration:
+\begin{display}
+\begin{twocols}
+\textsc{recursive} $SetSum(\_)$
+\midcol
+\verb|RECURSIVE SetSum(_)|
+\end{twocols}
+\end{display}
+The declaration should be put right before the definition.
+%
+The parser should now accept the specification.  You can use TLC
+to check that this is a correct definition of the sum of a finite
+set of integers.
+
+To prove termination, we prove
+ \lref{main:cond-l1}{conditions L1 and L2}
+with the invariant $I$ equal to $SInv$ and the variant function
+$W$ equal to $SetSum(S)$.  The informal proof is straightforward.
+It uses the following fact about $SetSum$:
+\begin{display}
+\begin{notla}
+\A T \in SUBSET Nat : 
+    IsFiniteSet(T) => /\ \A t \in T : SetSum(T \ {t}) = SetSum(T) - t 
+                      /\ \A t \in Nat : SetSum(T \cup {t}) =< SetSum(T) + t 
+\end{notla}
+\begin{tlatex}
+\@x{ \A\, T \.{\in} {\SUBSET} Nat \.{:}}%
+ \@x{\@s{11.32} IsFiniteSet ( T ) \.{\implies} \.{\land} \A\, t \.{\in} T
+ \.{:} SetSum ( T \.{\,\backslash\,} \{ t \} ) \.{=} SetSum ( T ) \.{-} t}%
+ \@x{\@s{91.78} \.{\land} \A\, t \.{\in} Nat \.{:} SetSum ( T \.{\cup} \{ t \}
+ ) \.{\leq} SetSum ( T ) \.{+} t}%
+\end{tlatex}
+\end{display}
+where 
+  \ctindex{2}{SUBSET@\icmd{textsc}{subset}}{big-subset}%
+$\SUBSET Nat$ is the set of all subsets of the set $Nat$ of natural
+numbers.  A rigorous proof reveals that some simple facts about finite
+sets and $Cardinality$ are also required.
+
+\begin{aquestion}{seteuclid-thm-answer} \targetlabel{question:gcd-rep}
+Show that the correctness of algorithm $SetEuclid$ implies the
+following important result from number theory.  The gcd of a set
+$\{n_{1}, \ldots, n_{k}\}$ of positive integers equals
+ $\, i_{1}*n_{1} + \ldots + i_{k}*n_{k} \,$
+for some integers $i_{j}$.
+\end{aquestion}
+
+\bigskip
+\noindent
+\rref{proof}{top}{If you want to learn how to write formal \tlaplus\
+proofs, you can now start reading the Proof track.}
