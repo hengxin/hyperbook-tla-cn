@@ -1,38 +1,15 @@
-  我们还应该定义一个\tlatypeinvariant{}。
-  显然，变量 $big$ 和 $small$ 的值都是自然数，
-  并且 $big \leq 5$，$small \leq 3$。
-  为了\fixme{表达这一点}，
-  我们使用在 $Integers$ 模块中定义的%
-    \ctindex{1}{+3i@\mmath{\icmd{dd}} (integer interval)}{+3i}%
-  $\dd$ 操作符。
-  $i\dd j$ 表示从 $i$ 到 $j$ 的整数集合。
-  更精确地讲，$i\dd j$ 被定义为满足 $i\leq k$ 与 $k\leq j$ 条件
-  的整数 $k$ 构成的集合。
-  如果 $j < i$，则 $i\dd j$ 是空集。
-  操作符 $\dd$ 的定义是：
-  \marginpar{\rref{math}{set-constructors}{$\{x \in S : P(x)\}$
-    是 $S$ 中所有满足 $P(x)$ 的元素 $x$ 构成的 $S$ 的子集。}}%
-  \[ i \dd j == \{k \in Int : (i \leq k) /\ (k \leq j)\}
-  \]
-  这里，
-    \ctindex{1}{Int@\mmath{Int}}{Int}%
-  $Int$ 是所有整数构成的集合，定义在 $Integers$ 模块中。
-  \tlatypeinvariant{}的定义如下所示：
-   \medskip
-  \begin{twocols}
-  \begin{notla}
-  TypeOK == /\ big   \in 0..5
-            /\ small \in 0..3
-  \end{notla}
-  \begin{tlatex}
-  \@x{ TypeOK \.{\defeq} \.{\land} big\@s{10.88} \.{\in} 0 \.{\dotdot} 5}%
-  \@x{\@s{56.14} \.{\land} small \.{\in} 0 \.{\dotdot} 3}%
-  \end{tlatex}
-  \midcol
-  \begin{verbatim*}
-  TypeOK == /\ big   \in 0..5
-            /\ small \in 0..3
-  \end{verbatim*}
-  \end{twocols}
-   \medskip
-  该定义最好紧跟在变量 $big$ 与 $small$ 的声明语句之后。
+  \newpage
+  \ctindex{1}{Euclid's Algorithm}{euclid-algorithm}%
+  \vspace{-\baselineskip}
+   \btarget{main:euclid}%
+  \section{Euclid 算法} \xlabel{sec:euclid}
+
+  \euclid{}算法是计算两个正整数的%
+    \ctindex{1}{gcd@gcd\icmd{target}{gcdtarget}}{gcd}%
+  最大公约数（简称 \emph{gcd}）的经典算法。
+  我们\fixme{考虑} \euclid{} 在《\Elements{}》中描述的算法的
+  一个简单低效的版本。
+  不过，在设计算法计算最大公约数之前，
+  我们需要先精确定义什么是最大公约数。
+
+  \rref{math}{predicate-logic}{如果你不熟悉\quantifier{} $\A$ 和 $\E$，请看这里。}
